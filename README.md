@@ -1,5 +1,5 @@
 # bounswe2023 Group8 - Web Info Aggregator
-
+<div>
 <div>
   <img align="left" src="https://user-images.githubusercontent.com/45850661/223703374-aedfbcd1-b0ba-4923-beb0-daf516d08e3e.jpg" width="370" height="270">
   <div>
@@ -20,8 +20,8 @@
   </div>
   <div style="clear: both;">
     <p>Our team is comprised of individuals with diverse backgrounds and skillsets, all with a shared passion for technology and innovation. With our combined knowledge on web development, mobile development and data analysis, we are excited to bring our ideas and perspectives to this collaborative platform project. We are committed to working collaboratively and diligently to deliver a high-quality product that will provide value to users and help advance our collective understanding of the vast and dynamic knowledge scattered throughout web.</p>
-  </div>
-  
+</div>
+  <div>
   <h5>You can also check our Wiki pages for further information</h5>
   <ul>
     <li><a href="https://github.com/bounswe/bounswe2023group8/wiki/Bahad%C4%B1r-Gezer-About">Bahadır Gezer</a></li>
@@ -37,4 +37,6 @@
     <li><a href="https://github.com/bounswe/bounswe2023group8/wiki/Sude-Konyal%C4%B1o%C4%9Flu-About">Sude Konyalıoğlu</a></li>
     <li><a href="https://github.com/bounswe/bounswe2023group8/wiki/%C3%96mer-Faruk-%C3%87elik-About">Ömer Faruk Çelik</a></li>
   </ul>
+  </div>
+</div>
 </div>
