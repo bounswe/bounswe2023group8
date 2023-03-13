@@ -4,7 +4,7 @@
     <h2 style="float: right;">What Are We Working On</h2>
   <div >
       <img align="left" src="https://user-images.githubusercontent.com/45850661/223703374-aedfbcd1-b0ba-4923-beb0-daf516d08e3e.jpg" width="300">
-    <p>Our goal is to provide a collaborative platform for users to identify, gather, and utilize information from resources across the web, which are often distributed across multiple websites and presented in different forms. By using this platform, we aim to enable users to contribute meta-information (e.g., fact, out of date) about the information they gather, and to help them search, group, and process the data in interesting and useful ways. Essentially, we want people to come together to gather relevant information and add to it, and our system will facilitate this collaborative effort by providing various features to enhance the user experience. <br> <br></p>
+    <p>Our goal is to provide a collaborative platform for users to identify, gather, and utilize information from resources across the web, which are often distributed across multiple websites and presented in different forms. By using this platform, we aim to enable users to contribute meta-information (e.g., fact, out of date) about the information they gather, and to help them search, group, and process the data in interesting and useful ways. Essentially, we want people to come together to gather relevant information and add to it, and our system will facilitate this collaborative effort by providing various features to enhance the user experience. </p>
   </div>
 </div>
 
