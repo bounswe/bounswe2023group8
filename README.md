@@ -70,7 +70,7 @@
       <td>
         <a href="https://github.com/bounswe/bounswe2023group8/wiki/Ibrahim-Furkan-Ozcelik-About">
           <div>
-            <img src="https://user-images.githubusercontent.com/61244299/224678459-1a4af9d7-bb4d-4dbf-aeec-4610cd04678f.png" alt="Ibrahim Furkan Ozcelik" width= 150/>
+            <img src="https://user-images.githubusercontent.com/61244299/224705014-968ac2c8-fbf6-48ba-8fc6-80d85a33c5e0.png" alt="Ibrahim Furkan Ozcelik" width= 150/>
             <p>Ibrahim Furkan Özçelik</p>
           </div>
         </a>
