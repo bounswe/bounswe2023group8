@@ -52,7 +52,7 @@
         </a>
       </td>
       <td>
-        <a href=https://github.com/bounswe/bounswe2023group8/wiki/Egemen-Kaplan-About">
+        <a href="https://github.com/bounswe/bounswe2023group8/wiki/Egemen-Kaplan-About">
           <div>
             <img src= "https://user-images.githubusercontent.com/61244299/224693338-c9a5969f-5264-41b0-9253-dd8d6d342916.jpeg" alt="Egemen Kaplan" width= 150/>
             <p>Egemen Kaplan</p>
@@ -86,7 +86,7 @@
         </a>
       </td>
       <td>
-        <a href="https://github.com/bounswe/bounswe2023group8/wiki/Hasan-Baki-K%C3%BC%C3%A7%C3%BCk%C3%A7ak%C4%B1ro%C4%9Flu-About">
+        <a href="https://github.com/bounswe/bounswe2023group8/wiki/Meri%C3%A7-Keskin-About">
           <div>
             <img src="https://user-images.githubusercontent.com/61244299/224683707-a1309276-f85c-4fe6-ba6b-c105062e4568.png" alt="Meriç Keskin" width= 150/>
             <p>Meriç Keskin</p>
