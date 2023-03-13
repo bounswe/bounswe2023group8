@@ -54,7 +54,7 @@
       <td>
         <a href=https://github.com/bounswe/bounswe2023group8/wiki/Egemen-Kaplan-About">
           <div>
-            <img src= "https://user-images.githubusercontent.com/61244299/224678459-1a4af9d7-bb4d-4dbf-aeec-4610cd04678f.png" alt="Egemen Kaplan" width= 150/>
+            <img src= "https://user-images.githubusercontent.com/61244299/224693338-c9a5969f-5264-41b0-9253-dd8d6d342916.jpeg" alt="Egemen Kaplan" width= 150/>
             <p>Egemen Kaplan</p>
           </div>
         </a>
