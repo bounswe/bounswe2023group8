@@ -15,7 +15,16 @@
   </div>
   <div>
   <h2>Our Team</h2>
-  <table >
+  <table style="table-layout: fixed;">
+      <thead>
+    <tr>
+        <th style="width: 25%; min-width: 150px;">d</th>
+        <th style="width: 25%; min-width: 150px;"  >c</th>
+        <th style="width: 25%; min-width: 150px;">b</th>
+        <th style="width: 25%; min-width: 150px;">a</th>
+      </tr>
+      </thead>
+      <tbody>
     <tr align="center">
       <td>
         <a href="https://github.com/bounswe/bounswe2023group8/wiki/Bahad%C4%B1r-Gezer-About">
@@ -118,6 +127,7 @@
         </a>
       </td>
     </tr>
+    </tbody>
 </table>
 </div>
 </div>
