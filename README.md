@@ -16,14 +16,6 @@
   <div>
   <h2>Our Team</h2>
   <table style="table-layout: fixed;">
-      <thead>
-    <tr>
-        <th style="width: 25%; min-width: 150px;">d</th>
-        <th style="width: 25%; min-width: 150px;"  >c</th>
-        <th style="width: 25%; min-width: 150px;">b</th>
-        <th style="width: 25%; min-width: 150px;">a</th>
-      </tr>
-      </thead>
       <tbody>
     <tr align="center">
       <td>
