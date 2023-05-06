@@ -4,8 +4,8 @@ import React from 'react';
 function Baki() {
   return (
     <div>
-     
-        <Autocomplete> </Autocomplete>
+        Baki
+        {/* <Autocomplete> </Autocomplete> */}
     </div>
   );
 }
