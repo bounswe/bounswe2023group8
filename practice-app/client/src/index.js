@@ -6,80 +6,18 @@ import {
 } from "react-router-dom";
 import { StyledEngineProvider } from '@mui/material/styles';
 import App from './App';
-import Baki from './views/Baki';
-import Egemen from './views/Egemen';
-import Begum from './views/Begum';
-import Sude from './views/Sude';
-import Furkan from './views/Furkan';
-import Meric from './views/Meric';
-import Mirac from './views/Mirac';
-import Orkun from './views/Orkun';
-import Bahri from './views/Bahri';
-import Enes from './views/Enes';
-import Bahadir from './views/Bahadir';
-import Omer from './views/Omer';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App/>,
-  },
-  {
-    path: "/baki",
-    element: <Baki/>,
-  },
-  {
-    path: "/egemen",
-    element: <Egemen/>,
-  },
-  {
-    path: "/begüm",
-    element: <Begum/>,
-  },
-  {
-    path: "/sude",
-    element: <Sude/>,
-  },
-  {
-    path: "/furkan",
-    element: <Furkan/>,
-  },
-  {
-    path: "/meric",
-    element: <Meric/>,
-  },
-  {
-    path: "/mirac",
-    element: <Mirac/>,
-  },
-  {
-    path: "/orkun",
-    element: <Orkun/>,
-  },
-  {
-    path: "/bahri",
-    element: <Bahri/>,
-  },
-  {
-    path: "/enes",
-    element: <Enes/>,
-  },
-  {
-    path: "/bahadir",
-    element: <Bahadir/>,
-  },
-    {
-    path: "/omer",
-    element: <Omer/>,
-  },
-]);
+const queryClient = new QueryClient();
+
 
 ReactDOM.createRoot(document.querySelector("#root")).render(
   <React.StrictMode>
-    {/* <RouterProvider router={router} /> */}
+    <QueryClientProvider client={queryClient}>
     <StyledEngineProvider injectFirst>
       <App />
     </StyledEngineProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );

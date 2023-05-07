@@ -1,26 +1,61 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import { useUsersQuery , useWikiSearchOptions  } from '../queries/baki.query';
 
 
 function Baki() {
 
-    const [options, setOptions] = useState([]);
+    // const [usersQuery, id, setId] = useUsersQuery();
+    const [options, setOptions] = useState([ ]);
+    const [searchOptionsQuery, searchInput, setSearchInput] = useWikiSearchOptions();
 
-    const handleInputChange = async (event, value) => {
-        // You can send a request to your API here and update the options state accordingly
-        const response = await fetch(`https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&search=${value}&language=en&uselang=en&type=item)`);
-        const data = await response.json();
-        console.log("data", data);
-        setOptions(data.search.map((item) => ({label: item.id, value: item.id})));
-    };
+ 
+    // useEffect(() => {
+      
+
+    //     console.log("usersQuery", usersQuery.data);
+    //     if(usersQuery?.data?.username) {
+         
+    //         setOptions(  [usersQuery?.data?.username])
+    //     }else{
+    //         setOptions([]  );
+    //     }
+      
+    // }, [usersQuery.data])
+
+       useEffect(() => {
+      
+            
+        console.log("searchOptionsQuery", searchOptionsQuery.data);
+        
+        setOptions(searchOptionsQuery?.data?.search ? searchOptionsQuery.data.search.map((search) => search.display.label.value + " "+ search.id) : []  );
+        
+    
+      
+    }, [searchOptionsQuery.data])
+
+
+    useEffect(() => {
+
+       console.log("options", options);
+
+    }, [options])
+
+
+
     return (
         <div>
             <Autocomplete
                 options={options}
-                getOptionLabel={(option) => option.label}
+                // getOptionLabel={(option) => option.label}
                 renderInput={(params) => <TextField {...params} label="Search" variant="outlined" />}
-                onInputChange={handleInputChange}
+                onInputChange={(event, newInputValue) => {
+                    setSearchInput(newInputValue);
+                }}
+                inputValue={searchInput}
+                clearOnBlur={false}
+                filterOptions={(options, state) => { return options; }}
                 />
         </div>
     );
