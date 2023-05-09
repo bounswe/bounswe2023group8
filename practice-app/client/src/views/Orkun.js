@@ -8,6 +8,12 @@ function Orkun() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  // Save IP
+  const [ipToSave, setIpToSave] = useState();
+  const [ipToSaveLoading, setIpToSaveLoading] = useState(false);
+  const [ipToSaveError, setIpToSaveError] = useState(false);
+  const [ipToSaveData, setIpToSaveData] = useState();
+
   // Get saved IPs for the table
   const [savedIPs, setSavedIPs] = useState([]);
   const [savedIPsLoading, setSavedIPsLoading] = useState(true);
@@ -19,12 +25,36 @@ function Orkun() {
   const [ipToSearchError, setIpToSearchError] = useState(false);
   const [ipToSearchData, setIpToSearchData] = useState();
 
+  const saveLocation = async () => {
+    setIpToSaveLoading(true);
+    setIpToSaveError(false);
+
+    try {
+      const res = await fetch(`${config.apiUrl}/api/ip`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      const response = await res.json();
+      if (response.status === 200)
+        setIpToSaveData(response);
+      else 
+        setIpToSaveError(response.error);
+    } catch (err) {
+      setIpToSaveError(true);
+    }
+
+    setIpToSaveLoading(false);
+  }
+
   const handleSearch = async () => {
     setIpToSearchLoading(true);
     setIpToSearchError(false);
 
     try {
-      const res = await fetch(`${config.apiUrl}/api/ip/${ipToSearch}`);
+      const res = await fetch(`${config.apiUrl}/api/ip/details/${ipToSearch}`);
       const data = await res.json();
       setIpToSearchData(data);
     } catch (err) {
@@ -33,6 +63,23 @@ function Orkun() {
 
     setIpToSearchLoading(false);
   }
+
+  useEffect(() => {
+    const callAPI = async () => {
+      const res = await fetch(`${config.apiUrl}/api/ip/all`);
+      const data = await res.json();
+      return data;
+    }
+    callAPI()
+    .then(res => {
+      setSavedIPs(res);
+      setSavedIPsLoading(false);
+    })
+    .catch(err => {
+      setSavedIPsError(true);
+      setSavedIPsLoading(false);
+    });
+  }, [ipToSaveData]);
 
     
   useEffect(() => {
@@ -81,7 +128,22 @@ function Orkun() {
           <Typography variant="h4"><span style={{ fontWeight:'bold' }}>City:</span> {data.city}</Typography>
           <Typography variant="h4"><span style={{ fontWeight:'bold' }}>Country:</span> {data.country}</Typography>
 
-          <Button variant="contained" color="primary" sx={{ mt: 4 }}>Save Location</Button>
+          <Button variant="contained" color="primary" sx={{ mt: 4 }} onClick={saveLocation} disabled={ipToSaveLoading}> Save Location </Button>
+          {ipToSaveLoading && (
+            <Skeleton variant="rectangular" sx={{ width: 150, height: 40, mt: 6 }} animation="wave" />
+          )}
+          {ipToSaveError && (
+            <>
+              <Typography display={'block'} mt={2} variant="p">Error</Typography>
+              <Typography display={'block'} variant="p">Please try again later</Typography>
+              <Typography display={'block'} variant="body1">Error: {JSON.stringify(ipToSaveError)}</Typography>
+            </>
+          )}
+          {ipToSaveData && (
+            <>
+              <Typography display={'block'} mt={2} variant="p">Saved!</Typography>
+            </>
+          )}
         </>
       )}
       <Divider sx={{ my: 4 }} />
@@ -111,9 +173,9 @@ function Orkun() {
             )}
             {savedIPs.map((ip, index) => (
               <tr key={index}>
-                <td>{ip.ip}</td>
-                <td>{ip.city}</td>
-                <td>{ip.country}</td>
+                <td style={{textAlign: 'center'}}>{ip.ip}</td>
+                <td style={{textAlign: 'center'}}>{ip.city}</td>
+                <td style={{textAlign: 'center'}}>{ip.country}</td>
               </tr>
             ))}
           </tbody>
