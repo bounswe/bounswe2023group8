@@ -56,4 +56,14 @@ public class IPController {
 
         return ResponseEntity.ok().body(ipDetails);
     }
+
+    /**
+     * Get all IPs
+     * 
+     * @return Iterable<IP>
+     */
+    @GetMapping("/all")
+    public ResponseEntity<Iterable<IP>> getAllIPs() {
+        return ResponseEntity.ok().body(ipService.getAllIPs());
+    }
 }

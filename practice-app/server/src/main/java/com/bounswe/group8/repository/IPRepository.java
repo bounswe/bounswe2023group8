@@ -6,8 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface IPRepository extends JpaRepository<IP, Long> {
-
-    List<IP> findAllIPs();
-
     IP findByIp(String ip);
 }

@@ -42,4 +42,13 @@ public class IPService {
     public IP getDetailsForIP(String ip) {
         return ipRepository.findByIp(ip);
     }
+
+    /**
+     * Get all IPs
+     * 
+     * @return Iterable<IP>
+     */
+    public Iterable<IP> getAllIPs() {
+        return ipRepository.findAll();
+    }
 }
