@@ -38,10 +38,13 @@ function Orkun() {
         body: JSON.stringify(data)
       });
       const response = await res.json();
-      if (response.status === 200)
+      if (response.status === 200) {
         setIpToSaveData(response);
-      else 
+        setIpToSaveError(null);
+      } else {
         setIpToSaveError(response.error);
+        setIpToSaveData(null);
+      }
     } catch (err) {
       setIpToSaveError(true);
     }
@@ -53,12 +56,21 @@ function Orkun() {
     setIpToSearchLoading(true);
     setIpToSearchError(false);
 
+    if (!ipToSearch) {
+      setIpToSearchError("Please enter an IP address");
+      setIpToSearchData(null);
+      setIpToSearchLoading(false);
+      return;
+    }
+
     try {
       const res = await fetch(`${config.apiUrl}/api/ip/details/${ipToSearch}`);
       const data = await res.json();
       setIpToSearchData(data);
+      setIpToSearchError(null);
     } catch (err) {
-      setIpToSearchError(true);
+      setIpToSearchError("IP address not found");
+      setIpToSearchData(null);
     }
 
     setIpToSearchLoading(false);
@@ -74,10 +86,12 @@ function Orkun() {
     .then(res => {
       setSavedIPs(res);
       setSavedIPsLoading(false);
+      setSavedIPsError(null);
     })
     .catch(err => {
       setSavedIPsError(true);
       setSavedIPsLoading(false);
+      setSavedIPs([]);
     });
   }, [ipToSaveData]);
 
@@ -191,7 +205,7 @@ function Orkun() {
               <Skeleton variant="rectangular" sx={{ width: 150, height: 40, mt: 6 }} animation="wave" />
             )}
             {ipToSearchError && (
-              <Typography variant="h4">Error</Typography>
+              <Typography variant="body1">Error: {JSON.stringify(ipToSearchError)}</Typography>
             )}
             {ipToSearchData && (
               <>
