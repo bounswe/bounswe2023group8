@@ -1,3 +1,4 @@
+import config from "../config";
 
 /**
  * Uses Google's "Maps JavaScript API" to receive addresses available
@@ -21,9 +22,8 @@ export const fetchAddresses = async (latitude, longitude, googleMapsApiKey) => {
  * @returns {Promise<number>}   number of addresses
  */
 export const getNumberOfLocationsForTitle = async (title) => {
-  const response = await fetch(encodeURI(`http://localhost:8081/api/location/${title}/count`))
-    .then(response => response.json());
-  return response;
+  return await fetch(encodeURI(`${config.apiUrl}/api/location/${title}/count`))
+      .then(response => response.json());
 };
 
 /**
@@ -37,7 +37,7 @@ export const getNumberOfLocationsForTitle = async (title) => {
  */
 export const addNewAddress = async (latitude, longitude, address, title) => {
 
-  const statusCode = (await fetch(encodeURI("http://localhost:8081/api/location"), {
+  return (await fetch(encodeURI(`${config.apiUrl}/api/location`), {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -50,7 +50,5 @@ export const addNewAddress = async (latitude, longitude, address, title) => {
       title: title
     })
   })).status;
-
-  return statusCode;
 
 };
