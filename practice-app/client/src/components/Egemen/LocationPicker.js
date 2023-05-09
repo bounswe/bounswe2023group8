@@ -15,7 +15,7 @@ const LocationPicker = ({ location, setLocation,
 
   const onMapLoad = async (map) => {
     setMapRef(map);
-    setAvailableAddresses(await fetchAddresses(location, googleMapsApiKey));
+    setAvailableAddresses(await fetchAddresses(location.lat, location.lng, googleMapsApiKey));
   };
 
   useEffect(() => (mapRef?.panTo({ lat: location.lat, lng: location.lng })), [location])
@@ -23,7 +23,7 @@ const LocationPicker = ({ location, setLocation,
   const onMapClick = async (e) => {
     const newLocation = {lat: e.latLng.lat(), lng: e.latLng.lng()};
     setLocation(newLocation);
-    setAvailableAddresses(await fetchAddresses(newLocation, googleMapsApiKey));
+    setAvailableAddresses(await fetchAddresses(newLocation.lat, newLocation.lng, googleMapsApiKey));
   };
 
   return (

@@ -1,6 +1,14 @@
 import { useState } from "react";
 import {TextField, Button, MenuItem} from "@mui/material";
 import PropTypes, {string} from "prop-types";
+import {addNewAddress, getNumberOfLocationsForTitle} from "../../queries/egemen.query";
+
+const [defaultTitleHelperText, limitReachedHelperText] =
+  [
+    "* Required. Enter a title to save this location under. A title can hold up to 30 addresses",
+    "This title cannot hold more addresses"
+  ];
+const addressLimitPerTitle = 3;
 
 
 const LocationForm = ({ location, setLocation,
@@ -9,28 +17,49 @@ const LocationForm = ({ location, setLocation,
                         availableAddresses, setAvailableAddresses
                       }) => {
 
-  const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+
+  const [submitted, setSubmitted] = useState(false);
+  const [titleHelperText, setTitleHelperText] = useState(defaultTitleHelperText);
+  const [limitReached, setLimitReached] = useState(false);
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if(!submitted){
+    if (!submitted) {
       //TODO Submit data to the database
-      console.log("Title: " + title);
-      console.log("latitude: " + location.lat + ", longitude: " + location.lng);
-      console.log("Address: " + address);
+      const status = await addNewAddress(location.lat, location.lng, address, title);
       //if successful
       setSubmitted(true);
       // if not successful warn the user somehow?
     }
   };
 
-  const handleReset = (e) => {
+  const handleReset = async (e) => {
     e.preventDefault();
-    setLocation({ lat: 41.015137, lng: 28.979530 });
+    await checkTitleForAddressLimit(title);
+    setLocation({lat: 41.015137, lng: 28.979530});
     setAddress("");
     setAvailableAddresses([]);
     setSubmitted(false);
   }
+
+  const handleTitleChange = async (e) => {
+    const newTitle = e.target.value
+    setTitle(newTitle);
+    await checkTitleForAddressLimit(newTitle);
+  };
+
+  const checkTitleForAddressLimit = async (titleToCheck) => {
+    const count = await getNumberOfLocationsForTitle(titleToCheck);
+    if (count >= addressLimitPerTitle) {
+      setLimitReached(true);
+      setTitleHelperText(limitReachedHelperText);
+    } else {
+      setLimitReached(false);
+      setTitleHelperText(defaultTitleHelperText);
+    }
+  };
 
   return (
       <form
@@ -42,8 +71,9 @@ const LocationForm = ({ location, setLocation,
           required
           label="Title"
           value={title}
-          onChange={e => setTitle(e.target.value)}
-          helperText="* Required. Enter a title to save this location under. A title can hold more than one address."/>
+          inputProps={{ maxLength: 60 }}
+          onChange={handleTitleChange}
+          helperText={titleHelperText}/>
         <TextField
           select
           required
@@ -61,10 +91,17 @@ const LocationForm = ({ location, setLocation,
         {
           !submitted
             ?
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
-              <Button variant='contained' color='secondary' type='reset'>Reset</Button>
-              <Button variant='contained' color='primary' type='submit'>Submit</Button>
-            </div>
+            !limitReached
+              ?
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
+                <Button variant='contained' color='secondary' type='reset'>Reset</Button>
+                <Button variant='contained' color='primary' type='submit'>Submit</Button>
+              </div>
+              :
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
+                <Button variant='contained' color='secondary' type='reset'>Reset</Button>
+                <Button disabled variant='contained' color='primary' type='submit'>Limit Reached</Button>
+              </div>
             :
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
               <Button variant='contained' color='secondary' type='reset'>Add a new location</Button>
