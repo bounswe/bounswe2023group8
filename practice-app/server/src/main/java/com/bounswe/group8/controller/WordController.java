@@ -1,34 +1,60 @@
 package com.bounswe.group8.controller;
 
+import com.bounswe.group8.payload.AddFavRequest;
 import com.bounswe.group8.payload.WordMeaningResponse;
+import com.bounswe.group8.payload.dto.FavouriteWordDto;
+import com.bounswe.group8.payload.dto.WordMeaningDto;
+import com.bounswe.group8.service.WordService;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/word")
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class WordController {
+    
+    final WordService wordService;
 
-    @GetMapping("/{word}")
-    public ResponseEntity<WordMeaningResponse[]> getWordMeaning(@PathVariable String word) {
+    @GetMapping("/search/{word}")
+    public ResponseEntity<?> getWordMeaning(
+            @PathVariable String word) {
+        
+        WordMeaningDto wordMeaningDto = wordService.getWordMeaning(word);
+        
+        if (wordMeaningDto == null)
+            return ResponseEntity.badRequest().body("Error while getting word meaning");
 
-        // call external API to get the meaning of the given word
-        String url = "https://api.dictionaryapi.dev/api/v2/entries/en/" + word;
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<WordMeaningResponse[]> responseEntity = restTemplate.getForEntity(url, WordMeaningResponse[].class);
+        return ResponseEntity.ok(wordMeaningDto);
+    }
 
-        // check if the response is successful
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            WordMeaningResponse[] wordResponses = responseEntity.getBody();
-            return ResponseEntity.ok(wordResponses);
-        } else {
-            // return a custom error response
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+    @PostMapping("/favourite")
+    public ResponseEntity<?> addFavouriteWord(
+            @RequestBody AddFavRequest request) {
+
+        Long favouriteWordId = wordService.addFavouriteWord(request);
+
+        if (favouriteWordId == null)
+            return ResponseEntity.badRequest().body("Error while adding favourite word");
+
+        return ResponseEntity.ok(favouriteWordId);
+    }
+
+    @GetMapping("/favourite/all")
+    public ResponseEntity<?> getAllFavouriteWords(
+            @RequestParam(required = false) Long userId) {
+
+        List<FavouriteWordDto> favoriteWords = wordService.getFavouriteWords(userId);
+
+        if (favoriteWords == null)
+            return ResponseEntity.badRequest().body("Error while getting favourite words");
+
+        return ResponseEntity.ok(favoriteWords);
     }
 }
-
