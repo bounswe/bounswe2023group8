@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 
 @Entity
-@Table(name = "forecast")
+@Table(name = "saved_forecast")
 @Data
 @Builder
 @Accessors(chain = true)
@@ -19,4 +19,14 @@ public class Forecast {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     Long id;
+
+    @Column(name = "city", nullable = false)
+    String city;
+
+    @Column(name = "country", nullable = false)
+    String country;
+
+    @Column(name = "title", nullable = false)
+    String key;
+
 }
