@@ -5,7 +5,7 @@ import com.bounswe.group8.payload.dto.ForecastDto;
 
 public class ForecastMapper {
 
-    public static ForecastDto forecastToLocationDto(Forecast forecast){
+    public static ForecastDto forecastToForecastDto(Forecast forecast){
         return new ForecastDto()
                 .setId(forecast.getId())
                 .setCity(forecast.getCity())
