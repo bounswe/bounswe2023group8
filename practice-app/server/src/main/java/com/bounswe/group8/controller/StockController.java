@@ -1,60 +1,100 @@
 package com.bounswe.group8.controller;
 
-import com.bounswe.group8.payload.AddStarRequest;
-import com.bounswe.group8.payload.StockPriceResponse;
-import com.bounswe.group8.payload.dto.StarStockDto;
-import com.bounswe.group8.payload.dto.StockPriceDto;
+import com.bounswe.group8.model.Stock;
+import com.bounswe.group8.payload.dto.StockAutocompleteInfoDto;
+import com.bounswe.group8.payload.dto.StockDto;
 import com.bounswe.group8.service.StockService;
+import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/stock")
-@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @RequiredArgsConstructor
+@RequestMapping("/api/stock")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class StockController {
 
     final StockService stockService;
 
-    @GetMapping("/search/{stock}")
-    public ResponseEntity<?> getStockPrice(
-            @PathVariable String stock) {
+    /**
+     * S1: Get all stock data in the database.
+     *
+     * @return List of StockDto
+     */
+    @GetMapping("/all")
+    public ResponseEntity<List<StockDto>> getEveryStockData() {
 
-        StockPriceDto stockPriceDto = stockService.getStockPrice(stock);
+        List<StockDto> stockDtoList = stockService.findEveryStock();
 
-        if (stockPriceDto == null)
-            return ResponseEntity.badRequest().body("Error while getting stock price!");
+        if (stockDtoList.isEmpty())
+            return ResponseEntity.noContent().build();
 
-        return ResponseEntity.ok(stockPriceDto);
+        return ResponseEntity.ok(stockDtoList);
     }
 
-    @PostMapping("/star")
-    public ResponseEntity<?> addStarStock(
-            @RequestBody AddStarRequest request) {
+    /**
+     * S2: Get stock data by stock symbol.
+     * First searches the database, if not found, then searches the API.
+     *
+     * @param stockId Stock symbol
+     * @param latest If true, returns the latest stock data from the database.
+     * @return StockDto
+     */
+    @PostMapping("/{stockId}")
+    public ResponseEntity<StockDto> getStockById(@PathVariable String stockId,
+                                          @RequestParam(defaultValue = "false") Boolean latest) {
 
-        Long starStockId = stockService.addStarStock(request);
+        if (latest == null)
+            latest = false;
 
-        if (starStockId == null)
-            return ResponseEntity.badRequest().body("Error while adding star stock");
+        StockDto stockDto = latest ?
+                stockService.findLatestStockBySymbol(stockId) : stockService.findStockBySymbol(stockId);
 
-        return ResponseEntity.ok(starStockId);
+        if (stockDto == null)
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(stockDto);
     }
 
-    @GetMapping("/star/all")
-    public ResponseEntity<?> getAllStarStocks(
-            @RequestParam(required = false) Long userId) {
+    /**
+     * S3: Search stock data from the database by keyword. Groups the results by stock symbol.
+     * A stock symbol can have multiple results, with different dates.
+     *
+     * @param keyword Search keyword
+     * @return Map of stock symbol and list of StockDto
+     */
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, List<StockDto>>> searchStock(@RequestParam @NotNull String keyword) {
 
-        List<StarStockDto> starStocks = stockService.getStarStocks(userId);
+        Map<String, List<StockDto>> stockDtoSymbolMap = stockService.searchStockData(keyword);
 
-        if (starStocks == null)
-            return ResponseEntity.badRequest().body("Error while getting star stocks");
+        if (stockDtoSymbolMap.isEmpty())
+            return ResponseEntity.noContent().build();
 
-        return ResponseEntity.ok(starStocks);
+        return ResponseEntity.ok(stockDtoSymbolMap);
     }
+
+    /**
+     * S4: Auto complete stock symbol and company name by keyword.
+     * Searches the database first, if not found, then searches the API.
+     *
+     * @param keyword Search keyword
+     * @return List of StockAutocompleteInfoDto
+     */
+    @GetMapping("/autocomplete")
+    public ResponseEntity<List<StockAutocompleteInfoDto>> autocompleteStockInfo(@RequestParam @NotNull String keyword) {
+
+        List<StockAutocompleteInfoDto> stockAutocompleteInfoDtoList = stockService.autoComplete(keyword);
+        if (stockAutocompleteInfoDtoList.isEmpty())
+            return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok(stockAutocompleteInfoDtoList);
+    }
+
 }
