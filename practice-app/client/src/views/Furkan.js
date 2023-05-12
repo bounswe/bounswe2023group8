@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import AWS from 'aws-sdk';
 import  DoubleArrow  from '@mui/icons-material/DoubleArrow';
-
+import { recordData, getData } from '../queries/furkan.query';
+const keyId = process.env.REACT_APP_AWS_KEY_ID;
+const secret = process.env.REACT_APP_AWS_SECRET;
+const region = process.env.REACT_APP_AWS_REGION;
 AWS.config.update({
-  accessKeyId: 'AKIAURSSHUYXNNVT3HPR',
-  secretAccessKey: 'iViPyew4l0kc+IJU28lwMGEzVGDRv/fZI4V0Bhkv',
-  region: 'eu-central-1', // Replace with the desired AWS region
+  accessKeyId: keyId,
+  secretAccessKey: secret,
+  region: region, // Replace with the desired AWS region
 });
-
 const translate = new AWS.Translate();
 
 const TranslateApp = () => {
@@ -37,44 +39,12 @@ const TranslateApp = () => {
   }, []);
 
   const sendData = async () => {
-    const data = {
-      name: 'John Doe',
-      email: 'johndoe@example.com',
-    };
-
-    try {
-      const response = await fetch('http://localhost:8081/api/translate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(sourceText),
-      });
-
-      if (response.ok) {
-        console.log('Response:', response.ok);
-        // Process the response data
-      } else {
-        console.error('Error:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    recordData(sourceText)
   }
 
   const fetchData = async () => {
-    try {
-      const response = await fetch('http://localhost:8081/api/translate/all');
-      if (response.ok) {
-        const data = await response.json()
-        handleData(data)
-        // Process the response data
-      } else {
-        console.error('Error:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    const data = await getData()
+    handleData(data)
   }
 
   const handleData = (data) => {
