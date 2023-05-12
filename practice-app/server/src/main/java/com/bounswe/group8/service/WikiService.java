@@ -2,7 +2,7 @@ package com.bounswe.group8.service;
 
 import com.bounswe.group8.exception.custom.ResourceNotFoundException;
 import com.bounswe.group8.model.*;
-import com.bounswe.group8.payload.PostCreateRequest;
+import com.bounswe.group8.payload.request.PostCreateRequest;
 import com.bounswe.group8.payload.WikiCreateRequest;
 import com.bounswe.group8.repository.WikiRepository;
 import jakarta.transaction.Transactional;
