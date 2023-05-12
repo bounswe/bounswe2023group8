@@ -1,7 +1,7 @@
 package com.bounswe.group8.controller;
 
 import com.bounswe.group8.model.Wiki;
-import com.bounswe.group8.payload.PostCreateRequest;
+import com.bounswe.group8.payload.request.PostCreateRequest;
 import com.bounswe.group8.payload.WikiCreateRequest;
 import com.bounswe.group8.payload.dto.PostDto;
 import io.swagger.v3.oas.annotations.Operation;
