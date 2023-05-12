@@ -46,7 +46,7 @@ export const fetchForecastInfo = async (locationKey) => {
  * @param key                   {string}
  * @returns {Promise<number>}   status code
  */
-export const saveForecast = async (city, country, key) => {
+export const saveForecast = async (city, country, high, low, date) => {
 
     return (await fetch(encodeURI(`${config.apiUrl}/api/forecast`), {
         method: 'POST',
@@ -57,7 +57,9 @@ export const saveForecast = async (city, country, key) => {
         body: JSON.stringify({
             city: city,
             country: country,
-            key: key
+            high: high,
+            low: low,
+            date: date
         })
     })).status;
 

@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Data
 @Accessors(chain = true)
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
@@ -17,6 +19,10 @@ public class ForecastDto {
 
     String country;
 
-    String key;
+    String high;
+
+    String low;
+
+    Date date;
 
 }

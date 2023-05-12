@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ForecastRepository extends JpaRepository<Forecast, Long> {
 
-    Forecast findForecastByKey(String key);
+    // Forecast findForecastByKey(String key);
 
 }

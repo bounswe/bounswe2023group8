@@ -5,8 +5,10 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Entity
-@Table(name = "saved_forecast")
+@Table(name = "new_forecast")
 @Data
 @Builder
 @Accessors(chain = true)
@@ -26,7 +28,13 @@ public class Forecast {
     @Column(name = "country", nullable = false)
     String country;
 
-    @Column(name = "title", nullable = false)
-    String key;
+    @Column(name = "high", nullable = false)
+    String high;
+
+    @Column(name = "low", nullable = false)
+    String low;
+
+    @Column(name = "date", nullable = false)
+    Date date;
 
 }

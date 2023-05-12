@@ -34,7 +34,9 @@ public class ForecastService {
         Forecast forecast = Forecast.builder()
                 .city(request.getCity())
                 .country(request.getCountry())
-                .key(request.getKey())
+                .high(request.getHigh())
+                .low(request.getLow())
+                .date(request.getDate())
                 .build();
 
         return forecastRepository.save(forecast);
@@ -47,7 +49,7 @@ public class ForecastService {
      * @param key   Forecast key
      * @return      ForecastDto - deleted forecast
      */
-    public ForecastDto deleteForecastByKey(String key) {
+    /*public ForecastDto deleteForecastByKey(String key) {
 
         Forecast forecast = forecastRepository.findForecastByKey(key);
 
@@ -58,7 +60,7 @@ public class ForecastService {
 
         return ForecastMapper.forecastToForecastDto(forecast);
 
-    }
+    }*/
 
     /**
      * Get all forecasts.

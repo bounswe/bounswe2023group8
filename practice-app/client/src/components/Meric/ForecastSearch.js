@@ -28,7 +28,10 @@ function ForecastSearch() {
     const handleSubmit = async (e) => {
 
         e.preventDefault();
-        await saveForecast(selectedOption.city, selectedOption.country, selectedOption.key);
+        const forecastInfo = await fetchForecastInfo((selectedOption.key));
+        console.log("forecastInfo", forecastInfo);
+        const status = await saveForecast(selectedOption.city, selectedOption.country, forecastInfo[0].high, forecastInfo[0].low, new Date());
+        console.log("status", status);
 
     }
 
@@ -38,6 +41,7 @@ function ForecastSearch() {
             onSubmit={handleSubmit}
         >
             <TextField
+                style={{ marginBottom: "20px" }}
                 label="Search"
                 value={searchText}
                 onChange={handleInputChange}

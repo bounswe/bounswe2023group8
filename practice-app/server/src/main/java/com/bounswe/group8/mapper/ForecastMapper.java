@@ -10,7 +10,9 @@ public class ForecastMapper {
                 .setId(forecast.getId())
                 .setCity(forecast.getCity())
                 .setCountry(forecast.getCountry())
-                .setKey(forecast.getKey());
+                .setHigh(forecast.getHigh())
+                .setLow(forecast.getLow())
+                .setDate(forecast.getDate());
     }
 
 }

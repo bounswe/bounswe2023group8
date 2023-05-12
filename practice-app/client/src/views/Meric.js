@@ -1,17 +1,14 @@
 import React from 'react';
 import { fetchLocationInfo, fetchForecastInfo } from "../queries/meric.query";
 import ForecastSearch from "../components/Meric/ForecastSearch";
+import SavedLocations from "../components/Meric/SavedLocations";
 
 function Meric() {
 
-    console.log(fetchLocationInfo("Paris", "ABsfBiUE2qMGA60iuC9Mckt4fBhTXTqD"));
-    console.log(fetchForecastInfo("34", "ABsfBiUE2qMGA60iuC9Mckt4fBhTXTqD"));
-
     return (
         <div>
-            <ForecastSearch
-
-            />
+            <ForecastSearch/>
+            <SavedLocations/>
         </div>
     );
 }
