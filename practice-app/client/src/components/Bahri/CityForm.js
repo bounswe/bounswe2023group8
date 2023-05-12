@@ -5,6 +5,7 @@ import CityList from "./CityData";
 const CityForm = () => {
   const [minPopulation, setMinPopulation] = useState("");
   const [maxPopulation, setMaxPopulation] = useState("");
+  const [namePrefix, setNamePrefix] = useState("");
   const [limit, setLimit] = useState("");
   const [data, setData] = useState([]);
 
@@ -13,6 +14,7 @@ const CityForm = () => {
     const requestData = {
       minPopulation,
       maxPopulation,
+      namePrefix,
       limit,
     };
 
@@ -54,6 +56,16 @@ const CityForm = () => {
             id="maxPopulation"
             value={maxPopulation}
             onChange={(e) => setMaxPopulation(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="maxPopulation">Name Prefix</label>
+          <input
+            type="text"
+            className="form-control"
+            id="namePrefix"
+            value={namePrefix}
+            onChange={(e) => setNamePrefix(e.target.value)}
           />
         </div>
         <div className="form-group">
