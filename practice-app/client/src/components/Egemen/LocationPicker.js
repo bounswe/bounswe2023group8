@@ -6,16 +6,15 @@ import {fetchAddresses} from "../../queries/egemen.query";
 
 const LocationPicker = ({ location, setLocation,
                           setAvailableAddresses}) => {
-  const googleMapsApiKey = "AIzaSyBSahlLa1UvgD6cHnOIJCKjAE2jSBwx2LA";
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: googleMapsApiKey,
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
   });
   const center = useMemo(() => ({ lat: location.lat, lng: location.lng}), []);
   const [mapRef, setMapRef] = useState();
 
   const onMapLoad = async (map) => {
     setMapRef(map);
-    setAvailableAddresses(await fetchAddresses(location.lat, location.lng, googleMapsApiKey));
+    setAvailableAddresses(await fetchAddresses(location.lat, location.lng));
   };
 
   useEffect(() => (mapRef?.panTo({ lat: location.lat, lng: location.lng })), [location])
@@ -23,7 +22,7 @@ const LocationPicker = ({ location, setLocation,
   const onMapClick = async (e) => {
     const newLocation = {lat: e.latLng.lat(), lng: e.latLng.lng()};
     setLocation(newLocation);
-    setAvailableAddresses(await fetchAddresses(newLocation.lat, newLocation.lng, googleMapsApiKey));
+    setAvailableAddresses(await fetchAddresses(newLocation.lat, newLocation.lng));
   };
 
   return (

@@ -5,19 +5,16 @@ import {addNewAddress, getNumberOfLocationsForTitle} from "../../queries/egemen.
 
 const [defaultTitleHelperText, limitReachedHelperText] =
   [
-    "* Required. Enter a title to save this location under. A title can hold up to 30 addresses",
+    "* Required. Enter a title to save this location under. A title can hold up to 10 addresses",
     "This title cannot hold more addresses"
   ];
-const addressLimitPerTitle = 3;
-
+const addressLimitPerTitle = 10;
 
 const LocationForm = ({ location, setLocation,
                         title, setTitle,
                         address, setAddress,
                         availableAddresses, setAvailableAddresses
                       }) => {
-
-
 
   const [submitted, setSubmitted] = useState(false);
   const [titleHelperText, setTitleHelperText] = useState(defaultTitleHelperText);
@@ -26,13 +23,9 @@ const LocationForm = ({ location, setLocation,
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!submitted) {
-      //TODO Submit data to the database
-      const status = await addNewAddress(location.lat, location.lng, address, title);
-      //if successful
+    const status = await addNewAddress(location.lat, location.lng, address, title);
+    if (status === 201)
       setSubmitted(true);
-      // if not successful warn the user somehow?
-    }
   };
 
   const handleReset = async (e) => {

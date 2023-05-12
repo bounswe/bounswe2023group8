@@ -6,11 +6,11 @@ import config from "../config";
  *
  * @param latitude                  {number}
  * @param longitude                 {number}
- * @param googleMapsApiKey          {string}
  * @returns {Promise<string[]>}     List of addresses as formatted strings
  */
-export const fetchAddresses = async (latitude, longitude, googleMapsApiKey) => {
-  const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${googleMapsApiKey}`)
+export const fetchAddresses = async (latitude, longitude) => {
+  const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`)
+
     .then(response => response.json());
   return [...new Set(response.results.map(element => element.formatted_address))];
 };
@@ -51,4 +51,14 @@ export const addNewAddress = async (latitude, longitude, address, title) => {
     })
   })).status;
 
+};
+
+/**
+ *
+ * @param recordsTitle {string}
+ * @returns {Promise<any>} List of addresses recorded
+ */
+export const fetchRecords = async (recordsTitle) => {
+  return await fetch(encodeURI(`${config.apiUrl}/api/location/${recordsTitle}`))
+      .then(response => response.json());
 };
