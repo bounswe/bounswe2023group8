@@ -1,11 +1,14 @@
-import React from 'react';
+import React from "react";
+import CityForm from "../components/Bahri/CityForm";
+import FavouriteCities from "../components/Bahri/FavouriteCities";
 
-function Bahri() {
+const Bahri = () => {
   return (
-    <div>
-      Bahri
-    </div>
+    <>
+      <CityForm />
+      <FavouriteCities />
+    </>
   );
-}
+};
 
 export default Bahri;
