@@ -1,6 +1,5 @@
 package com.bounswe.group8.service;
 
-import com.bounswe.group8.exception.custom.ResourceNotFoundException;
 import com.bounswe.group8.mapper.ForecastMapper;
 import com.bounswe.group8.model.Forecast;
 import com.bounswe.group8.payload.dto.ForecastDto;
@@ -42,25 +41,6 @@ public class ForecastService {
         return forecastRepository.save(forecast);
 
     }
-
-    /**
-     * Delete forecast by key.
-     *
-     * @param key   Forecast key
-     * @return      ForecastDto - deleted forecast
-     */
-    /*public ForecastDto deleteForecastByKey(String key) {
-
-        Forecast forecast = forecastRepository.findForecastByKey(key);
-
-        if (forecast == null)
-            throw new ResourceNotFoundException("forecast", "key", key);
-
-        forecastRepository.delete(forecast);
-
-        return ForecastMapper.forecastToForecastDto(forecast);
-
-    }*/
 
     /**
      * Get all forecasts.

@@ -47,24 +47,6 @@ public class ForecastController {
     }
 
     /**
-     * Delete a forecast.
-     *
-     * @param key   key of the forecast to be deleted.
-     * @return      ForecastDto - deleted forecast
-     */
-    /*@DeleteMapping("delete/{key}")
-    public ResponseEntity<ForecastDto> deleteForecast(@PathVariable String key) {
-
-        ForecastDto forecastDto = forecastService.deleteForecastByKey(key);
-
-        if (forecastDto == null)
-            return ResponseEntity.badRequest().build();
-
-        return ResponseEntity.ok().body(forecastDto);
-
-    }*/
-
-    /**
      * Get all forecasts.
      *
      * @return      List<ForecastDto> - list of forecasts

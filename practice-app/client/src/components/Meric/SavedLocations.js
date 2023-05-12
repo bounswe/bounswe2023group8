@@ -1,12 +1,10 @@
 import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { useState } from "react";
-import TextField from "@mui/material/TextField";
-import { getSavedForecasts, fetchForecastInfo } from "../../queries/meric.query"
+import { getSavedForecasts } from "../../queries/meric.query"
 
 const LocationTable = () => {
 
     const [forecasts, setForecasts] = useState([]);
-    const [helperText, setHelperText] = useState("");
 
     const handleGetForecasts = async (e) => {
 

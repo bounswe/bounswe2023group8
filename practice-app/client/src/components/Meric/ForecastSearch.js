@@ -21,7 +21,7 @@ function ForecastSearch() {
 
     const handleSelect = async (e) => {
 
-        setSelectedOption(options.find((option) => option.key == e.target.value));
+        setSelectedOption(options.find((option) => option.key === e.target.value));
 
     }
 
@@ -29,9 +29,7 @@ function ForecastSearch() {
 
         e.preventDefault();
         const forecastInfo = await fetchForecastInfo((selectedOption.key));
-        console.log("forecastInfo", forecastInfo);
         const status = await saveForecast(selectedOption.city, selectedOption.country, forecastInfo[0].high, forecastInfo[0].low, new Date());
-        console.log("status", status);
 
     }
 
