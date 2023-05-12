@@ -1,6 +1,6 @@
 package com.bounswe.group8.controller;
 
-import com.bounswe.group8.payload.PostCreateRequest;
+import com.bounswe.group8.payload.request.PostCreateRequest;
 import com.bounswe.group8.payload.dto.PostDto;
 import com.bounswe.group8.service.PostService;
 import lombok.AccessLevel;
@@ -63,7 +63,7 @@ public class PostController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<PostDto> getPostById(
-            @PathVariable Long id) {
+            Long id) {
 
         PostDto postDto = postService.getPostById(id);
 
@@ -100,6 +100,7 @@ public class PostController {
 
     /**
      * P3-2: Create a post.
+     * TEST
      *
      * @param title     title of the post
      * @param content   content of the post
@@ -110,7 +111,7 @@ public class PostController {
     public ResponseEntity<PostDto> createPost(
             @RequestParam String title,
             @RequestParam String content,
-            @PathVariable Long userId){
+            Long userId){
 
         Long postId = postService.createPost(title, content, userId);
 
@@ -136,7 +137,7 @@ public class PostController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<PostDto> updatePost(
-            @PathVariable Long id,
+            Long id,
             @RequestParam String title,
             @RequestParam String content) {
 
@@ -156,7 +157,7 @@ public class PostController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<PostDto> deletePost(
-            @PathVariable Long id) {
+            Long id) {
 
         PostDto postDto = postService.deletePostById(id);
 
