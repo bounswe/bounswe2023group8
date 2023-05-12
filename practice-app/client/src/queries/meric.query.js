@@ -1,6 +1,6 @@
 import config from "../config";
 
-const accuWeatherApiKey = "2q9LYETOcRP29TQPzUnLqoIhwvmkDtSD";
+const accuWeatherApiKey = "ABsfBiUE2qMGA60iuC9Mckt4fBhTXTqD";
 
 /**
  * Uses AccuWeather's "Location API" to receive location keys according to search
