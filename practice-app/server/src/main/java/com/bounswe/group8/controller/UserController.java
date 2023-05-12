@@ -1,7 +1,7 @@
 package com.bounswe.group8.controller;
 
 
-import com.bounswe.group8.payload.UserCreateRequest;
+import com.bounswe.group8.payload.request.UserCreateRequest;
 import com.bounswe.group8.payload.dto.UserDto;
 import com.bounswe.group8.service.UserService;
 import lombok.AccessLevel;
