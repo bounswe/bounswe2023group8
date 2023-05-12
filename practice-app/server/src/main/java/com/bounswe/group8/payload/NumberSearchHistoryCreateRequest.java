@@ -7,10 +7,8 @@ import lombok.experimental.FieldDefaults;
 @Data
 @Accessors(chain = true)
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class UserCreateRequest {
+public class NumberSearchHistoryCreateRequest {
 
-    String username;
-
-    String password;
+    Long searchedNumber;
 
 }
