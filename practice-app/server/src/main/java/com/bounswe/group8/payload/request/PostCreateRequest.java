@@ -1,4 +1,4 @@
-package com.bounswe.group8.payload;
+package com.bounswe.group8.payload.request;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -7,10 +7,12 @@ import lombok.experimental.FieldDefaults;
 @Data
 @Accessors(chain = true)
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class UserCreateRequest {
+public class PostCreateRequest {
 
-    String username;
+        String title;
 
-    String password;
+        String content;
+
+        Long userId;
 
 }
