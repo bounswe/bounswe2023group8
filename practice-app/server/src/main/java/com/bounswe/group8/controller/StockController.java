@@ -1,6 +1,5 @@
 package com.bounswe.group8.controller;
 
-import com.bounswe.group8.model.Stock;
 import com.bounswe.group8.payload.dto.StockAutocompleteInfoDto;
 import com.bounswe.group8.payload.dto.StockDto;
 import com.bounswe.group8.service.StockService;
