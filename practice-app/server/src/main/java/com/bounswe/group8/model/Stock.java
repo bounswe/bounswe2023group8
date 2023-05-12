@@ -40,7 +40,10 @@ public class Stock {
     @Column(name = "close", nullable = false)
     Double close;
 
+    @Column(name = "price", nullable = false)
+    Double price;
+
     @Column(name = "volume", nullable = false)
-    Double volume;
+    Long volume;
 
 }
