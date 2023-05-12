@@ -100,6 +100,7 @@ public class PostController {
 
     /**
      * P3-2: Create a post.
+     * TEST
      *
      * @param title     title of the post
      * @param content   content of the post
