@@ -10,6 +10,7 @@ import config from "../config";
  */
 export const fetchAddresses = async (latitude, longitude) => {
   const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`)
+
     .then(response => response.json());
   return [...new Set(response.results.map(element => element.formatted_address))];
 };

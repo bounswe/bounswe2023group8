@@ -40,6 +40,7 @@ public class LocationControllerTest {
     public void createLocationTest() throws Exception {
 
         String mockLocationJson = "{\"latitude\":1.5,\"longitude\":2.5,\"address\":\"mock address no:5\",\"title\":\"mock witty title\"}";
+
         Location mockLocation = new Location(
                 123321L,
                 1.5,

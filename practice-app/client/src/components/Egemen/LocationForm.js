@@ -10,7 +10,6 @@ const [defaultTitleHelperText, limitReachedHelperText] =
   ];
 const addressLimitPerTitle = 10;
 
-
 const LocationForm = ({ location, setLocation,
                         title, setTitle,
                         address, setAddress,
