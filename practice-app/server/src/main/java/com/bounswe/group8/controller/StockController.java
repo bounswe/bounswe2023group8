@@ -1,73 +1,60 @@
 package com.bounswe.group8.controller;
 
-import com.bounswe.group8.model.Stock;
-import com.bounswe.group8.payload.dto.StockAutocompleteInfoDto;
-import com.bounswe.group8.payload.dto.StockDto;
+import com.bounswe.group8.payload.AddStarRequest;
+import com.bounswe.group8.payload.StockPriceResponse;
+import com.bounswe.group8.payload.dto.StarStockDto;
+import com.bounswe.group8.payload.dto.StockPriceDto;
 import com.bounswe.group8.service.StockService;
-import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/stock")
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class StockController {
 
     final StockService stockService;
 
-    @GetMapping("/all")
-    public ResponseEntity<?> getEveryStockData() {
+    @GetMapping("/search/{stock}")
+    public ResponseEntity<?> getStockPrice(
+            @PathVariable String stock) {
 
-        List<StockDto> stockDtoList = stockService.findEveryStock();
+        StockPriceDto stockPriceDto = stockService.getStockPrice(stock);
 
-        if (stockDtoList.isEmpty())
-            return ResponseEntity.noContent().build();
+        if (stockPriceDto == null)
+            return ResponseEntity.badRequest().body("Error while getting stock price!");
 
-        return ResponseEntity.ok(stockDtoList);
+        return ResponseEntity.ok(stockPriceDto);
     }
 
-    @PostMapping("/{stockId}")
-    public ResponseEntity<?> getStockById(@PathVariable String stockId,
-                                          @RequestParam(defaultValue = "false") Boolean latest) {
+    @PostMapping("/star")
+    public ResponseEntity<?> addStarStock(
+            @RequestBody AddStarRequest request) {
 
-        if (latest == null)
-            latest = false;
+        Long starStockId = stockService.addStarStock(request);
 
-        StockDto stockDto = latest ?
-                stockService.findLatestStockBySymbol(stockId) : stockService.findStockBySymbol(stockId);
+        if (starStockId == null)
+            return ResponseEntity.badRequest().body("Error while adding star stock");
 
-        if (stockDto == null)
-            return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(stockDto);
+        return ResponseEntity.ok(starStockId);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<?> searchStock(@RequestParam @NotNull String keyword) {
+    @GetMapping("/star/all")
+    public ResponseEntity<?> getAllStarStocks(
+            @RequestParam(required = false) Long userId) {
 
-        Map<String, List<StockDto>> stockDtoSymbolMap = stockService.searchStockData(keyword);
+        List<StarStockDto> starStocks = stockService.getStarStocks(userId);
 
-        if (stockDtoSymbolMap.isEmpty())
-            return ResponseEntity.noContent().build();
+        if (starStocks == null)
+            return ResponseEntity.badRequest().body("Error while getting star stocks");
 
-        return ResponseEntity.ok(stockDtoSymbolMap);
+        return ResponseEntity.ok(starStocks);
     }
-
-    @GetMapping("/autocomplete")
-    public ResponseEntity<?> autocompleteStockInfo(@RequestParam @NotNull String keyword) {
-
-        List<StockAutocompleteInfoDto> stockAutocompleteInfoDtoList = stockService.autoComplete(keyword);
-        if (stockAutocompleteInfoDtoList.isEmpty())
-            return ResponseEntity.noContent().build();
-
-        return ResponseEntity.ok(stockAutocompleteInfoDtoList);
-    }
-
 }
