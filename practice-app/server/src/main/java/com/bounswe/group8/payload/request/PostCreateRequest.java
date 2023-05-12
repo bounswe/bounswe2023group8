@@ -1,4 +1,4 @@
-package com.bounswe.group8.payload;
+package com.bounswe.group8.payload.request;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
