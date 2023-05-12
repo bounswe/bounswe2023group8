@@ -1,6 +1,6 @@
 import React from 'react';
-import {fetchLocationInfo} from "../queries/meric.query";
-import {fetchForecastInfo} from "../queries/meric.query";
+import { fetchLocationInfo, fetchForecastInfo } from "../queries/meric.query";
+import ForecastSearch from "../components/Meric/ForecastSearch";
 
 function Meric() {
 
@@ -9,7 +9,9 @@ function Meric() {
 
     return (
         <div>
-            Meric
+            <ForecastSearch
+
+            />
         </div>
     );
 }

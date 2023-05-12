@@ -52,7 +52,7 @@ public class ForecastController {
      * @param key   key of the forecast to be deleted.
      * @return      ForecastDto - deleted forecast
      */
-    @DeleteMapping("/{key}")
+    @DeleteMapping("delete/{key}")
     public ResponseEntity<ForecastDto> deleteForecast(@PathVariable String key) {
 
         ForecastDto forecastDto = forecastService.deleteForecastByKey(key);
