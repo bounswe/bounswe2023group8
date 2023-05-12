@@ -63,7 +63,7 @@ public class PostController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<PostDto> getPostById(
-            @PathVariable Long id) {
+            Long id) {
 
         PostDto postDto = postService.getPostById(id);
 
@@ -111,7 +111,7 @@ public class PostController {
     public ResponseEntity<PostDto> createPost(
             @RequestParam String title,
             @RequestParam String content,
-            @PathVariable Long userId){
+            Long userId){
 
         Long postId = postService.createPost(title, content, userId);
 
@@ -137,7 +137,7 @@ public class PostController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<PostDto> updatePost(
-            @PathVariable Long id,
+            Long id,
             @RequestParam String title,
             @RequestParam String content) {
 
@@ -157,7 +157,7 @@ public class PostController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<PostDto> deletePost(
-            @PathVariable Long id) {
+            Long id) {
 
         PostDto postDto = postService.deletePostById(id);
 

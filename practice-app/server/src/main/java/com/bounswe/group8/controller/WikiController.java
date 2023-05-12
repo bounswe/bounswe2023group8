@@ -12,7 +12,7 @@ public class WikiController {
     private WikiService wikiService;
 
     @GetMapping("/search/{searchText}")
-    public Object search(@PathVariable String searchText) {
+    public Object search(String searchText) {
         return wikiService.search(searchText);
     }
 }
