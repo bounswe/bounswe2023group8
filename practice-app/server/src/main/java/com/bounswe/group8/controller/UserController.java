@@ -1,7 +1,7 @@
 package com.bounswe.group8.controller;
 
 
-import com.bounswe.group8.payload.UserCreateRequest;
+import com.bounswe.group8.payload.request.UserCreateRequest;
 import com.bounswe.group8.payload.dto.UserDto;
 import com.bounswe.group8.service.UserService;
 import lombok.AccessLevel;
@@ -62,7 +62,7 @@ public class UserController {
      * @return      UserDto
      */
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDto> getUserById(Long id) {
 
         UserDto userDto = userService.getUserById(id);
 
@@ -122,7 +122,7 @@ public class UserController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(
-            @PathVariable Long id,
+            Long id,
             @RequestParam String username,
             @RequestParam String password) {
 
@@ -141,7 +141,7 @@ public class UserController {
      * @return      UserDto - deleted user
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<UserDto> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<UserDto> deleteUser(Long id) {
 
         UserDto userDto = userService.deleteUserById(id);
 

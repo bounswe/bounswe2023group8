@@ -3,7 +3,7 @@ package com.bounswe.group8.service;
 import com.bounswe.group8.exception.custom.ResourceNotFoundException;
 import com.bounswe.group8.mapper.UserMapper;
 import com.bounswe.group8.model.User;
-import com.bounswe.group8.payload.UserCreateRequest;
+import com.bounswe.group8.payload.request.UserCreateRequest;
 import com.bounswe.group8.payload.dto.UserDto;
 import com.bounswe.group8.repository.UserRepository;
 import lombok.AccessLevel;
