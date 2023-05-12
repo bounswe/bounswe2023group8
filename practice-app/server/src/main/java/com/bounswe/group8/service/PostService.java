@@ -3,12 +3,10 @@ package com.bounswe.group8.service;
 
 import com.bounswe.group8.exception.custom.ResourceNotFoundException;
 import com.bounswe.group8.mapper.PostMapper;
-import com.bounswe.group8.mapper.UserMapper;
 import com.bounswe.group8.model.Post;
 import com.bounswe.group8.model.User;
-import com.bounswe.group8.payload.PostCreateRequest;
+import com.bounswe.group8.payload.request.PostCreateRequest;
 import com.bounswe.group8.payload.dto.PostDto;
-import com.bounswe.group8.payload.dto.UserDto;
 import com.bounswe.group8.repository.PostRepository;
 import com.bounswe.group8.repository.UserRepository;
 import lombok.AccessLevel;
