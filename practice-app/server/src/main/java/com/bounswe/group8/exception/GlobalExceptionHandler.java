@@ -1,5 +1,6 @@
 package com.bounswe.group8.exception;
 
+import com.bounswe.group8.exception.custom.ApiRequestException;
 import com.bounswe.group8.exception.custom.DuplicateResourceException;
 import com.bounswe.group8.exception.custom.ResourceNotFoundException;
 import com.bounswe.group8.payload.response.ErrorResponse;
@@ -30,6 +31,16 @@ public class GlobalExceptionHandler {
 
     @Value("${database.error.message}")
     String daoExceptionMessage;
+
+    @ExceptionHandler(ApiRequestException.class)
+    public ResponseEntity<ErrorResponse> apiRequestException(
+            ApiRequestException ex) {
+
+        return new ResponseEntity<>(
+                new ErrorResponse(ex.getHttpStatus(), "api-request-error", ex.getMessage()),
+                ex.getHttpStatus()
+        );
+    }
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorResponse> repositoryLayerException(

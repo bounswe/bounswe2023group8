@@ -4,13 +4,21 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Data
 @Accessors(chain = true)
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class UserCreateRequest {
+public class ForecastCreateRequest {
 
-    String username;
+    String city;
 
-    String password;
+    String country;
+
+    String high;
+
+    String low;
+
+    Date date;
 
 }
