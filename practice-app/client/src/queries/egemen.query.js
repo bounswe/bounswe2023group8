@@ -52,3 +52,13 @@ export const addNewAddress = async (latitude, longitude, address, title) => {
   })).status;
 
 };
+
+/**
+ *
+ * @param recordsTitle {string}
+ * @returns {Promise<any>} List of addresses recorded
+ */
+export const fetchRecords = async (recordsTitle) => {
+  return await fetch(encodeURI(`${config.apiUrl}/api/location/${recordsTitle}`))
+      .then(response => response.json());
+};
