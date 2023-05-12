@@ -71,7 +71,14 @@ function Sude() {
         </Button>
       </div>
       <div>{info}</div>
-      <div style={{ marginTop: 20, display: "flex", gap: 20, alignItems: "center" }}>
+      <div
+        style={{
+          marginTop: 20,
+          display: "flex",
+          gap: 20,
+          alignItems: "center",
+        }}
+      >
         <Button variant="contained" onClick={getData}>
           See the most searched number
         </Button>
