@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import config from '../config';
 
 export function useDictionarySearch() {
     const [searchInput, setSearchInput] = useState('');
@@ -22,7 +21,7 @@ export function useDictionarySearch() {
 }
 
 export async function addFavouriteWord(userId, word, meaning) {
-    const response = await fetch(`${config.apiUrl}/api/word/favourite`, {
+    const response = await fetch(`/api/word/favourite`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -44,7 +43,7 @@ export async function addFavouriteWord(userId, word, meaning) {
 
 export function useGetFavouriteWords(userId) {
     return useQuery(['getFavouriteWords', userId], async () => {
-        const response = await fetch(`${config.apiUrl}/api/word/favourite/all?userId=${userId}`);
+        const response = await fetch(`/api/word/favourite/all?userId=${userId}`);
         if (!response.ok) {
             throw new Error('Failed to fetch favourite words');
         }

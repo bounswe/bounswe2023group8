@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Button, TextField } from "@mui/material";
 import axios from "axios";
-import config from "../config";
 
 function Sude() {
   const [num, setNum] = useState("");
@@ -10,7 +9,7 @@ function Sude() {
 
   const sendData = () => {
     axios
-      .post(`${config.apiUrl}/api/numbers`, {
+      .post(`/api/numbers`, {
         searchedNumber: num,
       })
       .then((response) => {
@@ -23,7 +22,7 @@ function Sude() {
 
   const getData = () => {
     axios
-      .get(`${config.apiUrl}/api/numbers/max`)
+      .get(`/api/numbers/max`)
       .then((response) => {
         setMost(response.data.searchedNumber);
       })

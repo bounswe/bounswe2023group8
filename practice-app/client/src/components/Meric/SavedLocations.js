@@ -39,7 +39,7 @@ const LocationTable = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {forecasts.map((forecast) => (
+                        {forecasts?.map((forecast) => (
                             <TableRow
                                 key={forecast.id}
                             >

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import config from '../config';
 
 export function useMarketSearch() {
     const [searchInput, setSearchInput] = useState('');
@@ -21,7 +20,7 @@ export function useMarketSearch() {
 }
 
 export async function addStarStock(userId, stock, value) {
-    const response = await fetch(`${config.apiUrl}/api/stock/star`, {
+    const response = await fetch(`/api/stock/star`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -43,7 +42,7 @@ export async function addStarStock(userId, stock, value) {
 
 export function useGetStarStocks(userId) {
     return useQuery(['getStarStocks', userId], async () => {
-        const response = await fetch(`${config.apiUrl}/api/stock/star/all?userId=${userId}`);
+        const response = await fetch(`/api/stock/star/all?userId=${userId}`);
         if (!response.ok) {
             throw new Error('Failed to fetch star stocks');
         }
