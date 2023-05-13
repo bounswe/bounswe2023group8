@@ -14,8 +14,14 @@ function ForecastSearch() {
         console.log(e.target.value);
         const newInput = e.target.value;
         setSearchText(newInput);
-        const locationInfo = await fetchLocationInfo((newInput));
-        setOptions(locationInfo);
+
+        if(e.target.value!=null && e.target.value.length>0){
+
+            const locationInfo = await fetchLocationInfo((newInput));
+            setOptions(locationInfo);
+
+        }
+
 
     }
 
@@ -52,7 +58,7 @@ function ForecastSearch() {
                 onChange={handleSelect}
                 helperText="* Required. Select one of the locations."
             >
-                {options.map((option) => (
+                {options?.map((option) => (
                     <MenuItem key={option.key} value={option.key}>
                         {option.city + ", " + option.country}
                     </MenuItem>

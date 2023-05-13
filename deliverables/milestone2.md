@@ -51,14 +51,52 @@ Fragment | Owner | Description
 <img width="1658" alt="image" src="https://github.com/bounswe/bounswe2023group8/assets/22966868/79dc06f1-6ba9-47f3-a157-6cdc7de2dc5d">
 
 **IP**
+
 <img width="1141" alt="Screenshot 2023-05-12 at 21 00 55" src="https://github.com/bounswe/bounswe2023group8/assets/29154729/a441f200-f446-41d7-9a00-28242b4e255b">
 
  ### 1.3.2. Practice App Guide
-  * URL of practice app code and the tag
-  * URL of your application that was deployed with docker
-  * Any information we may need to test your application
-  * Instructions for building the application with docker
-  * API URL (the URL should take us to a documented API)
+  * Project Code: https://github.com/bounswe/bounswe2023group8.git tag: [Group8-Practice-App-Release-v.0.2](https://github.com/bounswe/bounswe2023group8/releases/tag/Group8-Practice-App-Release-v.0.2)
+  * Access our app from: http://bunchup.com.tr
+  * Access the Swagger documentation of our API from: http://bunchup.com.tr/swagger-ui/index.html
+
+ #### Instructions for Building the Application with Docker
+
+  * First of all you need to make sure that you have "docker" and "git" installed on your system. 
+
+Amazon Linux 2(CentOS):
+  
+`yum install git docker`
+
+Mac: 
+
+`brew install git`
+
+`brew cask install docker`
+
+  * Then install "docker-compose" by using these next 2 commands check whether it is installed correctly or not by using the 3rd command:
+
+`sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose`
+
+`sudo chmod +x /usr/local/bin/docker-compose`
+
+`docker-compose version`
+
+  * Go to a folder, where you would like to keep the repository and clone the repository.
+
+`git clone https://github.com/bounswe/bounswe2023group8.git`
+
+  * Go to the folder where the main "docker-compose.yml" resides.
+
+`cd practice-app`
+
+  * First make sure that docker service is running. This command may differ from system to system.
+
+`sudo service docker start`
+
+  * Finally run the application.
+
+`sudo docker-compose up`
+
 
 # 2. Lessons Learned
 
@@ -110,6 +148,10 @@ Also we've been able to create automatic documentation using Postman. Here is ou
 
 ### 2.1.7. Docker
 
+Docker is beneficial with how it allows us to build, test and deploy our application quickly. It also assures us that if our dockerized application runs correctly, we can deploy and run it on any environment we want. However, reaching this point has been real challenge because we didn't know much about it and we didn't really understand what purpose it fulfills initially. We made some mistakes on the first version of our dockerization process and deployed it in a way that doesn't really use the docker for what it is intended, even though our dockerized app ran correctly on EC2. After much struggle, we managed to create a dockerization process so that our application can be deployed and built whenever we want without really caring for whether it is up-to-date or not, because our process ensures it will be up-to-date. 
+
+We noticed that building our skills for docker might be a little hard because its something that is done only once during the development of a project. Once the dockerization process is ready, there is hardly and reason to configure it again unless the structure of the project changes in a major way. And just as a guess, this might be why it seems hard to find correct documentation for very specific steps that could be used in the process.
+
 ## 2.2. Evaluation of Processes
  
 ### 2.2.1. Team Meetings
@@ -150,7 +192,7 @@ Overall, we faced these challenges because the project's subject matter and tool
 * [Orkun Mahir Kılıç](https://github.com/bounswe/bounswe2023group8/wiki/Milestone-2-Orkun-K%C4%B1l%C4%B1%C3%A7-Individual-Report)
 * [Sude Konyalıoğlu](https://github.com/bounswe/bounswe2023group8/wiki/Individual-Contribution-Report-(Sude-Konyal%C4%B1o%C4%9Flu))
 * [Hasan Baki Küçükçakıroğlu](https://github.com/bounswe/bounswe2023group8/wiki/Hasan-Baki-Kucukcakiroglu's-Individual-Contribution-Report-for-Milestone-2)
-* [İbrahim Furkan Özçelik]()
+* [İbrahim Furkan Özçelik](https://github.com/bounswe/bounswe2023group8/wiki/Ibrahim-Furkan-Ozcelik's-Individual-Contribution-Report-for-Milestone-2)
 * [Miraç Öztürk](https://github.com/bounswe/bounswe2023group8/wiki/Individual-Contribution-Report-(Mira%C3%A7-%C3%96zt%C3%BCrk))
 * [Enes Yıldız](https://github.com/bounswe/bounswe2023group8/wiki/Individual-Contribution-Report-(Enes-Yıldız)) 
 * [Begüm Yivli](https://github.com/bounswe/bounswe2023group8/wiki/Milestone-2---Beg%C3%BCm-Yivli-Individual-Report)

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import axios from "axios";
-import config from "../../config";
 
 const FavouriteCityCard = ({ city, country, population }) => {
   return (
@@ -17,7 +16,7 @@ const FavouriteCityCard = ({ city, country, population }) => {
 
 const FavouriteCities = () => {
   const getSavedCities = () => {
-    axios.get(`${config.apiUrl}/api/city`).then((response) => {
+    axios.get(`/api/city`).then((response) => {
       setFavouriteCities(response.data);
     });
   };

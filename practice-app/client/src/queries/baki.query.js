@@ -2,13 +2,12 @@ import { useState } from 'react';
 import { useQuery } from 'react-query'
 import { useMutation } from 'react-query';
 import { useQueryClient } from 'react-query';
-import config from '../config';
 
 export function useWikiSearchOptions() {
 
   const [searchInput, setSearchInput] = useState("");
 	const searchOptionQuery= useQuery(['wikiSearch', searchInput], () =>
-    fetch(`${config.apiUrl}/api/wiki/search/${searchInput}`).then(res =>
+    fetch(`/api/wiki/search/${searchInput}`).then(res =>
       res.json()
     ),{
 
@@ -22,7 +21,7 @@ export function useWikiEntity() {
 
   const [id, setId] = useState("");
 	const searchOptionQuery= useQuery(['wikiEntity', id], () =>
-    fetch(`${config.apiUrl}/api/wiki/entity/${id}`).then(res =>
+    fetch(`/api/wiki/entity/${id}`).then(res =>
       res.json()
     ),{
 
@@ -37,7 +36,7 @@ export function useWikiProperties() {
 
   const [ids, setIds] = useState("");
 	const searchPropertiesQuery= useQuery(['wikiProperties', ids], () =>
-    fetch(`${config.apiUrl}/api/wiki/entity/${ids}`).then(res =>
+    fetch(`/api/wiki/entity/${ids}`).then(res =>
       res.json()
     ),{
 
@@ -52,7 +51,7 @@ export function useBookmarks() {
 
 
 	const bookmarksQuery= useQuery('bookmarks', () =>
-    fetch(`${config.apiUrl}/api/wiki/bookmarks/all`).then(res =>
+    fetch(`/api/wiki/bookmarks/all`).then(res =>
       res.json()
     )
   );
@@ -71,7 +70,7 @@ export const useCreateEntityMutation = () => {
     body: JSON.stringify(data),
 	};
 
-	return fetch(`${config.apiUrl}/api/wiki`, requestOptions);
+	return fetch(`/api/wiki`, requestOptions);
 }
 
   const queryClient = useQueryClient();
@@ -95,7 +94,7 @@ export const useDeleteAllBookmarksMutation= () => {
     },
 	};
 
-	return fetch(`${config.apiUrl}/api/wiki/bookmarks/all`, requestOptions);
+	return fetch(`/api/wiki/bookmarks/all`, requestOptions);
 }
 
   const queryClient = useQueryClient();
@@ -119,7 +118,7 @@ export const useDeleteBookmarkMutation= () => {
     },
 	};
 
-	return fetch(`${config.apiUrl}/api/wiki/bookmarks/${code}`, requestOptions);
+	return fetch(`/api/wiki/bookmarks/${code}`, requestOptions);
 }
 
   const queryClient = useQueryClient();

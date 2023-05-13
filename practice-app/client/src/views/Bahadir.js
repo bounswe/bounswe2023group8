@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { CircularProgress } from '@mui/material';
-import config from '../config';
 
 function Bahadir() {
     const [stocks, setStocks] = useState([]);
@@ -13,7 +12,6 @@ function Bahadir() {
     const loading = open && options.length === 0;
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedStock, setSelectedStock] = useState(null);
-    const url = config.apiUrl; // 'http://localhost:8081';
 
     const getStockBySymbol = (stockId) => {
       const options = {
@@ -23,28 +21,28 @@ function Bahadir() {
           },
       };
 
-      fetch(`${url}/api/stock/${stockId}?latest=true`, options)
+      fetch(`/api/stock/${stockId}?latest=true`, options)
           .then(response => response.json())
           .then(data => setSelectedStock(data))
           .catch(err => console.error(err));
   }
 
     useEffect(() => {
-        fetch(`${url}/api/stock/all`)
+        fetch(`/api/stock/all`)
             .then(response => response.json())
             .then(data => setStocks(data))
             .catch(err => console.error(err));
     }, []);
 
     const searchStocks = (keyword) => {
-        fetch(`${url}/api/stock/search?keyword=${keyword}`)
+        fetch(`/api/stock/search?keyword=${keyword}`)
             .then(response => response.json())
             .then(data => setSearchResults(data))
             .catch(err => console.error(err));
     }
 
     const autoComplete = (keyword) => {
-        fetch(`${url}/api/stock/autocomplete?keyword=${keyword}`)
+        fetch(`/api/stock/autocomplete?keyword=${keyword}`)
             .then(response => response.json())
             .then(data => setAutoCompleteResults(data))
             .catch(err => console.error(err));
@@ -55,7 +53,7 @@ function Bahadir() {
           setOptions([]);
           setSelectedStock(null);
       } else {
-          fetch(`${url}/api/stock/search?keyword=${newValue}`)
+          fetch(`/api/stock/search?keyword=${newValue}`)
               .then(response => response.json())
               .then(data => {
                   if(Object.keys(data).length === 0) {

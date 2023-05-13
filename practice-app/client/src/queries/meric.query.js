@@ -1,6 +1,4 @@
-import config from "../config";
 
-const accuWeatherApiKey = "ABsfBiUE2qMGA60iuC9Mckt4fBhTXTqD";
 
 /**
  * Uses AccuWeather's "Location API" to receive location keys according to search
@@ -9,7 +7,7 @@ const accuWeatherApiKey = "ABsfBiUE2qMGA60iuC9Mckt4fBhTXTqD";
  * @returns {Promise<string[]>}     List of location info as formatted strings
  */
 export const fetchLocationInfo = async (searchText) => {
-    const response = await fetch(`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${accuWeatherApiKey}&q=${searchText}`)
+    const response = await fetch(`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${process.env.REACT_APP_ACCU}&q=${searchText}`)
         .then(response => response.json());
     return response.map(element => {
         return {
@@ -28,7 +26,7 @@ export const fetchLocationInfo = async (searchText) => {
  */
 
 export const fetchForecastInfo = async (locationKey) => {
-    const response = await fetch(`http://dataservice.accuweather.com/forecasts/v1/daily/1day/${locationKey}?apikey=${accuWeatherApiKey}&metric=true`)
+    const response = await fetch(`http://dataservice.accuweather.com/forecasts/v1/daily/1day/${locationKey}?apikey=${process.env.REACT_APP_ACCU}&metric=true`)
         .then(response => response.json());
     return response.DailyForecasts.map(element => {
         return {
@@ -48,7 +46,7 @@ export const fetchForecastInfo = async (locationKey) => {
  */
 export const saveForecast = async (city, country, high, low, date) => {
 
-    return (await fetch(encodeURI(`${config.apiUrl}/api/forecast`), {
+    return (await fetch(encodeURI(`/api/forecast`), {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -73,7 +71,7 @@ export const saveForecast = async (city, country, high, low, date) => {
  */
 export const deleteSavedForecast = async (key) => {
 
-    return (await fetch(encodeURI(`${config.apiUrl}/api/forecast/delete/${key}`))).status;
+    return (await fetch(encodeURI(`/api/forecast/delete/${key}`))).status;
 
 };
 
@@ -84,7 +82,7 @@ export const deleteSavedForecast = async (key) => {
  */
 export const getSavedForecasts = async () => {
 
-    return await fetch(encodeURI(`${config.apiUrl}/api/forecast/all`))
+    return await fetch(encodeURI(`/api/forecast/all`))
         .then(response => response.json());
 
 };
