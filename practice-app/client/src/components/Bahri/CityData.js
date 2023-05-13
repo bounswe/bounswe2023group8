@@ -1,7 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import axios from "axios";
-import config from "../../config";
 
 const CityCard = ({ city, country, population }) => {
   const saveCity = (name, country, population) => {
@@ -12,7 +11,7 @@ const CityCard = ({ city, country, population }) => {
     };
 
     axios
-      .post(`${config.apiUrl}/api/city`, city, {
+      .post(`/api/city`, city, {
         headers: {
           "Content-Type": "application/json",
         },

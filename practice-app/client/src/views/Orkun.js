@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Divider, Skeleton, Table, Typography } from '@mui/material';
-import config from '../config';
 
 function Orkun() {
   // Call ipapi.co
@@ -30,7 +29,7 @@ function Orkun() {
     setIpToSaveError(false);
 
     try {
-      const res = await fetch(`${config.apiUrl}/api/ip`, {
+      const res = await fetch(`/api/ip`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -64,7 +63,7 @@ function Orkun() {
     }
 
     try {
-      const res = await fetch(`${config.apiUrl}/api/ip/details/${ipToSearch}`);
+      const res = await fetch(`/api/ip/details/${ipToSearch}`);
       const data = await res.json();
       setIpToSearchData(data);
       setIpToSearchError(null);
@@ -78,7 +77,7 @@ function Orkun() {
 
   useEffect(() => {
     const callAPI = async () => {
-      const res = await fetch(`${config.apiUrl}/api/ip/all`);
+      const res = await fetch(`/api/ip/all`);
       const data = await res.json();
       return data;
     }

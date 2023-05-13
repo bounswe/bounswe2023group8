@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useQuery } from 'react-query'
-import config from '../config';
 
 export function useTranslatesQuery() {
   const [id, setId] = useState();
 	const usersQuery= useQuery(['posts', id], () =>
-    fetch(`${config.apiUrl}/api/translate/${id}`).then(res =>
+    fetch(`/api/translate/${id}`).then(res =>
       res.json()
     )
   );
@@ -14,7 +13,7 @@ export function useTranslatesQuery() {
 
 export async function recordData(sourceText){
   try {
-    const response = await fetch(`${config.apiUrl}/api/translate`, {
+    const response = await fetch(`/api/translate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -35,7 +34,7 @@ export async function recordData(sourceText){
 
 export async function getData(){
   try {
-    const response = await fetch(`${config.apiUrl}/api/translate/all`);
+    const response = await fetch(`/api/translate/all`);
     if (response.ok) {
       const data = await response.json()
       return data
@@ -56,7 +55,7 @@ export function useWikiSearchOptions() {
 
   const [searchInput, setSearchInput] = useState("");
 	const searchOptionQuery= useQuery(['wikiSearch', searchInput], () =>
-    fetch(`${config.apiUrl}/api/wiki/search/${searchInput}`).then(res =>
+    fetch(`/api/wiki/search/${searchInput}`).then(res =>
       res.json()
     )
   );
