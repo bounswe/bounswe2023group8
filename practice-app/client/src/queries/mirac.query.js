@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, queryCache } from 'react-query';
-import config from '../config';
 
 export function useAsterankSearchQuery(searchTerm) {
 const [searchResult, setSearchResult] = useState([]);
@@ -8,7 +7,7 @@ const [searchResult, setSearchResult] = useState([]);
 const { isLoading, isError, data, error } = useQuery(
 ['asterankSearch', searchTerm],
 () =>
-fetch(${config.apiUrl}/api/asteroids?query=${searchTerm}).then((res) =>
+fetch(`/api/asteroids?query=${searchTerm}`).then((res) =>
 res.json()
 )
 );
@@ -28,7 +27,7 @@ return { isLoading, searchResult };
 
 export function useSaveAsteroidMutation() {
 const saveAsteroidMutation = useMutation((asteroidData) =>
-fetch(${config.apiUrl}/api/asteroids, {
+fetch(`/api/asteroids`, {
 method: 'POST',
 headers: {
 'Content-Type': 'application/json',
@@ -47,7 +46,7 @@ return saveAsteroid;
 
 export function useSavedAsteroidsQuery() {
 const { isLoading, isError, data, error } = useQuery('savedAsteroids', () =>
-fetch(${config.apiUrl}/api/asteroids/saved).then((res) => res.json())
+fetch(`/api/asteroids/saved`).then((res) => res.json())
 );
 
 if (isError) {
@@ -59,7 +58,7 @@ return { isLoading, savedAsteroids: data };
 
 export function useSavePlanetFactMutation() {
 const savePlanetFactMutation = useMutation((factData) =>
-fetch(${config.apiUrl}/api/planets/facts, {
+fetch(`/api/planets/facts`, {
 method: 'POST',
 headers: {
 'Content-Type': 'application/json',
@@ -80,7 +79,7 @@ export function useSavedPlanetFactsQuery() {
 const { isLoading, isError, data, error } = useQuery(
 'savedPlanetFacts',
 () =>
-fetch(${config.apiUrl}/api/planets/facts/saved).then((res) =>
+fetch(`/api/planets/facts/saved`).then((res) =>
 res.json()
 )
 );
