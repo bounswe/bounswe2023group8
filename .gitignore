@@ -2,3 +2,4 @@ practice-app/.DS_Store
 *.db
 practice-app/client/.idea
 .idea
+**/.DS_Store
