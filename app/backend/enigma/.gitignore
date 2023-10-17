@@ -35,4 +35,4 @@ build/
 
 ### Secrets ###
 .env
-/mysql/init.sql
+/mysql/clean/init.sql

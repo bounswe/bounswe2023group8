@@ -4,3 +4,4 @@ practice-app/client/.idea
 .idea
 **/.DS_Store
 app/backend/enigma/.mvn
+app/backend/enigma/db-snapshot.sh

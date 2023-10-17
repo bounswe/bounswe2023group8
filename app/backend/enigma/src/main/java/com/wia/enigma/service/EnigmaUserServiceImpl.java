@@ -10,6 +10,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class EnigmaUserServiceImpl {
+public class EnigmaUserServiceImpl implements EnigmaUserService {
 
 }
