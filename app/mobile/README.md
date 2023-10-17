@@ -1,16 +1,16 @@
-# Mobile App
+# mobile
 
-## Overview
-<!-- Description of the mobile application, platforms it supports, and technologies it uses. -->
+A new Flutter project.
 
-## Setup
-- Prerequisites
-- Installation
-- Running the app
+## Getting Started
 
-## Features
-<!-- List of main features. -->
+This project is a starting point for a Flutter application.
 
+A few resources to get you started if this is your first Flutter project:
 
-## Deployment
-<!-- Information on how to build and deploy the mobile app. -->
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
