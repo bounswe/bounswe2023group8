@@ -1,2 +1,4 @@
-package com.wia.enigma.service;public interface EnigmaUserService {
+package com.wia.enigma.service;
+
+public interface EnigmaUserService {
 }
