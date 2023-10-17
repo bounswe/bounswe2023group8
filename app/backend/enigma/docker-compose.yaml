@@ -10,3 +10,9 @@ services:
       - "3307:3306"
     volumes:
       - ./mysql:/docker-entrypoint-initdb.d
+  enigma:
+    build: .
+    depends_on:
+      - punchcard
+    ports:
+      - "8081:8080"
