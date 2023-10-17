@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+### Secrets ###
+.env
+/mysql/init.sql
