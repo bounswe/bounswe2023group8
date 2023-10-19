@@ -6,3 +6,4 @@ practice-app/client/.idea
 app/backend/enigma/.mvn
 app/backend/enigma/db-snapshot.sh
 app/backend/enigma/scripts/cloud-sql-proxy
+app/backend/enigma/mysql/cloud/*.json
