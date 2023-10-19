@@ -5,3 +5,4 @@ practice-app/client/.idea
 **/.DS_Store
 app/backend/enigma/.mvn
 app/backend/enigma/db-snapshot.sh
+app/backend/enigma/scripts/cloud-sql-proxy
