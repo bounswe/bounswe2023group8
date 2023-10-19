@@ -9,7 +9,7 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - ./mysql/clean:/docker-entrypoint-initdb.d
+      - ./mysql/image:/docker-entrypoint-initdb.d
   enigma:
     build: .
     depends_on:
