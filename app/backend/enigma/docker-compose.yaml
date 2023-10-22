@@ -4,7 +4,7 @@ services:
   punchcard:
     image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD : 1
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
       - "3307:3306"
