@@ -21,6 +21,6 @@ class AppPages {
       name: _Paths.authentication,
       page: () => const AuthView(),
       binding: AuthenticationBinding(),
-    ),
+    )
   ];
 }
