@@ -7,6 +7,7 @@ import PageWithTopbarOnly from "../TemporaryRouterTestPages/PageWithTopbarOnly";
 import PageWithTopbarAndSidebar from "../TemporaryRouterTestPages/PageWithTopbarAndSidebar";
 import PageWithNoWrapper from "../TemporaryRouterTestPages/PageWithNoWrapper";
 import Register from "../Register";
+import Login from "../Login";
 
 const Router = () => (
   <Routes>
@@ -14,6 +15,8 @@ const Router = () => (
 
     <Route path="/no_bar" element={<PageWithNoWrapper />} />
     <Route path="/register" element={<Register />} />
+    <Route path="/login" element={<Login />} />
+
 
     <Route
       path="/"
