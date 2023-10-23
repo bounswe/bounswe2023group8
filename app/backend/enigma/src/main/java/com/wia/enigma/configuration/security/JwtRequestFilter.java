@@ -12,11 +12,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -53,11 +55,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         jwtService.validateJwt(jwt);
 
         Claims claims = jwtService.extractClaims(jwt);
-        EnigmaAuthenticationToken authentication = new EnigmaAuthenticationToken(
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 claims.getSubject(),
                 null, // password is not needed, it's a JWT token
-                ((Integer) claims.get("user_id")).longValue(),
-                AuthUtils.getInstance().getAuthorities(claims.get("authorities"))
+                new ArrayList<>() // empty authorities list for simplicity
         );
 
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -69,9 +70,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return (request.getRequestURI().startsWith("/auth/")
+        return (request.getRequestURI().startsWith("/auth")
                 || request.getMethod().equals(HttpMethod.OPTIONS.name()));
     }
+
 
     /**
      * Sets the headers for the response
