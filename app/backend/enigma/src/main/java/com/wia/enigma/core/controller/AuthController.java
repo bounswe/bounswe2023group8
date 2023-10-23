@@ -3,10 +3,8 @@ package com.wia.enigma.core.controller;
 
 import com.wia.enigma.configuration.security.EnigmaUserDetailsService;
 import com.wia.enigma.core.service.EnigmaJwtService;
-import com.wia.enigma.core.service.EnigmaUserService;
 import com.wia.enigma.dal.entity.EnigmaUser;
 import com.wia.enigma.dal.repository.EnigmaUserRepository;
-import com.wia.enigma.dto.EnigmaUserDTO;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -23,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthController {
 
-    final EnigmaUserService enigmaUserService;
+    final EnigmaUserRepository userRepository;
     final EnigmaUserDetailsService userDetailsService;
     final EnigmaJwtService jwtService;
 
@@ -47,10 +45,17 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody EnigmaUser enigmaUser ) {
+    public ResponseEntity<?> register(@RequestParam String username,
+                                      @RequestParam String email,
+                                      @RequestParam String password) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        enigmaUserService.saveEngimaUser(enigmaUser);
+        EnigmaUser newUser = new EnigmaUser();
+        newUser.setUsername(username);
+        newUser.setEmail(email);
+        newUser.setPassword(encoder.encode(password));
+
+        userRepository.save(newUser);
 
         return ResponseEntity.ok().build();
     }
