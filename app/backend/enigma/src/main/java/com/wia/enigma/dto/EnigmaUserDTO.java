@@ -1,31 +1,31 @@
 package com.wia.enigma.dto;
 
-import com.wia.enigma.model.User;
+import com.wia.enigma.dal.entity.EnigmaUser;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
-public class UserDTO {
+public class EnigmaUserDTO {
 
     private Long id;
     private String username;
     private String name;
     private String email;
-    private LocalDate birthday;
+    private Date birthday;
     private Boolean isPrivate;
-    private LocalDateTime createdAt;
+    private Timestamp createdTime;
 
-    public UserDTO(User user) {
+    public EnigmaUserDTO(EnigmaUser user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.name = user.getName();
         this.email = user.getEmail();
         this.birthday = user.getBirthday();
         this.isPrivate = user.getIsPrivate();
-        this.createdAt = user.getCreatedAt();
+        this.createdTime = user.getCreateTime();
     }
 }

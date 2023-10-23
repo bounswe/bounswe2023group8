@@ -10,6 +10,8 @@ import java.sql.Timestamp;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Table(name = "enigma_user")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EnigmaUser {
@@ -19,16 +21,19 @@ public class EnigmaUser {
     @Column(name = "id")
     Long id;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     String username;
 
-    @Column(name = "email")
+    @Column(name = "name", nullable = false )
+    String name;
+
+    @Column(name = "email", unique = true)
     String email;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     String password;
 
-    @Column(name = "birthday")
+    @Column(name = "birthday", nullable = false)
     Date birthday;
 
     @Column(name = "is_private")
@@ -39,9 +44,6 @@ public class EnigmaUser {
 
     @Column(name = "create_time")
     Timestamp createTime;
-
-    @Column(name = "update_time")
-    Timestamp updateTime;
 
     @Column(name = "delete_time")
     Timestamp deleteTime;
