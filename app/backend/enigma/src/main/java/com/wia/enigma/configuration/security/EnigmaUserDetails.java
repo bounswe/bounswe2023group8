@@ -23,6 +23,7 @@ public class EnigmaUserDetails extends User {
     */
 
     AudienceType audienceType; // audience value
+
     Long enigmaUserId; // user id value
 
     public EnigmaUserDetails(String username,
