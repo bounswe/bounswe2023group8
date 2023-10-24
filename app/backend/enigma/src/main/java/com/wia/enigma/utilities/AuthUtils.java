@@ -26,7 +26,7 @@ public class AuthUtils {
         return instance;
     }
 
-    public Collection<? extends GrantedAuthority> getAuthorities(Object authorities) {
+    public Collection<? extends GrantedAuthority> buildAuthorities(Object authorities) {
         List<String> castAuthorities;
         try {
             castAuthorities = (List<String>) authorities;
@@ -36,6 +36,18 @@ public class AuthUtils {
 
         return castAuthorities.stream()
                 .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+
+    public Collection<? extends GrantedAuthority> getAuthorities(List<String> authorities) {
+        return authorities.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getAuthorities(Collection<? extends GrantedAuthority> authorities) {
+        return authorities.stream()
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
     }
 }
