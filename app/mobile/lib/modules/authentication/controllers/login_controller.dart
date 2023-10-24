@@ -35,6 +35,9 @@ class LoginController extends GetxController {
   void navigateToSignUp() {
     authController.switchAuthView();
   }
+  void navigateToForgotPassword() {
+    authController.toggleForgotPassword();
+  }
 
   void onSignIn() async {
     loginInProgress.value = true;
