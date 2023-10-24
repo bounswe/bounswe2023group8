@@ -84,24 +84,20 @@ public class JwtUtils {
     }
 
     /**
-     * TODO: Implement this method.
-     * @return
-     */
-    private String getTokenIdentifier() {
-        return UUID.randomUUID().toString();
-    }
-
-    /**
      * Get the key used to sign the JWT.
      * Authentication is done using the HMAC-SHA256 algorithm.
      *
      * @return SecretKey
      */
-    public Key getSignInKey() {
-        return Keys.hmacShaKeyFor(JWT_KEY.getBytes());
+    public SecretKey getSignInKey() {
+        return Keys.hmacShaKeyFor(JWT_SECRET.getBytes());
     }
 
-    public Long getExpirationTime() {
-        return EXPIRATION;
+    /**
+     * Get the token type.
+     * @return String
+     */
+    public String getTokenType() {
+        return TOKEN_TYPE;
     }
 }
