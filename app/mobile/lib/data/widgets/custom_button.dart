@@ -11,6 +11,7 @@ class CustomButton extends StatelessWidget {
   final double disabledOpacity;
   final bool inProgress;
   final bool shadow;
+  final bool secondaryColor;
   const CustomButton(
       {this.onPressed,
       required this.text,
@@ -19,6 +20,7 @@ class CustomButton extends StatelessWidget {
       this.backgroundColor,
       this.textColor,
       this.disabledOpacity = 0.25,
+      this.secondaryColor = false,
       this.inProgress = false,
       this.shadow = false,
       super.key});
@@ -51,7 +53,9 @@ class CustomButton extends StatelessWidget {
         onPressed: !active || inProgress ? null : onPressed,
         style: ElevatedButton.styleFrom(
           shadowColor: Colors.transparent,
-          backgroundColor: backgroundColor ??
+          backgroundColor: secondaryColor
+              ? Palette.secondaryButtonColor
+              : backgroundColor ??
               Palette.primaryColor.withOpacity(active ? 1 : disabledOpacity),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
@@ -66,7 +70,7 @@ class CustomButton extends StatelessWidget {
               )
             : Text(text,
                 style: TextStyle(
-                    color: textColor,
+                    color: secondaryColor ? Palette.primaryColor : textColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 20)),
       ),
