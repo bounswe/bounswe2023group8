@@ -1,38 +1,38 @@
 package com.wia.enigma.utilities;
 
-import com.wia.enigma.configuration.security.EnigmaUserDetails;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
+import java.sql.Timestamp;
 import java.util.Date;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class JwtUtils {
 
     static JwtUtils instance;
 
-    @Value("${jwt.key}")
-    String JWT_KEY;
+    static String TOKEN_TYPE = "Bearer";
 
-    @Value("${jwt.expiration}")
-    Long EXPIRATION;
+    @Value("${jwt.secret}")
+    String JWT_SECRET;
 
+    private JwtUtils(String jwtSecret) {
+        this.JWT_SECRET = jwtSecret;
+    }
 
-    /**
-     * Get the instance of the JwtUtils class.
-     * Singleton pattern.
-     *
-     * @return JwtUtils
-     */
+    public static JwtUtils initInstance(String jwtSecret) {
+        if (instance == null) instance = new JwtUtils(jwtSecret);
+        return instance;
+    }
+
     public static JwtUtils getInstance() {
-        if (instance == null) instance = new JwtUtils();
         return instance;
     }
 
