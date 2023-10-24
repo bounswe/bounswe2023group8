@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:mobile/modules/authentication/controllers/sign_up_controller.dart';
 
 import '../../../data/constants/assets.dart';
@@ -34,8 +33,8 @@ class SignUpBody extends GetView<SignUpController> {
             const Spacer(flex: 4),
             CustomTextField(
               hintText: 'E-mail',
-              initialValue: controller.loginEmail.value,
-              isValid: controller.loginEmailValid.value,
+              initialValue: controller.signUpEmail.value,
+              isValid: controller.signUpEmailValid.value,
               onChanged: (value) => controller.onChangeEmail(value),
               circularBorder: true,
               showSuffix: false,
@@ -43,8 +42,8 @@ class SignUpBody extends GetView<SignUpController> {
             const Spacer(flex: 1),
             CustomTextField(
               hintText: 'Username',
-              initialValue: controller.loginUsername.value,
-              isValid: controller.loginUsernameValid.value,
+              initialValue: controller.signUpUsername.value,
+              isValid: controller.signUpUsernameValid.value,
               onChanged: (value) => controller.onChangeUsername(value),
               circularBorder: true,
               showSuffix: false,
@@ -53,21 +52,44 @@ class SignUpBody extends GetView<SignUpController> {
             InkWell(
               onTap: () => controller.pickDate(),
               child:
-              CustomTextField(
-                hintText: 'Birthday',
-                controller: controller.dateController,
-                circularBorder: true,
-                showSuffix: false,
-                enabled: false,
-
-              ),
+              Container(
+                  width: Get.width,
+                  height: 48,
+                  padding: const EdgeInsets.only(top: 14, left: 14),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24.0),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color.fromRGBO(0, 0, 0, 0.05),
+                        offset: Offset(4, 4),
+                        blurRadius: 10,
+                      ),
+                      BoxShadow(
+                        color: Color.fromRGBO(0, 0, 0, 0.25),
+                        offset: Offset(0, 4),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    controller.birthday.value.isNotEmpty
+                        ? controller.birthday.value
+                        : 'Enter your birthday',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: controller.birthday.value.isEmpty
+                            ? Colors.grey
+                            : Colors.black),
+                  ),
+                )
             ),
             const Spacer(flex: 1),
             CustomTextField(
                 hintText: 'Password',
-                initialValue: controller.loginPassword.value,
+                initialValue: controller.signUpPassword.value,
                 isPassword: true,
-                obscureText: controller.hideLoginPassword.value,
+                obscureText: controller.hidesignUpPassword.value,
                 onChanged: (value) => controller.onChangePassword(value),
                 circularBorder: true,
                 onSuffixTap: () => controller.togglePasswordVisibility()),
@@ -84,7 +106,9 @@ class SignUpBody extends GetView<SignUpController> {
             !controller.confirmPasswordValid.value ? const Text("Confirm password must match your password!",
             style: TextStyle(
               color: Colors.red
-            ),) : SizedBox(),
+            ),
+                  )
+                : const SizedBox(),
             const Spacer(flex: 2),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -123,9 +147,9 @@ class SignUpBody extends GetView<SignUpController> {
                 shadow: true,
                 text: 'Sign up',
                 inProgress: controller.signupInProgress.value,
-                active: controller.loginUsernameValid.value &&
-                    controller.loginPasswordValid.value &&
-                    controller.loginEmailValid.value  &&
+                active: controller.signUpUsernameValid.value &&
+                    controller.signUpPasswordValid.value &&
+                    controller.signUpEmailValid.value &&
                     controller.confirmPasswordValid.value &&
                     controller.acceptTerms.value),
             const Spacer(flex: 5),

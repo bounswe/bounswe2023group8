@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/data/helpers/validator.dart';
 
 import 'authentication_controller.dart';
 
 class SignUpController extends GetxController {
-
-  var loginEmail = ''.obs;
-  var loginUsername = ''.obs;
-  var loginPassword = ''.obs;
+  var signUpEmail = ''.obs;
+  var signUpUsername = ''.obs;
+  var signUpPassword = ''.obs;
   var confirmPassword = ''.obs;
-  var loginBirthday = ''.obs;
+  var signUpBirthday = ''.obs;
   var selectedDate = 'Birthday'.obs;
-  var loginPasswordValid = false.obs;
-  var confirmPasswordValid = false.obs;
+  var signUpPasswordValid = false.obs;
+  var confirmPasswordValid = true.obs;
   var passwordConfirmed = false.obs;
-  var hideLoginPassword = true.obs;
+  var hidesignUpPassword = true.obs;
   var hideConfirmPassword = true.obs;
-  var loginUsernameValid = false.obs;
-  var loginEmailValid = false.obs;
+  var signUpUsernameValid = false.obs;
+  var signUpEmailValid = false.obs;
   var signupInProgress = false.obs;
   var acceptTerms = false.obs;
+  var birthday = ''.obs;
   final dateController = TextEditingController();
 
   final AuthenticationController authController =
-  Get.find<AuthenticationController>();
+      Get.find<AuthenticationController>();
 
   void pickDate() async {
     final DateTime? picked = await showDatePicker(
@@ -38,8 +37,8 @@ class SignUpController extends GetxController {
 
     if (picked != null) {
       dateController.text = picked.toString().split(' ')[0];
+      birthday.value = DateFormat('yyyy-MM-dd').format(picked);
     }
-
   }
 
   void onChangeSelectedDate(String value) {
@@ -47,28 +46,28 @@ class SignUpController extends GetxController {
   }
 
   void onChangeEmail(String value) {
-    loginEmail.value = value;
-    loginEmailValid.value = Validator.isEmailValid(loginEmail.value);
+    signUpEmail.value = value;
+    signUpEmailValid.value = Validator.isEmailValid(signUpEmail.value);
   }
 
   void onChangeUsername(String value) {
-    loginUsername.value = value;
-    loginUsernameValid.value = value.length >= 3;
+    signUpUsername.value = value;
+    signUpUsernameValid.value = value.length >= 3;
   }
 
   void onChangePassword(String value) {
-    loginPassword.value = value;
-    loginPasswordValid.value = value.length >= 6;
-    confirmPasswordValid.value = confirmPassword.value == loginPassword.value;
+    signUpPassword.value = value;
+    signUpPasswordValid.value = value.length >= 6;
+    confirmPasswordValid.value = confirmPassword.value == signUpPassword.value;
   }
 
   void onChangeConfirmPassword(String value) {
     confirmPassword.value = value;
-    confirmPasswordValid.value = confirmPassword.value == loginPassword.value;
+    confirmPasswordValid.value = confirmPassword.value == signUpPassword.value;
   }
 
   void togglePasswordVisibility() {
-    hideLoginPassword.value = !hideLoginPassword.value;
+    hidesignUpPassword.value = !hidesignUpPassword.value;
   }
 
   void toggleConfirmPasswordVisibility() {
