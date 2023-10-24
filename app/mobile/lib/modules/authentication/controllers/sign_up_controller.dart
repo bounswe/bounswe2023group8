@@ -11,7 +11,6 @@ class SignUpController extends GetxController {
   var signUpPassword = ''.obs;
   var confirmPassword = ''.obs;
   var signUpBirthday = ''.obs;
-  var selectedDate = 'Birthday'.obs;
   var signUpPasswordValid = false.obs;
   var confirmPasswordValid = true.obs;
   var passwordConfirmed = false.obs;
@@ -22,7 +21,6 @@ class SignUpController extends GetxController {
   var signupInProgress = false.obs;
   var acceptTerms = false.obs;
   var birthday = ''.obs;
-  final dateController = TextEditingController();
 
   final AuthenticationController authController =
       Get.find<AuthenticationController>();
@@ -36,13 +34,8 @@ class SignUpController extends GetxController {
     );
 
     if (picked != null) {
-      dateController.text = picked.toString().split(' ')[0];
       birthday.value = DateFormat('yyyy-MM-dd').format(picked);
     }
-  }
-
-  void onChangeSelectedDate(String value) {
-    selectedDate.value = value;
   }
 
   void onChangeEmail(String value) {
