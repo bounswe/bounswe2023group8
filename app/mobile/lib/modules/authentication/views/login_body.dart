@@ -78,7 +78,9 @@ class LoginBody extends GetView<LoginController> {
                   ],
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    controller.navigateToForgotPassword();
+                  },
                   child: Text('Forgot password?',
                       style: TextStyle(
                         color: Palette.primaryColor,
