@@ -20,11 +20,9 @@ public class Post {
     @Column(name = "id")
     Long id;
 
-    @Id
-    @Column(name = "user_id")
-    Long userId;
+    @Column(name = "enigma_user_id")
+    Long enigmaUuserId;
 
-    @Id
     @Column(name = "ia_id")
     Long iaId;
 
@@ -35,7 +33,7 @@ public class Post {
     String geolocation;
 
     @Column(name = "label")
-    PostLabel label;
+    String label; // PostLabel
 
     @Column(name = "create_time")
     Timestamp createTime;

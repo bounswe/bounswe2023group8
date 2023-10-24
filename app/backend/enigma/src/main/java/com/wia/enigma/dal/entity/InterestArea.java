@@ -22,13 +22,11 @@ public class InterestArea {
     @Column(name = "id")
     Long id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "creator_user_id")
-    Long creatorUserId;
+    @Column(name = "enigma_user_id")
+    Long enigmaUserId;
 
     @Column(name = "access_level")
-    EnigmaAccessLevel accessLevel;
+    String accessLevel; // EnigmaAccessLevel
 
     @Column(name = "name")
     String name;
