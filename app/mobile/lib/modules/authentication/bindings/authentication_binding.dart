@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:mobile/modules/authentication/controllers/forgot_password_controller.dart';
 import 'package:mobile/modules/authentication/controllers/login_controller.dart';
 import 'package:mobile/modules/authentication/controllers/sign_up_controller.dart';
 
@@ -15,6 +16,9 @@ class AuthenticationBinding extends Bindings {
     );
     Get.lazyPut<SignUpController>(
       () => SignUpController(),
+    );
+    Get.lazyPut<ForgotPasswordController>(
+      () => ForgotPasswordController(),
     );
   }
 }

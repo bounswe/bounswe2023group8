@@ -17,7 +17,9 @@ class AuthView extends GetView<AuthenticationController> {
           if (controller.isLogin.value) {
             return const LoginBody();
           } else {
-            return const SignUpBody();
+            
+              return const SignUpBody();
+            
           }
         }));
   }

@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
+import 'package:mobile/modules/authentication/views/forgot_password_view.dart';
 
 import 'authentication_controller.dart';
+import 'forgot_password_controller.dart';
 
 class LoginController extends GetxController {
   var loginUsername = ''.obs;
@@ -10,6 +12,9 @@ class LoginController extends GetxController {
   var loginUsernameValid = false.obs;
   var loginInProgress = false.obs;
   var rememberMe = false.obs;
+
+  final forgotPasswordController = Get.find<ForgotPasswordController>();
+
 
   final AuthenticationController authController =
       Get.find<AuthenticationController>();
@@ -34,6 +39,10 @@ class LoginController extends GetxController {
 
   void navigateToSignUp() {
     authController.switchAuthView();
+  }
+
+  void navigateToForgotPassword() {
+    Get.to(() => const ForgotPasswordView());
   }
 
   void onSignIn() async {

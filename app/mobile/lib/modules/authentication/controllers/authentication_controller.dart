@@ -1,8 +1,11 @@
 import 'package:get/get.dart';
 import 'package:mobile/modules/authentication/views/auth_view.dart';
 
+
 class AuthenticationController extends GetxController {
   var isLogin = true.obs;
+  var isForgotPassword = false.obs;
+
 
   void navigateToAuth({required bool toLogin}) {
     isLogin.value = toLogin;
@@ -11,6 +14,11 @@ class AuthenticationController extends GetxController {
 
   void switchAuthView() {
     isLogin.value = !isLogin.value;
+  }
+
+  void toggleForgotPassword() {
+    isLogin.value = isForgotPassword.value;
+    isForgotPassword.value = !isForgotPassword.value;
   }
 
   @override
