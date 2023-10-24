@@ -37,49 +37,84 @@ public class JwtUtils {
     }
 
     /**
-     * Extract all claims from the JWT.
-     * Claims are the payload (body) of the JWT.
+     * Extract the claims from the JWT.
      *
      * @param jwt JWT String
      * @return Claims
      */
-    Claims extractAllClaims(String jwt) {
-        return null;
+    public Claims extractClaims(String jwt) {
+
+        if (jwt == null || jwt.isEmpty())
+            return null;
+
+        Jws<Claims> jws;
+        try {
+            jws = Jwts.parser()
+                    .verifyWith(getSignInKey())
+                    .build()
+                    .parseSignedClaims(jwt);
+        } catch (Exception e) {
+            return null;
+        }
+
+        return jws.getPayload();
     }
 
     /**
      * Check if the JWT is valid.
-     * A JWT is valid if it is not expired.
-     * A JWT is valid if all required claims are present.
      *
      * @param jwt JWT String
-     * @return Boolean
+     * @return jti
      */
-    public Boolean isValidJwt(String jwt) {
-        if (jwt == null || jwt.isEmpty()) return false;
-        Claims claims = extractAllClaims(jwt);
-        return !claims.getExpiration().before(new Date());
+    public String assertValidJwt(String jwt) {
+
+        if (jwt == null || jwt.isEmpty())
+            return null;
+
+        Jws<Claims> jws;
+        try {
+            jws = Jwts.parser()
+                    .verifyWith(getSignInKey())
+                    .build()
+                    .parseSignedClaims(jwt);
+        } catch (Exception e) {
+            return null;
+        }
+
+        try {
+            Claims claims = jws.getPayload();
+            if (claims.getExpiration().before(new Date()))
+                return null;
+
+            if (claims.getId() == null || claims.getId().isEmpty())
+                return null;
+
+            return claims.getId();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
-    public String generateToken(EnigmaUserDetails enigmaUserDetails) {
+    public String generateToken(Long enigmaUserId,
+                                String username,
+                                List<String> authorities,
+                                Long jti,
+                                String audienceValue,
+                                Timestamp issuedAt,
+                                Timestamp expiration) {
+
         return Jwts.builder()
                 .header()
-                .add("typ", "JWT")
-                .and()
-                .subject(enigmaUserDetails.getUsername())
-                .claim("user_id", enigmaUserDetails.getEnigmaUserId())
-                .claim("aud", enigmaUserDetails.getAudienceType().getName())
-                .claim("authorities", enigmaUserDetails
-                        .getAuthorities()
-                        .stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .collect(Collectors.toList())
-                )
+                .add("typ", "JWT").and()
+                .subject(username)
+                .audience().add(audienceValue).and()
+                .claim("user_id", enigmaUserId)
+                .claim("authorities", authorities)
+                .id(jti.toString())
                 .issuer("wia.com")
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION))
+                .issuedAt(issuedAt)
+                .expiration(expiration)
                 .signWith(getSignInKey())
-                .id(getTokenIdentifier())
                 .compact();
     }
 
