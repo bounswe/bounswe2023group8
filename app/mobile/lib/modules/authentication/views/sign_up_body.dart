@@ -51,14 +51,11 @@ class SignUpBody extends GetView<SignUpController> {
             ),
             const Spacer(flex: 1),
             InkWell(
-              onTap: () => {
-                controller.pickDate()
-              },
+              onTap: () => controller.pickDate(),
               child:
               CustomTextField(
-                hintText: 'Username',
-                initialValue: controller.selectedDate.value,
-                onChanged: (value) => controller.onChangeUsername(value),
+                hintText: 'Birthday',
+                controller: controller.dateController,
                 circularBorder: true,
                 showSuffix: false,
                 enabled: false,
@@ -83,6 +80,11 @@ class SignUpBody extends GetView<SignUpController> {
                 onChanged: (value) => controller.onChangeConfirmPassword(value),
                 circularBorder: true,
                 onSuffixTap: () => controller.toggleConfirmPasswordVisibility()),
+            const Spacer(flex: 1),
+            !controller.confirmPasswordValid.value ? const Text("Confirm password must match your password!",
+            style: TextStyle(
+              color: Colors.red
+            ),) : SizedBox(),
             const Spacer(flex: 2),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

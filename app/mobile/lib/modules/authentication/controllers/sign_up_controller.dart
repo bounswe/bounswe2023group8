@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile/data/helpers/validator.dart';
 
 import 'authentication_controller.dart';
 
@@ -22,6 +23,7 @@ class SignUpController extends GetxController {
   var loginEmailValid = false.obs;
   var signupInProgress = false.obs;
   var acceptTerms = false.obs;
+  final dateController = TextEditingController();
 
   final AuthenticationController authController =
   Get.find<AuthenticationController>();
@@ -35,8 +37,9 @@ class SignUpController extends GetxController {
     );
 
     if (picked != null) {
-      selectedDate.value = DateFormat('dd/MM/yyyy').format(picked);
+      dateController.text = picked.toString().split(' ')[0];
     }
+
   }
 
   void onChangeSelectedDate(String value) {
@@ -45,7 +48,7 @@ class SignUpController extends GetxController {
 
   void onChangeEmail(String value) {
     loginEmail.value = value;
-    loginEmailValid.value = value.length >= 3;
+    loginEmailValid.value = Validator.isEmailValid(loginEmail.value);
   }
 
   void onChangeUsername(String value) {
@@ -83,7 +86,7 @@ class SignUpController extends GetxController {
   void onSignUp() async {
     signupInProgress.value = true;
 
-    // Login logic will be implemented here
+    // Signup logic will be implemented here
 
     //  Get.offAllNamed(
     //    Routes.bottomNavigation,
