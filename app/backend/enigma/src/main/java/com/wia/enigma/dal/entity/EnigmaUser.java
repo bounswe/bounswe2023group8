@@ -8,10 +8,11 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "enigma_user")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EnigmaUser {
@@ -21,23 +22,20 @@ public class EnigmaUser {
     @Column(name = "id")
     Long id;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username")
     String username;
 
-    @Column(name = "name", nullable = false )
-    String name;
-
-    @Column(name = "email", unique = true)
+    @Column(name = "email")
     String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     String password;
 
-    @Column(name = "birthday", nullable = false)
+    @Column(name = "birthday")
     Date birthday;
 
-    @Column(name = "is_private")
-    Boolean isPrivate = false;
+    @Column(name = "audience_type")
+    String audienceType;
 
     @Column(name = "is_deleted")
     Boolean isDeleted = false;
