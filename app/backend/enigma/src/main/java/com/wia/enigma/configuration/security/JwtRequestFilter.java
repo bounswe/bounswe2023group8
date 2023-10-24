@@ -40,31 +40,29 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null || !authHeader.startsWith(AUTHENTICATION_TYPE)) {
-
-            log.error(
+        if (authHeader == null) {
+            throw new EnigmaUnauthorizedException(ExceptionCodes.MISSING_AUTHORIZATION_HEADER,
                     "Missing Authorization header for request: {} {}".formatted(
                             request.getMethod(),
-                            request.getRequestURI()),
-                    new BadCredentialsException("Missing Authorization header")
+                            request.getRequestURI()
+                    )
             );
-
-            filterChain.doFilter(request, response);
-            return;
         }
 
-        String jwt = authHeader.substring(AUTHENTICATION_TYPE.length() + 1).trim();
-        jwtService.validateJwt(jwt);
+        if (!authHeader.startsWith(JwtUtils.getInstance().getTokenType())) {
+            throw new EnigmaUnauthorizedException(ExceptionCodes.INVALID_AUTHORIZATION_HEADER,
+                    "Invalid Authorization header for request: {} {}".formatted(
+                            request.getMethod(),
+                            request.getRequestURI()
+                    )
+            );
+        }
 
-        Claims claims = jwtService.extractClaims(jwt);
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                claims.getSubject(),
-                null, // password is not needed, it's a JWT token
-                new ArrayList<>() // empty authorities list for simplicity
-        );
+        String jwt = authHeader.substring(JwtUtils.getInstance().getTokenType().length() + 1).trim();
+        EnigmaAuthenticationToken token = enigmaJwtService.validateJwt(jwt);
 
-        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(token);
         setHeaders(response);
 
         filterChain.doFilter(request, response);

@@ -45,16 +45,12 @@ public class FilterConfiguration {
                                 "/webjars/**",
                                 "/swagger-resources/**"}).permitAll()
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/auth/refresh").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider);
-
 
         return http.build();
     }
