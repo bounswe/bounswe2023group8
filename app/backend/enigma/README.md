@@ -63,7 +63,7 @@ Enigma is the core backend application for our project, built using Spring Frame
     ```
 
 ## API Documentation
-[Postman API Documentation](https://lively-resonance-898824.postman.co/documentation/27173951-3658f7df-0967-4316-b29d-0f476cfe976d/publish?workspaceId=93748791-ac9b-476d-847a-17d118c01da2)
+[Postman API Documentation](https://documenter.getpostman.com/view/27173951/2s9YRDzqTj)
 
 ## License
 [License for bounswe2023group8](https://github.com/bounswe/bounswe2023group8/blob/main/LICENSE)
