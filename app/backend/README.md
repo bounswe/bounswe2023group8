@@ -34,9 +34,8 @@ Punchcard represents the MySQL database utilized in this project. It is built us
    ```
 
 ## API Documentation
-<!-- 
-currently not available
--->
+### Enigma
+[Postman API Documentation](https://documenter.getpostman.com/view/27173951/2s9YRDzqTj)
 
 ## Deployment
 <!--
