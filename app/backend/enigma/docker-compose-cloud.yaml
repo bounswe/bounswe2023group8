@@ -1,0 +1,7 @@
+version: '3.1'
+
+services:
+  enigma:
+    build: .
+    ports:
+      - "8081:8080"
