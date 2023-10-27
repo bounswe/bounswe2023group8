@@ -4,30 +4,27 @@ import OpeningPage from "../OpeningPage";
 import Topbar from "../../components/Layout/Topbar/Topbar";
 import Sidebar from "../../components/Layout/Sidebar/Sidebar";
 import PageWithTopbarOnly from "../TemporaryRouterTestPages/PageWithTopbarOnly";
-import PageWithTopbarAndSidebar from "../TemporaryRouterTestPages/PageWithTopbarAndSidebar";
 import PageWithNoWrapper from "../TemporaryRouterTestPages/PageWithNoWrapper";
-import Register from "../Register";
-import Login from "../Login";
-import ForgotPassword from "../ForgotPassword";
 import ConfirmNewPassword from "../ConfirmNewPassword";
+import {Col, Row} from "react-bootstrap";
 
-const Router = () => (
+type RouterProps = {
+    isUser: boolean;
+}
+const Router = (props: RouterProps) => (
     <Routes>
         {/*Pages that have neither topbar nor sidebar go here*/}
 
         <Route path="/no_bar" element={<PageWithNoWrapper/>}/>
-        <Route path="/register" element={<Register/>}/>
-        <Route path="/login" element={<Login />} />
-        <Route path="/forgot-password" element={<ForgotPassword/>}/>
         <Route path="/confirm-new-password" element={<ConfirmNewPassword/>}/>
 
         <Route
             path="/"
             element={
-                <div>
-                    <Topbar/>
-                    <Outlet/>
-                </div>
+                <Col className="">
+                    <Row className="fixed-top" style={{maxHeight: "87px"}}><Topbar isUser={props.isUser}/></Row>
+                    <Row style={{marginTop: "87px"}}><Outlet/></Row>
+                </Col>
             }
         >
             {/*Pages that have only a topbar go here*/}
@@ -37,15 +34,16 @@ const Router = () => (
 
             <Route
                 element={
-                    <div>
-                        <Sidebar/>
-                        <Outlet/>
-                    </div>
+                    <Row className="p-0 m-0">
+                        <Col className="col-2 bg-body-secondary position-fixed bottom-0"
+                        style={{top: "87px"}}><Sidebar isUser={props.isUser}/></Col>
+                        <Col className="col-10 overflow-y-auto" style={{marginLeft: "17%"}}><Outlet/></Col>
+                    </Row>
                 }
             >
                 {/*Pages that have both a topbar and sidebar go here*/}
 
-                <Route path="/both_bars" element={<PageWithTopbarAndSidebar/>}/>
+                <Route path="/home" element={<OpeningPage/>}/>
             </Route>
         </Route>
     </Routes>
