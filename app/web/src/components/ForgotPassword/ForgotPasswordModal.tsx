@@ -8,7 +8,7 @@ type FormData = {
 
 type ForgotPasswordModalProps = {
     showModal: boolean;
-    handleClose: () => void;
+    setShowForgotPasswordModal: () => void;
 };
 
 const ForgotPasswordModal = (props: ForgotPasswordModalProps) => {
@@ -17,7 +17,7 @@ const ForgotPasswordModal = (props: ForgotPasswordModalProps) => {
         handleSubmit,
         formState: {errors},
     } = useForm<FormData>();
-    const {showModal, handleClose} = props;
+    const {showModal, setShowForgotPasswordModal} = props;
     const onSubmit: SubmitHandler<FormData> = (data) => {
         console.log(data);
         // handle registration logic here
@@ -27,7 +27,7 @@ const ForgotPasswordModal = (props: ForgotPasswordModalProps) => {
         <Modal
             className="rounded-5"
             show={showModal}
-            onHide={handleClose}
+            onHide={setShowForgotPasswordModal}
             size="lg"
             centered
         >
