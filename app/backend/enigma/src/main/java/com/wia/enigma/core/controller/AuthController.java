@@ -6,6 +6,7 @@ import com.wia.enigma.configuration.security.EnigmaUserDetailsService;
 import com.wia.enigma.core.data.request.SignupRequest;
 import com.wia.enigma.core.data.response.LoginResponse;
 import com.wia.enigma.core.data.response.RegisterResponse;
+import com.wia.enigma.core.data.response.VerificationResponse;
 import com.wia.enigma.core.service.EnigmaJwtService;
 import com.wia.enigma.core.service.EnigmaUserService;
 import com.wia.enigma.dal.entity.EnigmaUser;
@@ -41,27 +42,17 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest signupRequest) {
 
-        RegisterResponse registerResponse = enigmaUserService.registerEnigmaUser(
+        enigmaUserService.registerEnigmaUser(
                 signupRequest.getUsername(),
                 signupRequest.getEmail(),
                 signupRequest.getPassword(),
                 signupRequest.getBirthday()
         );
 
-        if (registerResponse == null)
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .build();
-
         return ResponseEntity
-                .created(
-                        ServletUriComponentsBuilder
-                                .fromCurrentContextPath()
-                                .path("/api/v1/user/{enigmaUserId}")
-                                .buildAndExpand(registerResponse.getEnigmaUserId())
-                                .toUri()
-                )
-                .body(registerResponse);
+                .status(HttpStatus.OK)
+                .build();
+
     }
 
     /**
@@ -95,4 +86,51 @@ public class AuthController {
                 .status(HttpStatus.OK)
                 .build();
     }
+
+    /**
+     * WA-4: Verifies a user.
+     */
+    @GetMapping("/verify")
+    public ResponseEntity<?> verify(@Valid @NotNull @RequestParam(name = "token") String token) {
+
+        VerificationResponse verifiedEnigmaUserId = enigmaUserService.verifyEnigmaUser(token);
+
+        if (verifiedEnigmaUserId == null)
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .build();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(verifiedEnigmaUserId);
+    }
+
+    /**
+     * WA-5: Sends a password reset email.
+     */
+    @GetMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@Valid @NotNull @RequestParam(name = "email") String email) {
+
+        enigmaUserService.forgotPassword(email);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
+    }
+
+    /**
+     * WA-6: Resets a user's password.
+     */
+    @GetMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @NotNull @RequestParam(name = "token") String token,
+                                           @Valid @NotNull @RequestParam(name = "password") String password, @Valid @NotNull @RequestParam(name = "password2") String password2 ) {
+
+        enigmaUserService.resetPassword(token, password, password2);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
+    }
+
+
 }
