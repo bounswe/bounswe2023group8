@@ -37,6 +37,9 @@ public class EnigmaUser {
     @Column(name = "audience_type")
     String audienceType;
 
+    @Column(name = "is_verified")
+    Boolean isVerified = false;
+
     @Column(name = "is_deleted")
     Boolean isDeleted = false;
 

@@ -16,6 +16,13 @@ public interface EnigmaUserRepository extends JpaRepository<EnigmaUser, Long> {
          audienceType,
          authorities (List<String>)
      */
+
+
+    @Query("SELECT u " +
+            "FROM EnigmaUser u " +
+            "WHERE u.id= ?1 AND u.isDeleted = false AND u.isVerified = ?2")
+    EnigmaUser findByIdAndIsVerified(Long id, Boolean isVerified);
+
     @Query("SELECT u " +
             "FROM EnigmaUser u " +
             "WHERE u.username = ?1 AND u.isDeleted = false")
@@ -25,16 +32,16 @@ public interface EnigmaUserRepository extends JpaRepository<EnigmaUser, Long> {
             "FROM EnigmaUser e " +
             "WHERE ((:username IS NULL OR e.username = :username) " +
             "OR (:email IS NULL OR e.email = :email)) " +
-            "AND e.isDeleted = false")
-    boolean existsByUsernameOrEmail(String username, String email);
+            "AND e.isDeleted = false AND e.isVerified = :isVerified")
+    boolean existsByUsernameOrEmailAAndIsVerified(String username, String email, Boolean isVerified);
 
     @Query("SELECT u " +
             "FROM EnigmaUser u " +
-            "WHERE u.username = ?1 AND u.isDeleted = false")
-    EnigmaUser findEnigmaUserByUsername(String username);
+            "WHERE u.username = ?1 AND u.isDeleted = false AND u.isVerified = ?2")
+    EnigmaUser findEnigmaUserByUsernameAndIsVerified(String username, Boolean isVerified);
 
     @Query("SELECT u " +
             "FROM EnigmaUser u " +
-            "WHERE u.email = ?1 AND u.isDeleted = false")
-    EnigmaUser findEnigmaUserByEmail(String email);
+            "WHERE u.email = ?1 AND u.isDeleted = false AND u.isVerified = ?2")
+    EnigmaUser findEnigmaUserByEmailAndIsVerified(String email, Boolean isVerified);
 }
