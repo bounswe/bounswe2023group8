@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/profile_controller.dart';
+import '../controllers/followers_controller.dart';
+import '../controllers/followings_controller.dart';
 
 
 class ProfileView extends GetView<ProfileController> {
@@ -67,6 +69,8 @@ class ProfileHeader extends StatelessWidget {
 }
 
 class FollowersPopup extends StatelessWidget {
+  final followersController = Get.put(FollowersController());
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -87,15 +91,34 @@ class FollowersPopup extends StatelessWidget {
           ],
         ),
         children: [
-          ListTile(
-            leading: CircleAvatar(
-              // Follower's photo
-              backgroundImage: AssetImage('assets/icons/begumpp.jpeg'),
+          Container(
+            width: 200, // necessary don't know why
+            height: 300,
+            child: SingleChildScrollView( // Wrap your content with SingleChildScrollView to add scrolling feature
+              child: GetBuilder<FollowersController>(
+                builder: (controller) {
+                  return Column(
+                    children: [
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: controller.followers.length,
+                        itemBuilder: (context, index) {
+                          final follower = controller.followers[index];
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage: AssetImage(follower.profileImage),
+                            ),
+                            title: Text(follower.name),
+                            subtitle: Text(follower.username),
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
-            title: Text('Begüm Yivli'),
-            subtitle: Text('@begum'),
           ),
-          // Add more ListTile widgets for additional followers
         ],
       ),
     );
@@ -103,37 +126,58 @@ class FollowersPopup extends StatelessWidget {
 }
 
 class FollowingsPopup extends StatelessWidget {
+  final followingsController = Get.put(FollowingsController());
+
   @override
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(
         dialogBackgroundColor: Color(0xFFF1F1F1), // Set the background color
       ),
-    child: SimpleDialog(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: SimpleDialog(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Followings'),
+            IconButton(
+              icon: Icon(Icons.close), // Close icon
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        ),
         children: [
-          Text('Followers'),
-          IconButton(
-            icon: Icon(Icons.close), // Close icon
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
-            },
+          Container(
+            width: 200, // necessary don't know why
+            height: 300,
+            child: SingleChildScrollView( // Wrap your content with SingleChildScrollView
+              child: GetBuilder<FollowingsController>(
+                builder: (controller) {
+                  return Column( // Wrap with a Column
+                    children: [
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: controller.followings.length,
+                        itemBuilder: (context, index) {
+                          final following = controller.followings[index];
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage: AssetImage(following.profileImage),
+                            ),
+                            title: Text(following.name),
+                            subtitle: Text(following.username),
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
           ),
         ],
       ),
-      children: [
-        ListTile(
-          leading: CircleAvatar(
-            // Following's photo
-            backgroundImage: AssetImage('assets/icons/begumpp.jpeg'),
-          ),
-          title: Text('Begüm Yivli'),
-          subtitle: Text('@begum'),
-        ),
-        // Add more ListTile widgets for additional followers
-      ],
-    ),
     );
   }
 }
