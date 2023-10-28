@@ -161,7 +161,7 @@ class SignUpBody extends GetView<SignUpController> {
                       fontSize: 20,
                     )),
                 InkWell(
-                  onTap: controller.navigateToSignUp,
+                  onTap: controller.navigateToSignin,
                   child: Text('Log in',
                       style: TextStyle(
                           color: Palette.primaryColor,

@@ -10,4 +10,8 @@ class Assets {
   static const String sampleImage6 = 'assets/icons/sample_image6.png';
   static const String sampleImage7 = 'assets/icons/sample_image7.png';
   static const String sampleImage8 = 'assets/icons/sample_image8.png';
+  static const String home = 'assets/icons/home.svg';
+  static const String settings = 'assets/icons/settings.svg';
+  static const String profile = 'assets/icons/profile.svg';
+  static const String newIa = 'assets/icons/new-ia.svg';
 }

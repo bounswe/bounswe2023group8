@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:mobile/modules/authentication/views/forgot_password_view.dart';
 
+import '../../../routes/app_pages.dart';
 import 'authentication_controller.dart';
 import 'forgot_password_controller.dart';
 
@@ -47,6 +48,10 @@ class LoginController extends GetxController {
 
   void onSignIn() async {
     loginInProgress.value = true;
+
+    Get.offAllNamed(
+      Routes.bottomNavigation,
+    );
 
     // Login logic will be implemented here
 

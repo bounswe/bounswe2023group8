@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/data/helpers/validator.dart';
 
+import '../../../routes/app_pages.dart';
 import 'authentication_controller.dart';
 
 class SignUpController extends GetxController {
@@ -71,12 +72,16 @@ class SignUpController extends GetxController {
     acceptTerms.value = !acceptTerms.value;
   }
 
-  void navigateToSignUp() {
+  void navigateToSignin() {
     authController.switchAuthView();
   }
 
   void onSignUp() async {
     signupInProgress.value = true;
+
+    Get.offAllNamed(
+      Routes.bottomNavigation,
+    );
 
     // Signup logic will be implemented here
 
