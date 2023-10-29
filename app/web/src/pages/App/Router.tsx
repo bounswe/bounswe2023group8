@@ -8,21 +8,24 @@ import PageWithNoWrapper from "../TemporaryRouterTestPages/PageWithNoWrapper";
 import ConfirmNewPassword from "../ConfirmNewPassword";
 import { Col, Row } from "react-bootstrap";
 import { useAuth } from "../../contexts/AuthContext";
+import RegistrationConfirm from "../RegistrationConfirm";
 
 const Router = () => {
+  const { isAuthenticated } = useAuth();
   return (
     <Routes>
       {/*Pages that have neither topbar nor sidebar go here*/}
 
       <Route path="/no_bar" element={<PageWithNoWrapper />} />
       <Route path="/confirm-new-password" element={<ConfirmNewPassword />} />
+      <Route path="/registration-confirm" element={<RegistrationConfirm />} />
 
       <Route
         path="/"
         element={
           <Col className="">
             <Row className="fixed-top" style={{ maxHeight: "87px" }}>
-              <Topbar isUser={true} />
+              <Topbar isUser={isAuthenticated} />
             </Row>
             <Row style={{ marginTop: "87px" }}>
               <Outlet />
@@ -42,7 +45,7 @@ const Router = () => {
                 className="col-2 bg-body-secondary position-fixed bottom-0"
                 style={{ top: "87px" }}
               >
-                <Sidebar isUser={true} />
+                <Sidebar isUser={isAuthenticated} />
               </Col>
               <Col
                 className="col-10 overflow-y-auto"

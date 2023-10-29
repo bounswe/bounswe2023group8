@@ -4,6 +4,7 @@ import React, {
   useState,
   ReactNode,
   ReactElement,
+  useCallback,
 } from "react";
 import axios, { AxiosInstance, AxiosRequestHeaders } from "axios";
 import { SignUpFormData } from "../components/Register/RegisterModal";
@@ -12,14 +13,21 @@ import { LoginFormData } from "../components/Login/LoginModal";
 interface AuthState {
   isAuthenticated: boolean;
   token: string | null;
+  enigmaUserId: number | null;
+  authentication: {
+    tokenType: string;
+    accessToken: string;
+    refreshToken: string;
+    expiresIn: number;
+  } | null;
 }
 
-interface AuthContextType {
-  authState: AuthState;
+interface AuthContextType extends AuthState {
   login: (data: LoginFormData) => Promise<void>;
   signup: (data: SignUpFormData) => Promise<void>;
   logout: () => void;
   axiosInstance: AxiosInstance;
+  confirmSignupToken: (token: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,16 +36,16 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-const BACKEND_URL = "https://google.com";
-
 export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
   const [authState, setAuthState] = useState<AuthState>({
     isAuthenticated: false,
     token: null,
+    enigmaUserId: null,
+    authentication: null,
   });
 
   const axiosInstance = axios.create({
-    baseURL: BACKEND_URL,
+    baseURL: `${process.env.REACT_APP_BACKEND_API_URL}`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -55,11 +63,18 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
 
   const login = async (data: LoginFormData) => {
     try {
-      const response = await axiosInstance.post("/login", data);
-      const token = response.data.token;
+      const params = new URLSearchParams({
+        user: data.emailOrUsername,
+        password: data.password,
+      }).toString();
+
+      const response = await axiosInstance.get(`/auth/signin?${params}`);
+      const { enigmaUserId, authentication } = response.data;
       setAuthState({
         isAuthenticated: true,
-        token,
+        token: authentication.accessToken,
+        enigmaUserId,
+        authentication,
       });
     } catch (error) {
       console.error("Login failed:", error);
@@ -69,28 +84,56 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
 
   const signup = async (data: SignUpFormData) => {
     try {
-      const response = await axiosInstance.post("/signup", data);
-      const token = response.data.token;
-      setAuthState({
-        isAuthenticated: true,
-        token,
-      });
+      await axiosInstance.post("/auth/signup", data);
     } catch (error) {
       console.error("Signup failed:", error);
       throw error;
     }
   };
 
-  const logout = () => {
-    setAuthState({
-      isAuthenticated: false,
-      token: null,
-    });
+  const logout = async () => {
+    try {
+      await axiosInstance.get("/auth/logout");
+      setAuthState({
+        ...authState,
+        isAuthenticated: false,
+        token: null,
+      });
+    } catch (error) {
+      console.error("Logout failed:", error);
+      throw error;
+    }
   };
+
+  const confirmSignupToken = useCallback(
+    async (token: string) => {
+      try {
+        const response = await axiosInstance.get(`/auth/verify?token=${token}`);
+        const { enigmaUserId, authentication } = response.data;
+        setAuthState({
+          isAuthenticated: true,
+          token: authentication.accessToken,
+          enigmaUserId,
+          authentication,
+        });
+      } catch (error) {
+        console.error("Token confirmation failed:", error);
+        throw error;
+      }
+    },
+    [axiosInstance]
+  );
 
   return (
     <AuthContext.Provider
-      value={{ authState, login, signup, logout, axiosInstance }}
+      value={{
+        ...authState,
+        login,
+        signup,
+        logout,
+        axiosInstance,
+        confirmSignupToken,
+      }}
     >
       {children}
     </AuthContext.Provider>

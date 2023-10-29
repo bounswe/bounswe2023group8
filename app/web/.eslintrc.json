@@ -20,6 +20,8 @@
   },
   "plugins": ["react", "react-hooks", "@typescript-eslint"],
   "rules": {
+    "@typescript-eslint/ban-types": [1, {}],
+    "@typescript-eslint/no-explicit-any": [1, {}],
     "no-unused-vars": [1, {}],
     "@typescript-eslint/no-unused-vars": [
       "warn",
