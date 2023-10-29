@@ -9,6 +9,7 @@ import RegisterModal from "../../Register/RegisterModal";
 import LoginModal from "../../Login/LoginModal";
 import ForgotPasswordModal from "../../ForgotPassword/ForgotPasswordModal";
 import SpanWithOnClick from "../../shared/SpanWithOnClick";
+import { useAuth } from "../../../contexts/AuthContext";
 
 type TopbarProps = {
   isUser: boolean;
@@ -29,6 +30,7 @@ const Topbar = (props: TopbarProps) => {
   const handleRegisterShow = () => {
     setShowRegisterModal(!showRegisterModal);
   };
+  const { logout } = useAuth();
 
   const handleLoginShow = () => {
     setShowLoginModal(!showLoginModal);
@@ -39,7 +41,7 @@ const Topbar = (props: TopbarProps) => {
   };
 
   const handleLogOut = () => {
-    console.log("dummy log out");
+    logout();
   };
 
   return (

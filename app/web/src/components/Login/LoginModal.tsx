@@ -3,6 +3,7 @@ import { Modal } from "react-bootstrap";
 import { useForm, SubmitHandler } from "react-hook-form";
 import SpanWithOnClick from "../shared/SpanWithOnClick";
 import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export type LoginFormData = {
   emailOrUsername: string;
@@ -17,6 +18,7 @@ type LoginModalProps = {
 };
 
 const LoginModal = (props: LoginModalProps) => {
+  const navigate = useNavigate();
   const { login } = useAuth();
   const {
     register,
@@ -32,6 +34,8 @@ const LoginModal = (props: LoginModalProps) => {
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     try {
       await login(data);
+      setShowLoginModal();
+      navigate("/home");
     } catch (error) {
       console.error("Signup failed:", error);
     }

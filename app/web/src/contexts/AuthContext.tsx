@@ -7,7 +7,7 @@ import React, {
   useCallback,
 } from "react";
 import axios, { AxiosInstance, AxiosRequestHeaders } from "axios";
-import { SignUpFormData } from "../components/Register/RegisterModal";
+import { FormData } from "../components/Register/RegisterModal";
 import { LoginFormData } from "../components/Login/LoginModal";
 
 interface AuthState {
@@ -24,7 +24,7 @@ interface AuthState {
 
 interface AuthContextType extends AuthState {
   login: (data: LoginFormData) => Promise<void>;
-  signup: (data: SignUpFormData) => Promise<void>;
+  signup: (data: FormData) => Promise<void>;
   logout: () => void;
   axiosInstance: AxiosInstance;
   confirmSignupToken: (token: string) => Promise<void>;
@@ -38,8 +38,8 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
   const [authState, setAuthState] = useState<AuthState>({
-    isAuthenticated: false,
-    token: null,
+    isAuthenticated: sessionStorage.getItem("token") ? true : false,
+    token: sessionStorage.getItem("token"),
     enigmaUserId: null,
     authentication: null,
   });
@@ -76,13 +76,14 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
         enigmaUserId,
         authentication,
       });
+      sessionStorage.setItem("token", authentication.accessToken);
     } catch (error) {
       console.error("Login failed:", error);
       throw error;
     }
   };
 
-  const signup = async (data: SignUpFormData) => {
+  const signup = async (data: FormData) => {
     try {
       await axiosInstance.post("/auth/signup", data);
     } catch (error) {
@@ -93,12 +94,14 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
 
   const logout = async () => {
     try {
-      await axiosInstance.get("/auth/logout");
+      await axiosInstance.post("/auth/logout");
       setAuthState({
-        ...authState,
+        enigmaUserId: null,
+        authentication: null,
         isAuthenticated: false,
         token: null,
       });
+      sessionStorage.clear();
     } catch (error) {
       console.error("Logout failed:", error);
       throw error;
@@ -116,6 +119,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
           enigmaUserId,
           authentication,
         });
+        sessionStorage.setItem("token", authentication.accessToken);
       } catch (error) {
         console.error("Token confirmation failed:", error);
         throw error;

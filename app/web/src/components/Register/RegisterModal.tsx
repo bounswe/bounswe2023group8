@@ -4,7 +4,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import SpanWithOnClick from "../shared/SpanWithOnClick";
 import { useAuth } from "../../contexts/AuthContext";
 
-type FormData = {
+export type FormData = {
   email: string;
   username: string;
   birthday: Date;
@@ -31,6 +31,8 @@ const RegisterModal = (props: RegisterModalProps) => {
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
       await signup(data);
+      setShowRegisterModal();
+      // TODO: show email verification modal
     } catch (error) {
       console.error("Signup failed:", error);
     }
