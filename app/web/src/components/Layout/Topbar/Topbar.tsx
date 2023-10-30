@@ -8,7 +8,7 @@ import { Button } from "react-bootstrap";
 import RegisterModal from "../../Register/RegisterModal";
 import LoginModal from "../../Login/LoginModal";
 import ForgotPasswordModal from "../../ForgotPassword/ForgotPasswordModal";
-import SpanWithOnClick from "../../shared/SpanWithOnClick";
+import SpanWithOnClick from "../../shared/SpanWithOnClick/SpanWithOnClick";
 import { useAuth } from "../../../contexts/AuthContext";
 
 type TopbarProps = {
@@ -44,96 +44,83 @@ const Topbar = (props: TopbarProps) => {
     logout();
   };
 
-  return (
-    <div>
-      <Navbar
-        className="bg-body border-bottom border-light
-            navbar-expand-md navbar-expand-lg navbar-expand-sm"
-        style={{ maxHeight: "87px" }}
-      >
-        <Container className="m-0 min-vw-100">
-          <Navbar.Brand href="/">
-            <img
-              alt=""
-              src="/assets/logo.png"
-              className="d-inline-block align-top"
-              width="38px"
-              height="43px"
-            />{" "}
-            <span className="fs-3">Web Info Aggregator</span>
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            {props.isUser ? (
-              <Nav className="container justify-content-end m-3 ">
-                <NavDropdown
-                  title={<span className="fs-5 bi bi-bell"></span>}
-                  id="collapsible-nav-dropdown"
-                  drop="start"
-                >
-                  {mockNotifications.map((notification) => (
-                    <NavDropdown.Item
-                      key={notification.title}
-                      href={notification.href}
-                    >
-                      {notification.title}
-                    </NavDropdown.Item>
-                  ))}
-                </NavDropdown>
-                <NavDropdown
-                  title={<span className="fs-5 bi bi-person">Username</span>}
-                  id="collapsible-nav-dropdown"
-                >
-                  <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.2">
-                    Another action
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item>
-                    <SpanWithOnClick
-                      className="text-primary fw-bolder"
-                      onClick={handleLogOut}
-                      text={"Log Out"}
-                    />
-                  </NavDropdown.Item>
-                </NavDropdown>
-              </Nav>
-            ) : (
-              <Nav className="container justify-content-end m-3 ">
-                <Button
-                  className="btn btn-primary rounded-5 fw-bolder me-3"
-                  onClick={handleLoginShow}
-                >
-                  Login
-                </Button>
-                <Button
-                  className="text-primary btn bg-dark-subtle rounded-5 fw-bolder me-3 btn-outline-light"
-                  onClick={handleRegisterShow}
-                >
-                  Sign up
-                </Button>
-              </Nav>
-            )}
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-      <RegisterModal
-        showRegisterModal={showRegisterModal}
-        setShowRegisterModal={handleRegisterShow}
-        setShowLoginModal={handleLoginShow}
-      />
-      <LoginModal
-        showLoginModal={showLoginModal}
-        setShowLoginModal={handleLoginShow}
-        setShowRegisterModal={handleRegisterShow}
-        setShowForgotPasswordModal={handleForgotPasswordShow}
-      />
-      <ForgotPasswordModal
-        showModal={showForgotPasswordModal}
-        setShowForgotPasswordModal={handleForgotPasswordShow}
-      />
-    </div>
-  );
+    return (
+        <div>
+            <Navbar className="bg-body border-bottom border-dark-subtle
+            navbar-expand-md navbar-expand-lg navbar-expand-sm" style={{maxHeight: "60px"}}>
+                <Container className="m-0 min-vw-100">
+                    <Navbar.Brand href="/">
+                        <img
+                            alt=""
+                            src="/assets/logo.png"
+                            className="d-inline-block align-top"
+                            width="38px"
+                            height="43px"
+                        />{' '}
+                        <span className="fs-3">Web Info Aggregator</span>
+                    </Navbar.Brand>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        {props.isUser
+                            ? <Nav className="container justify-content-end m-3 ">
+                                    <NavDropdown title={<span className="fs-5 bi bi-bell"></span>}
+                                                 id="collapsible-nav-dropdown"
+                                                 drop="start" >
+                                        {mockNotifications.map(
+                                            (notification) =>
+                                                <NavDropdown.Item
+                                                    key={notification.title}
+                                                    href={notification.href}>
+                                                    {notification.title}
+                                                </NavDropdown.Item>)}
+                                    </NavDropdown>
+                                <NavDropdown title={<span className="fs-5 bi bi-person">Username</span>}
+                                             id="collapsible-nav-dropdown">
+                                    <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+                                    <NavDropdown.Item href="#action/3.2">
+                                        Another action
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Divider/>
+                                    <NavDropdown.Item>
+                                        <SpanWithOnClick className="text-primary fw-bolder" onClick={handleLogOut}
+                                                         text={"Log Out"}/>
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                            </Nav>
+
+                            : <Nav className="container justify-content-end m-3 ">
+                                <Button className="btn btn-primary rounded-5 fw-bolder me-3" onClick={handleLoginShow}>
+                                    Login
+                                </Button>
+                                <Button
+                                    className="text-primary btn bg-dark-subtle rounded-5 fw-bolder me-3 btn-outline-light"
+                                    onClick={handleRegisterShow}>
+                                    Sign up
+                                </Button>
+                            </Nav>}
+
+                    </Navbar.Collapse>
+                </Container>
+            </Navbar>
+            <RegisterModal
+                showRegisterModal={showRegisterModal}
+                setShowRegisterModal={handleRegisterShow}
+                setShowLoginModal={handleLoginShow}
+            />
+            <LoginModal
+                showLoginModal={showLoginModal}
+                setShowLoginModal={handleLoginShow}
+                setShowRegisterModal={handleRegisterShow}
+                setShowForgotPasswordModal={handleForgotPasswordShow}
+            />
+            <ForgotPasswordModal
+                showModal={showForgotPasswordModal}
+                setShowForgotPasswordModal={handleForgotPasswordShow}
+            />
+
+        </div>
+    );
 };
+
 
 export default Topbar;

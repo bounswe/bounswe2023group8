@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1001,
+    "name": "Furkan Özçelik",
+    "nickname": "furkanozcelik",
+    "ia_ids": [1,2,3,4,5],
+    "follower_count": 7,
+    "following_count": 7,
+    "all_time_likes": 7,
+    "all_time_dislikes": 7,
+    "user_profile_image": "https://m.media-amazon.com/images/M/MV5BNDY3Y2E1NWYtMTFkZS00MzlmLTk2ZTItMTAyY2QxZDU1NjZhXkEyXkFqcGdeQXVyMTA0MTM5NjI2._V1_FMjpg_UX1000_.jpg"
+  }
+]
