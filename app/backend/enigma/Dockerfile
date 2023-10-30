@@ -1,25 +1,26 @@
-# Use Maven with JDK 17 to build the project
-FROM maven:3.8.3-openjdk-17-slim as builder
+# Stage 2: Build the server
+FROM maven:3.8.5-openjdk-17 as server-build
+# Set the working directory inside the container
+WORKDIR /app
 
-LABEL authors="bahadirgezer"
-WORKDIR /usr/src/app
+# Copy the server files into the container
+COPY . ./
 
-# Copy the Maven pom.xml file and download dependencies to take advantage of Docker layer caching
-COPY pom.xml .
-RUN mvn dependency:go-offline
+# Build the server application (assuming Maven)
+RUN mvn clean install -DskipTests -X
 
-# Copy the project source and build it
-COPY src ./src
-RUN mvn package
-
-# Use JDK 17 to run the application
+# Stage 3: Create the final image
 FROM openjdk:17-slim
 
-# Copy the built artifact from the builder stage
-COPY --from=builder /usr/src/app/target/enigma-0.0.1.jar /usr/app/enigma.jar
+# Set the working directory inside the container
+WORKDIR /app
 
-# Expose the application port
+
+# Copy the server JAR file from the server-build stage
+COPY --from=server-build /app/target/enigma-0.0.1.jar ./
+
+# Expose the port(s) that the server listens on
 EXPOSE 8080
 
-# Command to run the application
-ENTRYPOINT ["java", "-jar", "/usr/app/enigma.jar"]
+# Define the command to run the server application
+CMD ["java", "-jar", "enigma-0.0.1.jar"]

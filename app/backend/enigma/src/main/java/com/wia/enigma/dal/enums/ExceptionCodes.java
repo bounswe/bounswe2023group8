@@ -21,6 +21,13 @@ public enum ExceptionCodes {
     INVALID_PASSWORD(613, "Invalid password"),
     REVOKED_JWT(614, "Revoked JWT"),
 
+    VERIFICATION_TOKEN_NOT_FOUND(615, "Verification token not found"),
+    VERIFICATION_TOKEN_EXPIRED(616, "Verification token expired"),
+
+    PASSWORDS_DO_NOT_MATCH(617, "Passwords do not match"),
+
+    USERNAME_OR_EMAIL_ALREADY_VERIFIED(618, "Username or email exists."),
+
     DB_GET_ERROR(700, "Error while getting data from database"),
     DB_SAVE_ERROR(701, "Error while saving data to database"),
     DB_UPDATE_ERROR(702, "Error while updating data in database"),

@@ -4,13 +4,14 @@ import com.wia.enigma.core.data.dto.JwtGenerationDto;
 import com.wia.enigma.core.data.response.LoginResponse;
 import com.wia.enigma.core.data.response.RegisterResponse;
 import com.wia.enigma.core.data.response.SecurityDetailsResponse;
+import com.wia.enigma.core.data.response.VerificationResponse;
 import com.wia.enigma.dal.entity.EnigmaUser;
+import com.wia.enigma.dal.entity.VerificationToken;
 import com.wia.enigma.dal.enums.AudienceType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.repository.EnigmaUserRepository;
 import com.wia.enigma.exceptions.custom.EnigmaBadRequestException;
 import com.wia.enigma.exceptions.custom.EnigmaDatabaseException;
-import com.wia.enigma.exceptions.custom.EnigmaRuntimeException;
 import com.wia.enigma.exceptions.custom.EnigmaUnauthorizedException;
 import com.wia.enigma.utilities.JwtUtils;
 import lombok.AccessLevel;
@@ -18,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +40,10 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
     final EnigmaJwtService enigmaJwtService;
 
+    final VerificationTokenService verificationTokenService;
+
+    final EmailService emailService;
+
     /**
      * Registers a new EnigmaUser.
      *
@@ -47,7 +51,6 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
      * @param email         email
      * @param password      password
      * @param birthday      birthday
-     * @return              RegisterResponse
      */
     @Override
     @Transactional
@@ -55,8 +58,6 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                                                String email,
                                                String password,
                                                String birthday) {
-
-        /* TODO: send verification email to user */
 
         /* check the uniqueness of username and email */
         assertEnigmaUserDoesNotExist(username, email);
@@ -81,6 +82,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                 .birthday(birthdayDate)
                 .audienceType(AudienceType.USER.getName())
                 .isDeleted(false)
+                .isVerified(false)
                 .createTime(new Timestamp(System.currentTimeMillis()))
                 .build();
 
@@ -92,24 +94,18 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                     "Cannot save EnigmaUser.");
         }
 
-        /* TODO: set up authorities structure */
-        List<String> authorities = new ArrayList<>();
-
-        Pair<JwtGenerationDto, JwtGenerationDto> tokens = enigmaJwtService.generateTokens(
-                enigmaUser.getId(),
-                enigmaUser.getUsername(),
-                authorities,
-                enigmaUser.getAudienceType()
-        );
+        VerificationToken verificationToken = verificationTokenService.createVerificationToken(enigmaUser.getId(), false);
+        try {
+            emailService.sendVerificationEmail(enigmaUser.getEmail(), verificationToken.getToken());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaDatabaseException(ExceptionCodes.DB_SAVE_ERROR,
+                    "Cannot send verification email.");
+        }
 
         return RegisterResponse.builder()
                 .enigmaUserId(enigmaUser.getId())
-                .authentication(SecurityDetailsResponse.builder()
-                        .accessToken(tokens.getFirst().getJwt())
-                        .refreshToken(tokens.getSecond().getJwt())
-                        .expiresIn(tokens.getFirst().getExpiresIn())
-                        .tokenType(JwtUtils.getInstance().getTokenType())
-                        .build())
+                .verified(enigmaUser.getIsVerified())
                 .build();
     }
 
@@ -128,7 +124,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             if (usernameOrEmail.contains("@"))
                 enigmaUser = enigmaUserRepository.findEnigmaUserByEmail(usernameOrEmail);
             else
-                enigmaUser = enigmaUserRepository.findEnigmaUserByUsername(usernameOrEmail);
+                enigmaUser = enigmaUserRepository.findEnigmaUserByUsername(usernameOrEmail, true);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
@@ -145,7 +141,6 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
         /* TODO: set up authorities structure */
         List<String> authorities = new ArrayList<>();
-
         Pair<JwtGenerationDto, JwtGenerationDto> tokens = enigmaJwtService.generateTokens(
                 enigmaUser.getId(),
                 enigmaUser.getUsername(),
@@ -200,7 +195,6 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
         }
     }
 
-
     /**
      * Asserts that the enigma user with either username or email does not exist.
      *
@@ -221,5 +215,140 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
         if (exists)
             throw new EnigmaDatabaseException(ExceptionCodes.DB_UNIQUE_CONSTRAINT_VIOLATION,
                     "EnigmaUser with username or email already exists.");
+    }
+
+    /**
+     * Verifies the EnigmaUser.
+     *
+     * @param token token
+     * @return      VerificationResponse
+     */
+    @Override
+    public VerificationResponse verifyEnigmaUser(String token) {
+
+        VerificationToken verificationToken = verificationTokenService.verifyToken(token, false);
+        verificationTokenService.revoke(verificationToken);
+
+        EnigmaUser enigmaUser;
+        try {
+            enigmaUser = enigmaUserRepository.findEnigmaUserByNotVerified(verificationToken.getEnigmaUserId());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot get EnigmaUser by id.");
+        }
+
+        if (enigmaUser == null)
+            throw new EnigmaBadRequestException(ExceptionCodes.USER_NOT_FOUND,
+                    "EnigmaUser not found for id: " + verificationToken.getEnigmaUserId() + " or it is already verified.");
+
+        boolean alreadyExist;
+        try {
+            alreadyExist = enigmaUserRepository.existsByUsernameOrEmail(enigmaUser.getUsername(), enigmaUser.getEmail());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot get EnigmaUser by username or email.");
+        }
+
+        if (alreadyExist)
+            throw new EnigmaBadRequestException(ExceptionCodes.USERNAME_OR_EMAIL_ALREADY_VERIFIED,
+                    "A user with the same username  or email exists.");
+
+        enigmaUser.setIsVerified(true);
+        try {
+            enigmaUserRepository.save(enigmaUser);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaDatabaseException(ExceptionCodes.DB_SAVE_ERROR,
+                    "Cannot save EnigmaUser.");
+        }
+
+        /* TODO: set up authorities structure */
+        List<String> authorities = new ArrayList<>();
+        Pair<JwtGenerationDto, JwtGenerationDto> tokens = enigmaJwtService.generateTokens(
+                enigmaUser.getId(),
+                enigmaUser.getUsername(),
+                authorities,
+                enigmaUser.getAudienceType()
+        );
+
+        return VerificationResponse.builder()
+                .enigmaUserId(enigmaUser.getId())
+                .authentication(SecurityDetailsResponse.builder()
+                        .accessToken(tokens.getFirst().getJwt())
+                        .refreshToken(tokens.getSecond().getJwt())
+                        .expiresIn(tokens.getFirst().getExpiresIn())
+                        .tokenType(JwtUtils.getInstance().getTokenType())
+                        .build())
+                .build();
+    }
+
+    /**
+     * Sends a password reset email to the EnigmaUser.
+     *
+     * @param email email
+     */
+    @Override
+    public void forgotPassword(String email) {
+
+        EnigmaUser enigmaUser;
+        try {
+            enigmaUser = enigmaUserRepository.findEnigmaUserByEmail(email);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot get EnigmaUser by email.");
+        }
+
+        if (enigmaUser == null)
+            throw new EnigmaBadRequestException(ExceptionCodes.USER_NOT_FOUND,
+                    "EnigmaUser not found for email: " + email);
+
+        VerificationToken verificationToken = verificationTokenService.createVerificationToken(enigmaUser.getId(), true);
+        emailService.sendPasswordResetEmail(enigmaUser.getEmail(), verificationToken.getToken());
+    }
+
+    /**
+     * Resets the password of the EnigmaUser.
+     *
+     * @param token token
+     * @param newPassword1 first new password
+     * @param newPassword2 second new password
+     */
+    @Override
+    public void resetPassword(String token, String newPassword1, String newPassword2) {
+
+        if (!newPassword1.equals(newPassword2))
+            throw new EnigmaBadRequestException(ExceptionCodes.PASSWORDS_DO_NOT_MATCH,
+                    "Passwords do not match.");
+
+        VerificationToken verificationToken = verificationTokenService.verifyToken(token, true);
+        verificationTokenService.revoke(verificationToken);
+
+        EnigmaUser enigmaUser;
+        try {
+            enigmaUser = enigmaUserRepository.findEnigmaUserById(verificationToken.getEnigmaUserId());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot get EnigmaUser by id.");
+        }
+
+        if (enigmaUser == null)
+            throw new EnigmaBadRequestException(ExceptionCodes.USER_NOT_FOUND,
+                    "EnigmaUser not found for id: " + verificationToken.getEnigmaUserId());
+
+        enigmaUser.setPassword(passwordEncoder.encode(newPassword1));
+        try {
+            enigmaUserRepository.save(enigmaUser);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaDatabaseException(ExceptionCodes.DB_SAVE_ERROR,
+                    "Cannot save EnigmaUser.");
+        }
+
+        verificationToken.setIsRevoked(true);
+        verificationTokenService.save(verificationToken);
     }
 }
