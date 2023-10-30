@@ -36,10 +36,12 @@ const ProfilePage = () => {
         <Row>
             <Col className="col-4">
             <h5 className="mt-2 mx-3">Interest Areas</h5>
-            <hr className="m-0 mx-2"/>
+            <hr className="m-0 mx-2 "/>
+            <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
             {mockInterestAreas.map((interestArea) => (
                 <InterestAreaCard key={interestArea.id} interestArea={interestArea} />
             ))}
+            </div>
             </Col>
         
             <Col className="col-8">
