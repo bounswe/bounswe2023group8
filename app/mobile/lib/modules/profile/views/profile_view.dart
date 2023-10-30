@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:mobile/data/widgets/post_list.dart';
 
 import '../controllers/profile_controller.dart';
 import '../controllers/followers_controller.dart';
@@ -16,16 +17,24 @@ class ProfileView extends GetView<ProfileController> {
         title: const Text('ProfileView'),
         centerTitle: true,
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           children: [
             ProfileHeader(
               followersCount: 20,
               followingCount: 25,
             ),
+            const Text(
+              'ProfileView is working',
+              style: TextStyle(fontSize: 20),
+            ),
+            Expanded(
+              child: PostListWidget(),
+            ),
           ],
         ),
       ),
+
     );
   }
 }
