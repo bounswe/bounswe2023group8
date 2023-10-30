@@ -1,43 +1,48 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import {Button} from "react-bootstrap";
+import Container from "react-bootstrap/Container";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import NavDropdown from "react-bootstrap/NavDropdown";
+import { Button } from "react-bootstrap";
 import RegisterModal from "../../Register/RegisterModal";
 import LoginModal from "../../Login/LoginModal";
 import ForgotPasswordModal from "../../ForgotPassword/ForgotPasswordModal";
 import SpanWithOnClick from "../../shared/SpanWithOnClick/SpanWithOnClick";
+import { useAuth } from "../../../contexts/AuthContext";
 
 type TopbarProps = {
-    isUser: boolean;
-}
+  isUser: boolean;
+};
 
 const mockNotifications = [
-    {href: "notification1", title: "Your Interest Area \"All About Rice\" is trending!"},
-    {href: "notification2", title: "You gained a badge: Food Enthusiast!"},
+  {
+    href: "notification1",
+    title: 'Your Interest Area "All About Rice" is trending!',
+  },
+  { href: "notification2", title: "You gained a badge: Food Enthusiast!" },
 ];
 
 const Topbar = (props: TopbarProps) => {
-    const [showRegisterModal, setShowRegisterModal] = useState(false);
-    const [showLoginModal, setShowLoginModal] = useState(false);
-    const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
-    const handleRegisterShow = () => {
-        setShowRegisterModal(!showRegisterModal)
-    }
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+  const handleRegisterShow = () => {
+    setShowRegisterModal(!showRegisterModal);
+  };
+  const { logout } = useAuth();
 
-    const handleLoginShow = () => {
-        setShowLoginModal(!showLoginModal)
-    }
+  const handleLoginShow = () => {
+    setShowLoginModal(!showLoginModal);
+  };
 
-    const handleForgotPasswordShow = () => {
-        setShowForgotPasswordModal(!showForgotPasswordModal)
-    }
+  const handleForgotPasswordShow = () => {
+    setShowForgotPasswordModal(!showForgotPasswordModal);
+  };
 
-    const handleLogOut = () => {
-        console.log("dummy log out");
-    }
+  const handleLogOut = () => {
+    logout();
+  };
 
     return (
         <div>
@@ -115,6 +120,7 @@ const Topbar = (props: TopbarProps) => {
 
         </div>
     );
-}
+};
+
 
 export default Topbar;
