@@ -14,4 +14,7 @@ class Assets {
   static const String settings = 'assets/icons/settings.svg';
   static const String profile = 'assets/icons/profile.svg';
   static const String newIa = 'assets/icons/new-ia.svg';
+  static const String upvote = 'assets/icons/upvote.png';
+  static const String downvote = 'assets/icons/downvote.png';
+
 }
