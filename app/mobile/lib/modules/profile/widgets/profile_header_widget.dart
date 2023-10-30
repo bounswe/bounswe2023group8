@@ -3,17 +3,13 @@ import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/models/user_model.dart';
 
 class ProfileHeaderWidget extends StatelessWidget {
-  final User user;
-  final int followersCount;
-  final int followingCount;
+  final UserModel user;
 
   final void Function() onFollowersPressed;
   final void Function() onFollowingPressed;
   const ProfileHeaderWidget({
     super.key,
     required this.user,
-    required this.followersCount,
-    required this.followingCount,
     required this.onFollowersPressed,
     required this.onFollowingPressed,
   });
@@ -26,7 +22,7 @@ class ProfileHeaderWidget extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 30,
-              backgroundImage: NetworkImage(user.profileImage),
+              backgroundImage: NetworkImage(user.userProfileImage),
             ),
             const SizedBox(width: 10),
             Column(
@@ -52,7 +48,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                       InkWell(
                         onTap: onFollowersPressed,
                         child: Text(
-                          '$followersCount Followers',
+                          '${user.followerCount} Followers',
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
@@ -63,7 +59,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                       InkWell(
                         onTap: onFollowingPressed,
                         child: Text(
-                          '$followingCount Following',
+                          '${user.followingCount} Following',
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
@@ -93,14 +89,14 @@ class ProfileHeaderWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
-                  user.likeCount.toString(),
+                  user.allTimeLikes.toString(),
                   style: const TextStyle(
                     fontSize: 15,
                   ),
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  user.dislikeCount.toString(),
+                  user.allTimeDislikes.toString(),
                   style: const TextStyle(
                     fontSize: 15,
                   ),
