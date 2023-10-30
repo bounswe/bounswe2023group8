@@ -17,6 +17,26 @@
   },
   {
     "id": 5,
-    "area_name": "Photography"
+    "area_name": "Piano"
+  },
+  {
+    "id": 6,
+    "area_name": "Dance"
+  },
+  {
+    "id": 7,
+    "area_name": "Yoga"
+  },
+  {
+    "id": 8,
+    "area_name": "Skating"
+  },
+  {
+    "id": 9,
+    "area_name": "Computer Science"
+  },
+  {
+    "id": 10,
+    "area_name": "Baking"
   }
 ]
