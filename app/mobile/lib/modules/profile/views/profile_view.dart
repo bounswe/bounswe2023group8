@@ -90,6 +90,7 @@ class FollowersPopup extends StatelessWidget {
           ],
         ),
         children: [
+          Divider(),
           Container(
             width: 200, // necessary don't know why
             height: 300,
@@ -107,13 +108,13 @@ class FollowersPopup extends StatelessWidget {
                           return ListTile(
                             leading: CircleAvatar(
                               backgroundImage:
-                                  AssetImage(follower.profileImage),
+                                  NetworkImage(follower.profileImage),
                             ),
                             title: Text(follower.name),
                             subtitle: Text(follower.username),
                             trailing: TextButton(
                               onPressed: () {
-                                //TODO: Unfollow action
+                                //TODO: Remove action
                               },
                               style: TextButton.styleFrom(
                                 backgroundColor: const Color(0xFFF1F1F1),
@@ -160,6 +161,7 @@ class FollowingsPopup extends StatelessWidget {
           ],
         ),
         children: [
+          Divider(),
           Container(
             width: 200, // necessary don't know why
             height: 300,
@@ -179,7 +181,6 @@ class FollowingsPopup extends StatelessWidget {
                             leading: CircleAvatar(
                               backgroundImage:
                                   NetworkImage(following.profileImage),
-                              //AssetImage(following.profileImage),
                             ),
                             title: Text(following.name),
                             subtitle: Text(following.username),
@@ -188,7 +189,9 @@ class FollowingsPopup extends StatelessWidget {
                                 //TODO: Unfollow action
                               },
                               style: TextButton.styleFrom(
-                                  backgroundColor: const Color(0xFFF13030)),
+                                backgroundColor: const Color(0xFFF1F1F1),
+                                foregroundColor: const Color(0xFFF13030),
+                              ),
                               child: const Text("Unfollow"),
                             ),
                           );
