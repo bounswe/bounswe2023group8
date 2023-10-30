@@ -14,17 +14,41 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Navigator(
-        key: Get.nestedKey(1),
-        initialRoute: Routes.profile,
-        onGenerateRoute: controller.onGenerateRoute,
-      ),
-      bottomNavigationBar: Obx(() {
-        return BottomNavbar(
-          selected: controller.currentIndex.value,
-          onTap: controller.changePage,
-        );
-      }),
+      body: Stack(children: [
+        Navigator(
+          key: Get.nestedKey(1),
+          initialRoute: Routes.profile,
+          onGenerateRoute: controller.onGenerateRoute,
+        ),
+        Positioned(
+          bottom: 0,
+          child: Obx(() {
+            return BottomNavbar(
+              selected: controller.currentIndex.value,
+              onTap: controller.changePage,
+            );
+          }),
+        ),
+        Positioned(
+          bottom: 25,
+          left: Get.width * 0.5 - 24,
+          child: Center(
+            child: CircleAvatar(
+                backgroundColor: Palette.primaryColor,
+                radius: 24,
+                child: InkWell(
+                  onTap: () {
+                    controller.changePage(2);
+                  },
+                  child: const Icon(
+                    Icons.add,
+                    size: 40,
+                    color: Colors.white,
+                  ),
+                )),
+          ),
+        ),
+      ]),
     );
   }
 }
@@ -42,11 +66,8 @@ class BottomNavbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: Get.height * 0.088 + 30,
-      child: Stack(children: [
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
+      height: 50,
+      child: Container(
             height: 50,
             width: Get.width,
             color: Palette.lightColor,
@@ -88,26 +109,9 @@ class BottomNavbar extends StatelessWidget {
               ],
             ),
           ),
-        ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: Center(
-            child: CircleAvatar(
-                backgroundColor: Palette.primaryColor,
-                radius: 24,
-                child: InkWell(
-                  onTap: () {
-                    onTap(2);
-                  },
-                  child: const Icon(
-                    Icons.add,
-                    size: 40,
-                    color: Colors.white,
-                  ),
-                )),
-          ),
-        ),
-      ]),
+        
+       
+      
     );
   }
 
