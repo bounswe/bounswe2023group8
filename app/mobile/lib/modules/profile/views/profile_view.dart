@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:mobile/data/widgets/post_list.dart';
+import 'package:mobile/modules/profile/widgets/profile_header_widget.dart';
 
 import '../controllers/profile_controller.dart';
 import '../controllers/followers_controller.dart';
@@ -20,9 +21,16 @@ class ProfileView extends GetView<ProfileController> {
       body: Center(
         child: Column(
           children: [
-            ProfileHeader(
-              followersCount: 20,
-              followingCount: 25,
+            ProfileHeaderWidget(
+              user: controller.bottomNavController.signedInUser,
+              followersCount: 10,
+              followingCount: 20,
+              onFollowersPressed: () {
+                Get.dialog(FollowersPopup());
+              },
+              onFollowingPressed: () {
+                Get.dialog(FollowingsPopup());
+              },
             ),
             const Text(
               'ProfileView is working',
@@ -39,41 +47,6 @@ class ProfileView extends GetView<ProfileController> {
   }
 }
 
-class ProfileHeader extends StatelessWidget {
-  final int followersCount;
-  final int followingCount;
-
-  const ProfileHeader({
-    Key? key,
-    required this.followersCount,
-    required this.followingCount,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Padding(
-            // wrapped with padding to add some distance between 2 text
-            padding: const EdgeInsets.only(right: 10),
-            child: InkWell(
-              onTap: () {
-                Get.dialog(FollowersPopup());
-              },
-              child: Text('$followersCount followers'),
-            )),
-        Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: InkWell(
-              onTap: () {
-                Get.dialog(FollowingsPopup());
-              },
-              child: Text('$followingCount followings'),
-            )),
-      ],
-    );
-  }
-}
 
 class FollowersPopup extends StatelessWidget {
   final followersController = Get.put(FollowersController());

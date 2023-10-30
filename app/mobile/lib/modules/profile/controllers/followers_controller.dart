@@ -6,6 +6,8 @@ class FollowersController extends GetxController {
     User(
         name: 'Begüm Yivli',
         username: '@begum',
-        profileImage: 'https://avatars.githubusercontent.com/u/88006241?v=4'),
+        profileImage: 'https://avatars.githubusercontent.com/u/88006241?v=4',
+        likeCount: 10,
+        dislikeCount: 2),
   ].obs;
 }

@@ -9,12 +9,22 @@ import 'package:mobile/modules/profile/views/profile_view.dart';
 import 'package:mobile/modules/settings/bindings/settings_binding.dart';
 import 'package:mobile/modules/settings/views/settings_view.dart';
 
+import '../../../data/models/user_model.dart';
 import '../../../routes/app_pages.dart';
 import '../../home/bindings/home_binding.dart';
 import '../../home/views/home_view.dart';
 
 class BottomNavigationController extends GetxController {
   var currentIndex = 1.obs;
+
+  final User signedInUser = User(
+      name: 'Meriç Keskin',
+      username: 'marcolphin',
+      profileImage:
+          'https://avatars.githubusercontent.com/u/88164767?s=400&u=09da0dbc9d0ee0246d7492d938a20dbc4b2be7f1&v=4',
+      likeCount: 20,
+      dislikeCount: 5);
+  
 
   final pages = <String>[
     Routes.home,
