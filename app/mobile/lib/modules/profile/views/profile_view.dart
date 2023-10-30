@@ -6,7 +6,6 @@ import '../controllers/profile_controller.dart';
 import '../controllers/followers_controller.dart';
 import '../controllers/followings_controller.dart';
 
-
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({Key? key}) : super(key: key);
 
@@ -17,7 +16,7 @@ class ProfileView extends GetView<ProfileController> {
         title: const Text('ProfileView'),
         centerTitle: true,
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           children: [
             ProfileHeader(
@@ -45,24 +44,23 @@ class ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-         Padding( // wrapped with padding to add some distance between 2 text
-          padding: const EdgeInsets.only(right: 10), 
-            child: InkWell(
-            onTap: () {
-              Get.dialog(FollowersPopup());
-            },
-            child: Text('$followersCount followers'),
-          )
-        ),
         Padding(
-          padding: const EdgeInsets.only(right: 10),
+            // wrapped with padding to add some distance between 2 text
+            padding: const EdgeInsets.only(right: 10),
             child: InkWell(
-            onTap: () {
-              Get.dialog(FollowingsPopup());
-            },
-            child: Text('$followingCount followings'),
-          )
-        ),
+              onTap: () {
+                Get.dialog(FollowersPopup());
+              },
+              child: Text('$followersCount followers'),
+            )),
+        Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: InkWell(
+              onTap: () {
+                Get.dialog(FollowingsPopup());
+              },
+              child: Text('$followingCount followings'),
+            )),
       ],
     );
   }
@@ -75,15 +73,16 @@ class FollowersPopup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(
-        dialogBackgroundColor: Color(0xFFF1F1F1), // Set the background color
+        dialogBackgroundColor:
+            const Color(0xFFF6F6F6), // Set the background color
       ),
       child: SimpleDialog(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Followers'),
+            const Text('Followers'),
             IconButton(
-              icon: Icon(Icons.close), // Close icon
+              icon: const Icon(Icons.close), // Close icon
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
@@ -94,7 +93,8 @@ class FollowersPopup extends StatelessWidget {
           Container(
             width: 200, // necessary don't know why
             height: 300,
-            child: SingleChildScrollView( // Wrap your content with SingleChildScrollView to add scrolling feature
+            child: SingleChildScrollView(
+              // Wrap your content with SingleChildScrollView to add scrolling feature
               child: GetBuilder<FollowersController>(
                 builder: (controller) {
                   return Column(
@@ -106,10 +106,21 @@ class FollowersPopup extends StatelessWidget {
                           final follower = controller.followers[index];
                           return ListTile(
                             leading: CircleAvatar(
-                              backgroundImage: AssetImage(follower.profileImage),
+                              backgroundImage:
+                                  AssetImage(follower.profileImage),
                             ),
                             title: Text(follower.name),
                             subtitle: Text(follower.username),
+                            trailing: TextButton(
+                              onPressed: () {
+                                //TODO: Unfollow action
+                              },
+                              style: TextButton.styleFrom(
+                                backgroundColor: const Color(0xFFF1F1F1),
+                                foregroundColor: const Color(0xFFF13030),
+                              ),
+                              child: const Text("Remove"),
+                            ),
                           );
                         },
                       ),
@@ -132,15 +143,16 @@ class FollowingsPopup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(
-        dialogBackgroundColor: Color(0xFFF1F1F1), // Set the background color
+        dialogBackgroundColor:
+            const Color(0xFFF6F6F6), // Set the background color
       ),
       child: SimpleDialog(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Followings'),
+            const Text('Followings'),
             IconButton(
-              icon: Icon(Icons.close), // Close icon
+              icon: const Icon(Icons.close), // Close icon
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
@@ -151,10 +163,12 @@ class FollowingsPopup extends StatelessWidget {
           Container(
             width: 200, // necessary don't know why
             height: 300,
-            child: SingleChildScrollView( // Wrap your content with SingleChildScrollView
+            child: SingleChildScrollView(
+              // Wrap your content with SingleChildScrollView
               child: GetBuilder<FollowingsController>(
                 builder: (controller) {
-                  return Column( // Wrap with a Column
+                  return Column(
+                    // Wrap with a Column
                     children: [
                       ListView.builder(
                         shrinkWrap: true,
@@ -163,10 +177,20 @@ class FollowingsPopup extends StatelessWidget {
                           final following = controller.followings[index];
                           return ListTile(
                             leading: CircleAvatar(
-                              backgroundImage: AssetImage(following.profileImage),
+                              backgroundImage:
+                                  NetworkImage(following.profileImage),
+                              //AssetImage(following.profileImage),
                             ),
                             title: Text(following.name),
                             subtitle: Text(following.username),
+                            trailing: TextButton(
+                              onPressed: () {
+                                //TODO: Unfollow action
+                              },
+                              style: TextButton.styleFrom(
+                                  backgroundColor: const Color(0xFFF13030)),
+                              child: const Text("Unfollow"),
+                            ),
                           );
                         },
                       ),
