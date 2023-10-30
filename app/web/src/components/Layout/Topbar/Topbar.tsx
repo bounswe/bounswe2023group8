@@ -8,7 +8,7 @@ import {Button} from "react-bootstrap";
 import RegisterModal from "../../Register/RegisterModal";
 import LoginModal from "../../Login/LoginModal";
 import ForgotPasswordModal from "../../ForgotPassword/ForgotPasswordModal";
-import SpanWithOnClick from "../../shared/SpanWithOnClick";
+import SpanWithOnClick from "../../shared/SpanWithOnClick/SpanWithOnClick";
 
 type TopbarProps = {
     isUser: boolean;
@@ -41,8 +41,8 @@ const Topbar = (props: TopbarProps) => {
 
     return (
         <div>
-            <Navbar className="bg-body border-bottom border-light
-            navbar-expand-md navbar-expand-lg navbar-expand-sm" style={{maxHeight: "87px"}}>
+            <Navbar className="bg-body border-bottom border-dark-subtle
+            navbar-expand-md navbar-expand-lg navbar-expand-sm" style={{maxHeight: "60px"}}>
                 <Container className="m-0 min-vw-100">
                     <Navbar.Brand href="/">
                         <img

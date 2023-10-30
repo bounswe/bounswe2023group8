@@ -7,6 +7,7 @@ import PageWithTopbarOnly from "../TemporaryRouterTestPages/PageWithTopbarOnly";
 import PageWithNoWrapper from "../TemporaryRouterTestPages/PageWithNoWrapper";
 import ConfirmNewPassword from "../ConfirmNewPassword";
 import {Col, Row} from "react-bootstrap";
+import ProfilePage from "../ProfilePage";
 
 type RouterProps = {
     isUser: boolean;
@@ -22,8 +23,8 @@ const Router = (props: RouterProps) => (
             path="/"
             element={
                 <Col className="">
-                    <Row className="fixed-top" style={{maxHeight: "87px"}}><Topbar isUser={props.isUser}/></Row>
-                    <Row style={{marginTop: "87px"}}><Outlet/></Row>
+                    <Row className="fixed-top" style={{maxHeight: "60px"}}><Topbar isUser={props.isUser}/></Row>
+                    <Row className="position-fixed bottom-0 p-0 m-0 vw-100"  style={{top: 60}}><Outlet/></Row>
                 </Col>
             }
         >
@@ -34,16 +35,17 @@ const Router = (props: RouterProps) => (
 
             <Route
                 element={
-                    <Row className="p-0 m-0">
+                    <Row className="p-0 m-0 vw-100">
                         <Col className="col-2 bg-body-secondary position-fixed bottom-0"
-                        style={{top: "87px"}}><Sidebar isUser={props.isUser}/></Col>
-                        <Col className="col-10 overflow-y-auto" style={{marginLeft: "17%"}}><Outlet/></Col>
+                        style={{top: "60px"}}><Sidebar isUser={props.isUser}/></Col>
+                        <Col className="col-10" style={{marginLeft: "17%"}}><Outlet/></Col>
                     </Row>
                 }
             >
                 {/*Pages that have both a topbar and sidebar go here*/}
 
                 <Route path="/home" element={<OpeningPage/>}/>
+                <Route path="/profile" element={<ProfilePage/>}/>
             </Route>
         </Route>
     </Routes>
