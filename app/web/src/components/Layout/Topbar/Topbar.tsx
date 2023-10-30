@@ -1,48 +1,48 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { Button } from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import RegisterModal from "../../Register/RegisterModal";
 import LoginModal from "../../Login/LoginModal";
 import ForgotPasswordModal from "../../ForgotPassword/ForgotPasswordModal";
 import SpanWithOnClick from "../../shared/SpanWithOnClick/SpanWithOnClick";
-import { useAuth } from "../../../contexts/AuthContext";
+import {useAuth} from "../../../contexts/AuthContext";
+import {useNavigate} from "react-router-dom";
 
-type TopbarProps = {
-  isUser: boolean;
-};
 
 const mockNotifications = [
-  {
-    href: "notification1",
-    title: 'Your Interest Area "All About Rice" is trending!',
-  },
-  { href: "notification2", title: "You gained a badge: Food Enthusiast!" },
+    {
+        href: "notification1",
+        title: 'Your Interest Area "All About Rice" is trending!',
+    },
+    {href: "notification2", title: "You gained a badge: Food Enthusiast!"},
 ];
 
-const Topbar = (props: TopbarProps) => {
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
-  const handleRegisterShow = () => {
-    setShowRegisterModal(!showRegisterModal);
-  };
-  const { logout } = useAuth();
+const Topbar = () => {
+    const [showRegisterModal, setShowRegisterModal] = useState(false);
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+    const navigate = useNavigate();
+    const handleRegisterShow = () => {
+        setShowRegisterModal(!showRegisterModal);
+    };
+    const {logout, isAuthenticated} = useAuth();
 
-  const handleLoginShow = () => {
-    setShowLoginModal(!showLoginModal);
-  };
+    const handleLoginShow = () => {
+        setShowLoginModal(!showLoginModal);
+    };
 
-  const handleForgotPasswordShow = () => {
-    setShowForgotPasswordModal(!showForgotPasswordModal);
-  };
+    const handleForgotPasswordShow = () => {
+        setShowForgotPasswordModal(!showForgotPasswordModal);
+    };
 
-  const handleLogOut = () => {
-    logout();
-  };
+    const handleLogOut = () => {
+        logout();
+        navigate('/');
+    };
 
     return (
         <div>
@@ -61,21 +61,22 @@ const Topbar = (props: TopbarProps) => {
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                     <Navbar.Collapse id="basic-navbar-nav">
-                        {props.isUser
+                        {isAuthenticated
                             ? <Nav className="container justify-content-end m-3 ">
-                                    <NavDropdown title={<span className="fs-5 bi bi-bell"></span>}
-                                                 id="collapsible-nav-dropdown"
-                                                 drop="start" >
-                                        {mockNotifications.map(
-                                            (notification) =>
-                                                <NavDropdown.Item
-                                                    key={notification.title}
-                                                    href={notification.href}>
-                                                    {notification.title}
-                                                </NavDropdown.Item>)}
-                                    </NavDropdown>
-                                <NavDropdown title={<span className="fs-5 bi bi-person">Username</span>}
-                                             id="collapsible-nav-dropdown">
+                                <NavDropdown title={<span className="fs-5 bi bi-bell"></span>}
+                                             id="collapsible-nav-dropdown"
+                                             drop="start">
+                                    {mockNotifications.map(
+                                        (notification) =>
+                                            <NavDropdown.Item
+                                                key={notification.title}
+                                                href={notification.href}>
+                                                {notification.title}
+                                            </NavDropdown.Item>)}
+                                </NavDropdown>
+                                <NavDropdown title={<span className="fs-5 bi bi-person"></span>}
+                                             id="collapsible-nav-dropdown"
+                                             drop="start">
                                     <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
                                     <NavDropdown.Item href="#action/3.2">
                                         Another action

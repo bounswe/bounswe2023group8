@@ -5,6 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import SpanWithOnClick from "../shared/SpanWithOnClick/SpanWithOnClick";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import {useToastContext} from "../../contexts/ToastContext";
 
 export type LoginFormData = {
   emailOrUsername: string;
@@ -32,13 +33,25 @@ const LoginModal = (props: LoginModalProps) => {
     setShowRegisterModal,
     setShowForgotPasswordModal,
   } = props;
+
+  const { toastState, setToastState } = useToastContext();
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     try {
       await login(data);
       setShowLoginModal();
       navigate("/home");
     } catch (error) {
-      console.error("Signup failed:", error);
+      const tempState = toastState.filter((toast) => {
+        return toast.message != "Login Failed!"
+      });
+      setToastState([
+        ...tempState,
+        {message: "Login Failed!", display: true, isError: true}
+      ]);
+      setTimeout(() => setToastState(toastState.filter((toast) => {
+        return toast.message != "Login Failed!"
+      })), 6000);
+      setShowLoginModal();
     }
   };
 

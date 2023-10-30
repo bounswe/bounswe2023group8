@@ -31,7 +31,6 @@ const stringToRGBWithOpacity = (name: string, opacity: number): string | undefin
 const Tag = (props: TagProps) => {
     const {className, name} = props;
     const colour = stringToRGBWithOpacity(name, 0.6);
-    console.log(colour);
     return <p
         className={`rounded-4 text-center m-1 px-2 ${className}`}
         style={{backgroundColor: colour}}
