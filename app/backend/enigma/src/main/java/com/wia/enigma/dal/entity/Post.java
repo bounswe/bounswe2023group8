@@ -21,7 +21,7 @@ public class Post {
     Long id;
 
     @Column(name = "enigma_user_id")
-    Long enigmaUuserId;
+    Long enigmaUserId;
 
     @Column(name = "ia_id")
     Long iaId;
