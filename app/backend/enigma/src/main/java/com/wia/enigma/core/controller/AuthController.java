@@ -42,16 +42,27 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest signupRequest) {
 
-        enigmaUserService.registerEnigmaUser(
+        RegisterResponse registerResponse = enigmaUserService.registerEnigmaUser(
                 signupRequest.getUsername(),
                 signupRequest.getEmail(),
                 signupRequest.getPassword(),
                 signupRequest.getBirthday()
         );
 
+        if (registerResponse == null)
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .build();
+
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .build();
+                .created(
+                        ServletUriComponentsBuilder
+                                .fromCurrentContextPath()
+                                .path("/api/v1/user/{enigmaUserId}")
+                                .buildAndExpand(registerResponse.getEnigmaUserId())
+                                .toUri()
+                )
+                .body(registerResponse);
     }
 
     /**

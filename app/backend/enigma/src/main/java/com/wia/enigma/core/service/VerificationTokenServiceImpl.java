@@ -39,7 +39,6 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Timestamp expiresAt = new Timestamp(now.getTime() + verificationTokenExpiration);
-
         String token = UUID.randomUUID().toString();
 
         return verificationTokenRepository.save(
@@ -75,7 +74,7 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
 
         if (verificationToken == null)
             throw new EnigmaBadRequestException(ExceptionCodes.VERIFICATION_TOKEN_NOT_FOUND,
-                    tokenType+ " not found for token: " + token);
+                    tokenType + " not found for token: " + token);
 
         if (verificationToken.getExpiresAt().before(new Timestamp(System.currentTimeMillis())))
             throw new EnigmaBadRequestException(ExceptionCodes.VERIFICATION_TOKEN_EXPIRED,
@@ -83,7 +82,7 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
 
         if(verificationToken.getIsRevoked())
             throw new EnigmaBadRequestException(ExceptionCodes.VERIFICATION_TOKEN_EXPIRED,
-                    tokenType+ " is already used for token: " + token);
+                    tokenType + " is already used for token: " + token);
 
         return verificationToken;
     }
