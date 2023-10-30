@@ -50,7 +50,7 @@ const Router = () => {
                 <Route path="/profile" element={<ProfilePage/>}/>
             </Route>
         </Route>
-      </Route>
+      
     </Routes>
   );
 };
