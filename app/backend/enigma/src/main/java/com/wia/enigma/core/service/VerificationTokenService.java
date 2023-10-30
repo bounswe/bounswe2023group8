@@ -7,7 +7,6 @@ import com.wia.enigma.dal.entity.VerificationToken;
 
 public interface VerificationTokenService {
 
-
     VerificationToken createVerificationToken(Long enigmaUserId, Boolean isResetPasswordToken);
 
     VerificationToken verifyToken(String token, Boolean isResetPasswordToken);

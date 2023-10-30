@@ -15,5 +15,5 @@ public class RegisterResponse {
 
     Long enigmaUserId;
 
-    SecurityDetailsResponse authentication;
+    Boolean verified;
 }

@@ -34,7 +34,6 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
      * @param enigmaUserId  enigmaUserId
      * @return              VerificationToken
      */
-
     @Override
     public VerificationToken createVerificationToken(Long enigmaUserId, Boolean isResetPasswordToken) {
 
@@ -42,7 +41,6 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
         Timestamp expiresAt = new Timestamp(now.getTime() + verificationTokenExpiration);
 
         String token = UUID.randomUUID().toString();
-
 
         return verificationTokenRepository.save(
                 VerificationToken.builder()
@@ -54,7 +52,6 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
                         .isResetPasswordToken(isResetPasswordToken)
                         .build()
         );
-
     }
 
     /**
@@ -67,19 +64,13 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
     public VerificationToken verifyToken(String token, Boolean isResetPasswordToken) {
 
         String tokenType = isResetPasswordToken ? "Reset token" : "Verification token";
-
         VerificationToken verificationToken;
-
         try {
-
             verificationToken = verificationTokenRepository.findByTokenAndIsResetPasswordToken(token, isResetPasswordToken);
         } catch (Exception e) {
-
             log.error(e.getMessage(), e);
-
             throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
                         "Cannot get "+ tokenType +" by token.");
-
         }
 
         if (verificationToken == null)
@@ -94,8 +85,6 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
             throw new EnigmaBadRequestException(ExceptionCodes.VERIFICATION_TOKEN_EXPIRED,
                     tokenType+ " is already used for token: " + token);
 
-
-
         return verificationToken;
     }
 
@@ -108,7 +97,6 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
     public void save(VerificationToken verificationToken) {
 
         try {
-
             verificationTokenRepository.save(verificationToken);
         } catch (Exception e) {
 
@@ -126,9 +114,8 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
     @Override
     public void revoke(VerificationToken verificationToken) {
 
+        verificationToken.setIsRevoked(true);
         try {
-
-            verificationToken.setIsRevoked(true);
             verificationTokenRepository.save(verificationToken);
         } catch (Exception e) {
 

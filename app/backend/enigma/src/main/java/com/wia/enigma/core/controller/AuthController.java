@@ -52,7 +52,6 @@ public class AuthController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .build();
-
     }
 
     /**
@@ -123,14 +122,13 @@ public class AuthController {
      */
     @GetMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@Valid @NotNull @RequestParam(name = "token") String token,
-                                           @Valid @NotNull @RequestParam(name = "password") String password, @Valid @NotNull @RequestParam(name = "password2") String password2 ) {
+                                           @Valid @NotNull @RequestParam(name = "password1") String password1,
+                                           @Valid @NotNull @RequestParam(name = "password2") String password2 ) {
 
-        enigmaUserService.resetPassword(token, password, password2);
+        enigmaUserService.resetPassword(token, password1, password2);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .build();
     }
-
-
 }

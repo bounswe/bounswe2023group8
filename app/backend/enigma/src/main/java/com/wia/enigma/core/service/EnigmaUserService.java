@@ -9,10 +9,7 @@ import java.sql.Date;
 
 public interface EnigmaUserService {
 
-    void registerEnigmaUser(String username,
-                                        String email,
-                                        String password,
-                                        String birthday);
+    RegisterResponse registerEnigmaUser(String username, String email, String password, String birthday);
 
     LoginResponse loginEnigmaUser(String username, String password);
 
@@ -21,6 +18,6 @@ public interface EnigmaUserService {
     VerificationResponse verifyEnigmaUser(String token);
 
     void forgotPassword(String email);
-    void resetPassword(String token, String newPassword1, String newPassword2);
 
+    void resetPassword(String token, String newPassword1, String newPassword2);
 }
