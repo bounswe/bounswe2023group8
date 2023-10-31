@@ -29,7 +29,7 @@ class AuthProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200) {
+    } else if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
       if (response.bodyString != null) {
@@ -51,7 +51,7 @@ class AuthProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200) {
+    } else if (response.statusCode == 200 || response.statusCode == 201) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!);
         return body['authentication']['accessToken'];
@@ -75,7 +75,7 @@ class AuthProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200) {
+    } else if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
       if (response.bodyString != null) {
@@ -102,7 +102,7 @@ class AuthProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200) {
+    } else if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
       if (response.bodyString != null) {
