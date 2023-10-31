@@ -45,6 +45,7 @@ class AuthenticationController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    initUniLinks();
     isLogin.value = Get.arguments['toLogin'] ?? true;
   }
 

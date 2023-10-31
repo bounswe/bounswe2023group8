@@ -37,7 +37,7 @@ class SentEmailView extends StatelessWidget {
               Text(
                 verify
                     ? 'Please verify your email address to continue.'
-                    : 'Please reset your password to continue.',
+                    : 'Please click the link in the email to reset your password.',
                 style: const TextStyle(
                   fontSize: 16.0,
                 ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../constants/palette.dart';
 import '../models/custom_exception.dart';
 
 class ErrorHandlingUtils {

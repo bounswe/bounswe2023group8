@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/modules/authentication/providers/authentication_provider.dart';
 import 'package:mobile/modules/authentication/views/forgot_password_view.dart';
@@ -15,6 +16,8 @@ class LoginController extends GetxController {
   var loginUsernameValid = false.obs;
   var loginInProgress = false.obs;
   var rememberMe = false.obs;
+
+  final _box = GetStorage();
 
   final forgotPasswordController = Get.find<ForgotPasswordController>();
   final loginProvider = Get.find<AuthProvider>();
@@ -55,6 +58,13 @@ class LoginController extends GetxController {
       final token = await loginProvider.login(
           user: loginUsername.value, password: loginPassword.value);
       if (token != null) {
+        if (rememberMe.value) {
+          await _box.write('username', loginUsername.value);
+          await _box.write('password', loginPassword.value);
+        } else {
+          await _box.write('username', '');
+          await _box.write('password', '');
+        }
         Get.offAllNamed(Routes.bottomNavigation, arguments: {'token': token});
       }
     } catch (e) {

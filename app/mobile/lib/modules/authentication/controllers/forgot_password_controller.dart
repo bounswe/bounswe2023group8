@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/helpers/validator.dart';
-import 'package:mobile/modules/authentication/views/reset_password_view.dart';
 
 import '../providers/authentication_provider.dart';
 import '../views/verify_email_view.dart';
@@ -25,7 +24,9 @@ class ForgotPasswordController extends GetxController {
     try {
       //  final res = await authProvider.forgotPassword(email: email.value);
       //  if (res) {
-      Get.to(() => const ResetPasswordView());
+      Get.to(() => SentEmailView(
+            verify: false,
+          ));
 
       //  }
     } catch (e) {
