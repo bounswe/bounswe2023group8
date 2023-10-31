@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/data/helpers/validator.dart';
+import 'package:mobile/modules/authentication/providers/authentication_provider.dart';
+import 'package:mobile/modules/authentication/views/verify_email_view.dart';
 
-import '../../../routes/app_pages.dart';
+import '../../../data/helpers/error_handling_utils.dart';
 import 'authentication_controller.dart';
 
 class SignUpController extends GetxController {
@@ -11,7 +13,6 @@ class SignUpController extends GetxController {
   var signUpUsername = ''.obs;
   var signUpPassword = ''.obs;
   var confirmPassword = ''.obs;
-  var signUpBirthday = ''.obs;
   var signUpPasswordValid = false.obs;
   var confirmPasswordValid = true.obs;
   var passwordConfirmed = false.obs;
@@ -25,12 +26,13 @@ class SignUpController extends GetxController {
 
   final AuthenticationController authController =
       Get.find<AuthenticationController>();
+  final AuthProvider authProvider = Get.find<AuthProvider>();
 
   void pickDate() async {
     final DateTime? picked = await showDatePicker(
       context: Get.context!,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime(1950),
       lastDate: DateTime(2101),
     );
 
@@ -79,15 +81,23 @@ class SignUpController extends GetxController {
   void onSignUp() async {
     signupInProgress.value = true;
 
-    Get.offAllNamed(
-      Routes.bottomNavigation,
-    );
+    try {
+      final res = await authProvider.signUp(
+          username: signUpUsername.value,
+          email: signUpEmail.value,
+          password: signUpPassword.value,
+          birthday: birthday.value);
+      if (res) {
+        Get.to(() => const SentEmailView(
+              verify: true,
+            ));
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
 
-    // Signup logic will be implemented here
 
-    //  Get.offAllNamed(
-    //    Routes.bottomNavigation,
-    //  );
+    
     signupInProgress.value = false;
   }
 

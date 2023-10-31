@@ -50,7 +50,7 @@ class CustomButton extends StatelessWidget {
               : null
           : null,
       child: ElevatedButton(
-        onPressed: !active || inProgress ? null : onPressed,
+        onPressed: !active || inProgress ? () {} : onPressed,
         style: ElevatedButton.styleFrom(
           shadowColor: Colors.transparent,
           backgroundColor: secondaryColor
@@ -65,7 +65,6 @@ class CustomButton extends StatelessWidget {
                 height: 20,
                 width: 20,
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               )
             : Text(text,

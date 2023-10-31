@@ -36,8 +36,8 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
               const Spacer(flex: 4),
               CustomTextField(
                 hintText: 'E-mail',
-                initialValue: controller.loginEmail.value,
-                isValid: controller.loginEmailValid.value,
+                initialValue: controller.email.value,
+                isValid: controller.emailValid.value,
                 onChanged: (value) => controller.onChangeUsername(value),
                 circularBorder: true,
                 showSuffix: false,
@@ -62,7 +62,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                   width: Get.width * 0.3,
                   shadow: true,
                   text: 'Submit',
-                  active: controller.loginEmailValid.value),
+                  active: controller.emailValid.value),
               const Spacer(flex: 18),
             ],
           );
