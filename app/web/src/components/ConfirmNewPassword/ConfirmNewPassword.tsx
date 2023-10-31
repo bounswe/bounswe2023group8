@@ -37,7 +37,7 @@ const ConfirmNewPasswordModal = (props: ConfirmNewPasswordModalProps) => {
     const confirmNewPassword = async (data: FormData) => {
         const params = new URLSearchParams({
             token: token,
-            password: data.password,
+            password1: data.password,
             password2: data.confirmPassword
         }).toString();
         return await axiosInstance.get(`/auth/reset-password?${params}`);
