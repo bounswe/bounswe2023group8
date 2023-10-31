@@ -9,6 +9,7 @@ import 'package:mobile/modules/profile/views/profile_view.dart';
 import 'package:mobile/modules/settings/bindings/settings_binding.dart';
 import 'package:mobile/modules/settings/views/settings_view.dart';
 
+import '../../../data/models/user_model.dart';
 import '../../../routes/app_pages.dart';
 import '../../home/bindings/home_binding.dart';
 import '../../home/views/home_view.dart';
@@ -18,6 +19,19 @@ class BottomNavigationController extends GetxController {
 
   final String token = Get.arguments['token'];
 
+
+  final UserModel signedInUser = const UserModel(
+    id: 1001,
+    name: 'Meriç Keskin',
+    username: 'marcolphin',
+    userProfileImage:
+        'https://avatars.githubusercontent.com/u/88164767?s=400&u=09da0dbc9d0ee0246d7492d938a20dbc4b2be7f1&v=4',
+    iaIds: [1, 2, 3, 4, 5],
+    followerCount: 3,
+    followingCount: 3,
+    allTimeLikes: 20,
+    allTimeDislikes: 5,
+  );
 
   final pages = <String>[
     Routes.home,
@@ -69,7 +83,7 @@ class BottomNavigationController extends GetxController {
     if (settings.name == Routes.newIa) {
       return GetPageRoute(
         settings: settings,
-        page: () => NewIaView(),
+        page: () => const NewIaView(),
         binding: NewIaBinding(),
         transition: Transition.noTransition,
       );
