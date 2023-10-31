@@ -29,5 +29,5 @@ services:
       - "443:443"
     volumes:
       - ./nginx/.well-known:/usr/share/nginx/html/
-      - ./nginx/default.conf:/etc/nginx/conf.d/
+      - ./nginx/:/etc/nginx/conf.d/
     restart: always
