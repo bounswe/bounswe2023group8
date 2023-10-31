@@ -22,13 +22,12 @@ class ForgotPasswordController extends GetxController {
 
   void onSubmit() async {
     try {
-      //  final res = await authProvider.forgotPassword(email: email.value);
-      //  if (res) {
-      Get.to(() => SentEmailView(
-            verify: false,
-          ));
-
-      //  }
+      final res = await authProvider.forgotPassword(email: email.value);
+      if (res) {
+        Get.to(() => const SentEmailView(
+              verify: false,
+            ));
+      }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
