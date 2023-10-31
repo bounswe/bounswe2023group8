@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:mobile/data/helpers/error_handling_utils.dart';
+import 'package:mobile/modules/authentication/providers/authentication_provider.dart';
 import 'package:mobile/modules/authentication/views/forgot_password_view.dart';
 
 import '../../../routes/app_pages.dart';
@@ -15,7 +17,7 @@ class LoginController extends GetxController {
   var rememberMe = false.obs;
 
   final forgotPasswordController = Get.find<ForgotPasswordController>();
-
+  final loginProvider = Get.find<AuthProvider>();
 
   final AuthenticationController authController =
       Get.find<AuthenticationController>();
@@ -49,15 +51,16 @@ class LoginController extends GetxController {
   void onSignIn() async {
     loginInProgress.value = true;
 
-    Get.offAllNamed(
-      Routes.bottomNavigation,
-    );
+    try {
+      final token = await loginProvider.login(
+          user: loginUsername.value, password: loginPassword.value);
+      if (token != null) {
+        Get.offAllNamed(Routes.bottomNavigation, arguments: {'token': token});
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
 
-    // Login logic will be implemented here
-
-    //  Get.offAllNamed(
-    //    Routes.bottomNavigation,
-    //  );
     loginInProgress.value = false;
   }
 

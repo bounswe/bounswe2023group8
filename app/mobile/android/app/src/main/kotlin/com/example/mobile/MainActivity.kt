@@ -1,4 +1,4 @@
-package com.example.mobile
+package com.webaggregator.mobile
 
 import io.flutter.embedding.android.FlutterActivity
 

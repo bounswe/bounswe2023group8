@@ -7,8 +7,8 @@ import 'package:mobile/modules/authentication/controllers/forgot_password_contro
 import '../../../data/widgets/custom_button.dart';
 import '../../../data/widgets/custom_text_field.dart';
 
-class ForgotPasswordView extends GetView<ForgotPasswordController> {
-  const ForgotPasswordView({super.key});
+class ResetPasswordView extends GetView<ForgotPasswordController> {
+  const ResetPasswordView({super.key});
 
   @override
   Widget build(BuildContext context) {

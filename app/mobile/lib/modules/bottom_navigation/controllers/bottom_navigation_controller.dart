@@ -16,6 +16,9 @@ import '../../home/views/home_view.dart';
 class BottomNavigationController extends GetxController {
   var currentIndex = 1.obs;
 
+  final String token = Get.arguments['token'];
+
+
   final pages = <String>[
     Routes.home,
     Routes.profile,

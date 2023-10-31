@@ -1,30 +1,35 @@
 import 'package:get/get.dart';
+import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/helpers/validator.dart';
+import 'package:mobile/modules/authentication/views/reset_password_view.dart';
 
+import '../providers/authentication_provider.dart';
+import '../views/verify_email_view.dart';
 import 'authentication_controller.dart';
 
 class ForgotPasswordController extends GetxController {
-  var loginEmail = ''.obs;
-  var loginEmailValid = false.obs;
+  var email = ''.obs;
+  var emailValid = false.obs;
   var verificationFailed = false.obs;
 
   final AuthenticationController authController =
       Get.find<AuthenticationController>();
+  final authProvider = Get.find<AuthProvider>();
 
   void onChangeUsername(String value) {
-    loginEmail.value = value;
-    loginEmailValid.value = Validator.isEmailValid(loginEmail.value);
+    email.value = value;
+    emailValid.value = Validator.isEmailValid(email.value);
   }
 
   void onSubmit() async {
-    // Forgot password submit logic here, then navigate to login
+    try {
+      //  final res = await authProvider.forgotPassword(email: email.value);
+      //  if (res) {
+      Get.to(() => const ResetPasswordView());
 
-    // verify email, to see if it exists
-    if (true) {
-      verificationFailed = false.obs;
-      Get.back();
-    } else {
-      verificationFailed = true.obs;
+      //  }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
     }
   }
 
