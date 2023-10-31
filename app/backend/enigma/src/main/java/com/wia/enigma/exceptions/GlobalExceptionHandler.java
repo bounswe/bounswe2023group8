@@ -55,8 +55,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(ex.getCode(), userMessage, null), null, ex.getStatus());
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> exceptionHandler(Exception exception) {
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> exceptionHandler(RuntimeException exception) {
 
         log.error(ExceptionUtils.getMessage(exception), exception);
 
@@ -70,8 +70,8 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<?> exceptionHandler(RuntimeException exception) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> exceptionHandler(Exception exception) {
 
         log.error(ExceptionUtils.getMessage(exception), exception);
 
