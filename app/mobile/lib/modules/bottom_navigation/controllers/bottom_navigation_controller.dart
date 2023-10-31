@@ -99,6 +99,7 @@ class BottomNavigationController extends GetxController {
     return null;
   }
 
+
   @override
   void onInit() async {
     super.onInit();

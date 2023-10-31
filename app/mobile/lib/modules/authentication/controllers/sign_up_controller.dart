@@ -6,6 +6,7 @@ import 'package:mobile/modules/authentication/providers/authentication_provider.
 import 'package:mobile/modules/authentication/views/verify_email_view.dart';
 
 import '../../../data/helpers/error_handling_utils.dart';
+import '../../../routes/app_pages.dart';
 import 'authentication_controller.dart';
 
 class SignUpController extends GetxController {
@@ -88,6 +89,8 @@ class SignUpController extends GetxController {
           password: signUpPassword.value,
           birthday: birthday.value);
       if (res) {
+        Get.until((route) => Get.currentRoute == Routes.opening);
+
         Get.to(() => const SentEmailView(
               verify: true,
             ));
@@ -96,8 +99,6 @@ class SignUpController extends GetxController {
       ErrorHandlingUtils.handleApiError(e);
     }
 
-
-    
     signupInProgress.value = false;
   }
 

@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/helpers/validator.dart';
 
+import '../../../routes/app_pages.dart';
 import '../providers/authentication_provider.dart';
 import '../views/verify_email_view.dart';
 import 'authentication_controller.dart';
@@ -24,6 +25,8 @@ class ForgotPasswordController extends GetxController {
     try {
       final res = await authProvider.forgotPassword(email: email.value);
       if (res) {
+        Get.until((route) => Get.currentRoute == Routes.opening);
+
         Get.to(() => const SentEmailView(
               verify: false,
             ));
