@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import { useForm, SubmitHandler } from "react-hook-form";
-import SpanWithOnClick from "../shared/SpanWithOnClick";
+import SpanWithOnClick from "../shared/SpanWithOnClick/SpanWithOnClick";
 import { useAuth } from "../../contexts/AuthContext";
 
 export type FormData = {
