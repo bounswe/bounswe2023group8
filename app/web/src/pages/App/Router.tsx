@@ -8,6 +8,8 @@ import ProfilePage from "../ProfilePage";
 import {Col, Row} from "react-bootstrap";
 import {useAuth} from "../../contexts/AuthContext";
 import RegistrationConfirm from "../RegistrationConfirm";
+import FollowerPage from "../Follow/Follower";
+import FollowingPage from "../Follow/Following";
 import Toast from "../../components/Toast/Toast";
 import {useToastContext} from "../../contexts/ToastContext";
 
@@ -18,6 +20,7 @@ const Router = () => {
     return (
         <Routes>
             {/*Pages that have neither topbar nor sidebar go here*/}
+
 
             <Route
                 path="/"
@@ -40,6 +43,9 @@ const Router = () => {
                 <Route path="/" element={<OpeningPage/>}/>
                 <Route path="/reset-password" element={<ConfirmNewPassword/>}/>
                 <Route path="/registration-confirm" element={<RegistrationConfirm/>}/>
+              
+                <Route path="/follower-page" element={<FollowerPage/>} />
+                <Route path="/following-page" element={<FollowingPage/>} />
 
                 <Route
                     element={
