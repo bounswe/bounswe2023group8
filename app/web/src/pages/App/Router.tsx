@@ -9,12 +9,18 @@ import ConfirmNewPassword from "../ConfirmNewPassword";
 import { Col, Row } from "react-bootstrap";
 import { useAuth } from "../../contexts/AuthContext";
 import RegistrationConfirm from "../RegistrationConfirm";
+import FollowerPage from "../Follow/Follower";
+import FollowingPage from "../Follow/Following";
+
 
 const Router = () => {
   const { isAuthenticated } = useAuth();
   return (
     <Routes>
       {/*Pages that have neither topbar nor sidebar go here*/}
+
+        <Route path="/follower-page" element={<FollowerPage/>} />
+        <Route path="/following-page" element={<FollowingPage/>} />
 
       <Route path="/no_bar" element={<PageWithNoWrapper />} />
       <Route path="/confirm-new-password" element={<ConfirmNewPassword />} />
