@@ -8,8 +8,6 @@ import ProfilePage from "../ProfilePage";
 import {Col, Row} from "react-bootstrap";
 import {useAuth} from "../../contexts/AuthContext";
 import RegistrationConfirm from "../RegistrationConfirm";
-import FollowerPage from "../Follow/Follower";
-import FollowingPage from "../Follow/Following";
 import Toast from "../../components/Toast/Toast";
 import {useToastContext} from "../../contexts/ToastContext";
 
@@ -43,9 +41,6 @@ const Router = () => {
                 <Route path="/" element={<OpeningPage/>}/>
                 <Route path="/reset-password" element={<ConfirmNewPassword/>}/>
                 <Route path="/registration-confirm" element={<RegistrationConfirm/>}/>
-              
-                <Route path="/follower-page" element={<FollowerPage/>} />
-                <Route path="/following-page" element={<FollowingPage/>} />
 
                 <Route
                     element={
@@ -59,6 +54,7 @@ const Router = () => {
                     {/*Pages that have both a topbar and sidebar go here*/}
                     <Route path="/home" element={<OpeningPage/>}/>
                     {isAuthenticated && <Route path="/profile" element={<ProfilePage/>}/>}
+                    <Route path="/profile" element={<ProfilePage/>}/>
                     <Route path="*" element={<Navigate to="/"/>}/>
                 </Route>
             </Route>

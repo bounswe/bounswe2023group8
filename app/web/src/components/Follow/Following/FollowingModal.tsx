@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import "@fontsource/inter";
 
 import CloseBtn from "./CloseBtn.svg";
@@ -10,10 +10,10 @@ import image4 from "./display4.svg";
 
 type FollowingModalProps = {
     show: boolean;
-    onClose: () => void;
+    setShow: () => void;
 };
 
-const FollowingModal = ({ show, onClose }: FollowingModalProps) => {
+const FollowingModal = ({ show, setShow }: FollowingModalProps) => {
     // Define an array of 4 dummy followers
     const dummyFollowings: any[] = [
         {
@@ -45,7 +45,7 @@ const FollowingModal = ({ show, onClose }: FollowingModalProps) => {
     return (
         <Modal
             show={show}
-            onHide={onClose}
+            onHide={setShow}
             centered
             style={{
                 width: "494px",
@@ -99,6 +99,7 @@ const FollowingModal = ({ show, onClose }: FollowingModalProps) => {
                         backgroundColor: "transparent",
                         overflow: "hidden", // Hide any overflow content
                     }}
+                    onClick={setShow}
                 >
                     <img
                         src={CloseBtn}
