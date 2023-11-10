@@ -52,7 +52,9 @@ class LoginController extends GetxController {
   }
 
   void onSignIn() async {
-    loginInProgress.value = true;
+    Get.offAllNamed(Routes.bottomNavigation, arguments: {'token': ''});
+    return;
+/*     loginInProgress.value = true;
 
     try {
       final token = await loginProvider.login(
@@ -71,7 +73,7 @@ class LoginController extends GetxController {
       ErrorHandlingUtils.handleApiError(e);
     }
 
-    loginInProgress.value = false;
+    loginInProgress.value = false; */
   }
 
   @override
