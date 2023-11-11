@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/data/widgets/visitor_bottom_bar.dart';
 
 import '../../../data/constants/assets.dart';
@@ -16,23 +17,9 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
       bottomNavigationBar: VisitorBottomBar(
           onLoginPressed: () => controller.navigateToAuth(true),
           onSignUpPressed: () => controller.navigateToAuth(false)),
-      appBar: AppBar(
-        elevation: 0.3,
-        backgroundColor: Colors.white,
-        leading: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Image.asset(
-            Assets.logo,
-            height: 30,
-            fit: BoxFit.contain,
-          ),
-        ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(top: 12, bottom: 12, right: 72),
-            child: CustomSearchBar(),
-          ),
-        ],
+      appBar: const CustomAppBar(
+        leadingAppIcon: true,
+        titleWidget: CustomSearchBar(),
       ),
       body: Container(
         color: Colors.white,

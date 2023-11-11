@@ -7,6 +7,7 @@ import 'package:mobile/data/widgets/post_widget.dart';
 import 'package:mobile/modules/profile/widgets/profile_header_widget.dart';
 
 import '../../../data/constants/assets.dart';
+import '../../../data/widgets/custom_app_bar.dart';
 import '../controllers/profile_controller.dart';
 import '../widgets/followers_popup.dart';
 import '../widgets/followings_popup.dart';
@@ -17,17 +18,8 @@ class ProfileView extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.3,
-        leading: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Image.asset(
-            Assets.logo,
-            height: 30,
-            fit: BoxFit.contain,
-          ),
-        ),
-        backgroundColor: Colors.white,
+      appBar: CustomAppBar(
+        leadingAppIcon: true,
         actions: [
           Padding(
             padding: const EdgeInsets.all(18),
@@ -56,7 +48,6 @@ class ProfileView extends GetView<ProfileController> {
               ),
               const SizedBox(height: 20),
               ExpansionTile(
-              
                 tilePadding: EdgeInsets.zero,
                 title: Text(
                   'Interest Areas',
