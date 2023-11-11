@@ -12,6 +12,7 @@ class CustomButton extends StatelessWidget {
   final bool inProgress;
   final bool shadow;
   final bool secondaryColor;
+  final double? fontSize;
   const CustomButton(
       {this.onPressed,
       required this.text,
@@ -20,6 +21,7 @@ class CustomButton extends StatelessWidget {
       this.backgroundColor,
       this.textColor,
       this.disabledOpacity = 0.25,
+      this.fontSize,
       this.secondaryColor = false,
       this.inProgress = false,
       this.shadow = false,
@@ -53,6 +55,13 @@ class CustomButton extends StatelessWidget {
         onPressed: !active || inProgress ? () {} : onPressed,
         style: ElevatedButton.styleFrom(
           shadowColor: Colors.transparent,
+          disabledBackgroundColor: secondaryColor
+              ? Palette.secondaryButtonColor
+              : backgroundColor ??
+                  Palette.primaryColor
+                      .withOpacity(active ? 1 : disabledOpacity),
+          disabledForegroundColor:
+              secondaryColor ? Palette.primaryColor : textColor,
           backgroundColor: secondaryColor
               ? Palette.secondaryButtonColor
               : backgroundColor ??
@@ -70,8 +79,8 @@ class CustomButton extends StatelessWidget {
             : Text(text,
                 style: TextStyle(
                     color: secondaryColor ? Palette.primaryColor : textColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20)),
+                    fontWeight: FontWeight.w600,
+                    fontSize: fontSize ?? 20)),
       ),
     );
   }
