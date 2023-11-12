@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/new_post_controller.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class NewPostView extends GetView<NewPostController> {
 
@@ -43,27 +42,76 @@ class NewPostView extends GetView<NewPostController> {
                 minLines: 4,
               ),
               const SizedBox(height: 10,),
-              Row(
-                children: [
-                  Flexible(
-                    child: Obx(() => Text("Tags:  ${controller.tags.join(', ')}")),
-                  ),
-                  const SizedBox(width: 20,),
-                  ElevatedButton(
-                      onPressed: () => controller.showSuggestionModal(context),
-                      child: const Text("Add")
-                  )
-                ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    const Text("Tags"),
+                    SizedBox(width: 20,),
+                    ElevatedButton(
+                        onPressed: () => controller.showSuggestionModal(context),
+                        child: const Text("Add")
+                    ),
+                    const SizedBox(width: 20,),
+                      Obx(() =>
+                          Row(
+                            children:
+                            controller.tags.map<Widget>((element) => ClipRRect(
+                                borderRadius: BorderRadius.circular(16.0),
+                                child: Container(
+                                  color: Colors.grey, // Set the grey background color
+                                  margin: const EdgeInsets.all(1.0), // Add margin between rows
+                                  child: Padding(
+                                    padding:
+                                    const EdgeInsets.all(4.0), // Adjust padding as needed
+                                    child: Text(
+                                      "#${element}",
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors
+                                            .black54, // Text color inside the grey background
+                                      ),
+                                    ),
+                                  ),
+                                )
+                            )).toList()
+                            ,
+                          )
+                      ),
+                      // child: Obx(() => Text("Tags:  ${controller.tags.join(', ')}")),
+
+                  ],
+                ),
               ),
               Row(
                 children: [
                   Flexible(
-                    child: Obx(() => Text("Label:  ${controller.label}")),
+                    child: Obx(() => controller.label.value != '' ?
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(16.0),
+                            child: Container(
+                              color: Colors.grey, // Set the grey background color
+                              margin: const EdgeInsets.all(1.0), // Add margin between rows
+                              child: Padding(
+                                padding:
+                                const EdgeInsets.all(4.0), // Adjust padding as needed
+                                child: Text(
+                                  "#${controller.label}",
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors
+                                        .black54, // Text color inside the grey background
+                                  ),
+                                ),
+                              ),
+                            )
+                    ) : const Text("Label"),
+                    )
                   ),
                   const SizedBox(width: 20,),
                   ElevatedButton(
                       onPressed: () => controller.showLabelModal(context),
-                      child: const Text("Add")
+                      child: Text(controller.label.value == '' ? "Choose" : "Change")
                   )
                 ],
               ),

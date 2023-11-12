@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 
 class NewPostController extends GetxController {
@@ -19,6 +20,8 @@ class NewPostController extends GetxController {
     "Suggestion 1",
     "Suggestion 2",
     "Suggestion 3",
+    "Suggestion 4",
+    "Suggestion 5",
     // ... more suggestions
   ];
   // Observable list of shown suggestions
@@ -125,7 +128,7 @@ class NewPostController extends GetxController {
                       return ListTile(
                         title: Text(shownSuggestions[index]),
                         onTap: () {
-                          label = shownSuggestions[index].obs;
+                          label.value = shownSuggestions[index];
                           print(15);
                           print(label);
                           // Handle the tap event on a suggestion
