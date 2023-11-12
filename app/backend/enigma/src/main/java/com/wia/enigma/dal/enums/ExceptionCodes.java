@@ -35,7 +35,8 @@ public enum ExceptionCodes {
     DB_UNIQUE_CONSTRAINT_VIOLATION(704, "Unique constraint violation"),
     DB_CONSTRAINT_VIOLATION(705, "Constraint violation"),
     MISSING_AUTHORIZATION_HEADER(800, "Missing Authorization header"),
-    INVALID_AUTHORIZATION_HEADER(801, "Invalid Authorization header");
+    INVALID_AUTHORIZATION_HEADER(801, "Invalid Authorization header"),
+    API_RETURNED_NON_200(900, "API returned non-200 status code");
 
     private final int code;
     private final String message;
