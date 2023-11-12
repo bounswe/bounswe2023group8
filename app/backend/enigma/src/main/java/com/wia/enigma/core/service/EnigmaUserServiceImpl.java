@@ -11,6 +11,7 @@ import com.wia.enigma.dal.enums.AudienceType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.repository.EnigmaUserRepository;
 import com.wia.enigma.exceptions.custom.EnigmaBadRequestException;
+import com.wia.enigma.exceptions.custom.EnigmaConflictException;
 import com.wia.enigma.exceptions.custom.EnigmaDatabaseException;
 import com.wia.enigma.exceptions.custom.EnigmaUnauthorizedException;
 import com.wia.enigma.utilities.JwtUtils;
@@ -213,7 +214,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
         }
 
         if (exists)
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_UNIQUE_CONSTRAINT_VIOLATION,
+            throw new EnigmaConflictException(ExceptionCodes.DB_UNIQUE_CONSTRAINT_VIOLATION,
                     "EnigmaUser with username or email already exists.");
     }
 
