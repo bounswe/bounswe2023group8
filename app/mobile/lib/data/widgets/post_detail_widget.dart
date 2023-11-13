@@ -3,12 +3,20 @@ import 'package:mobile/data/models/post_model.dart';
 
 class PostDetailWidget extends StatelessWidget {
   final PostModel post;
+  final String Function(int id) getProfileImageById;
+  final String Function(int id) getIANameById;
+  final String Function(int id) getNameSurnameById;
 
-  const PostDetailWidget({super.key, required this.post});
+  const PostDetailWidget(
+      {super.key,
+      required this.post,
+      required this.getProfileImageById,
+      required this.getIANameById,
+      required this.getNameSurnameById});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
         child: Column(
       children: [
         Row(
@@ -16,29 +24,39 @@ class PostDetailWidget extends StatelessWidget {
           children: [
             Row(
               children: [
-                //Image
+                CircleAvatar(
+                  radius: 30,
+                  backgroundImage:
+                      NetworkImage(getProfileImageById(post.userId)),
+                ),
                 Column(
                   children: [
-                    //IA name
-                    //Username
-                    //Follow button
+                    Text(getIANameById(post.id)),
+                    Text(getNameSurnameById(post.userId)),
+                    TextButton(
+                        onPressed: () {
+                          //Follow
+                        },
+                        child: const Text("Follow")),
                   ],
                 ),
               ],
             ),
-            //Date
+            Text(post.createdAt)
           ],
         ),
         Column(
           children: [
-            //Title
+            Text(post.title),
             Wrap(
               children: [
                 //Labels
               ],
             ),
-            //Link
-            //Content
+            Expanded(child: Text(post.sourceLink)),
+            Expanded(
+              child: Text(post.content),
+            )
           ],
         ),
         Row(
