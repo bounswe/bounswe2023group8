@@ -1,0 +1,23 @@
+version: '3.1'
+
+services:
+  punchcard-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: punchcard-image
+    environment:
+      MYSQL_ROOT_PASSWORD: local-build-password-does-not-matter
+      MYSQL_DATABASE: punchcard
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./enigma/mysql:/docker-entrypoint-initdb.d  # Updated volume path
+
+  enigma-frontend:
+    build:
+      context: ./enigma  # Updated build context to the enigma directory
+    depends_on:
+      - punchcard-frontend
+    ports:
+      - "8081:8080"

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:mobile/data/models/post_model.dart';
 
@@ -5,11 +7,12 @@ class PostTileWidget extends StatelessWidget {
   final PostModel post;
   final String Function(int id) getAreaNameById;
   final String Function(int id) getUserNameById;
+  final bool hideTags;
   const PostTileWidget(
       {super.key,
       required this.post,
       required this.getAreaNameById,
-      required this.getUserNameById});
+      required this.getUserNameById, required this.hideTags});
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +31,9 @@ class PostTileWidget extends StatelessWidget {
                 // Handle the interest area tap (e.g., navigate to an area-specific page)
               },
               child: Text(
-                post.sourceLink,
+                post.content,
                 style: const TextStyle(
-                    color: Colors.blue,
+                    // color: Colors.blue,
                     fontSize: 12,
                     fontWeight: FontWeight.w500),
 
@@ -62,7 +65,7 @@ class PostTileWidget extends StatelessWidget {
             )
           ],
         ),
-        trailing: Column(
+        trailing: hideTags == true ? const SizedBox() : Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: post.iaIds.map<Widget>((iaId) {
             return ClipRRect(
