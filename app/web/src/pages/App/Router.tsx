@@ -9,6 +9,7 @@ import {Col, Row} from "react-bootstrap";
 import {useAuth} from "../../contexts/AuthContext";
 import RegistrationConfirm from "../RegistrationConfirm";
 import TestPage from "../MapTestPage";
+import PostViewPage from '../PostViewPage'; 
 import Toast from "../../components/Toast/Toast";
 import {useToastContext} from "../../contexts/ToastContext";
 
@@ -43,8 +44,6 @@ const Router = () => {
                 <Route path="/reset-password" element={<ConfirmNewPassword/>}/>
                 <Route path="/registration-confirm" element={<RegistrationConfirm/>}/>
 
-
-
                 <Route
                     element={
                         <Row className="p-0 m-0 vw-100">
@@ -57,6 +56,7 @@ const Router = () => {
                     {/*Pages that have both a topbar and sidebar go here*/}
                     <Route path="/home" element={<OpeningPage/>}/>
                     {isAuthenticated && <Route path="/profile" element={<ProfilePage/>}/>}
+                    <Route path="/posts/:postId" element={<PostViewPage/>} />
                     <Route path="*" element={<Navigate to="/"/>}/>
                     <Route path="/map-test" element={<TestPage/>} />
                 </Route>
