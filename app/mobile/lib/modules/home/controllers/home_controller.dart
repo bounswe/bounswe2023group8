@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../../data/models/ia_model.dart';
 import '../../../data/models/post_model.dart';
 import '../../../data/models/user_model.dart';
+import '../../../routes/app_pages.dart';
 
 class HomeController extends GetxController {
   RxList<UserModel> followers = <UserModel>[].obs;
@@ -17,6 +18,11 @@ class HomeController extends GetxController {
 
   String getUserNameById(int id) {
     return allUsers.firstWhere((element) => element.id == id).name;
+  }
+
+  void navigateToPostDetails(PostModel post) {
+    Get.toNamed(Routes.postDetails,
+        arguments: {'post': post, 'visitor': false});
   }
 
   void fetchData() {

@@ -3,6 +3,7 @@ import 'package:mobile/data/models/ia_model.dart';
 import 'package:mobile/data/models/post_model.dart';
 import 'package:mobile/data/models/user_model.dart';
 
+import '../../../routes/app_pages.dart';
 import '../../bottom_navigation/controllers/bottom_navigation_controller.dart';
 
 class ProfileController extends GetxController {
@@ -29,6 +30,11 @@ class ProfileController extends GetxController {
     followings.value = followers;
     posts.value = dummyPosts.map((e) => PostModel.fromJson(e)).toList();
     ias.value = dummyIas.map((e) => IaModel.fromJson(e)).toList();
+  }
+
+  void navigateToPostDetails(PostModel post) {
+    Get.toNamed(Routes.postDetails,
+        arguments: {'post': post, 'visitor': false});
   }
 
   @override

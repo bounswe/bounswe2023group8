@@ -99,6 +99,8 @@ class ProfileView extends GetView<ProfileController> {
                   itemCount: controller.posts.length,
                   itemBuilder: (context, index) {
                     return PostTileWidget(
+                      onTap: () => controller
+                          .navigateToPostDetails(controller.posts[index]),
                       post: controller.posts[index],
                       getAreaNameById: controller.getAreaNameById,
                       getUserNameById: controller.getUserNameById,

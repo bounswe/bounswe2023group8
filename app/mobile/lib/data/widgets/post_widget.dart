@@ -1,24 +1,27 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:mobile/data/models/post_model.dart';
 
 class PostTileWidget extends StatelessWidget {
   final PostModel post;
+  final void Function()? onTap;
   final String Function(int id) getAreaNameById;
   final String Function(int id) getUserNameById;
   final bool hideTags;
   const PostTileWidget(
       {super.key,
       required this.post,
+      this.onTap,
       required this.getAreaNameById,
-      required this.getUserNameById, required this.hideTags});
+      required this.getUserNameById,
+      required this.hideTags});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       color: Colors.blue.shade50,
       child: ListTile(
+        onTap: onTap,
         title: Text(
           post.title,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
@@ -27,9 +30,6 @@ class PostTileWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InkWell(
-              onTap: () {
-                // Handle the interest area tap (e.g., navigate to an area-specific page)
-              },
               child: Text(
                 post.content,
                 style: const TextStyle(
@@ -65,32 +65,32 @@ class PostTileWidget extends StatelessWidget {
             )
           ],
         ),
-        trailing: hideTags == true ? const SizedBox() : Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: post.iaIds.map<Widget>((iaId) {
-            return ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: Container(
-                  color: Colors.grey, // Set the grey background color
-                  margin: const EdgeInsets.all(1.0), // Add margin between rows
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.all(4.0), // Adjust padding as needed
-                    child: Text(
-                      "#${getAreaNameById(iaId)}",
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors
-                            .black54, // Text color inside the grey background
-                      ),
-                    ),
-                  ),
-                ));
-          }).toList(),
-        ),
-        onTap: () {
-          // Handle item tap (e.g., navigate to a detail page)
-        },
+        trailing: hideTags == true
+            ? const SizedBox()
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: post.iaIds.map<Widget>((iaId) {
+                  return ClipRRect(
+                      borderRadius: BorderRadius.circular(16.0),
+                      child: Container(
+                        color: Colors.grey, // Set the grey background color
+                        margin: const EdgeInsets.all(
+                            1.0), // Add margin between rows
+                        child: Padding(
+                          padding: const EdgeInsets.all(
+                              4.0), // Adjust padding as needed
+                          child: Text(
+                            "#${getAreaNameById(iaId)}",
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors
+                                  .black54, // Text color inside the grey background
+                            ),
+                          ),
+                        ),
+                      ));
+                }).toList(),
+              ),
       ),
     );
   }

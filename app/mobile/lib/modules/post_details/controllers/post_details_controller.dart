@@ -1,31 +1,55 @@
 import 'package:get/get.dart';
-import 'package:mobile/routes/app_pages.dart';
 
+import '../../../data/models/ia_model.dart';
 import '../../../data/models/post_model.dart';
 import '../../../data/models/user_model.dart';
-import '../../opening/controllers/opening_controller.dart';
 
-class VisitorExploreController extends GetxController {
+class PostDetailsController extends GetxController {
+  PostModel post = Get.arguments['post'];
+  final bool visitor = Get.arguments['visitor'];
+
   RxList<UserModel> allUsers = <UserModel>[].obs;
   RxList<PostModel> posts = <PostModel>[].obs;
+  RxList<IaModel> ias = <IaModel>[].obs;
+
+  var routeLoading = false.obs;
+
+  String getAreaNameById(int id) {
+    return ias.firstWhere((element) => element.id == id).areaName;
+  }
+
+  String getUserNameById(int id) {
+    return allUsers.firstWhere((element) => element.id == id).name;
+  }
+
+  String getProfileImageById(int id) {
+    return allUsers.firstWhere((element) => element.id == id).userProfileImage;
+  }
+
+  String getNameSurnameById(int id) {
+    return allUsers.firstWhere((element) => element.id == id).name;
+  }
+
+  String getIaNameById(int id) {
+    return ias.firstWhere((element) => element.id == id).areaName;
+  }
+
+  void changePost(PostModel argpost) {
+    routeLoading.value = true;
+    post = argpost;
+    routeLoading.value = false;
+  }
 
   void fetchData() {
     allUsers.value = dummyUsers.map((e) => UserModel.fromJson(e)).toList();
     posts.value = dummyPosts.map((e) => PostModel.fromJson(e)).toList();
-  }
-
-  String getNameById(int id) {
-    return allUsers.where((element) => element.id == id).first.name;
-  }
-
-  void navigateToPostDetails(PostModel post) {
-    Get.toNamed(Routes.postDetails, arguments: {'post': post, 'visitor': true});
+    ias.value = dummyIas.map((e) => IaModel.fromJson(e)).toList();
   }
 
   @override
   void onInit() {
-    super.onInit();
     fetchData();
+    super.onInit();
   }
 }
 
@@ -112,4 +136,34 @@ final dummyPosts = [
     "created_at": "2023-10-23 09:00:00",
     "title": "Cooking Tips"
   },
+  {
+    "id": 104,
+    "user_id": 1004,
+    "ia_ids": [5],
+    "source_link":
+        "https://www.nationalgeographic.com/premium/article/invisible-wonders-photography-techniques",
+    "content":
+        "As a kid, I dreamed of becoming a marine biologist and living my life by the sea. Since I grew up in a landlocked suburb of Atlanta, I lived out this fantasy by setting up aquariums at home. At 14, I started working at my neighborhood aquarium shop. By 16, I had seven fish tanks at home. Then, at 20, I was introduced to photographer David Liittschwager, who hired me to help him with a National Geographic magazine assignment on marine life.",
+    "created_at": "2023-10-22 14:45:00",
+    "title": "Nat Geo"
+  },
+  {
+    "id": 105,
+    "user_id": 1004,
+    "ia_ids": [1, 5],
+    "source_link":
+        "https://www.photocrowd.com/blog/195-beautiful-game-brief-guide-photographing-football-matches/",
+    "content":
+        "The temptation is to chase the action around the pitch. This will end up meaning you’re running as much as the players. It will benefit you to select one position, stay there and wait for the action to come to you. The prime position will be close to the net on one end of the pitch. This will give you opportunities to get great action shots as players fight for the ball and capture those crucial moments when a player scores.",
+    "created_at": "2023-10-21 16:00:00",
+    "title": "Sport Photography"
+  }
+];
+
+final dummyIas = [
+  {"id": 1, "area_name": "Football"},
+  {"id": 2, "area_name": "Basketball"},
+  {"id": 3, "area_name": "Music"},
+  {"id": 4, "area_name": "Cooking"},
+  {"id": 5, "area_name": "Photography"}
 ];

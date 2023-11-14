@@ -12,6 +12,11 @@ class OpeningController extends GetxController {
     Get.toNamed(Routes.authentication, arguments: {'toLogin': toLogin});
   }
 
+  void backToAuth(bool login) {
+    Get.until((route) => Get.currentRoute == Routes.opening);
+    navigateToAuthentication(toLogin: login);
+  }
+  
   final _box = GetStorage();
 
   final _provider = Get.find<OpeningProvider>();

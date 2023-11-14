@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/models/post_model.dart';
 import '../../../data/constants/assets.dart';
 
 class PostDetailWidget extends StatelessWidget {
+  final bool visitor;
   final PostModel post;
   final String Function(int id) getProfileImageById;
   final String Function(int id) getIANameById;
@@ -12,6 +11,7 @@ class PostDetailWidget extends StatelessWidget {
 
   const PostDetailWidget(
       {super.key,
+      this.visitor = false,
       required this.post,
       required this.getProfileImageById,
       required this.getIANameById,
@@ -33,7 +33,7 @@ class PostDetailWidget extends StatelessWidget {
                   backgroundImage:
                       NetworkImage(getProfileImageById(post.userId)),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Column(
@@ -41,21 +41,22 @@ class PostDetailWidget extends StatelessWidget {
                   children: [
                     Text(
                       getIANameById(post.iaIds.first),
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Color(
                             0xff9a208e,
                           ),
                           fontWeight: FontWeight.w600),
                     ),
                     Text(getNameSurnameById(post.userId)),
+                    if (!visitor)
                     OutlinedButton(
                       onPressed: () {
                         //Follow
-                      },
-                      child: const Text("Follow"),
+                        },
                       style: OutlinedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15))),
+                        child: const Text("Follow"),
                     )
                   ],
                 ),
@@ -69,7 +70,7 @@ class PostDetailWidget extends StatelessWidget {
           children: [
             Text(
               post.title,
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
             ),
             Wrap(
               children: post.iaIds
@@ -79,8 +80,8 @@ class PostDetailWidget extends StatelessWidget {
                           decoration: BoxDecoration(
                               color: Colors.grey,
                               borderRadius: BorderRadius.circular(12)),
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           child: Text(getIANameById(e)),
                         ),
                       ))
@@ -88,7 +89,7 @@ class PostDetailWidget extends StatelessWidget {
             ),
             Text(
               post.sourceLink,
-              style: TextStyle(color: Colors.blue),
+              style: const TextStyle(color: Colors.blue),
             ),
             const SizedBox(
               height: 5,
@@ -102,7 +103,7 @@ class PostDetailWidget extends StatelessWidget {
           height: 10,
         ),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(
               children: [
                 Text('Kaynak: '),
@@ -117,7 +118,7 @@ class PostDetailWidget extends StatelessWidget {
           Row(
             children: [
               Image.asset(Assets.factCheck),
-              Text(
+              const Text(
                 'UNKNOWN',
                 style: TextStyle(
                     color: Color(0xffd9831f), fontWeight: FontWeight.w900),
@@ -131,40 +132,41 @@ class PostDetailWidget extends StatelessWidget {
             const SizedBox(
               width: 5,
             ),
-            Text(
+            const Text(
               '175',
               style: TextStyle(color: Colors.green),
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Image.asset(Assets.downvote),
             const SizedBox(
               width: 5,
             ),
-            Text(
+            const Text(
               '18',
               style: TextStyle(color: Colors.red),
             ),
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
+            if (!visitor)
             InkWell(
               child: Container(
-                padding: EdgeInsets.all(8),
-                child: Text(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0XFFBA1F1F),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Text(
                   "Report",
                   style: TextStyle(color: Colors.white),
-                ),
-                decoration: BoxDecoration(
-                  color: Color(0XFFBA1F1F),
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                  ),
               ),
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Wrap(
@@ -175,7 +177,8 @@ class PostDetailWidget extends StatelessWidget {
                       decoration: BoxDecoration(
                           color: Colors.grey,
                           borderRadius: BorderRadius.circular(12)),
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                       child: Text(getIANameById(e)),
                     ),
                   ))

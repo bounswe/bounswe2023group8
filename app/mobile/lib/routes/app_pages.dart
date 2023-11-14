@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-import '../modules/visitor_explore/bindings/visitor_explore_binding.dart';
-import '../modules/visitor_explore/views/visitor_explore_view.dart';
+import '../modules/post_details/bindings/post_details_binding.dart';
+import '../modules/post_details/views/post_details_view.dart';
 import '../modules/authentication/bindings/authentication_binding.dart';
 import '../modules/authentication/views/auth_view.dart';
 import '../modules/bottom_navigation/bindings/bottom_navigation_binding.dart';
@@ -20,6 +20,8 @@ import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
 import '../modules/settings/views/settings_view.dart';
+import '../modules/visitor_explore/bindings/visitor_explore_binding.dart';
+import '../modules/visitor_explore/views/visitor_explore_view.dart';
 
 part 'app_routes.dart';
 
@@ -71,6 +73,11 @@ class AppPages {
       name: _Paths.visitorExplore,
       page: () => const VisitorExploreView(),
       binding: VisitorExploreBinding(),
+    ),
+    GetPage(
+      name: _Paths.postDetails,
+      page: () => const PostDetailsView(),
+      binding: PostDetailsBinding(),
     ),
   ];
 }

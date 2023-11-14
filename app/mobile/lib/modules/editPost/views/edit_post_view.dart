@@ -49,7 +49,9 @@ class EditPostView extends GetView<EditPostController> {
                   mainAxisAlignment: MainAxisAlignment.start,
                     children:   [
                     const Text("Tags"),
-                    SizedBox(width: 20,),
+                  const SizedBox(
+                    width: 20,
+                  ),
                     ElevatedButton(
                         onPressed: () => controller.showSuggestionModal(context),
                         child: const Text("Add")
@@ -112,7 +114,9 @@ class EditPostView extends GetView<EditPostController> {
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
               ),
-              SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
               InkWell(
                   onTap: () => controller.pickDate(),
                   child:
@@ -121,8 +125,10 @@ class EditPostView extends GetView<EditPostController> {
                           child:
                               Row(
                                 children: [
-                                  Text("Publication Date: "),
-                                  SizedBox(width: 10,),
+                          const Text("Publication Date: "),
+                          const SizedBox(
+                            width: 10,
+                          ),
                                   Text(
                                       "${controller.publicationDate.value == '' ? 'Pick a Date' : controller.publicationDate}"
                                     // enabled: false,
