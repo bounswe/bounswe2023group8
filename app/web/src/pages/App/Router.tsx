@@ -8,9 +8,8 @@ import ProfilePage from "../ProfilePage";
 import { Col, Row } from "react-bootstrap";
 import { useAuth } from "../../contexts/AuthContext";
 import RegistrationConfirm from "../RegistrationConfirm";
+import TestPage from "../MapTestPage";
 import PostViewPage from '../PostViewPage'; 
-import FollowerPage from "../Follow/Follower";
-import FollowingPage from "../Follow/Following";
 import Toast from "../../components/Toast/Toast";
 import { useToastContext } from "../../contexts/ToastContext";
 import CreatePost from "../../components/Post/Create";
@@ -81,6 +80,7 @@ const Router = () => {
           )}
           {isAuthenticated && <Route path="/profile" element={<ProfilePage/>}/>}
                     <Route path="/posts/:postId" element={<PostViewPage/>} />
+          <Route path="/map-test" element={<TestPage/>} />
           <Route path="*" element={<Navigate to="/" />} />
         </Route>
       </Route>
