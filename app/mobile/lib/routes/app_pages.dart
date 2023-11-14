@@ -1,12 +1,11 @@
 import 'package:get/get.dart';
-import 'package:mobile/modules/authentication/views/auth_view.dart';
-import 'package:mobile/modules/bottom_navigation/bindings/bottom_navigation_binding.dart';
-import 'package:mobile/modules/bottom_navigation/views/bottom_navigation_view.dart';
-import 'package:mobile/modules/opening/bindings/opening_binding.dart';
-import 'package:mobile/modules/settings/bindings/settings_binding.dart';
-import 'package:mobile/modules/settings/views/settings_view.dart';
 
+import '../modules/visitor_explore/bindings/visitor_explore_binding.dart';
+import '../modules/visitor_explore/views/visitor_explore_view.dart';
 import '../modules/authentication/bindings/authentication_binding.dart';
+import '../modules/authentication/views/auth_view.dart';
+import '../modules/bottom_navigation/bindings/bottom_navigation_binding.dart';
+import '../modules/bottom_navigation/views/bottom_navigation_view.dart';
 import '../modules/editPost/bindings/edit_post_binding.dart';
 import '../modules/editPost/views/edit_post_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -15,9 +14,13 @@ import '../modules/newIa/bindings/new_ia_binding.dart';
 import '../modules/newIa/views/new_ia_view.dart';
 import '../modules/newPost/bindings/new_post_binding.dart';
 import '../modules/newPost/views/new_post_view.dart';
+import '../modules/opening/bindings/opening_binding.dart';
 import '../modules/opening/views/opening_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
+import '../modules/settings/bindings/settings_binding.dart';
+import '../modules/settings/views/settings_view.dart';
+
 part 'app_routes.dart';
 
 class AppPages {
@@ -64,5 +67,10 @@ class AppPages {
         name: _Paths.newIa,
         page: () => const NewIaView(),
         binding: NewIaBinding()),
+    GetPage(
+      name: _Paths.visitorExplore,
+      page: () => const VisitorExploreView(),
+      binding: VisitorExploreBinding(),
+    ),
   ];
 }

@@ -49,9 +49,7 @@ class OpeningView extends GetView<OpeningController> {
                       ),
                       const SizedBox(height: 10),
                       InkWell(
-                        onTap: () {
-                          // Handle "Continue as Visitor" click
-                        },
+                        onTap: controller.navigateoToVisitorExplore,
                         child: Text(
                           'Continue as Visitor',
                           style: TextStyle(

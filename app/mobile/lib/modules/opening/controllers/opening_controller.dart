@@ -33,6 +33,10 @@ class OpeningController extends GetxController {
     splash.value = false;
   }
 
+  void navigateoToVisitorExplore() {
+    Get.toNamed(Routes.visitorExplore);
+  }
+
   @override
   void onClose() {}
 

@@ -1,25 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/modules/home/controllers/home_controller.dart';
+
+import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/modules/home/views/visitor_view.dart';
-import 'package:mobile/data/models/user_model.dart';
-import '../../home/bindings/home_binding.dart';
 import 'member_view.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(
-      home: const HomeView(),
-      initialBinding: HomeBinding(), // Add this line
-    );
-  }
-}
 class HomeView extends GetView<HomeController> {
   const HomeView({Key? key}) : super(key: key);
 
@@ -44,8 +30,7 @@ class HomeView extends GetView<HomeController> {
           ),
         ],
       ),
-      // need to check authentication here
-      body: false ? VisitorView() : MemberView(),
+      body:  MemberView(),
     );
   }
 }
