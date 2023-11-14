@@ -8,6 +8,7 @@ import ProfilePage from "../ProfilePage";
 import { Col, Row } from "react-bootstrap";
 import { useAuth } from "../../contexts/AuthContext";
 import RegistrationConfirm from "../RegistrationConfirm";
+import PostViewPage from '../PostViewPage'; 
 import FollowerPage from "../Follow/Follower";
 import FollowingPage from "../Follow/Following";
 import Toast from "../../components/Toast/Toast";
@@ -57,9 +58,6 @@ const Router = () => {
         <Route path="/reset-password" element={<ConfirmNewPassword />} />
         <Route path="/registration-confirm" element={<RegistrationConfirm />} />
 
-        <Route path="/follower-page" element={<FollowerPage />} />
-        <Route path="/following-page" element={<FollowingPage />} />
-
         <Route
           element={
             <Row className="p-0 m-0 vw-100">
@@ -81,6 +79,8 @@ const Router = () => {
           {isAuthenticated && (
             <Route path="/profile" element={<ProfilePage />} />
           )}
+          {isAuthenticated && <Route path="/profile" element={<ProfilePage/>}/>}
+                    <Route path="/posts/:postId" element={<PostViewPage/>} />
           <Route path="*" element={<Navigate to="/" />} />
         </Route>
       </Route>
