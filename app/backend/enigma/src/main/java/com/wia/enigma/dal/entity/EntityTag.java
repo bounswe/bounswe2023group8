@@ -12,9 +12,9 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "entity_tags")
+@Table(name = "entity_tag")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class EntityTags {
+public class EntityTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
