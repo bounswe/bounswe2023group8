@@ -1,6 +1,7 @@
 package com.wia.enigma.core.data.dto;
 
-import com.wia.enigma.dal.entity.EnigmaUser;
+import com.wia.enigma.dal.entity.InterestArea;
+import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,24 +9,27 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.sql.Timestamp;
-import java.util.Date;
+import java.util.List;
+
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class EnigmaUserDto {
+public class InterestAreaSimpleDto {
 
     Long id;
 
-    String username;
+    Long enigmaUserId;
+
+    EnigmaAccessLevel accessLevel;
 
     String name;
 
-    String email;
+    List<Long> nestedInterestAreas;
 
-    Date birthday;
+    List<String> wikiTags;
 
-    Timestamp createdTime;
+    Timestamp createTime;
 }
