@@ -15,7 +15,7 @@ import '../../home/bindings/home_binding.dart';
 import '../../home/views/home_view.dart';
 
 class BottomNavigationController extends GetxController {
-  var currentIndex = 1.obs;
+  var currentIndex = 0.obs;
 
   final String token = Get.arguments['token'];
 

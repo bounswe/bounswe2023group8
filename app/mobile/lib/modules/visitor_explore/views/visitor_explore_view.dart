@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:mobile/data/models/post_model.dart';
+import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/data/widgets/visitor_bottom_bar.dart';
 
-import '../../../data/constants/assets.dart';
 import '../../../data/models/user_model.dart';
 import '../../../data/widgets/custom_search_bar.dart';
+import '../../opening/controllers/opening_controller.dart';
 import '../controllers/visitor_explore_controller.dart';
 
 class VisitorExploreView extends GetView<VisitorExploreController> {
@@ -14,28 +16,14 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: VisitorBottomBar(
-          onLoginPressed: () => controller.navigateToAuth(true),
-          onSignUpPressed: () => controller.navigateToAuth(false)),
-      appBar: AppBar(
-        elevation: 0.3,
-        backgroundColor: Colors.white,
-        leading: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Image.asset(
-            Assets.logo,
-            height: 30,
-            fit: BoxFit.contain,
-          ),
-        ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(top: 12, bottom: 12, right: 72),
-            child: CustomSearchBar(),
-          ),
-        ],
+          onLoginPressed: () => Get.find<OpeningController>().backToAuth(true),
+          onSignUpPressed: () =>
+              Get.find<OpeningController>().backToAuth(false)),
+      appBar: const CustomAppBar(
+        leadingAppIcon: true,
+        titleWidget: CustomSearchBar(),
       ),
-      body: Container(
-        color: Colors.white,
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: Column(
@@ -79,67 +67,16 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
               ),
 
               const SizedBox(height: 16),
+              ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 8),
+                  itemCount: controller.posts.length,
+                  itemBuilder: (context, index) =>
+                      trendinPost(controller.posts[index])),
 
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE6EFF4),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.all(16),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Pride & Prejudice
-                    Text(
-                      'Pride & Prejudice: The 15 Best Movie & TV Adaptations, Ranked According To IMDb',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
 
-                    SizedBox(height: 8),
-                    Text(
-                      'Created by Lauren Allen',
-                      style: TextStyle(
-                        color: Color(0xFF7E7E7E),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 8), // Add space between the rectangles
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE6EFF4),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.all(16),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Best books text
-                    Text(
-                      'Best books to read when you are in a reading slump',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-
-                    SizedBox(height: 8),
-                    Text(
-                      'Created by Lauren Allen',
-                      style: TextStyle(
-                        color: Color(0xFF7E7E7E),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               const SizedBox(height: 12),
               // Discover title without a rectangle
               const Center(
@@ -154,7 +91,8 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
               const SizedBox(height: 8),
 
               // List of popular users
-              Expanded(
+              SizedBox(
+                height: 120,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 4,
@@ -165,9 +103,45 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                   },
                 ),
               ),
+              
               const SizedBox(height: 8),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget trendinPost(PostModel post) {
+    return InkWell(
+      onTap: () => controller.navigateToPostDetails(post),
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFFE6EFF4),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Pride & Prejudice
+            Text(
+              post.title,
+              style: const TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+            Text(
+              'Created by ${controller.getNameById(post.userId)}',
+              style: const TextStyle(
+                color: Color(0xFF7E7E7E),
+              ),
+            ),
+          ],
         ),
       ),
     );

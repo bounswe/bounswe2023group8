@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/modules/authentication/providers/authentication_provider.dart';
 import 'package:mobile/modules/authentication/views/forgot_password_view.dart';
 

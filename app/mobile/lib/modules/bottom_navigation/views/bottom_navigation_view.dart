@@ -17,7 +17,7 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
       body: Stack(children: [
         Navigator(
           key: Get.nestedKey(1),
-          initialRoute: Routes.profile,
+          initialRoute: Routes.home,
           onGenerateRoute: controller.onGenerateRoute,
         ),
         Positioned(

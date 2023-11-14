@@ -76,6 +76,8 @@ class MemberView extends GetView<HomeController> {
                   itemCount: controller.posts.length,
                   itemBuilder: (context, index) {
                     return PostTileWidget(
+                      onTap: () => controller
+                          .navigateToPostDetails(controller.posts[index]),
                       post: controller.posts[index],
                       getAreaNameById: controller.getAreaNameById,
                       getUserNameById: controller.getUserNameById,
