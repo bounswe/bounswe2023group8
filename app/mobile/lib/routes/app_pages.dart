@@ -6,6 +6,8 @@ import '../modules/authentication/bindings/authentication_binding.dart';
 import '../modules/authentication/views/auth_view.dart';
 import '../modules/bottom_navigation/bindings/bottom_navigation_binding.dart';
 import '../modules/bottom_navigation/views/bottom_navigation_view.dart';
+import '../modules/editPost/bindings/edit_post_binding.dart';
+import '../modules/editPost/views/edit_post_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/newIa/bindings/new_ia_binding.dart';
@@ -57,6 +59,10 @@ class AppPages {
         name: _Paths.newPost,
         page: () => NewPostView(),
         binding: NewPostBinding()),
+    GetPage(
+        name: _Paths.editPost,
+        page: () => EditPostView(),
+        binding: EditPostBinding()),
     GetPage(
         name: _Paths.newIa,
         page: () => const NewIaView(),

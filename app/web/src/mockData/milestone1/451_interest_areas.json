@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "area_name": "Football"
+  },
+  {
+    "id": 2,
+    "area_name": "Basketball"
+  },
+  {
+    "id": 3,
+    "area_name": "Music"
+  },
+  {
+    "id": 4,
+    "area_name": "Cooking"
+  },
+  {
+    "id": 5,
+    "area_name": "Photography"
+  }
+]
