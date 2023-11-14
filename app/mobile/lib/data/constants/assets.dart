@@ -17,5 +17,5 @@ class Assets {
   static const String upvote = 'assets/icons/upvote.png';
   static const String downvote = 'assets/icons/downvote.png';
   static const String notification = 'assets/icons/notification.svg';
-
+  static const String factCheck = 'assets/icons/fact-check.png';
 }
