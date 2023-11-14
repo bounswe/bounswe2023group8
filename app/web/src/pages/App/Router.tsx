@@ -10,6 +10,7 @@ import ProfilePage from "../ProfilePage";
 import { Col, Row } from "react-bootstrap";
 import { useAuth } from "../../contexts/AuthContext";
 import RegistrationConfirm from "../RegistrationConfirm";
+import PostViewPage from '../PostViewPage'; 
 
 const Router = () => {
   const { isAuthenticated } = useAuth();
@@ -48,9 +49,10 @@ const Router = () => {
 
                 <Route path="/home" element={<OpeningPage/>}/>
                 <Route path="/profile" element={<ProfilePage/>}/>
+                <Route path="/posts/:postId" element={<PostViewPage/>} />
             </Route>
         </Route>
-      </Route>
+    
     </Routes>
   );
 };
