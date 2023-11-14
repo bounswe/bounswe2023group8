@@ -37,4 +37,7 @@ public class Post {
 
     @Column(name = "create_time")
     Timestamp createTime;
+
+    @Column(name = "delete_time")
+    Timestamp deleteTime;
 }
