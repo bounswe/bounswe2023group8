@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import LocationPicker from "../../components/Geolocation/LocationPicker";
 import {Button} from "react-bootstrap";
 
-const TestPage: React.FC = () => {
+const MapTestPage: React.FC = () => {
     const [showLocationPickerModal, setShowLocationPickerModal] = useState(false);
     const [locationData, setLocationData]
         = useState({address: " ", latitude: 0, longitude:0});
@@ -28,4 +28,4 @@ const TestPage: React.FC = () => {
     );
 };
 
-export default TestPage;
+export default MapTestPage;
