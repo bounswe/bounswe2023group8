@@ -102,6 +102,7 @@ class ProfileView extends GetView<ProfileController> {
                       post: controller.posts[index],
                       getAreaNameById: controller.getAreaNameById,
                       getUserNameById: controller.getUserNameById,
+                      hideTags: false,
                     );
                   })
             ],

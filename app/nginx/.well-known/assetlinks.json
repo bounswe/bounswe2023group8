@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.webaggregator.mobile",
+    "sha256_cert_fingerprints":
+    ["9E:80:BA:25:8C:BF:ED:32:4E:1C:89:D4:E1:F9:BD:D9:95:B3:2B:62:30:1A:C0:6A:9A:BD:27:9E:AA:E9:22:A0"]
+  }
+}]
