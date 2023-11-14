@@ -1,5 +1,6 @@
 import React from 'react';
 import PostPreviewCard from "../../components/Post/PostPreviewCard";
+import InterestAreaCard from '../../components/InterestArea/InterestAreaCard';
 import mockPosts from "../../mockData/milestone1/451_posts.json";
 import mockUsers from "../../mockData/milestone1/451_users.json";
 import mockInterestAreas from "../../mockData/milestone1/451_interest_areas.json";
@@ -34,8 +35,17 @@ const ProfilePage = () => {
         <hr className="mx-3"/>
         <Row>
             <Col className="col-4">
-            {/*Interest Area List here*/}
+                <h5 className="mt-2 mx-3">Interest Areas</h5>
+                <div className="card border-0" style={{maxHeight: '70vh'}}>
+                    <hr className="m-0 mx-2"/>
+                    <div className="card-body overflow-y-auto">
+                        {mockInterestAreas.map((interestArea) => (
+                            <InterestAreaCard key={interestArea.id} interestArea={interestArea}/>
+                        ))}
+                    </div>
+                </div>
             </Col>
+
             <Col className="col-8">
                 <h5 className="mt-2 mx-3">Posts</h5>
                 <div className="card border-0" style={{maxHeight: '70vh'}}>

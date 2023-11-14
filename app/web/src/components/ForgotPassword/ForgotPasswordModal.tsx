@@ -1,6 +1,8 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import { useForm, SubmitHandler } from "react-hook-form";
+import axios from "axios";
+import { useToastContext} from "../../contexts/ToastContext";
 
 type FormData = {
   email: string;
@@ -11,6 +13,21 @@ type ForgotPasswordModalProps = {
   setShowForgotPasswordModal: () => void;
 };
 
+const axiosInstance = axios.create({
+  baseURL: `${process.env.REACT_APP_BACKEND_API_URL}`,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+const requestPasswordReset = async (data: FormData) => {
+  const params = new URLSearchParams({
+    email: data.email,
+  }).toString();
+
+  return await axiosInstance.get(`/auth/forgot-password?${params}`);
+}
+
 const ForgotPasswordModal = (props: ForgotPasswordModalProps) => {
   const {
     register,
@@ -18,9 +35,28 @@ const ForgotPasswordModal = (props: ForgotPasswordModalProps) => {
     formState: { errors },
   } = useForm<FormData>();
   const { showModal, setShowForgotPasswordModal } = props;
-  const onSubmit: SubmitHandler<FormData> = (data) => {
-    console.log(data);
-    // handle registration logic here
+  const { toastState, setToastState } = useToastContext();
+
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    try {
+      const response = await requestPasswordReset(data);
+      if (response?.status === 200){
+        const tempState = toastState.filter((toast) => {
+          return toast.message != "Verification Email sent!"
+        });
+        setToastState([
+          ...tempState,
+          {message: "Verification Email sent!", display: true, isError: false}
+        ]);
+        setTimeout(() => setToastState(toastState.filter((toast) => {
+          return toast.message != "Verification Email sent!"
+        })), 6000);
+      }
+      setShowForgotPasswordModal();
+    } catch (error) {
+      console.error("Password reset failed:", error);
+    }
+
   };
 
   return (

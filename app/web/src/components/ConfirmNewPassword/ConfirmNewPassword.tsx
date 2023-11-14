@@ -1,6 +1,9 @@
 import React from "react";
 import {Modal} from "react-bootstrap";
 import {useForm, SubmitHandler} from "react-hook-form";
+import {useNavigate} from "react-router-dom";
+import axios from "axios";
+import {useToastContext} from "../../contexts/ToastContext";
 
 type FormData = {
     password: string;
@@ -10,6 +13,7 @@ type FormData = {
 type ConfirmNewPasswordModalProps = {
     showModal: boolean;
     handleClose: () => void;
+    token: string;
 };
 
 const ConfirmNewPasswordModal = (props: ConfirmNewPasswordModalProps) => {
@@ -19,10 +23,45 @@ const ConfirmNewPasswordModal = (props: ConfirmNewPasswordModalProps) => {
         formState: {errors},
         getValues,
     } = useForm<FormData>();
-    const {showModal, handleClose} = props;
-    const onSubmit: SubmitHandler<FormData> = (data) => {
-        console.log(data);
-        // handle registration logic here
+    const {showModal, handleClose, token} = props;
+    const { toastState, setToastState } = useToastContext();
+    const navigate = useNavigate();
+
+    const axiosInstance = axios.create({
+        baseURL: `${process.env.REACT_APP_BACKEND_API_URL}`,
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    const confirmNewPassword = async (data: FormData) => {
+        const params = new URLSearchParams({
+            token: token,
+            password: data.password,
+            password2: data.confirmPassword
+        }).toString();
+        return await axiosInstance.get(`/auth/reset-password?${params}`);
+    }
+
+    const onSubmit: SubmitHandler<FormData> = async (data) => {
+        try {
+            const response = await confirmNewPassword(data);
+            if (response?.status === 200){
+                navigate('/home');
+            }
+        } catch (error) {
+            const tempState = toastState.filter((toast) => {
+                return toast.message != "Password Reset Failed!"
+            });
+            setToastState([
+                ...tempState,
+                {message: "Password Reset Failed!", display: true, isError: true}
+            ]);
+            setTimeout(() => setToastState(toastState.filter((toast) => {
+                return toast.message != "Password Reset Failed!"
+            })), 6000);
+            handleClose();
+        }
     };
 
     return (
