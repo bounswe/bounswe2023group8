@@ -1,18 +1,18 @@
 package com.wia.enigma.dal.entity;
 
 
+import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import com.wia.enigma.dal.enums.EnigmaAccessLevel;
-
 import java.sql.Timestamp;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "interest_area")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class InterestArea {
@@ -26,7 +26,7 @@ public class InterestArea {
     Long enigmaUserId;
 
     @Column(name = "access_level")
-    String accessLevel; // EnigmaAccessLevel
+    EnigmaAccessLevel accessLevel;
 
     @Column(name = "name")
     String name;
