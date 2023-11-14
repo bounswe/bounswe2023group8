@@ -12,6 +12,8 @@ import FollowerPage from "../Follow/Follower";
 import FollowingPage from "../Follow/Following";
 import Toast from "../../components/Toast/Toast";
 import {useToastContext} from "../../contexts/ToastContext";
+import DetailedPostCard from "../../components/Post/DetailedPostCard";
+import PostViewPage from "../PostViewPage";
 
 const Router = () => {
     const {isAuthenticated} = useAuth();
@@ -59,6 +61,7 @@ const Router = () => {
                     {/*Pages that have both a topbar and sidebar go here*/}
                     <Route path="/home" element={<OpeningPage/>}/>
                     {isAuthenticated && <Route path="/profile" element={<ProfilePage/>}/>}
+                    <Route path="/posts/:postId" element={<PostViewPage/>} />
                     <Route path="*" element={<Navigate to="/"/>}/>
                 </Route>
             </Route>
