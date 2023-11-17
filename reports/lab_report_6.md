@@ -23,7 +23,7 @@ Description | Issue | Assignee | Due | Artifact | Estimated Duration | Actual Du
 -- | -- | -- | -- | -- | -- | --
 Backend - Tag Options API | [#352](https://github.com/bounswe/bounswe2023group8/issues/352) | Baki | 14.11.2023 | [#363](https://github.com/bounswe/bounswe2023group8/pull/363) | 3hr | 3hr
 Backend - Create Post CRUD APIs | [#334](https://github.com/bounswe/bounswe2023group8/issues/334) | Bahadır | 14.11.2023 | [#372](https://github.com/bounswe/bounswe2023group8/pull/372) | 3hr | 6hr
-Backend - Create Interest Area CRUD APIs | [#335](https://github.com/bounswe/bounswe2023group8/issues/335) | Baki | 14.11.2023 |   | 3hr |  
+Backend - Create Interest Area CRUD APIs | [#335](https://github.com/bounswe/bounswe2023group8/issues/335) | Baki | 14.11.2023 | [#386](https://github.com/bounswe/bounswe2023group8/pull/386)  | 3hr |  6hr
 Backend - Comment Model and CRUD APIs | [#334](https://github.com/bounswe/bounswe2023group8/issues/334) | Bahadır | 14.11.2023 | [#371](https://github.com/bounswe/bounswe2023group8/pull/371) | 3hr | 2hr
 Mobile - Visitor Bottom Bar | [#344](https://github.com/bounswe/bounswe2023group8/issues/344) | Ömer | 14.11.2023 | [#359](https://github.com/bounswe/bounswe2023group8/pull/359) | 1hr | 0.5hr
 Mobile - Member Home Page | [#345](https://github.com/bounswe/bounswe2023group8/issues/345) | Furkan | 14.11.2023 | [#362](https://github.com/bounswe/bounswe2023group8/pull/362) | 4hr | 3hr
