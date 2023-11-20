@@ -28,9 +28,9 @@ public class InterestAreaController {
         WA-8: Gets interest areas.
      */
     @GetMapping()
-    public ResponseEntity<?> getInterestArea(@Valid  @NotNull @RequestParam(name = "id") Long id ) {
+    public ResponseEntity<?> getInterestArea(@Valid  @NotNull @RequestParam(name = "id") Long id, EnigmaAuthenticationToken token ) {
 
-        InterestAreaDto interestAreaDto = interestAreaService.getInterestArea(id);
+        InterestAreaDto interestAreaDto = interestAreaService.getInterestArea(id,  token.getEnigmaUserId());
 
         return ResponseEntity.ok(interestAreaDto);
 
@@ -86,6 +86,28 @@ public class InterestAreaController {
     public ResponseEntity<?> deleteInterestArea(@Valid @NotNull @RequestParam(name = "id") Long id) {
 
         interestAreaService.deleteInterestArea(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+        WA-14: Follows interest area.
+     */
+    @GetMapping("follow")
+    public ResponseEntity<?> followInterestArea(@Valid @NotNull @RequestParam(name = "id") Long id, EnigmaAuthenticationToken token) {
+
+        interestAreaService.followInterestArea(token.getEnigmaUserId(), id);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+        WA-15: Unfollows interest area.
+     */
+    @GetMapping("unfollow")
+    public ResponseEntity<?> unfollowInterestArea(@Valid @NotNull @RequestParam(name = "id") Long id, EnigmaAuthenticationToken token) {
+
+        interestAreaService.unfollowInterestArea(token.getEnigmaUserId(), id);
 
         return ResponseEntity.ok().build();
     }
