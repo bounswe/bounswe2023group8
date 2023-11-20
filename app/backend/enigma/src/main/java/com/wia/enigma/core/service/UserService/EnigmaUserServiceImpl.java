@@ -504,4 +504,20 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                 .birthday(enigmaUser.getBirthday())
                 .build();
     }
+
+    @Override
+    public List<EnigmaUserDto> search(Long userId, String searchKey) {
+
+        return enigmaUserRepository.findByIsVerifiedTrueAndUsernameContainsOrNameContains(searchKey, searchKey)
+                .stream()
+                .map(enigmaUser -> EnigmaUserDto.builder()
+                        .id(enigmaUser.getId())
+                        .username(enigmaUser.getUsername())
+                        .name(enigmaUser.getName())
+                        .email(enigmaUser.getEmail())
+                        .birthday(enigmaUser.getBirthday())
+                        .createTime(enigmaUser.getCreateTime())
+                        .build())
+                .toList();
+    }
 }

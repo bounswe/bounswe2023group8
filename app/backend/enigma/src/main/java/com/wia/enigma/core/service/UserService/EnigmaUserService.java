@@ -5,9 +5,6 @@ import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;
 import com.wia.enigma.core.data.response.LoginResponse;
 import com.wia.enigma.core.data.response.RegisterResponse;
 import com.wia.enigma.core.data.response.VerificationResponse;
-import com.wia.enigma.dal.entity.EnigmaUser;
-import com.wia.enigma.dal.entity.UserFollows;
-import com.wia.enigma.dal.enums.EntityType;
 
 import java.util.List;
 
@@ -36,4 +33,6 @@ public interface EnigmaUserService {
     List<InterestAreaSimpleDto> getFollowingInterestAreas(Long userId, Long followerId);
 
     EnigmaUserDto getVerifiedUser(Long id);
+
+    List<EnigmaUserDto> search(Long userId, String searchKey);
 }

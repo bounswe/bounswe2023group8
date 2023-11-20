@@ -5,7 +5,12 @@ import com.wia.enigma.dal.projection.EnigmaUserDetailsProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface EnigmaUserRepository extends JpaRepository<EnigmaUser, Long> {
+    List<EnigmaUser> findByIsVerifiedTrueAndUsernameContainsOrNameContains(String username, String name);
+    List<EnigmaUser> findByUsernameContainsOrNameContainsAndIsVerified(String username, String name, Boolean isVerified);
+    List<EnigmaUser> findByUsernameContainsOrNameContains(String username, String name);
 
     @Query("SELECT u " +
             "FROM EnigmaUser u " +
