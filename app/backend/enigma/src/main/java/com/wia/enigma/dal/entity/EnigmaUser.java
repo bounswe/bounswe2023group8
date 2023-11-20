@@ -25,6 +25,9 @@ public class EnigmaUser {
     @Column(name = "username")
     String username;
 
+    @Column(name = "name")
+    String name;
+
     @Column(name = "email")
     String email;
 

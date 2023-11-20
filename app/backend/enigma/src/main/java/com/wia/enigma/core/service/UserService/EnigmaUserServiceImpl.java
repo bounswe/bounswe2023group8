@@ -1,5 +1,7 @@
 package com.wia.enigma.core.service.UserService;
 
+import com.wia.enigma.core.data.dto.EnigmaUserDto;
+import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;
 import com.wia.enigma.core.data.dto.JwtGenerationDto;
 import com.wia.enigma.core.data.response.LoginResponse;
 import com.wia.enigma.core.data.response.RegisterResponse;
@@ -7,12 +9,18 @@ import com.wia.enigma.core.data.response.SecurityDetailsResponse;
 import com.wia.enigma.core.data.response.VerificationResponse;
 import com.wia.enigma.core.service.EmailService.EmailService;
 import com.wia.enigma.core.service.JwtService.EnigmaJwtService;
+import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.VerificationTokenService.VerificationTokenService;
 import com.wia.enigma.dal.entity.EnigmaUser;
+import com.wia.enigma.dal.entity.UserFollows;
 import com.wia.enigma.dal.entity.VerificationToken;
 import com.wia.enigma.dal.enums.AudienceType;
+import com.wia.enigma.dal.enums.EnigmaAccessLevel;
+import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.repository.EnigmaUserRepository;
+import com.wia.enigma.dal.repository.InterestAreaRepository;
+import com.wia.enigma.dal.repository.UserFollowsRepository;
 import com.wia.enigma.exceptions.custom.EnigmaBadRequestException;
 import com.wia.enigma.exceptions.custom.EnigmaConflictException;
 import com.wia.enigma.exceptions.custom.EnigmaDatabaseException;
@@ -31,12 +39,14 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EnigmaUserServiceImpl implements EnigmaUserService {
+    private final InterestAreaRepository interestAreaRepository;
 
     final PasswordEncoder passwordEncoder;
 
@@ -47,6 +57,9 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
     final VerificationTokenService verificationTokenService;
 
     final EmailService emailService;
+
+    final UserFollowsService userFollowsService;
+
 
     /**
      * Registers a new EnigmaUser.
@@ -354,5 +367,141 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
         verificationToken.setIsRevoked(true);
         verificationTokenService.save(verificationToken);
+    }
+
+    @Override
+    @Transactional
+    public void followUser(Long userId, Long followId) {
+
+        EnigmaUserDto enigmaUser = getVerifiedUser(followId);
+
+        if(enigmaUser == null) {
+            throw new IllegalArgumentException("User does not exist or unverified!");
+        }
+
+        if (userId.equals(followId)) {
+            throw new IllegalArgumentException("You cannot follow yourself");
+        }
+
+        Optional<UserFollows> userFollows = userFollowsService.findUserFollowsEntity(userId, followId, EntityType.USER);
+
+        if(userFollows.isPresent()) {
+
+            if(userFollows.get().getIsAccepted()){
+                throw new IllegalArgumentException("You are already following this " + EntityType.USER);
+            }
+            else {
+                throw new IllegalArgumentException("You already sent a follow request to this " + EntityType.USER);
+            }
+        }
+
+        UserFollows userFollow = UserFollows.builder()
+                .followerEnigmaUserId(userId)
+                .followedEntityId(followId)
+                .followedEntityType(EntityType.USER)
+                .isAccepted(true)
+                .build();
+
+        userFollowsService.follow(userFollow);
+    }
+
+    @Override
+    @Transactional
+    public void unfollowUser(Long userId, Long followId) {
+
+        EnigmaUserDto enigmaUser = getVerifiedUser(followId);
+
+        if(enigmaUser == null) {
+            throw new IllegalArgumentException("User does not exist or unverified!");
+        }
+
+        userFollowsService.unfollow(userId, followId, EntityType.USER);
+    }
+
+    @Override
+    public List<EnigmaUserDto> getFollowers(Long userId, Long followedId) {
+
+        EnigmaUserDto followedEnigmaUser = getVerifiedUser(followedId);
+
+        if(followedEnigmaUser == null) {
+            throw new IllegalArgumentException("User does not exist or unverified!");
+        }
+
+        return userFollowsService.findAcceptedFollowers( followedId, EntityType.USER)
+                .stream()
+                .map(userFollows -> enigmaUserRepository.findEnigmaUserById(userFollows.getFollowerEnigmaUserId()))
+                .map(enigmaUser -> EnigmaUserDto.builder()
+                        .id(enigmaUser.getId())
+                        .username(enigmaUser.getUsername())
+                        .name(enigmaUser.getName())
+                        .email(enigmaUser.getEmail())
+                        .birthday(enigmaUser.getBirthday())
+                        .createTime(enigmaUser.getCreateTime())
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public List<EnigmaUserDto>  getFollowings(Long userId, Long followerId) {
+
+        EnigmaUserDto followedEnigmaUser = getVerifiedUser(followerId);
+
+        if(followedEnigmaUser == null) {
+            throw new IllegalArgumentException("User does not exist or unverified!");
+        }
+
+        return userFollowsService.findAcceptedFollowings(followerId, EntityType.USER)
+                .stream()
+                .map(userFollows -> enigmaUserRepository.findEnigmaUserById(userFollows.getFollowedEntityId()))
+                .map(enigmaUser -> EnigmaUserDto.builder()
+                        .id(enigmaUser.getId())
+                        .username(enigmaUser.getUsername())
+                        .name(enigmaUser.getName())
+                        .email(enigmaUser.getEmail())
+                        .birthday(enigmaUser.getBirthday())
+                        .createTime(enigmaUser.getCreateTime())
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public List<InterestAreaSimpleDto> getFollowingInterestAreas(Long userId, Long followerId){
+
+        return userFollowsService.findAcceptedFollowings(followerId, EntityType.INTEREST_AREA)
+                .stream()
+                .map(userFollows -> interestAreaRepository.findInterestAreaById(userFollows.getFollowedEntityId()))
+                .map(interestArea -> InterestAreaSimpleDto.builder()
+                        .id(interestArea.getId())
+                        .name(interestArea.getName())
+                        .enigmaUserId(interestArea.getEnigmaUserId())
+                        .accessLevel(interestArea.getAccessLevel())
+                        .createTime(interestArea.getCreateTime())
+                        .build()).
+                filter(interestAreaSimpleDto  -> userId ==followerId || interestAreaSimpleDto.getAccessLevel().equals(EnigmaAccessLevel.PUBLIC))
+                .toList();
+    }
+
+    @Override
+    public EnigmaUserDto getVerifiedUser(Long userId ){
+
+        EnigmaUser enigmaUser;
+        try {
+            enigmaUser = enigmaUserRepository.findEnigmaUserById(userId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot get EnigmaUser by id.");
+        }
+
+        if (enigmaUser == null)
+            throw new EnigmaBadRequestException(ExceptionCodes.USER_NOT_FOUND,
+                    "EnigmaUser not found for id: " + userId);
+
+        return EnigmaUserDto.builder()
+                .id(enigmaUser.getId())
+                .username(enigmaUser.getUsername())
+                .email(enigmaUser.getEmail())
+                .birthday(enigmaUser.getBirthday())
+                .build();
     }
 }
