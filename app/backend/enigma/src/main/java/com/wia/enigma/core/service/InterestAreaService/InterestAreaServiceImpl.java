@@ -310,6 +310,28 @@ public class InterestAreaServiceImpl implements InterestAreaService {
                 .toList();
     }
 
+    @Override
+    public List<InterestAreaSimpleDto>  search(Long userId, String searchKey){
+
+
+        List<String> relatedWikiTags = wikiTagService.searchWikiTags(searchKey).stream().map(
+                searchResult ->(String) searchResult.get("id")
+        ).toList();
+
+        List<Long> relatedInterestAreaIds =  entityTagsRepository.findByWikiDataTagIdInAndEntityType(relatedWikiTags, EntityType.INTEREST_AREA)
+                .stream()
+                .map(entityTag -> entityTag.getEntityId()).toList();
+
+        return interestAreaRepository.findByAccessLevelNotAndNameContainsOrIdIn(EnigmaAccessLevel.PERSONAL, searchKey, relatedInterestAreaIds).stream()
+                .map(interestArea -> InterestAreaSimpleDto.builder()
+                        .id(interestArea.getId())
+                        .enigmaUserId(interestArea.getEnigmaUserId())
+                        .name(interestArea.getName())
+                        .accessLevel(interestArea.getAccessLevel())
+                        .createTime(interestArea.getCreateTime())
+                        .build()
+                ).toList();
+    }
 
     private boolean isValidWikidataId(String id) {
         return id.matches("Q[0-9]+");

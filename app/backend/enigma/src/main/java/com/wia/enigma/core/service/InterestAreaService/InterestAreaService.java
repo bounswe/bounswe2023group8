@@ -18,5 +18,6 @@ public interface InterestAreaService {
     void followInterestArea(Long enigmaUserId, Long interestAreaId);
     void unfollowInterestArea(Long enigmaUserId, Long interestAreaId);
     List<EnigmaUserDto> getFollowers(Long userId, Long followedId);
+    List<InterestAreaSimpleDto>  search(Long userId, String searchKey);
 
 }
