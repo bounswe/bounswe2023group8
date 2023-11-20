@@ -12,6 +12,7 @@ abstract class Routes {
   static const newPost = _Paths.newPost;
   static const editPost = _Paths.editPost;
   static const newIa = _Paths.newIa;
+  static const interestArea = _Paths.interestArea;
   static const visitorExplore = _Paths.visitorExplore;
   static const postDetails = _Paths.postDetails;
 }
@@ -27,6 +28,7 @@ abstract class _Paths {
   static const newPost = '/new-post';
   static const editPost = '/edit-post';
   static const newIa = '/new-ia';
+  static const interestArea = '/interest-area';
   static const visitorExplore = '/visitor-explore';
   static const postDetails = '/post-details';
 }

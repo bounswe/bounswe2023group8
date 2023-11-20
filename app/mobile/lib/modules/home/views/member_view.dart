@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
-import 'package:mobile/data/models/post_model.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
 import 'package:mobile/modules/home/controllers/home_controller.dart';
 
 import '../../../data/models/user_model.dart';
-import '../../profile/controllers/profile_controller.dart';
 
 class MemberView extends GetView<HomeController> {
 
@@ -20,55 +18,6 @@ class MemberView extends GetView<HomeController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16.0),
-                      child: Container(
-                        color: Colors.grey.shade300,
-                        margin: const EdgeInsets.all(1.0),
-                        child: const Padding(
-                          padding: EdgeInsets.all(4.0),
-                          child: Text(
-                            "JANE AUSTEN MOVIES",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black54,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                ],
-              ),
-              const SizedBox(height: 5,),
-              Row(
-                children: [
-                  Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16.0),
-                      child: Container(
-                        color: Colors.grey.shade400,
-                        margin: const EdgeInsets.all(1.0),
-                        child: const Padding(
-                          padding: EdgeInsets.all(4.0),
-                          child: Text(
-                            "Tags: #Jane Austen #Literature #Cinema",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black54,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                ],
-              ),
               const SizedBox(height: 5,),
               ListView.builder(
                   shrinkWrap: true,
@@ -89,9 +38,6 @@ class MemberView extends GetView<HomeController> {
         )    
        
       )
-
-
-
     );
   }
 }
