@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
-import LocationPicker from "../../components/Geolocation/LocationPicker";
+import React, {useState} from 'react';
 import {Button} from "react-bootstrap";
+import LocationViewer from "../../components/Geolocation/LocationViewer";
 
 const MapTestPage: React.FC = () => {
-    const [showLocationPickerModal, setShowLocationPickerModal] = useState(false);
-    const [locationData, setLocationData]
-        = useState({address: " ", latitude: 0, longitude:0});
-   const handleLocationPickerModal = () => {
-       setShowLocationPickerModal(!showLocationPickerModal);
-   }
+    const [showLocationViewerModal, setShowLocationViewerModal] = useState(false);
+    const handleLocationViewerModal = () => {
+        setShowLocationViewerModal(!showLocationViewerModal);
+    }
+
+    const defaultLocationDetails = {
+        latitude: 40.987673250682725,
+        longitude: 29.03688669204712,
+        address: "Kadıköy/İstanbul, Türkiye"
+    }
 
     return (
         <>
-            <Button onClick={() => handleLocationPickerModal()}>
+            <Button onClick={() => handleLocationViewerModal()}>
                 Show Picker
             </Button>
-            <LocationPicker
-                setLocationFormData={setLocationData}
-                showLocationPickerModal={showLocationPickerModal}
-                handleShowLocationPickerModal={handleLocationPickerModal}
+            <LocationViewer
+                locationData={defaultLocationDetails}
+                showLocationViewerModal={showLocationViewerModal}
+                setShowLocationViewerModal={handleLocationViewerModal}
             />
-            <div>{locationData.address}</div>
-            <div>{locationData.latitude}</div>
-            <div>{locationData.longitude}</div>
-
         </>
     );
 };

@@ -11,8 +11,9 @@ import RegistrationConfirm from "../RegistrationConfirm";
 import PostViewPage from '../PostViewPage'; 
 import Toast from "../../components/Toast/Toast";
 import { useToastContext } from "../../contexts/ToastContext";
-import CreatePost from "../../components/Post/Create";
+import CreatePost from "../PostCreatePage";
 import MapTestPage from "../MapTestPage";
+import PostUpdatePage from "../PostUpdatePage";
 
 const Router = () => {
   const { isAuthenticated } = useAuth();
@@ -30,7 +31,7 @@ const Router = () => {
               <Topbar />
             </Row>
             <Row
-              className="position-fixed bottom-0 p-0 m-0 vw-100"
+              className="bottom-0 p-0 m-0 vw-100"
               style={{ top: 60 }}
             >
               <div
@@ -66,8 +67,10 @@ const Router = () => {
               >
                 <Sidebar />
               </Col>
-              <Col className="col-10" style={{ marginLeft: "17%" }}>
+              <Col className="col-10 position-relative" style={{ marginLeft: "17%", top: 60 }}>
+                <div>
                 <Outlet />
+                </div>
               </Col>
             </Row>
           }
@@ -80,6 +83,7 @@ const Router = () => {
           )}
           {isAuthenticated && <Route path="/profile" element={<ProfilePage/>}/>}
           <Route path="/posts/:postId" element={<PostViewPage/>} />
+          <Route path="/update_post/:postId" element={<PostUpdatePage/>} />
           <Route path="/map-test" element={<MapTestPage/>} />
           <Route path="*" element={<Navigate to="/" />} />
         </Route>

@@ -1,7 +1,6 @@
 import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {GoogleMap, MarkerF, useLoadScript,} from "@react-google-maps/api";
 import React, {useMemo} from "react";
-import {useForm, SubmitHandler} from "react-hook-form";
 import {
     FormSelect,
     Modal
@@ -10,14 +9,21 @@ import useGetAddressList from "../../hooks/useGeolocation";
 
 type LocationPickerProps = {
     showLocationPickerModal: boolean;
-    handleShowLocationPickerModal: () => void;
-    setLocationFormData: Dispatch<SetStateAction<{ address: string; latitude: number; longitude: number; }>>;
+    setShowLocationPickerModal: React.Dispatch<React.SetStateAction<boolean>>;
+    locationFormData: { address: string; latitude: number; longitude: number; locationSelected: boolean; };
+    setLocationFormData: Dispatch<SetStateAction<{
+        address: string;
+        latitude: number;
+        longitude: number;
+        locationSelected: boolean;
+    }>>;
 };
 
 export type SelectedLocationFormData = {
     latitude: number,
     longitude: number,
-    address: string
+    address: string,
+    locationSelected: boolean,
 };
 
 export type GetAddressListFormData = {
@@ -26,33 +32,42 @@ export type GetAddressListFormData = {
 }
 
 const LocationPicker = ({
-                            handleShowLocationPickerModal,
+                            setShowLocationPickerModal,
                             showLocationPickerModal,
+                            locationFormData,
                             setLocationFormData
                         }: LocationPickerProps) => {
     const {isLoaded} = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "",
     });
 
-    const {
-        register,
-        handleSubmit,
-        formState: {errors}
-    } = useForm<SelectedLocationFormData>();
-
-    const onSubmit: SubmitHandler<SelectedLocationFormData> = async (data) => {
+    const onSubmit = async () => {
         try {
-            setLocationFormData({address: data.address, latitude: location.latitude, longitude: location.longitude})
-            handleShowLocationPickerModal();
+            const data = possibleLocations[addressToSubmit];
+            const selected = data !== ""
+            setLocationFormData({
+                address: data,
+                latitude: location.latitude,
+                longitude: location.longitude,
+                locationSelected: selected
+            })
+            setShowLocationPickerModal(!showLocationPickerModal);
         } catch (error) {
             console.error("Location could not be submitted");
         }
     }
 
-    const [location, setLocation] = useState({latitude: 41, longitude: 29})
+    const [location, setLocation] = useState({
+        latitude: locationFormData.latitude,
+        longitude: locationFormData.longitude
+    })
     const [possibleLocations, setPossibleLocations] = useState([""]);
     const [addressToSubmit, setAddressToSubmit] = useState(0);
-    const center = useMemo(() => ({lat: location.latitude, lng: location.longitude}), []);
+
+    const center = useMemo(() => ({
+        lat: locationFormData.latitude,
+        lng: locationFormData.longitude
+    }), [locationFormData]);
     const [mapRef, setMapRef] = useState();
 
     const onMapLoad = async (map: any) => {
@@ -87,14 +102,13 @@ const LocationPicker = ({
         const newLocation = {latitude: e.latLng ? e.latLng.lat() : 0, longitude: e.latLng ? e.latLng.lng() : 0};
         setLocation(newLocation);
         await getAddresses(newLocation);
-
     };
 
     return (
         <Modal
             className="rounded-5"
             show={showLocationPickerModal}
-            onHide={handleShowLocationPickerModal}
+            onHide={() => setShowLocationPickerModal(!showLocationPickerModal)}
             size="xl"
             centered
         >
@@ -103,8 +117,8 @@ const LocationPicker = ({
                 closeButton
             ></Modal.Header>
             <Modal.Body className="bg-body-secondary h-100 w-100 p-0">
-                <form onSubmit={handleSubmit(onSubmit)}
-                      className="card-body align-items-center d-flex flex-column bg-body-secondary">
+                <form
+                    className="card-body align-items-center d-flex flex-column bg-body-secondary">
                     <div className="mb-3 d-flex flex-column "
                          style={{height: '70vh', width: '95%'}}>
                         <h2
@@ -116,11 +130,8 @@ const LocationPicker = ({
 
 
                         <div className="mb-2">
-                            <FormSelect className="form-control"
-                                        {...register("address", {
-                                            required: "This field is required",
-                                        })}>
-                                {["Select an Address", ...possibleLocations].map((possibleLocation, index) => {
+                            <FormSelect>
+                                {possibleLocations.map((possibleLocation, index) => {
                                     if (index == addressToSubmit)
                                         return <option selected key={index} onClick={() => {
                                             setAddressToSubmit(index)
@@ -131,9 +142,6 @@ const LocationPicker = ({
                                         }}>{possibleLocation}</option>
                                 })}
                             </FormSelect>
-                            {errors.address && (
-                                <span className="text-danger">{errors.address.message}</span>
-                            )}
                         </div>
 
 
@@ -151,16 +159,27 @@ const LocationPicker = ({
                                     onClick={onMapClick}
                                 >
                                     <MarkerF
+                                        title={"You can add a new address on this location"}
                                         position={{lat: location.latitude, lng: location.longitude}}
                                     />
+                                    {locationFormData.address !== "" && <MarkerF
+                                        title={"Currently Selected Location"}
+                                        icon={{
+                                            url: "https://upload.wikimedia.org/wikipedia/commons/8/82/Ed.png?20190129231110",
+                                            scaledSize: new google.maps.Size(35, 50),
+                                        }}
+                                        position={{lat: locationFormData.latitude, lng: locationFormData.longitude}}
+                                    ></MarkerF>}
                                 </GoogleMap>
                             )}
+
                         </div>
 
                         <div className="mt-2 text-center">
                             <button
-                                type="submit"
+                                type="button"
                                 className="btn btn-primary rounded-5 fw-bolder"
+                                onClick={() => onSubmit()}
                             >
                                 Confirm
                             </button>
