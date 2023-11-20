@@ -12,6 +12,7 @@ import '../controllers/visitor_explore_controller.dart';
 
 class VisitorExploreView extends GetView<VisitorExploreController> {
   const VisitorExploreView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +72,7 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   separatorBuilder: (context, index) =>
-                      const SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   itemCount: controller.posts.length,
                   itemBuilder: (context, index) =>
                       trendinPost(controller.posts[index])),
@@ -103,7 +104,7 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                   },
                 ),
               ),
-              
+
               const SizedBox(height: 8),
             ],
           ),
@@ -146,26 +147,30 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
       ),
     );
   }
-}
 
-Widget tagRectangle({required String tag}) {
-  return Container(
-    width: 80,
-    height: 40,
-    decoration: BoxDecoration(
-      color: const Color(0xFFE8E8E8),
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: Center(
-      child: Text(
-        tag,
-        style: const TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
+
+  Widget tagRectangle({required String tag}) {
+    return InkWell(
+      onTap: () => controller.navigateToVisitorInterestArea(),
+      child: Container(
+        width: 80,
+        height: 40,
+        decoration: BoxDecoration(
+          color: const Color(0xFFE8E8E8),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(
+          child: Text(
+            tag,
+            style: const TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 Widget popularUserCard({required UserModel user}) {
