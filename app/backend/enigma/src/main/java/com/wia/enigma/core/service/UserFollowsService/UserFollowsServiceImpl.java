@@ -2,8 +2,6 @@ package com.wia.enigma.core.service.UserFollowsService;
 
 import com.wia.enigma.dal.entity.UserFollows;
 import com.wia.enigma.dal.enums.EntityType;
-import com.wia.enigma.dal.repository.EnigmaUserRepository;
-import com.wia.enigma.dal.repository.InterestAreaRepository;
 import com.wia.enigma.dal.repository.UserFollowsRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
