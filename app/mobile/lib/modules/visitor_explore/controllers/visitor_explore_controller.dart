@@ -22,6 +22,10 @@ class VisitorExploreController extends GetxController {
     Get.toNamed(Routes.postDetails, arguments: {'post': post, 'visitor': true});
   }
 
+  void navigateToVisitorInterestArea() {
+    Get.toNamed(Routes.visitorInterestArea);
+  }
+
   @override
   void onInit() {
     super.onInit();
