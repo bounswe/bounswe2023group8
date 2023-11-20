@@ -1,11 +1,9 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import PostPreviewCard from "../../components/Post/PostPreviewCard";
+import PostPreviewCard from "../../components/Post/PostSmallPreview/PostPreviewCard";
 import mockPosts from "../../mockData/milestone1/451_posts.json";
 import mockUsers from "../../mockData/milestone1/451_users.json";
 import mockInterestAreas from "../../mockData/milestone1/451_interest_areas.json";
-import {Col, Row} from "react-bootstrap";
-import ProfileHeader from "../../components/ProfileHeader/ProfileHeader";
 
 const PostViewPage = () => {
    const { postId } = useParams(); 
