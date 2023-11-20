@@ -2,6 +2,7 @@ package com.wia.enigma.exceptions;
 
 import com.wia.enigma.core.data.response.ErrorResponse;
 import com.wia.enigma.dal.enums.ExceptionCodes;
+import com.wia.enigma.exceptions.custom.EnigmaApiException;
 import com.wia.enigma.exceptions.custom.EnigmaBadRequestException;
 import com.wia.enigma.exceptions.custom.EnigmaDatabaseException;
 import com.wia.enigma.exceptions.custom.EnigmaRuntimeException;
@@ -45,6 +46,9 @@ public class GlobalExceptionHandler {
             log.error(ex.getInternalMessage());
 
             if (ex instanceof EnigmaDatabaseException)
+                userMessage = ex.getInternalMessage();
+
+            else if (ex instanceof EnigmaApiException)
                 userMessage = ex.getInternalMessage();
             else
                 userMessage = ExceptionCodes.INTERNAL_SERVER_ERROR.getMessage();

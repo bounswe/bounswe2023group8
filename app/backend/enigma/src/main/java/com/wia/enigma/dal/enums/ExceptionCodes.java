@@ -4,6 +4,7 @@ public enum ExceptionCodes {
 
     INTERNAL_SERVER_ERROR(1, "Internal server error"),
     USER_NOT_FOUND(100, "Enigma user not found"),
+    INTEREST_AREA_NOT_FOUND(101, "Interest area not found"),
     NULL_POINTER(69, "Unexpected generic error occurred"),
     INVALID_DATE_FORMAT(600, "Invalid date format"),
     INVALID_AUDIENCE_TYPE(601, "Invalid audience type"),
@@ -19,6 +20,7 @@ public enum ExceptionCodes {
     INVALID_JWT_TYPE(611, "Invalid JWT type"),
     INVALID_USERNAME(612, "Invalid username"),
     INVALID_PASSWORD(613, "Invalid password"),
+
     REVOKED_JWT(614, "Revoked JWT"),
 
     VERIFICATION_TOKEN_NOT_FOUND(615, "Verification token not found"),
@@ -27,6 +29,7 @@ public enum ExceptionCodes {
     PASSWORDS_DO_NOT_MATCH(617, "Passwords do not match"),
 
     USERNAME_OR_EMAIL_ALREADY_VERIFIED(618, "Username or email exists."),
+    INVALID_WIKI_TAG_ID(620, "Invalid wiki tag id"),
 
     DB_GET_ERROR(700, "Error while getting data from database"),
     DB_SAVE_ERROR(701, "Error while saving data to database"),
@@ -35,7 +38,8 @@ public enum ExceptionCodes {
     DB_UNIQUE_CONSTRAINT_VIOLATION(704, "Unique constraint violation"),
     DB_CONSTRAINT_VIOLATION(705, "Constraint violation"),
     MISSING_AUTHORIZATION_HEADER(800, "Missing Authorization header"),
-    INVALID_AUTHORIZATION_HEADER(801, "Invalid Authorization header");
+    INVALID_AUTHORIZATION_HEADER(801, "Invalid Authorization header"),
+    API_RETURNED_NON_200(900, "API returned non-200 status code");
 
     private final int code;
     private final String message;
