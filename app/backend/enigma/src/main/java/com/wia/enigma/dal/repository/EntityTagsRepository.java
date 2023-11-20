@@ -10,4 +10,6 @@ public interface EntityTagsRepository extends JpaRepository<EntityTag, Long> {
 
     public List<EntityTag> findAllByEntityIdAndEntityType(Long entityId, EntityType entityType);
 
+    public void deleteAllByEntityIdAndEntityType(Long entityId, EntityType entityType);
+
 }

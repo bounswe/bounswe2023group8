@@ -173,6 +173,8 @@ public class InterestAreaServiceImpl implements InterestAreaService {
 
         interestAreaRepository.save(interestArea);
 
+        nestedInterestAreaRepository.deleteAllByParentInterestAreaId(interestArea.getId());
+
         nestedInterestAreaRepository.saveAll(nestedInterestAreas.stream().map(
                 nestedInterestArea -> com.wia.enigma.dal.entity.NestedInterestArea.builder()
                         .parentInterestAreaId(interestArea.getId())
@@ -180,6 +182,8 @@ public class InterestAreaServiceImpl implements InterestAreaService {
                         .createTime(new Timestamp(System.currentTimeMillis()))
                         .build()).toList()
                 );
+
+        entityTagsRepository.deleteAllByEntityIdAndEntityType(interestArea.getId(), EntityType.INTEREST_AREA);
 
         entityTagsRepository.saveAll(wikiTags.stream().map( wikiTag -> EntityTag.builder()
                 .entityId(interestArea.getId())
