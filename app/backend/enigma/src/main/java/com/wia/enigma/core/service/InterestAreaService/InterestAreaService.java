@@ -1,4 +1,4 @@
-package com.wia.enigma.core.service;
+package com.wia.enigma.core.service.InterestAreaService;
 
 import com.wia.enigma.core.data.dto.InterestAreaDto;
 import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;

@@ -1,8 +1,9 @@
-package com.wia.enigma.core.service;
+package com.wia.enigma.core.service.WikiService;
 
 import com.wia.enigma.core.data.dto.WikiTagDto;
 import com.wia.enigma.core.data.response.WikiTagResponse;
 import com.wia.enigma.core.data.response.WikiSearchResponse;
+import com.wia.enigma.core.service.WikiService.WikiService;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

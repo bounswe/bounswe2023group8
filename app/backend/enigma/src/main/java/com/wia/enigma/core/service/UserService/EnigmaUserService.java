@@ -1,4 +1,4 @@
-package com.wia.enigma.core.service;
+package com.wia.enigma.core.service.UserService;
 
 import com.wia.enigma.core.data.response.LoginResponse;
 import com.wia.enigma.core.data.response.RegisterResponse;

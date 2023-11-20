@@ -1,4 +1,4 @@
-package com.wia.enigma.core.service;
+package com.wia.enigma.core.service.JwtService;
 
 import com.wia.enigma.configuration.security.EnigmaAuthenticationToken;
 import com.wia.enigma.configuration.security.EnigmaUserDetails;

@@ -1,10 +1,13 @@
-package com.wia.enigma.core.service;
+package com.wia.enigma.core.service.UserService;
 
 import com.wia.enigma.core.data.dto.JwtGenerationDto;
 import com.wia.enigma.core.data.response.LoginResponse;
 import com.wia.enigma.core.data.response.RegisterResponse;
 import com.wia.enigma.core.data.response.SecurityDetailsResponse;
 import com.wia.enigma.core.data.response.VerificationResponse;
+import com.wia.enigma.core.service.EmailService.EmailService;
+import com.wia.enigma.core.service.JwtService.EnigmaJwtService;
+import com.wia.enigma.core.service.VerificationTokenService.VerificationTokenService;
 import com.wia.enigma.dal.entity.EnigmaUser;
 import com.wia.enigma.dal.entity.VerificationToken;
 import com.wia.enigma.dal.enums.AudienceType;

@@ -1,8 +1,9 @@
-package com.wia.enigma.core.service;
+package com.wia.enigma.core.service.InterestAreaService;
 
 import com.wia.enigma.core.data.dto.InterestAreaDto;
 import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;
 import com.wia.enigma.core.data.dto.WikiTagDto;
+import com.wia.enigma.core.service.WikiService.WikiService;
 import com.wia.enigma.dal.entity.EntityTag;
 import com.wia.enigma.dal.entity.InterestArea;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;

@@ -4,7 +4,7 @@ import com.wia.enigma.configuration.security.EnigmaAuthenticationToken;
 import com.wia.enigma.core.data.dto.InterestAreaDto;
 import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;
 import com.wia.enigma.core.data.request.CreateInterestAreaRequest;
-import com.wia.enigma.core.service.InterestAreaService;
+import com.wia.enigma.core.service.InterestAreaService.InterestAreaService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;

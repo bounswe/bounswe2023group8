@@ -1,4 +1,4 @@
-package com.wia.enigma.core.service;
+package com.wia.enigma.core.service.WikiService;
 
 import com.wia.enigma.core.data.dto.WikiTagDto;
 

@@ -1,7 +1,8 @@
-package com.wia.enigma.core.service;
+package com.wia.enigma.core.service.JwtService;
 
 import com.wia.enigma.configuration.security.EnigmaAuthenticationToken;
 import com.wia.enigma.core.data.dto.JwtGenerationDto;
+import com.wia.enigma.core.service.JwtService.EnigmaJwtService;
 import com.wia.enigma.dal.entity.EnigmaJwt;
 import com.wia.enigma.dal.enums.AudienceType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
