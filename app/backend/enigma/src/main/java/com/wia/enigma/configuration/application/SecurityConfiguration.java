@@ -2,7 +2,7 @@ package com.wia.enigma.configuration.application;
 
 import com.wia.enigma.configuration.security.EnigmaUserDetailsService;
 import com.wia.enigma.configuration.security.JwtRequestFilter;
-import com.wia.enigma.core.service.EnigmaJwtService;
+import com.wia.enigma.core.service.JwtService.EnigmaJwtService;
 import com.wia.enigma.dal.repository.EnigmaUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

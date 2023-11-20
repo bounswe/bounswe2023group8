@@ -1,6 +1,8 @@
 package com.wia.enigma.core.controller.api.v1;
 
-import com.wia.enigma.core.service.WikiService.WikiService;
+import com.wia.enigma.configuration.security.EnigmaAuthenticationToken;
+import com.wia.enigma.core.data.dto.SearchDto;
+import com.wia.enigma.core.service.SearchService.SearchService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -13,27 +15,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/wiki")
+@RequestMapping("/api/v1/search")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class WikiController {
+public class SearchController {
 
-    final WikiService wikiService;
+    final SearchService searchService;
+    @GetMapping("")
+    public ResponseEntity<?> search(@Valid @NotNull @RequestParam(name = "searchKey") String searchKey,  EnigmaAuthenticationToken token) {
 
-    /**
-     * WA-7: Searches wiki tags.
-     */
-    @GetMapping("/search")
-    public ResponseEntity<?>  searchWikiTags(@Valid @NotNull @RequestParam(name = "searchKey") String searchKey) {
-
-        List<Map<String, Object>> search = wikiService.searchWikiTags(searchKey);
-
-        return ResponseEntity.ok(search);
+        SearchDto searchDto = searchService.search(token.getEnigmaUserId(), searchKey);
+        return ResponseEntity.ok(searchDto);
     }
-
 }

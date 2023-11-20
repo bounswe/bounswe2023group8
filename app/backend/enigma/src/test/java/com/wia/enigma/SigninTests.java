@@ -2,9 +2,8 @@ package com.wia.enigma;
 
 import com.wia.enigma.core.data.response.LoginResponse;
 import com.wia.enigma.core.data.response.SecurityDetailsResponse;
-import com.wia.enigma.core.service.EnigmaUserService;
+import com.wia.enigma.core.service.UserService.EnigmaUserService;
 import com.wia.enigma.dal.enums.ExceptionCodes;
-import com.wia.enigma.dal.entity.EnigmaUser;
 import com.wia.enigma.exceptions.custom.EnigmaBadRequestException;
 import com.wia.enigma.exceptions.custom.EnigmaUnauthorizedException;
 import org.junit.Test;

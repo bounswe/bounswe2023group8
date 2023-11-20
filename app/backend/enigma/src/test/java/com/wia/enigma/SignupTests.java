@@ -1,7 +1,7 @@
 package com.wia.enigma;
 
 import com.wia.enigma.core.data.response.RegisterResponse;
-import com.wia.enigma.core.service.EnigmaUserService;
+import com.wia.enigma.core.service.UserService.EnigmaUserService;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.exceptions.custom.EnigmaBadRequestException;
 import org.junit.Test;

@@ -1,6 +1,8 @@
 package com.wia.enigma.core.controller.api.v1;
 
-import com.wia.enigma.core.service.WikiService.WikiService;
+import com.wia.enigma.configuration.security.EnigmaAuthenticationToken;
+import com.wia.enigma.core.data.dto.ProfilePageDto;
+import com.wia.enigma.core.service.PageService.PageService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -13,27 +15,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/wiki")
+@RequestMapping("/api/v1/")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class WikiController {
+public class PageController {
 
-    final WikiService wikiService;
+    final PageService pageService;
 
-    /**
-     * WA-7: Searches wiki tags.
+    /*
+        WA-16: Gets profile page.
      */
-    @GetMapping("/search")
-    public ResponseEntity<?>  searchWikiTags(@Valid @NotNull @RequestParam(name = "searchKey") String searchKey) {
+    @GetMapping("/profile")
+    public ResponseEntity<?> getProfile(@Valid @NotNull @RequestParam(name = "id") Long id, EnigmaAuthenticationToken token) {
 
-        List<Map<String, Object>> search = wikiService.searchWikiTags(searchKey);
+        ProfilePageDto profilePageDto = pageService.getProfilePage(token.getEnigmaUserId(), id);
 
-        return ResponseEntity.ok(search);
+        return ResponseEntity.ok(profilePageDto);
     }
-
 }

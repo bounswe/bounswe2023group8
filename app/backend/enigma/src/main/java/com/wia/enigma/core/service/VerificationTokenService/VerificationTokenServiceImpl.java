@@ -1,6 +1,7 @@
-package com.wia.enigma.core.service;
+package com.wia.enigma.core.service.VerificationTokenService;
 
 
+import com.wia.enigma.core.service.VerificationTokenService.VerificationTokenService;
 import com.wia.enigma.dal.entity.VerificationToken;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.repository.VerificationTokenRepository;
