@@ -8,12 +8,12 @@ import ProfilePage from "../ProfilePage";
 import {Col, Row} from "react-bootstrap";
 import {useAuth} from "../../contexts/AuthContext";
 import RegistrationConfirm from "../RegistrationConfirm";
+import PostViewPage from '../PostViewPage'; 
 import FollowerPage from "../Follow/Follower";
 import FollowingPage from "../Follow/Following";
 import Toast from "../../components/Toast/Toast";
 import {useToastContext} from "../../contexts/ToastContext";
 import DetailedPostCard from "../../components/Post/DetailedPostCard";
-import PostViewPage from "../PostViewPage";
 
 const Router = () => {
     const {isAuthenticated} = useAuth();
@@ -48,7 +48,6 @@ const Router = () => {
               
                 <Route path="/follower-page" element={<FollowerPage/>} />
                 <Route path="/following-page" element={<FollowingPage/>} />
-
                 <Route
                     element={
                         <Row className="p-0 m-0 vw-100">
