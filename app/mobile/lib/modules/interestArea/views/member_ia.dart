@@ -13,9 +13,13 @@ class InterestAreaView extends GetView<InterestAreaController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const CustomAppBar(
+      appBar: CustomAppBar(
           leadingAppIcon: true,
           titleWidget: CustomSearchBar(),
+        actions: [
+          IconButton(
+              onPressed: controller.navigateToEdit, icon: Icon(Icons.edit))
+        ],
         ),
       body:  InterestBody(),
     );

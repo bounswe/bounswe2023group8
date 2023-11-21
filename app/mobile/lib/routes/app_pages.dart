@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:mobile/modules/editIA/bindings/edit_ia_binding.dart';
+import 'package:mobile/modules/editIA/views/edit_ia_view.dart';
 
 import '../modules/post_details/bindings/post_details_binding.dart';
 import '../modules/post_details/views/post_details_view.dart';
@@ -89,6 +91,11 @@ class AppPages {
       name: _Paths.postDetails,
       page: () => const PostDetailsView(),
       binding: PostDetailsBinding(),
+    ),
+    GetPage(
+      name: _Paths.editIa,
+      page: () => const EditIaView(),
+      binding: EditIaBinding(),
     ),
   ];
 }

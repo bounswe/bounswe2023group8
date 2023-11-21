@@ -5,7 +5,6 @@ import 'package:mobile/data/widgets/custom_app_bar.dart';
 import '../controllers/new_post_controller.dart';
 
 class NewPostView extends GetView<NewPostController> {
-  final NewPostController newPostController = Get.put(NewPostController());
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +139,7 @@ class NewPostView extends GetView<NewPostController> {
                 onTap: () => controller.pickDate(),
                 child: Obx(
                   () => InkWell(
-                      onTap: () => newPostController.pickDate(),
+                      onTap: () => controller.pickDate(),
                       child: Row(
                         children: [
                           Text("Publication Date: "),
@@ -167,7 +166,7 @@ class NewPostView extends GetView<NewPostController> {
             // Add other fields like tags, label, source, etc.
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => print(1),
+              onPressed: controller.onCreatePost,
               // onPressed: () => controller.createPost(),
               child: const Text('Create Post'),
             ),

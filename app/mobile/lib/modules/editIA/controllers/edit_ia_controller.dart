@@ -1,56 +1,136 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile/data/helpers/error_handling_utils.dart';
+import 'package:mobile/data/models/interest_area.dart';
+import 'package:mobile/data/models/wiki_tag.dart';
+import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
+import 'package:mobile/modules/editIA/providers/edit_ia_provider.dart';
 
 class EditIaController extends GetxController {
+  InterestArea interestArea = Get.arguments['interestArea'];
+
   var routeLoading = false.obs;
-  var iaID = ''.obs;
-  var iaTitle = ''.obs;
-  var iaSubIAs = [].obs;
-  var iaTags = [].obs;
-  var iaRelatedIAs = [].obs;
-  var iaDescription = ''.obs;
+
+  var accesLevel = 0.obs;
+
+  var title = ''.obs;
+  var subIaQuery = ''.obs;
+  var description = ''.obs;
+  var tagQuery = ''.obs;
+
+  var actionInProgress = false.obs;
+
+  RxList<WikiTag> searchTagResults = <WikiTag>[].obs;
+  RxList<WikiTag> selectedTags = <WikiTag>[].obs;
+
+  final bottomNavController = Get.find<BottomNavigationController>();
+  final newIaProvider = Get.find<EditIaProvider>();
 
   final titleController = TextEditingController();
-  final subIASearchController = TextEditingController();
-  final tagSearchController = TextEditingController();
-  final relatedIASearchController = TextEditingController();
-  final descriptionController = TextEditingController();
+
+  get isFormValid => title.value.isNotEmpty && description.value.isNotEmpty;
+
+  void onChangeAccessLevel(int value) {
+    accesLevel.value = value;
+  }
+
+  void onChangeTitle(String value) {
+    title.value = value;
+  }
+
+  void onChangeDescription(String value) {
+    description.value = value;
+  }
+
+  void onChangeSubIaQuery(String value) {
+    subIaQuery.value = value;
+  }
+
+  void onChangeTagQuery(String value) {
+    searchTagResults.clear();
+    tagQuery.value = value;
+    if (value == '') {
+      return;
+    }
+    searchTags();
+  }
+
+  void submitTagQuery(String val) {
+    searchTagResults.clear();
+  }
+
+  void addTag(WikiTag tag) {
+    selectedTags.add(tag);
+    searchTagResults.remove(tag);
+  }
+
+  void removeTag(WikiTag tag) {
+    selectedTags.remove(tag);
+  }
+
+  void searchSubIa() async {}
+
+  void searchTags() async {
+    try {
+      final tags = await newIaProvider.searchTags(
+          key: tagQuery.value, token: bottomNavController.token);
+      if (tags != null) {
+        searchTagResults.value = tags;
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  onDeleteIa() async {
+    if (actionInProgress.value) return;
+    actionInProgress.value = true;
+    try {
+      final res = await newIaProvider.deleteIa(
+          id: interestArea.id, token: bottomNavController.token);
+      if (res) {
+        Get.back();
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void onUpdate() async {
+    if (actionInProgress.value) return;
+    actionInProgress.value = true;
+    try {
+      final success = await newIaProvider.updateIa(
+          id: interestArea.id,
+          token: bottomNavController.token,
+          name: title.value,
+          nestedIas: [],
+          wikiTags: selectedTags.map((e) => e.id).toList(),
+          accessLevel: accesLevel.value,
+          description: description.value);
+      if (success) {
+        Get.back();
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+    actionInProgress.value = false;
+  }
+
+  initFields() {
+    title.value = interestArea.name;
+    titleController.text = title.value;
+    description.value = '';
+    accesLevel.value = interestArea.accessInt;
+    selectedTags.value = interestArea.wikiTags;
+  }
 
   @override
   void onInit() {
     super.onInit();
+    initFields();
   }
 
   @override
   void onClose() {}
-
-  void setInterestAreaID(String id){
-    iaID = id.obs;
-    setInterestAreaData(id);
-  }
-
-  void setInterestAreaData(String id){
-    // get data from backend
-    setIaTitle(''.obs);
-    setIaSubIAs([].obs);
-    setIaTags([].obs);
-    setIaRelatedIAs([].obs);
-    setIaDescription(''.obs);
-  }
-
-  void setIaTitle(data){
-    iaTitle = data.obs;
-  }
-  void setIaSubIAs(data){
-    iaSubIAs = data.obs;
-  }
-  void setIaTags(data){
-    iaTags = data.obs;
-  }
-  void setIaRelatedIAs(data){
-    iaRelatedIAs = data.obs;
-  }
-  void setIaDescription(data){
-    iaDescription = data.obs;
-  }
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
+import 'package:mobile/modules/newPost/providers/new_post_provider.dart';
 
 class NewPostController extends GetxController {
   // Observable variable for text input
@@ -27,6 +29,9 @@ class NewPostController extends GetxController {
   // Observable list of shown suggestions
   var shownSuggestions = <String>[].obs;
 
+  final bottomNavController = Get.find<BottomNavigationController>();
+  final newPostProvider = Get.find<NewPostProvider>();
+
   @override
   void onInit() {
     super.onInit();
@@ -47,17 +52,26 @@ class NewPostController extends GetxController {
     }
   }
 
+  void onCreatePost() async {
+    newPostProvider.createNewPost(
+        title: 'title',
+        description: 'description',
+        tags: [],
+        token: 'token',
+        link: '');
+  }
+
   void updateSuggestions(String input) {
     if (input.isEmpty) {
       shownSuggestions.value = allSuggestions;
     } else {
       // Filter the list of suggestions based on the input text
       shownSuggestions.value = allSuggestions
-          .where((suggestion) => suggestion.toLowerCase().contains(input.toLowerCase()))
+          .where((suggestion) =>
+              suggestion.toLowerCase().contains(input.toLowerCase()))
           .toList();
     }
   }
-
 
   void showSuggestionModal(BuildContext context) {
     showModalBottomSheet(
@@ -76,7 +90,7 @@ class NewPostController extends GetxController {
                 onChanged: updateSuggestions,
               ),
               Obx(
-                    () => Expanded(
+                () => Expanded(
                   child: ListView.builder(
                     itemCount: shownSuggestions.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -103,7 +117,6 @@ class NewPostController extends GetxController {
     );
   }
 
-
   void showLabelModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -121,7 +134,7 @@ class NewPostController extends GetxController {
                 onChanged: updateSuggestions,
               ),
               Obx(
-                    () => Expanded(
+                () => Expanded(
                   child: ListView.builder(
                     itemCount: shownSuggestions.length,
                     itemBuilder: (BuildContext context, int index) {

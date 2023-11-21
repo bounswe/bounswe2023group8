@@ -34,4 +34,17 @@ class InterestArea {
       createTime: DateTime.parse(json['createTime'] ?? ''),
     );
   }
+
+  get accessInt {
+    switch (accessLevel) {
+      case 'PUBLIC':
+        return 0;
+      case 'PRIVATE':
+        return 1;
+      case 'PERSONEL':
+        return 2;
+      default:
+        return 0;
+    }
+  }
 }

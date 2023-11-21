@@ -32,6 +32,10 @@ class InterestAreaController extends GetxController {
     routeLoading.value = false;
   }
 
+  void navigateToEdit() {
+    Get.toNamed(Routes.editIa, arguments: {'interestArea': interestArea});
+  }
+
   @override
   void onInit() {
     super.onInit();
