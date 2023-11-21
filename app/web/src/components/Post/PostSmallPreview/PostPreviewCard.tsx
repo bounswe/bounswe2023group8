@@ -1,6 +1,6 @@
 import React from 'react';
 import {format} from 'date-fns';
-import Tag from "../Tag/Tag";
+import Tag from "../../Tag/Tag";
 
 type PostPreviewCardProps = {
     post: {
