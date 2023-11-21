@@ -20,7 +20,7 @@ class InterestAreaController extends GetxController {
     // id will be taken as route argument
     try {
       final ia = await iaProvider.getIa(
-        id: 26,
+        id: 27,
         token: bottomNavigationController.token,
       );
       if (ia != null) {
