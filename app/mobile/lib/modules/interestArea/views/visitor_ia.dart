@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
+import 'package:mobile/data/widgets/custom_search_bar.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
 import '../../../data/widgets/visitor_bottom_bar.dart';
 import '../../opening/controllers/opening_controller.dart';
 import '../controllers/ia_controller.dart';
 import '../../../data/widgets/custom_app_bar.dart';
-
 
 class VisitorInterestAreaView extends GetView<InterestAreaController> {
   const VisitorInterestAreaView({Key? key}) : super(key: key);
@@ -16,29 +16,28 @@ class VisitorInterestAreaView extends GetView<InterestAreaController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: VisitorBottomBar(
+      bottomNavigationBar: VisitorBottomBar(
           onLoginPressed: () => Get.find<OpeningController>().backToAuth(true),
           onSignUpPressed: () =>
               Get.find<OpeningController>().backToAuth(false)),
-        appBar: const CustomAppBar(
-          leadingAppIcon: true,
-          titleWidget: CustomSearchBar(),
-        ),
+      appBar: const CustomAppBar(
+        leadingAppIcon: true,
+        titleWidget: CustomSearchBar(),
+      ),
       body: const VisitorInterestBody(),
     );
   }
 }
-class VisitorInterestBody extends GetView<InterestAreaController>  {
-  const VisitorInterestBody({super.key});
 
+class VisitorInterestBody extends GetView<InterestAreaController> {
+  const VisitorInterestBody({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
-      child: SingleChildScrollView(
-        child:
-        Padding(
+        color: Colors.white,
+        child: SingleChildScrollView(
+            child: Padding(
           padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,7 +67,9 @@ class VisitorInterestBody extends GetView<InterestAreaController>  {
                   const SizedBox(width: 20),
                 ],
               ),
-              const SizedBox(height: 5,),
+              const SizedBox(
+                height: 5,
+              ),
               Row(
                 children: [
                   Expanded(
@@ -93,7 +94,9 @@ class VisitorInterestBody extends GetView<InterestAreaController>  {
                   const SizedBox(width: 20),
                 ],
               ),
-              const SizedBox(height: 5,),
+              const SizedBox(
+                height: 5,
+              ),
               ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -110,43 +113,6 @@ class VisitorInterestBody extends GetView<InterestAreaController>  {
                   })
             ],
           ),
-        )    
-       
-      )
-
-
-
-    );
-  }
-}
-
-class CustomSearchBar extends StatelessWidget {
-  const CustomSearchBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 250,
-      height: 30,
-      decoration: BoxDecoration(
-        border: Border.all(color: const Color(0xFF9A9A9A), width: 1),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          SizedBox(width: 8),
-          Icon(Icons.search, color: const Color(0xFF9A9A9A)),
-          SizedBox(width: 8),
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                border: InputBorder.none,
-              ),
-            ),
-          ),
-          SizedBox(width: 8),
-        ],
-      ),
-    );
+        )));
   }
 }
