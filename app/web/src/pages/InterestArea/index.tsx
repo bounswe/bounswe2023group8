@@ -7,7 +7,7 @@ const CreateInterestArea = () => {
   const { axiosInstance } = useAuth();
   type CreateInterestAreaFormData = {
     title: string;
-    subInterestAreas: string[];
+    nestedInterestAreas: string[];
     tags: string[];
     description: string;
     accessLevel: "public" | "private" | "personal";
@@ -15,7 +15,7 @@ const CreateInterestArea = () => {
 
   const defaultInterestAreaDetails: CreateInterestAreaFormData = {
     title: "",
-    subInterestAreas: [],
+    nestedInterestAreas: [],
     tags: [],
     description: "",
     accessLevel: "public",
@@ -31,7 +31,7 @@ const CreateInterestArea = () => {
       | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    if (name === "tags" || name === "subInterestAreas") {
+    if (name === "tags" || name === "nestedInterestAreas") {
       const arrayValues = value
         .split(",")
         .map((item: string) => item.trim())

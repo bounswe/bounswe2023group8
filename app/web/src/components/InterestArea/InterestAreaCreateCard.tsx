@@ -6,7 +6,7 @@ export type CreateInterestAreaFormData = {
   title: string;
   description: string;
   tags: string[];
-  subInterestAreas: string[];
+  nestedInterestAreas: string[];
   accessLevel: "public" | "private" | "personal";
 };
 
@@ -43,10 +43,16 @@ const InterestAreaCreateCard = ({
   };
 
   const addSubIA = () => {
-    if (newSubIA && !interestAreaDetails.subInterestAreas.includes(newSubIA)) {
+    if (
+      newSubIA &&
+      !interestAreaDetails.nestedInterestAreas.includes(newSubIA)
+    ) {
       setInterestAreaDetails({
         ...interestAreaDetails,
-        subInterestAreas: [...interestAreaDetails.subInterestAreas, newSubIA],
+        nestedInterestAreas: [
+          ...interestAreaDetails.nestedInterestAreas,
+          newSubIA,
+        ],
       });
       setNewSubIA("");
     }
@@ -62,7 +68,7 @@ const InterestAreaCreateCard = ({
   const removeSubIA = (indexToRemove: number) => {
     setInterestAreaDetails({
       ...interestAreaDetails,
-      subInterestAreas: interestAreaDetails.subInterestAreas.filter(
+      nestedInterestAreas: interestAreaDetails.nestedInterestAreas.filter(
         (_, index) => index !== indexToRemove
       ),
     });
@@ -166,11 +172,11 @@ const InterestAreaCreateCard = ({
           </div>
 
           <div className="mb-3">
-            <label htmlFor="subInterestAreas" className="form-label">
+            <label htmlFor="nestedInterestAreas" className="form-label">
               Sub-IAs:
             </label>
             <div className="d-flex flex-wrap">
-              {interestAreaDetails.subInterestAreas.map((subIA, index) => (
+              {interestAreaDetails.nestedInterestAreas.map((subIA, index) => (
                 <div
                   key={subIA}
                   className="d-flex justify-content-between align-items-center bg-light px-2 py-1 m-2 rounded shadow-sm"
