@@ -8,12 +8,13 @@ import ProfilePage from "../ProfilePage";
 import { Col, Row } from "react-bootstrap";
 import { useAuth } from "../../contexts/AuthContext";
 import RegistrationConfirm from "../RegistrationConfirm";
-import PostViewPage from '../PostViewPage'; 
+import PostViewPage from "../PostViewPage";
 import Toast from "../../components/Toast/Toast";
 import { useToastContext } from "../../contexts/ToastContext";
 import CreatePost from "../PostCreatePage";
 import MapTestPage from "../MapTestPage";
 import PostUpdatePage from "../PostUpdatePage";
+import CreateInterestArea from "../InterestArea";
 
 const Router = () => {
   const { isAuthenticated } = useAuth();
@@ -30,10 +31,7 @@ const Router = () => {
             <Row className="fixed-top" style={{ maxHeight: "60px" }}>
               <Topbar />
             </Row>
-            <Row
-              className="bottom-0 p-0 m-0 vw-100"
-              style={{ top: 60 }}
-            >
+            <Row className="bottom-0 p-0 m-0 vw-100" style={{ top: 60 }}>
               <div
                 className="toast-container top-0 end-0 p-3"
                 style={{ top: 60 }}
@@ -67,9 +65,12 @@ const Router = () => {
               >
                 <Sidebar />
               </Col>
-              <Col className="col-10 position-relative" style={{ marginLeft: "17%", top: 60 }}>
+              <Col
+                className="col-10 position-relative"
+                style={{ marginLeft: "17%", top: 60 }}
+              >
                 <div>
-                <Outlet />
+                  <Outlet />
                 </div>
               </Col>
             </Row>
@@ -81,10 +82,16 @@ const Router = () => {
           {isAuthenticated && (
             <Route path="/profile" element={<ProfilePage />} />
           )}
-          {isAuthenticated && <Route path="/profile" element={<ProfilePage/>}/>}
-          <Route path="/posts/:postId" element={<PostViewPage/>} />
-          <Route path="/update_post/:postId" element={<PostUpdatePage/>} />
-          <Route path="/map-test" element={<MapTestPage/>} />
+          {isAuthenticated && (
+            <Route path="/profile" element={<ProfilePage />} />
+          )}
+          <Route
+            path="/create_interest_area"
+            element={<CreateInterestArea />}
+          />
+          <Route path="/posts/:postId" element={<PostViewPage />} />
+          <Route path="/update_post/:postId" element={<PostUpdatePage />} />
+          <Route path="/map-test" element={<MapTestPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Route>
       </Route>
