@@ -4,6 +4,7 @@ import PostPreviewCard from "../../components/Post/PostPreviewCard";
 import mockPosts from "../../mockData/milestone1/451_posts.json";
 import mockUsers from "../../mockData/milestone1/451_users.json";
 import mockInterestAreas from "../../mockData/milestone1/451_interest_areas.json";
+import mockDetailedPosts from "../../mockData/milestone1/451_detailed_post.json"
 import { Col, Row } from "react-bootstrap";
 import ProfileHeader from "../../components/ProfileHeader/ProfileHeader";
 import DetailedPostCard from '../../components/Post/DetailedPostCard';
