@@ -7,7 +7,7 @@ export type CreateInterestAreaFormData = {
   description: string;
   wikiTags: string[];
   nestedInterestAreas: string[];
-  accessLevel: "public" | "private" | "personal";
+  accessLevel: 0 | 1 | 2;
 };
 
 export type InterestAreaCreateCardProps = {
@@ -35,10 +35,10 @@ const InterestAreaCreateCard = ({
   const [newSubIA, setNewSubIA] = useState("");
 
   const handleAccessLevelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { value } = e.target;
+    const numericValue = parseInt(e.target.value, 10);
     setInterestAreaDetails({
       ...interestAreaDetails,
-      accessLevel: value as CreateInterestAreaFormData["accessLevel"],
+      accessLevel: numericValue as CreateInterestAreaFormData["accessLevel"],
     });
   };
 
@@ -107,9 +107,9 @@ const InterestAreaCreateCard = ({
               value={interestAreaDetails.accessLevel}
               onChange={handleAccessLevelChange}
             >
-              <option value="public">Public</option>
-              <option value="private">Private</option>
-              <option value="personal">Personal</option>
+              <option value={0}>Public</option>
+              <option value={1}>Private</option>
+              <option value={2}>Personal</option>
             </select>
           </div>
           <div className="mb-3">

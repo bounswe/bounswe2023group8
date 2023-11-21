@@ -10,7 +10,7 @@ const CreateInterestArea = () => {
     nestedInterestAreas: string[];
     wikiTags: string[];
     description: string;
-    accessLevel: "public" | "private" | "personal";
+    accessLevel: 0 | 1 | 2;
   };
 
   const defaultInterestAreaDetails: CreateInterestAreaFormData = {
@@ -18,7 +18,7 @@ const CreateInterestArea = () => {
     nestedInterestAreas: [],
     wikiTags: [],
     description: "",
-    accessLevel: "public",
+    accessLevel: 0,
   };
 
   const [interestAreaDetails, setInterestAreaDetails] = useState(
