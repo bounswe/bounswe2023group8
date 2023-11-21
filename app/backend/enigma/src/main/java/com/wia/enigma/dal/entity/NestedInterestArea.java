@@ -1,10 +1,10 @@
 package com.wia.enigma.dal.entity;
 
-
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
 import java.sql.Timestamp;
 
 @Entity
@@ -13,23 +13,20 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "interest_area")
+@Table(name = "nested_interest_area")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class InterestArea {
+public class NestedInterestArea {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     Long id;
 
-    @Column(name = "enigma_user_id")
-    Long enigmaUserId;
+    @Column(name = "parent_ia_id")
+    Long parentInterestAreaId;
 
-    @Column(name = "access_level")
-    EnigmaAccessLevel accessLevel;
-
-    @Column(name = "name")
-    String name;
+    @Column(name = "child_ia_id")
+    Long childInterestAreaId;
 
     @Column(name = "create_time")
     Timestamp createTime;

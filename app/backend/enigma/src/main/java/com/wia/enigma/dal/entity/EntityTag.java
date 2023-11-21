@@ -1,7 +1,6 @@
 package com.wia.enigma.dal.entity;
 
-
-import com.wia.enigma.dal.enums.EnigmaAccessLevel;
+import com.wia.enigma.dal.enums.EntityType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,23 +12,23 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "interest_area")
+@Table(name = "entity_tag")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class InterestArea {
+public class EntityTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     Long id;
 
-    @Column(name = "enigma_user_id")
-    Long enigmaUserId;
+    @Column(name = "entity_id")
+    Long entityId;
 
-    @Column(name = "access_level")
-    EnigmaAccessLevel accessLevel;
+    @Column(name = "entity_type")
+    EntityType entityType;
 
-    @Column(name = "name")
-    String name;
+    @Column(name="wiki_data_tag_id")
+    String wikiDataTagId;
 
     @Column(name = "create_time")
     Timestamp createTime;
