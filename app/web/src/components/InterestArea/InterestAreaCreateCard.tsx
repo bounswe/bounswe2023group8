@@ -5,7 +5,7 @@ import Tag from "../Tag/Tag";
 export type CreateInterestAreaFormData = {
   title: string;
   description: string;
-  tags: string[];
+  wikiTags: string[];
   nestedInterestAreas: string[];
   accessLevel: "public" | "private" | "personal";
 };
@@ -75,10 +75,10 @@ const InterestAreaCreateCard = ({
   };
 
   const addTag = () => {
-    if (newTag && !interestAreaDetails.tags.includes(newTag)) {
+    if (newTag && !interestAreaDetails.wikiTags.includes(newTag)) {
       setInterestAreaDetails({
         ...interestAreaDetails,
-        tags: [...interestAreaDetails.tags, newTag],
+        wikiTags: [...interestAreaDetails.wikiTags, newTag],
       });
       setNewTag("");
     }
@@ -87,7 +87,7 @@ const InterestAreaCreateCard = ({
   const removeTag = (indexToRemove: number) => {
     setInterestAreaDetails({
       ...interestAreaDetails,
-      tags: interestAreaDetails.tags.filter(
+      wikiTags: interestAreaDetails.wikiTags.filter(
         (_, index) => index !== indexToRemove
       ),
     });
@@ -138,11 +138,11 @@ const InterestAreaCreateCard = ({
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="tags" className="form-label">
+            <label htmlFor="wikiTags" className="form-label">
               Tags:
             </label>
             <div className="d-flex flex-wrap">
-              {interestAreaDetails.tags.map((tag, index) => (
+              {interestAreaDetails.wikiTags.map((tag, index) => (
                 <div
                   key={index}
                   className="m-2"

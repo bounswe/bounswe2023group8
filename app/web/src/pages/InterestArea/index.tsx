@@ -8,7 +8,7 @@ const CreateInterestArea = () => {
   type CreateInterestAreaFormData = {
     title: string;
     nestedInterestAreas: string[];
-    tags: string[];
+    wikiTags: string[];
     description: string;
     accessLevel: "public" | "private" | "personal";
   };
@@ -16,7 +16,7 @@ const CreateInterestArea = () => {
   const defaultInterestAreaDetails: CreateInterestAreaFormData = {
     title: "",
     nestedInterestAreas: [],
-    tags: [],
+    wikiTags: [],
     description: "",
     accessLevel: "public",
   };
@@ -31,7 +31,7 @@ const CreateInterestArea = () => {
       | React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    if (name === "tags" || name === "nestedInterestAreas") {
+    if (name === "wikiTags" || name === "nestedInterestAreas") {
       const arrayValues = value
         .split(",")
         .map((item: string) => item.trim())
