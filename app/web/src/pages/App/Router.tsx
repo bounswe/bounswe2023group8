@@ -22,8 +22,7 @@ const Router = () => {
 
   return (
     <Routes>
-      {/*Pages that have neither topbar nor sidebar go here*/}
-
+      {/* Pages that have neither topbar nor sidebar go here */}
       <Route
         path="/"
         element={
@@ -51,10 +50,14 @@ const Router = () => {
           </Col>
         }
       >
-        {/*Pages that have only a topbar go here*/}
+        {/* Pages that have only a topbar go here */}
         <Route path="/" element={<OpeningPage />} />
         <Route path="/reset-password" element={<ConfirmNewPassword />} />
-        <Route path="/registration-confirm" element={<RegistrationConfirm />} />
+        <Route
+          path="/registration-confirm"
+          element={<RegistrationConfirm />}
+        />
+        <Route path="/posts/:postId" element={<PostViewPage />} />
 
         <Route
           element={
@@ -69,28 +72,20 @@ const Router = () => {
                 className="col-10 position-relative"
                 style={{ marginLeft: "17%", top: 60 }}
               >
-                <div>
-                  <Outlet />
-                </div>
+                <Outlet />
               </Col>
             </Row>
           }
         >
-          {/*Pages that have both a topbar and sidebar go here*/}
+          {/* Pages that have both a topbar and sidebar go here */}
           <Route path="/home" element={<OpeningPage />} />
+          {isAuthenticated && <Route path="/profile" element={<ProfilePage />} />}
           <Route path="/create_post" element={<CreatePost />} />
-          {isAuthenticated && (
-            <Route path="/profile" element={<ProfilePage />} />
-          )}
-          {isAuthenticated && (
-            <Route path="/profile" element={<ProfilePage />} />
-          )}
+          <Route path="/update_post/:postId" element={<PostUpdatePage />} />
           <Route
             path="/create_interest_area"
             element={<CreateInterestArea />}
           />
-          <Route path="/posts/:postId" element={<PostViewPage />} />
-          <Route path="/update_post/:postId" element={<PostUpdatePage />} />
           <Route path="/map-test" element={<MapTestPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Route>
@@ -98,4 +93,5 @@ const Router = () => {
     </Routes>
   );
 };
+
 export default Router;
