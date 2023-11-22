@@ -15,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -112,6 +115,17 @@ public class InterestAreaController {
         interestAreaService.unfollowInterestArea(token.getEnigmaUserId(), id);
 
         return ResponseEntity.ok().build();
+    }
+
+    /*
+        WA-17: Searches interest areas.
+     */
+    @GetMapping("/search")
+    public ResponseEntity<?>  searchInterestArea(@Valid @NotNull @RequestParam(name = "searchKey") String searchKey,  EnigmaAuthenticationToken token) {
+
+        List<InterestAreaSimpleDto> search = interestAreaService.search(token.getEnigmaUserId(), searchKey);
+
+        return ResponseEntity.ok(search);
     }
 
 }
