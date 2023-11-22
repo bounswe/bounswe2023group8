@@ -1,5 +1,6 @@
 package com.wia.enigma.dal.entity;
 
+import com.wia.enigma.core.data.model.GeoLocation;
 import com.wia.enigma.dal.enums.PostLabel;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,6 +12,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @Table(name = "post")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Post {
@@ -23,17 +25,20 @@ public class Post {
     @Column(name = "enigma_user_id")
     Long enigmaUserId;
 
-    @Column(name = "ia_id")
-    Long iaId;
+    @Column(name = "interest_area_id")
+    Long interestAreaId;
 
     @Column(name = "source_link")
     String sourceLink;
 
-    @Column(name = "geolocation")
-    String geolocation;
+    @Column(name = "title")
+    String title;
 
     @Column(name = "label")
-    String label; // PostLabel
+    PostLabel label;
+
+    @Embedded
+    GeoLocation geolocation;
 
     @Column(name = "create_time")
     Timestamp createTime;
