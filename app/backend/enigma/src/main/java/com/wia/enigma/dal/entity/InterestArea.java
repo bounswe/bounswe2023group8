@@ -28,8 +28,11 @@ public class InterestArea {
     @Column(name = "access_level")
     EnigmaAccessLevel accessLevel;
 
-    @Column(name = "name")
-    String name;
+    @Column(name = "title")
+    String title;
+
+    @Column(name = "description")
+    String description;
 
     @Column(name = "create_time")
     Timestamp createTime;

@@ -24,7 +24,9 @@ public class InterestAreaDto {
 
     EnigmaAccessLevel accessLevel;
 
-    String name;
+    String title;
+
+    String description;
 
     List<InterestArea>  nestedInterestAreas;
 

@@ -20,7 +20,6 @@ import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.repository.EnigmaUserRepository;
 import com.wia.enigma.dal.repository.InterestAreaRepository;
-import com.wia.enigma.dal.repository.UserFollowsRepository;
 import com.wia.enigma.exceptions.custom.EnigmaBadRequestException;
 import com.wia.enigma.exceptions.custom.EnigmaConflictException;
 import com.wia.enigma.exceptions.custom.EnigmaDatabaseException;
@@ -39,6 +38,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -472,12 +472,13 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                 .map(userFollows -> interestAreaRepository.findInterestAreaById(userFollows.getFollowedEntityId()))
                 .map(interestArea -> InterestAreaSimpleDto.builder()
                         .id(interestArea.getId())
-                        .name(interestArea.getName())
+                        .title(interestArea.getTitle())
+                        .description(interestArea.getDescription())
                         .enigmaUserId(interestArea.getEnigmaUserId())
                         .accessLevel(interestArea.getAccessLevel())
                         .createTime(interestArea.getCreateTime())
                         .build()).
-                filter(interestAreaSimpleDto  -> userId ==followerId || interestAreaSimpleDto.getAccessLevel().equals(EnigmaAccessLevel.PUBLIC))
+                filter(interestAreaSimpleDto  -> Objects.equals(userId, followerId) || interestAreaSimpleDto.getAccessLevel().equals(EnigmaAccessLevel.PUBLIC))
                 .toList();
     }
 

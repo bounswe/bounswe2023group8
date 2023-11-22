@@ -10,10 +10,9 @@ import java.util.Collection;
 import java.util.List;
 
 public interface InterestAreaRepository   extends JpaRepository<InterestArea, Long> {
-    List<InterestArea> findByAccessLevelNotAndNameContainsOrIdIn(EnigmaAccessLevel accessLevel, String name, Collection<Long> ids);
-    List<InterestArea> findByNameContainsOrIdInAndAccessLevelNot(String name, Collection<Long> ids, EnigmaAccessLevel accessLevel);
-    List<InterestArea> findByNameContainsOrIdIn(String name, Collection<Long> ids);
-    List<InterestArea> findByNameContains(String name);
+
+    @Query("SELECT e FROM InterestArea e WHERE e.accessLevel <> :accessLevel AND (e.title LIKE %:title% OR e.id IN :ids)")
+    List<InterestArea> findByAccessLevelNotAndTitleContainsOrIdIn(@Param("accessLevel") EnigmaAccessLevel accessLevel, @Param("title") String title, @Param("ids") List<Long> ids);
 
     InterestArea findInterestAreaById(Long id);
 

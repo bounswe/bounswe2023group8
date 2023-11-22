@@ -1,6 +1,5 @@
 package com.wia.enigma.core.data.dto;
 
-import com.wia.enigma.dal.entity.InterestArea;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +24,9 @@ public class InterestAreaSimpleDto {
 
     EnigmaAccessLevel accessLevel;
 
-    String name;
+    String title;
+
+    String description;
 
     List<Long> nestedInterestAreas;
 

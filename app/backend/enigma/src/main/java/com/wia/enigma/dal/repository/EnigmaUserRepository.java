@@ -4,13 +4,13 @@ import com.wia.enigma.dal.entity.EnigmaUser;
 import com.wia.enigma.dal.projection.EnigmaUserDetailsProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 public interface EnigmaUserRepository extends JpaRepository<EnigmaUser, Long> {
-    List<EnigmaUser> findByIsVerifiedTrueAndUsernameContainsOrNameContains(String username, String name);
-    List<EnigmaUser> findByUsernameContainsOrNameContainsAndIsVerified(String username, String name, Boolean isVerified);
-    List<EnigmaUser> findByUsernameContainsOrNameContains(String username, String name);
+    @Query("SELECT u FROM EnigmaUser u WHERE u.isVerified = true AND (u.username LIKE %:username% OR u.name LIKE %:name%)")
+    List<EnigmaUser> findByIsVerifiedTrueAndUsernameContainsOrNameContains(@Param("username") String username, @Param("name") String name);
 
     @Query("SELECT u " +
             "FROM EnigmaUser u " +
