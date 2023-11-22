@@ -2,7 +2,7 @@ package com.wia.enigma.configuration.security;
 
 import com.wia.enigma.core.service.JwtService.EnigmaJwtService;
 import com.wia.enigma.dal.enums.ExceptionCodes;
-import com.wia.enigma.exceptions.custom.EnigmaUnauthorizedException;
+import com.wia.enigma.exceptions.custom.EnigmaException;
 import com.wia.enigma.utilities.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -37,7 +37,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader == null) {
-            throw new EnigmaUnauthorizedException(ExceptionCodes.MISSING_AUTHORIZATION_HEADER,
+            throw new EnigmaException(ExceptionCodes.MISSING_AUTHORIZATION_HEADER,
                     "Missing Authorization header for request: {} {}".formatted(
                             request.getMethod(),
                             request.getRequestURI()
@@ -46,7 +46,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         if (!authHeader.startsWith(JwtUtils.getInstance().getTokenType())) {
-            throw new EnigmaUnauthorizedException(ExceptionCodes.INVALID_AUTHORIZATION_HEADER,
+            throw new EnigmaException(ExceptionCodes.INVALID_AUTHORIZATION_HEADER,
                     "Invalid Authorization header for request: {} {}".formatted(
                             request.getMethod(),
                             request.getRequestURI()

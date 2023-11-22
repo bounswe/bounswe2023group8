@@ -16,5 +16,7 @@ public interface UserFollowsService {
     List<UserFollows> findAcceptedFollowers(Long followedId, EntityType entityType);
     List<UserFollows> findAcceptedFollowings(Long followerId, EntityType entityType);
 
-    Optional<UserFollows> findUserFollowsEntity(Long userId, Long followId, EntityType entityType);
+    Boolean isUserFollowsEntity(Long userId, Long followId, EntityType entityType);
+
+    Boolean isUserFollowsEntityOrSentRequest(Long userId, Long followId, EntityType entityType);
 }

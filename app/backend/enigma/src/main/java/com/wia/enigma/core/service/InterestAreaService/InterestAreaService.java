@@ -20,4 +20,6 @@ public interface InterestAreaService {
     List<EnigmaUserDto> getFollowers(Long userId, Long followedId);
     List<InterestAreaSimpleDto>  search(Long userId, String searchKey);
 
+    Boolean isInterestAreaExist(Long id);
+
 }

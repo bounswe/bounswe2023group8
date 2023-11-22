@@ -4,8 +4,7 @@ import com.wia.enigma.core.data.response.LoginResponse;
 import com.wia.enigma.core.data.response.SecurityDetailsResponse;
 import com.wia.enigma.core.service.UserService.EnigmaUserService;
 import com.wia.enigma.dal.enums.ExceptionCodes;
-import com.wia.enigma.exceptions.custom.EnigmaBadRequestException;
-import com.wia.enigma.exceptions.custom.EnigmaUnauthorizedException;
+import com.wia.enigma.exceptions.custom.EnigmaException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +59,7 @@ public class SigninTests {
     @Test
     public void testSignin_InvalidUsernameOrEmail_ShouldReturnBadRequest() throws Exception {
         when(enigmaUserService.loginEnigmaUser("invalidUsername", "testPassword"))
-                .thenThrow(new EnigmaBadRequestException(ExceptionCodes.USER_NOT_FOUND, "EnigmaUser not found for username or email: invalidUsername"));
+                .thenThrow(new EnigmaException(ExceptionCodes.USER_NOT_FOUND, "EnigmaUser not found for username or email: invalidUsername"));
 
         mockMvc.perform(get("/auth/signin")
                         .param("user", "invalidUsername")
@@ -72,7 +71,7 @@ public class SigninTests {
     @Test
     public void testSignin_InvalidPassword_ShouldReturnUnauthorized() throws Exception {
         when(enigmaUserService.loginEnigmaUser("testUsername", "invalidPassword"))
-                .thenThrow(new EnigmaUnauthorizedException(ExceptionCodes.INVALID_PASSWORD, "Password is not valid."));
+                .thenThrow(new EnigmaException(ExceptionCodes.INVALID_PASSWORD, "Password is not valid."));
 
         mockMvc.perform(get("/auth/signin")
                         .param("user", "testUsername")

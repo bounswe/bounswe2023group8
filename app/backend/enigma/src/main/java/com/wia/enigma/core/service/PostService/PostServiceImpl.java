@@ -16,7 +16,6 @@ import com.wia.enigma.dal.repository.EntityTagsRepository;
 import com.wia.enigma.dal.repository.InterestAreaPostRepository;
 import com.wia.enigma.dal.repository.PostRepository;
 import com.wia.enigma.exceptions.custom.EnigmaException;
-import com.wia.enigma.exceptions.custom.EnigmaNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -57,7 +56,7 @@ public class PostServiceImpl implements PostService{
             wikiTags =  wikiTagService.getWikiTags(entityTagsRepository.findAllByEntityIdAndEntityType(post.getId(), EntityType.POST).stream().map(
                     entityTags -> entityTags.getWikiDataTagId()).toList());
         }catch(Exception e){
-            throw e;
+            throw new EnigmaException(ExceptionCodes.INTERNAL_SERVER_ERROR, "Error occurred while fetching wiki tags.");
         }
 
 
@@ -134,7 +133,7 @@ public class PostServiceImpl implements PostService{
     public PostDtoSimple updatePost(Long userId, Long postId, String sourceLink, String title, List<String> wikiTags, PostLabel label, GeoLocation geolocation) {
 
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EnigmaNotFoundException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("Post %d not found", postId)));
+                .orElseThrow(() -> new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("Post %d not found", postId)));
 
         if(post.getEnigmaUserId() != userId)
             throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, String.format("User %d is not the owner of post %d", userId, post.getId()));
