@@ -5,9 +5,9 @@ import Tag from "../Tag/Tag";
 export type CreateInterestAreaFormData = {
   title: string;
   description: string;
-  tags: string[];
-  subInterestAreas: string[];
-  accessLevel: "public" | "private" | "personal";
+  wikiTags: string[];
+  nestedInterestAreas: string[];
+  accessLevel: 0 | 1 | 2;
 };
 
 export type InterestAreaCreateCardProps = {
@@ -35,18 +35,24 @@ const InterestAreaCreateCard = ({
   const [newSubIA, setNewSubIA] = useState("");
 
   const handleAccessLevelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { value } = e.target;
+    const numericValue = parseInt(e.target.value, 10);
     setInterestAreaDetails({
       ...interestAreaDetails,
-      accessLevel: value as CreateInterestAreaFormData["accessLevel"],
+      accessLevel: numericValue as CreateInterestAreaFormData["accessLevel"],
     });
   };
 
   const addSubIA = () => {
-    if (newSubIA && !interestAreaDetails.subInterestAreas.includes(newSubIA)) {
+    if (
+      newSubIA &&
+      !interestAreaDetails.nestedInterestAreas.includes(newSubIA)
+    ) {
       setInterestAreaDetails({
         ...interestAreaDetails,
-        subInterestAreas: [...interestAreaDetails.subInterestAreas, newSubIA],
+        nestedInterestAreas: [
+          ...interestAreaDetails.nestedInterestAreas,
+          newSubIA,
+        ],
       });
       setNewSubIA("");
     }
@@ -62,17 +68,17 @@ const InterestAreaCreateCard = ({
   const removeSubIA = (indexToRemove: number) => {
     setInterestAreaDetails({
       ...interestAreaDetails,
-      subInterestAreas: interestAreaDetails.subInterestAreas.filter(
+      nestedInterestAreas: interestAreaDetails.nestedInterestAreas.filter(
         (_, index) => index !== indexToRemove
       ),
     });
   };
 
   const addTag = () => {
-    if (newTag && !interestAreaDetails.tags.includes(newTag)) {
+    if (newTag && !interestAreaDetails.wikiTags.includes(newTag)) {
       setInterestAreaDetails({
         ...interestAreaDetails,
-        tags: [...interestAreaDetails.tags, newTag],
+        wikiTags: [...interestAreaDetails.wikiTags, newTag],
       });
       setNewTag("");
     }
@@ -81,7 +87,7 @@ const InterestAreaCreateCard = ({
   const removeTag = (indexToRemove: number) => {
     setInterestAreaDetails({
       ...interestAreaDetails,
-      tags: interestAreaDetails.tags.filter(
+      wikiTags: interestAreaDetails.wikiTags.filter(
         (_, index) => index !== indexToRemove
       ),
     });
@@ -101,9 +107,9 @@ const InterestAreaCreateCard = ({
               value={interestAreaDetails.accessLevel}
               onChange={handleAccessLevelChange}
             >
-              <option value="public">Public</option>
-              <option value="private">Private</option>
-              <option value="personal">Personal</option>
+              <option value={0}>Public</option>
+              <option value={1}>Private</option>
+              <option value={2}>Personal</option>
             </select>
           </div>
           <div className="mb-3">
@@ -132,11 +138,11 @@ const InterestAreaCreateCard = ({
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="tags" className="form-label">
+            <label htmlFor="wikiTags" className="form-label">
               Tags:
             </label>
             <div className="d-flex flex-wrap">
-              {interestAreaDetails.tags.map((tag, index) => (
+              {interestAreaDetails.wikiTags.map((tag, index) => (
                 <div
                   key={index}
                   className="m-2"
@@ -166,11 +172,11 @@ const InterestAreaCreateCard = ({
           </div>
 
           <div className="mb-3">
-            <label htmlFor="subInterestAreas" className="form-label">
+            <label htmlFor="nestedInterestAreas" className="form-label">
               Sub-IAs:
             </label>
             <div className="d-flex flex-wrap">
-              {interestAreaDetails.subInterestAreas.map((subIA, index) => (
+              {interestAreaDetails.nestedInterestAreas.map((subIA, index) => (
                 <div
                   key={subIA}
                   className="d-flex justify-content-between align-items-center bg-light px-2 py-1 m-2 rounded shadow-sm"
