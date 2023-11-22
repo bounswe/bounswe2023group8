@@ -98,7 +98,8 @@ public class InterestAreaServiceImpl implements InterestAreaService {
         return InterestAreaDto.builder()
                 .id(interestArea.get().getId())
                 .enigmaUserId(interestArea.get().getEnigmaUserId())
-                .name(interestArea.get().getName())
+                .title(interestArea.get().getTitle())
+                .description(interestArea.get().getDescription())
                 .accessLevel(interestArea.get().getAccessLevel())
                 .nestedInterestAreas(nestedInterestAreas)
                 .wikiTags(wikiTags)
@@ -108,7 +109,7 @@ public class InterestAreaServiceImpl implements InterestAreaService {
 
     @Override
     @Transactional
-    public InterestAreaSimpleDto createInterestArea(Long enigmaUserId, String name, EnigmaAccessLevel accessLevel, List<Long> nestedInterestAreas, List<String> wikiTags){
+    public InterestAreaSimpleDto createInterestArea(Long enigmaUserId, String title, String description, EnigmaAccessLevel accessLevel, List<Long> nestedInterestAreas, List<String> wikiTags){
 
         if(!interestAreaRepository.existsAllByIdIsIn(nestedInterestAreas)){
             log.error("Nested interest areas not found for ids: {}", nestedInterestAreas);
@@ -127,7 +128,8 @@ public class InterestAreaServiceImpl implements InterestAreaService {
 
         InterestArea interestArea = InterestArea.builder()
                 .enigmaUserId(enigmaUserId)
-                .name(name)
+                .title(title)
+                .description(description)
                 .accessLevel(accessLevel)
                 .createTime(new Timestamp(System.currentTimeMillis()))
                 .build();
@@ -155,10 +157,17 @@ public class InterestAreaServiceImpl implements InterestAreaService {
             );
         });
 
+        userFollowsService.follow(UserFollows.builder()
+                .followerEnigmaUserId(enigmaUserId)
+                .followedEntityId(interestArea.getId())
+                .followedEntityType(EntityType.INTEREST_AREA)
+                .isAccepted(true)
+                .build());
+
         return InterestAreaSimpleDto.builder()
                 .id(interestArea.getId())
                 .enigmaUserId(interestArea.getEnigmaUserId())
-                .name(interestArea.getName())
+                .title(interestArea.getTitle())
                 .accessLevel(interestArea.getAccessLevel())
                 .nestedInterestAreas(nestedInterestAreas)
                 .wikiTags(wikiTags)
@@ -168,7 +177,7 @@ public class InterestAreaServiceImpl implements InterestAreaService {
 
     @Override
     @Transactional
-    public InterestAreaSimpleDto updateInterestArea(Long id, String name, EnigmaAccessLevel accessLevel, List<Long> nestedInterestAreas, List<String> wikiTags){
+    public InterestAreaSimpleDto updateInterestArea(Long id, String title, String description, EnigmaAccessLevel accessLevel, List<Long> nestedInterestAreas, List<String> wikiTags){
 
         if(!interestAreaRepository.existsById(id)){
             log.error("Interest area not found for id: {}", id);
@@ -189,7 +198,8 @@ public class InterestAreaServiceImpl implements InterestAreaService {
         );
 
         InterestArea interestArea = interestAreaRepository.findById(id).get();
-        interestArea.setName(name);
+        interestArea.setTitle(title);
+        interestArea.setDescription(description);
         interestArea.setAccessLevel(accessLevel);
 
         interestAreaRepository.save(interestArea);
@@ -216,7 +226,7 @@ public class InterestAreaServiceImpl implements InterestAreaService {
         return InterestAreaSimpleDto.builder()
                 .id(interestArea.getId())
                 .enigmaUserId(interestArea.getEnigmaUserId())
-                .name(interestArea.getName())
+                .title(interestArea.getTitle())
                 .accessLevel(interestArea.getAccessLevel())
                 .nestedInterestAreas(nestedInterestAreas)
                 .wikiTags(wikiTags)
@@ -244,8 +254,6 @@ public class InterestAreaServiceImpl implements InterestAreaService {
         if(interestArea == null){
             throw new EnigmaNotFoundException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + interestAreaId);
         }
-
-
 
         Optional<UserFollows> userFollows = userFollowsService.findUserFollowsEntity(enigmaUserId, interestAreaId, EntityType.USER);
 
@@ -322,11 +330,11 @@ public class InterestAreaServiceImpl implements InterestAreaService {
                 .stream()
                 .map(entityTag -> entityTag.getEntityId()).toList();
 
-        return interestAreaRepository.findByAccessLevelNotAndNameContainsOrIdIn(EnigmaAccessLevel.PERSONAL, searchKey, relatedInterestAreaIds).stream()
+        return interestAreaRepository.findByAccessLevelNotAndTitleContainsOrIdIn(EnigmaAccessLevel.PERSONAL, searchKey, relatedInterestAreaIds).stream()
                 .map(interestArea -> InterestAreaSimpleDto.builder()
                         .id(interestArea.getId())
                         .enigmaUserId(interestArea.getEnigmaUserId())
-                        .name(interestArea.getName())
+                        .title(interestArea.getTitle())
                         .accessLevel(interestArea.getAccessLevel())
                         .createTime(interestArea.getCreateTime())
                         .build()

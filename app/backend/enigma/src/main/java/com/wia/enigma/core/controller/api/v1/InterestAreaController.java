@@ -44,7 +44,8 @@ public class InterestAreaController {
 
         InterestAreaSimpleDto interestAreaSimpleDto = interestAreaService.createInterestArea(
                 token.getEnigmaUserId(),
-                createInterestAreaRequest.getName(),
+                createInterestAreaRequest.getTitle(),
+                createInterestAreaRequest.getDescription(),
                 createInterestAreaRequest.getAccessLevel(),
                 createInterestAreaRequest.getNestedInterestAreas(),
                 createInterestAreaRequest.getWikiTags()
@@ -69,7 +70,8 @@ public class InterestAreaController {
 
         InterestAreaSimpleDto interestAreaSimpleDto = interestAreaService.updateInterestArea(
                 id,
-                createInterestAreaRequest.getName(),
+                createInterestAreaRequest.getTitle(),
+                createInterestAreaRequest.getDescription(),
                 createInterestAreaRequest.getAccessLevel(),
                 createInterestAreaRequest.getNestedInterestAreas(),
                 createInterestAreaRequest.getWikiTags()

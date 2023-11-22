@@ -12,8 +12,8 @@ import java.util.List;
 public interface InterestAreaService {
 
     InterestAreaDto getInterestArea(Long id, Long enigmaUserId);
-    InterestAreaSimpleDto createInterestArea(Long enigmaUserId, String name, EnigmaAccessLevel accessLevel, List<Long> nestedInterestAreas, List<String> entityTags);
-    InterestAreaSimpleDto updateInterestArea(Long id, String name, EnigmaAccessLevel accessLevel, List<Long> nestedInterestAreas, List<String> entityTags);
+    InterestAreaSimpleDto createInterestArea(Long enigmaUserId, String title, String description, EnigmaAccessLevel accessLevel, List<Long> nestedInterestAreas, List<String> entityTags);
+    InterestAreaSimpleDto updateInterestArea(Long id, String name, String description, EnigmaAccessLevel accessLevel, List<Long> nestedInterestAreas, List<String> entityTags);
     void deleteInterestArea(Long id);
     void followInterestArea(Long enigmaUserId, Long interestAreaId);
     void unfollowInterestArea(Long enigmaUserId, Long interestAreaId);

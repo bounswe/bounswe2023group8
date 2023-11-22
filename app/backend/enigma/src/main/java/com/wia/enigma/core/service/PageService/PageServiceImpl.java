@@ -21,7 +21,7 @@ public class PageServiceImpl implements PageService{
 
     public ProfilePageDto getProfilePage(Long userId, Long profileId) {
 
-        EnigmaUserDto enigmaUserDto = enigmaUserService.getVerifiedUser(userId);
+        EnigmaUserDto enigmaUserDto = enigmaUserService.getVerifiedUser(profileId);
 
         ProfilePageDto profilePageDto = ProfilePageDto.builder()
 
