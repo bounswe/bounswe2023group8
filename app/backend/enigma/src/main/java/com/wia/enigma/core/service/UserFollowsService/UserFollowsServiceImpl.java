@@ -31,6 +31,13 @@ public class UserFollowsServiceImpl implements UserFollowsService {
         userFollowsRepository.deleteByFollowerEnigmaUserIdAndFollowedEntityTypeAndFollowedEntityId(userId, entityType, followId);
     }
 
+    @Override
+    public void unfollowAll(Long entityId, EntityType entityType){
+
+        userFollowsRepository.deleteByFollowedEntityIdAndFollowedEntityType(entityId, entityType);
+    }
+
+
     public List<UserFollows> findAcceptedFollowers(Long entityId, EntityType entityType){
 
         return userFollowsRepository.findByFollowedEntityIdAndFollowedEntityTypeAndIsAccepted(entityId, entityType, true);

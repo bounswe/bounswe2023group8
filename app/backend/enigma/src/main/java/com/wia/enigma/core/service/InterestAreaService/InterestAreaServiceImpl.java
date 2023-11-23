@@ -4,16 +4,18 @@ import com.wia.enigma.core.data.dto.EnigmaUserDto;
 import com.wia.enigma.core.data.dto.InterestAreaDto;
 import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;
 import com.wia.enigma.core.data.dto.WikiTagDto;
+import com.wia.enigma.core.service.InterestAreaPostService.InterestAreaPostService;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.WikiService.WikiService;
 import com.wia.enigma.dal.entity.EntityTag;
 import com.wia.enigma.dal.entity.InterestArea;
+import com.wia.enigma.dal.entity.NestedInterestArea;
 import com.wia.enigma.dal.entity.UserFollows;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.repository.*;
-import com.wia.enigma.exceptions.custom.EnigmaNotFoundException;
+import com.wia.enigma.exceptions.custom.EnigmaException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -23,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -36,202 +38,57 @@ public class InterestAreaServiceImpl implements InterestAreaService {
     final EntityTagsRepository entityTagsRepository;
     final WikiService wikiTagService;
     final UserFollowsService userFollowsService;
+    final InterestAreaPostService interestAreaPostService;
     final EnigmaUserRepository enigmaUserRepository;
 
     @Override
     @Transactional(readOnly = true)
     public InterestAreaDto getInterestArea(Long id, Long enigmaUserId) {
+        InterestArea interestArea = interestAreaRepository.findById(id)
+                .orElseThrow(() -> new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + id));
 
+        checkAccessLevel(interestArea, enigmaUserId);
 
-        Optional<InterestArea> interestArea;
+        List<InterestArea> nestedInterestAreas = getNestedInterestAreas(id);
+        List<WikiTagDto> wikiTags = getWikiTags(id);
 
-        try{
-            interestArea =  interestAreaRepository.findById(id);
-        }catch(Exception e){
-            log.error("Error while fetching interest area for id: {}", id);
-            throw new RuntimeException("Error while fetching interest area for id: " + id);
-        }
-
-        if(!interestArea.isPresent()){
-            log.error("Interest area not found for id: {}", id);
-            throw new EnigmaNotFoundException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + id);
-        }
-
-        if(interestArea.get().getAccessLevel() == EnigmaAccessLevel.PERSONAL && !interestArea.get().getEnigmaUserId().equals(enigmaUserId)){
-            log.error("You don't have access to this personal interest area: {}", id);
-            throw new EnigmaNotFoundException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "You don't have access to this personal interest area:: " + id);
-        }
-
-        if(interestArea.get().getAccessLevel() == EnigmaAccessLevel.PRIVATE ){
-
-            if(!interestArea.get().getEnigmaUserId().equals(enigmaUserId)){
-
-                if(!userFollowsService.findUserFollowsEntity(enigmaUserId, interestArea.get().getId(), EntityType.INTEREST_AREA ).get().getIsAccepted() ){
-
-                    log.error("You don't have access to this private interest area: {}", id);
-                    throw new EnigmaNotFoundException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "You don't have access to this private interest area:: " + id);
-                }
-            }
-        }
-
-        List<InterestArea> nestedInterestAreas;
-
-        try{
-             nestedInterestAreas = interestAreaRepository.findAllByIdIn(
-                nestedInterestAreaRepository.findAllByParentInterestAreaId(id).stream().map(
-                        nestedInterestArea -> nestedInterestArea.getChildInterestAreaId()).toList()
-                );
-        }catch(Exception e){
-            log.error("Error while fetching nested interest areas for interest area id: {}", id);
-            throw new RuntimeException("Error while fetching nested interest areas for interest area id: " + id);
-        }
-
-        List <WikiTagDto> wikiTags;
-
-        try{
-            wikiTags =  wikiTagService.getWikiTags(entityTagsRepository.findAllByEntityIdAndEntityType(id, EntityType.INTEREST_AREA).stream().map(
-                        entityTags -> entityTags.getWikiDataTagId()).toList());
-        }catch(Exception e){
-            throw e;
-        }
-
-        return InterestAreaDto.builder()
-                .id(interestArea.get().getId())
-                .enigmaUserId(interestArea.get().getEnigmaUserId())
-                .title(interestArea.get().getTitle())
-                .description(interestArea.get().getDescription())
-                .accessLevel(interestArea.get().getAccessLevel())
-                .nestedInterestAreas(nestedInterestAreas)
-                .wikiTags(wikiTags)
-                .createTime(interestArea.get().getCreateTime())
-                .build();
+        return mapToInterestAreaDto(interestArea, nestedInterestAreas, wikiTags);
     }
 
     @Override
     @Transactional
-    public InterestAreaSimpleDto createInterestArea(Long enigmaUserId, String title, String description, EnigmaAccessLevel accessLevel, List<Long> nestedInterestAreas, List<String> wikiTags){
+    public InterestAreaSimpleDto createInterestArea(Long enigmaUserId, String title, String description,
+                                                    EnigmaAccessLevel accessLevel, List<Long> nestedInterestAreas,
+                                                    List<String> wikiTags) {
 
-        if(!interestAreaRepository.existsAllByIdIsIn(nestedInterestAreas)){
-            log.error("Nested interest areas not found for ids: {}", nestedInterestAreas);
-            throw new EnigmaNotFoundException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Nested interest areas not found for ids: " + nestedInterestAreas);
-        }
+        validateNestedInterestAreas(nestedInterestAreas);
+        validateWikiTags(wikiTags);
 
-        wikiTags.forEach( wikiTag ->{
-                if(!isValidWikidataId(wikiTag)){
-                    log.error("Invalid wiki tag id: {}", wikiTag);
-                    throw new EnigmaNotFoundException(ExceptionCodes.INVALID_WIKI_TAG_ID, "Invalid wiki tag id: " + wikiTag);
-                }
-            }
-        );
+        InterestArea interestArea = createAndSaveInterestArea(enigmaUserId, title, description, accessLevel);
 
-        wikiTagService.getWikiTags(wikiTags);
+        saveNestedInterestAreas(nestedInterestAreas, interestArea);
+        saveEntityTags(wikiTags, interestArea);
+        followInterestArea(enigmaUserId, interestArea);
 
-        InterestArea interestArea = InterestArea.builder()
-                .enigmaUserId(enigmaUserId)
-                .title(title)
-                .description(description)
-                .accessLevel(accessLevel)
-                .createTime(new Timestamp(System.currentTimeMillis()))
-                .build();
-
-        interestAreaRepository.save(interestArea);
-
-        nestedInterestAreas.forEach(nestedInterestArea -> {
-            nestedInterestAreaRepository.save(
-                    com.wia.enigma.dal.entity.NestedInterestArea.builder()
-                            .parentInterestAreaId(interestArea.getId())
-                            .childInterestAreaId(nestedInterestArea)
-                            .createTime(new Timestamp(System.currentTimeMillis()))
-                            .build()
-            );
-        });
-
-        wikiTags.forEach(wikiTag -> {
-            entityTagsRepository.save(
-                    EntityTag.builder()
-                            .entityId(interestArea.getId())
-                            .entityType(EntityType.INTEREST_AREA)
-                            .wikiDataTagId(wikiTag)
-                            .createTime(new Timestamp(System.currentTimeMillis()))
-                            .build()
-            );
-        });
-
-        userFollowsService.follow(UserFollows.builder()
-                .followerEnigmaUserId(enigmaUserId)
-                .followedEntityId(interestArea.getId())
-                .followedEntityType(EntityType.INTEREST_AREA)
-                .isAccepted(true)
-                .build());
-
-        return InterestAreaSimpleDto.builder()
-                .id(interestArea.getId())
-                .enigmaUserId(interestArea.getEnigmaUserId())
-                .title(interestArea.getTitle())
-                .accessLevel(interestArea.getAccessLevel())
-                .nestedInterestAreas(nestedInterestAreas)
-                .wikiTags(wikiTags)
-                .createTime(interestArea.getCreateTime())
-                .build();
+        return mapToInterestAreaSimpleDto(interestArea, nestedInterestAreas, wikiTags);
     }
 
     @Override
     @Transactional
-    public InterestAreaSimpleDto updateInterestArea(Long id, String title, String description, EnigmaAccessLevel accessLevel, List<Long> nestedInterestAreas, List<String> wikiTags){
+    public InterestAreaSimpleDto updateInterestArea(Long id, String title, String description,
+                                                    EnigmaAccessLevel accessLevel,
+                                                    List<Long> nestedInterestAreas,
+                                                    List<String> wikiTags) {
 
-        if(!interestAreaRepository.existsById(id)){
-            log.error("Interest area not found for id: {}", id);
-            throw new EnigmaNotFoundException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + id);
-        }
+        validateNestedInterestAreas(nestedInterestAreas);
+        validateWikiTags(wikiTags);
 
-        if(!interestAreaRepository.existsAllByIdIsIn(nestedInterestAreas)){
-            log.error("Nested interest areas not found for ids: {}", nestedInterestAreas);
-            throw new EnigmaNotFoundException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Nested interest areas not found for ids: " + nestedInterestAreas);
-        }
+        InterestArea interestArea = updateInterestAreaDetails(id, title, description, accessLevel);
 
-        wikiTags.forEach( wikiTag ->{
-                    if(!isValidWikidataId(wikiTag)){
-                        log.error("Invalid wiki tag id: {}", wikiTag);
-                        throw new EnigmaNotFoundException(ExceptionCodes.INVALID_WIKI_TAG_ID, "Invalid wiki tag id: " + wikiTag);
-                    }
-                }
-        );
+        updateNestedInterestAreas(interestArea, nestedInterestAreas);
+        updateWikiTags(interestArea, wikiTags);
 
-        InterestArea interestArea = interestAreaRepository.findById(id).get();
-        interestArea.setTitle(title);
-        interestArea.setDescription(description);
-        interestArea.setAccessLevel(accessLevel);
-
-        interestAreaRepository.save(interestArea);
-
-        nestedInterestAreaRepository.deleteAllByParentInterestAreaId(interestArea.getId());
-
-        nestedInterestAreaRepository.saveAll(nestedInterestAreas.stream().map(
-                nestedInterestArea -> com.wia.enigma.dal.entity.NestedInterestArea.builder()
-                        .parentInterestAreaId(interestArea.getId())
-                        .childInterestAreaId(nestedInterestArea)
-                        .createTime(new Timestamp(System.currentTimeMillis()))
-                        .build()).toList()
-                );
-
-        entityTagsRepository.deleteAllByEntityIdAndEntityType(interestArea.getId(), EntityType.INTEREST_AREA);
-
-        entityTagsRepository.saveAll(wikiTags.stream().map( wikiTag -> EntityTag.builder()
-                .entityId(interestArea.getId())
-                .entityType(EntityType.INTEREST_AREA)
-                .wikiDataTagId(wikiTag)
-                .createTime(new Timestamp(System.currentTimeMillis()))
-                .build()).toList());
-
-        return InterestAreaSimpleDto.builder()
-                .id(interestArea.getId())
-                .enigmaUserId(interestArea.getEnigmaUserId())
-                .title(interestArea.getTitle())
-                .accessLevel(interestArea.getAccessLevel())
-                .nestedInterestAreas(nestedInterestAreas)
-                .wikiTags(wikiTags)
-                .createTime(interestArea.getCreateTime())
-                .build();
+        return mapToInterestAreaSimpleDto(interestArea, nestedInterestAreas, wikiTags);
     }
 
     @Override
@@ -239,10 +96,15 @@ public class InterestAreaServiceImpl implements InterestAreaService {
     public void deleteInterestArea(Long id) {
         if(!interestAreaRepository.existsById(id)){
             log.error("Interest area not found for id: {}", id);
-            throw new EnigmaNotFoundException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + id);
+            throw new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + id);
         }
 
         interestAreaRepository.deleteById(id);
+
+        nestedInterestAreaRepository.deleteAllByParentInterestAreaId(id);
+        entityTagsRepository.deleteAllByEntityIdAndEntityType(id, EntityType.INTEREST_AREA);
+        interestAreaPostService.deleteAllByInterestAreaId(id);
+        userFollowsService.unfollowAll(id, EntityType.INTEREST_AREA);
     }
 
     @Override
@@ -252,19 +114,13 @@ public class InterestAreaServiceImpl implements InterestAreaService {
         InterestArea interestArea = interestAreaRepository.findInterestAreaById(interestAreaId);
 
         if(interestArea == null){
-            throw new EnigmaNotFoundException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + interestAreaId);
+            throw new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: "
+                    + interestAreaId);
         }
 
-        Optional<UserFollows> userFollows = userFollowsService.findUserFollowsEntity(enigmaUserId, interestAreaId, EntityType.USER);
+        if(userFollowsService.isUserFollowsEntityOrSentRequest(enigmaUserId, interestAreaId, EntityType.INTEREST_AREA)) {
 
-        if(userFollows.isPresent()) {
-
-            if(userFollows.get().getIsAccepted()){
-                throw new IllegalArgumentException("You are already following this " + EntityType.INTEREST_AREA);
-            }
-            else {
-                throw new IllegalArgumentException("You already sent a follow request to this " + EntityType.INTEREST_AREA);
-            }
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "You already follow  or sent follow request to this interest area: " + interestAreaId);
         }
 
         UserFollows userFollow = UserFollows.builder()
@@ -284,7 +140,7 @@ public class InterestAreaServiceImpl implements InterestAreaService {
         InterestArea interestArea = interestAreaRepository.findInterestAreaById(interestAreaId);
 
         if(interestArea == null){
-            throw new EnigmaNotFoundException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + interestAreaId);
+            throw new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + interestAreaId);
         }
 
         userFollowsService.unfollow(enigmaUserId, interestAreaId, EntityType.INTEREST_AREA);
@@ -300,7 +156,7 @@ public class InterestAreaServiceImpl implements InterestAreaService {
 
             if(!userId.equals(interestArea.getEnigmaUserId())){
 
-                throw new IllegalArgumentException("You cannot get followers of this interest area " + EntityType.INTEREST_AREA);
+                throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "You cannot get followers of this interest area type:" + EntityType.INTEREST_AREA);
             }
         }
 
@@ -341,7 +197,170 @@ public class InterestAreaServiceImpl implements InterestAreaService {
                 ).toList();
     }
 
+    @Override
+    public Boolean isInterestAreaExist(Long id) {
+        return interestAreaRepository.existsById(id);
+    }
+
     private boolean isValidWikidataId(String id) {
         return id.matches("Q[0-9]+");
+    }
+
+    @Transactional
+    public void saveEntityTags(List<String> wikiTags, InterestArea interestArea) {
+        List<EntityTag> entityTags = wikiTags.stream().map(wikiTag ->
+                EntityTag.builder()
+                        .entityId(interestArea.getId())
+                        .entityType(EntityType.INTEREST_AREA)
+                        .wikiDataTagId(wikiTag)
+                        .createTime(new Timestamp(System.currentTimeMillis()))
+                        .build()
+        ).collect(Collectors.toList());
+
+        entityTagsRepository.saveAll(entityTags);
+    }
+
+    @Transactional
+    public void saveNestedInterestAreas(List<Long> nestedInterestAreas, InterestArea interestArea) {
+        List<NestedInterestArea> nestedInterestAreaList = nestedInterestAreas.stream().map(nestedInterestArea ->
+                NestedInterestArea.builder()
+                        .parentInterestAreaId(interestArea.getId())
+                        .childInterestAreaId(nestedInterestArea)
+                        .createTime(new Timestamp(System.currentTimeMillis()))
+                        .build()
+        ).collect(Collectors.toList());
+
+        nestedInterestAreaRepository.saveAll(nestedInterestAreaList);
+    }
+
+    private void checkAccessLevel(InterestArea interestArea, Long enigmaUserId) {
+        if (interestArea.getAccessLevel() == EnigmaAccessLevel.PERSONAL && !interestArea.getEnigmaUserId().equals(enigmaUserId)) {
+            throw new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "You don't have access to this personal interest area:: " + interestArea.getId());
+        }
+
+        if (interestArea.getAccessLevel() == EnigmaAccessLevel.PRIVATE && !interestArea.getEnigmaUserId().equals(enigmaUserId)
+                && !userFollowsService.isUserFollowsEntity(enigmaUserId, interestArea.getId(), EntityType.INTEREST_AREA)) {
+            throw new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "You don't have access to this private interest area:: " + interestArea.getId());
+        }
+    }
+
+    private List<InterestArea> getNestedInterestAreas(Long id) {
+        return interestAreaRepository.findAllByIdIn(
+                nestedInterestAreaRepository.findAllByParentInterestAreaId(id).stream()
+                        .map(NestedInterestArea::getChildInterestAreaId)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    private List<WikiTagDto> getWikiTags(Long id) {
+        return wikiTagService.getWikiTags(entityTagsRepository.findAllByEntityIdAndEntityType(id, EntityType.INTEREST_AREA).stream()
+                .map(EntityTag::getWikiDataTagId)
+                .collect(Collectors.toList()));
+    }
+
+    private InterestAreaDto mapToInterestAreaDto(InterestArea interestArea, List<InterestArea> nestedInterestAreas, List<WikiTagDto> wikiTags) {
+        return InterestAreaDto.builder()
+                .id(interestArea.getId())
+                .enigmaUserId(interestArea.getEnigmaUserId())
+                .title(interestArea.getTitle())
+                .description(interestArea.getDescription())
+                .accessLevel(interestArea.getAccessLevel())
+                .nestedInterestAreas(nestedInterestAreas)
+                .wikiTags(wikiTags)
+                .createTime(interestArea.getCreateTime())
+                .build();
+    }
+
+    private void validateNestedInterestAreas(List<Long> nestedInterestAreas) {
+        if (!interestAreaRepository.existsAllByIdIsIn(nestedInterestAreas)) {
+            String errorMessage = "Nested interest areas not found for ids: " + nestedInterestAreas;
+            log.error(errorMessage);
+            throw new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, errorMessage);
+        }
+    }
+
+    private void validateWikiTags(List<String> wikiTags) {
+        wikiTags.forEach(wikiTag -> {
+            if (!isValidWikidataId(wikiTag)) {
+                String errorMessage = "Invalid wiki tag id: " + wikiTag;
+                log.error(errorMessage);
+                throw new EnigmaException(ExceptionCodes.INVALID_WIKI_TAG_ID, errorMessage);
+            }
+        });
+    }
+
+    private InterestArea createAndSaveInterestArea(Long enigmaUserId, String title, String description, EnigmaAccessLevel accessLevel) {
+        InterestArea interestArea = InterestArea.builder()
+                .enigmaUserId(enigmaUserId)
+                .title(title)
+                .description(description)
+                .accessLevel(accessLevel)
+                .createTime(new Timestamp(System.currentTimeMillis()))
+                .build();
+
+        return interestAreaRepository.save(interestArea);
+    }
+
+    private void followInterestArea(Long enigmaUserId, InterestArea interestArea) {
+        userFollowsService.follow(UserFollows.builder()
+                .followerEnigmaUserId(enigmaUserId)
+                .followedEntityId(interestArea.getId())
+                .followedEntityType(EntityType.INTEREST_AREA)
+                .isAccepted(true)
+                .build());
+    }
+
+    private InterestAreaSimpleDto mapToInterestAreaSimpleDto(InterestArea interestArea, List<Long> nestedInterestAreas, List<String> wikiTags) {
+        return InterestAreaSimpleDto.builder()
+                .id(interestArea.getId())
+                .enigmaUserId(interestArea.getEnigmaUserId())
+                .title(interestArea.getTitle())
+                .description(interestArea.getDescription())
+                .accessLevel(interestArea.getAccessLevel())
+                .nestedInterestAreas(nestedInterestAreas)
+                .wikiTags(wikiTags)
+                .createTime(interestArea.getCreateTime())
+                .build();
+    }
+
+    private InterestArea updateInterestAreaDetails(Long id, String title, String description, EnigmaAccessLevel accessLevel) {
+        InterestArea interestArea = interestAreaRepository.findById(id).orElseThrow(
+                () -> new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + id)
+        );
+
+        interestArea.setTitle(title);
+        interestArea.setDescription(description);
+        interestArea.setAccessLevel(accessLevel);
+
+        return interestAreaRepository.save(interestArea);
+    }
+
+    private void updateNestedInterestAreas(InterestArea interestArea, List<Long> nestedInterestAreas) {
+        nestedInterestAreaRepository.deleteAllByParentInterestAreaId(interestArea.getId());
+
+        List<NestedInterestArea> nestedAreas = nestedInterestAreas.stream().map(
+                nestedInterestAreaId -> NestedInterestArea.builder()
+                        .parentInterestAreaId(interestArea.getId())
+                        .childInterestAreaId(nestedInterestAreaId)
+                        .createTime(new Timestamp(System.currentTimeMillis()))
+                        .build()
+        ).collect(Collectors.toList());
+
+        nestedInterestAreaRepository.saveAll(nestedAreas);
+    }
+
+    private void updateWikiTags(InterestArea interestArea, List<String> wikiTags) {
+        entityTagsRepository.deleteAllByEntityIdAndEntityType(interestArea.getId(), EntityType.INTEREST_AREA);
+
+        List<EntityTag> entityTags = wikiTags.stream().map(wikiTag ->
+                EntityTag.builder()
+                        .entityId(interestArea.getId())
+                        .entityType(EntityType.INTEREST_AREA)
+                        .wikiDataTagId(wikiTag)
+                        .createTime(new Timestamp(System.currentTimeMillis()))
+                        .build()
+        ).collect(Collectors.toList());
+
+        entityTagsRepository.saveAll(entityTags);
     }
 }

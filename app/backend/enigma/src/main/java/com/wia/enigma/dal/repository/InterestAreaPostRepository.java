@@ -6,4 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface InterestAreaPostRepository extends JpaRepository<InterestAreaPost, Long> {
 
 
+    void deleteAllByInterestAreaId(Long interestAreaId);
+
+
 }
