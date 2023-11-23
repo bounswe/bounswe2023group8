@@ -13,6 +13,8 @@ public interface UserFollowsService {
 
     void unfollow(Long userId, Long followId, EntityType entityType);
 
+    void unfollowAll(Long userId, EntityType entityType);
+
     List<UserFollows> findAcceptedFollowers(Long followedId, EntityType entityType);
     List<UserFollows> findAcceptedFollowings(Long followerId, EntityType entityType);
 
