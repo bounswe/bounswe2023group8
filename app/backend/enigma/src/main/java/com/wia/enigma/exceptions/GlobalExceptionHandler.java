@@ -35,6 +35,7 @@ public class GlobalExceptionHandler {
             case INVALID_PASSWORD:
             case PASSWORDS_DO_NOT_MATCH:
             case INVALID_REQUEST:
+            case INVALID_NESTED_INTEREST_AREA_IDS:
             case INVALID_WIKI_TAG_ID:
                 return HttpStatus.BAD_REQUEST;
             case INVALID_JWT:
