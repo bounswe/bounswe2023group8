@@ -3,7 +3,7 @@ package com.wia.enigma;
 import com.wia.enigma.core.data.response.RegisterResponse;
 import com.wia.enigma.core.service.UserService.EnigmaUserService;
 import com.wia.enigma.dal.enums.ExceptionCodes;
-import com.wia.enigma.exceptions.custom.EnigmaBadRequestException;
+import com.wia.enigma.exceptions.custom.EnigmaException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class SignupTests {
 
         String requestPayload = "{\"username\":\"test@Username\",\"email\":\"test@email.com\",\"password\":\"testPassword\",\"birthday\":\"2000-01-01\"}";
 
-        doThrow(new EnigmaBadRequestException(ExceptionCodes.INVALID_USERNAME, "Username cannot contain '@'."))
+        doThrow(new EnigmaException(ExceptionCodes.INVALID_USERNAME, "Username cannot contain '@'."))
                 .when(enigmaUserService).registerEnigmaUser(eq("test@Username"), anyString(), anyString(), anyString());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/signup")
@@ -62,7 +62,7 @@ public class SignupTests {
     public void testSignup_InvalidBirthdayFormat_ShouldReturnBadRequest() throws Exception {
         String invalidBirthdayPayload = "{\"username\":\"testUsername\",\"email\":\"test@email.com\",\"password\":\"testPassword\",\"birthday\":\"invalidDate\"}";
 
-        doThrow(new EnigmaBadRequestException(ExceptionCodes.INVALID_DATE_FORMAT, "Birthday is not in the correct format. Use \"yyyy-[m]m-[d]d\""))
+        doThrow(new EnigmaException(ExceptionCodes.INVALID_DATE_FORMAT, "Birthday is not in the correct format. Use \"yyyy-[m]m-[d]d\""))
                 .when(enigmaUserService).registerEnigmaUser(anyString(), anyString(), anyString(), anyString());
 
         mockMvc.perform(post("/auth/signup")

@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -42,8 +41,13 @@ public class UserFollowsServiceImpl implements UserFollowsService {
         return userFollowsRepository.findByFollowerEnigmaUserIdAndFollowedEntityTypeAndIsAccepted(entityId, entityType, true);
     }
 
-    public Optional<UserFollows> findUserFollowsEntity(Long userId, Long followId, EntityType entityType) {
+    public Boolean isUserFollowsEntity(Long userId, Long followId, EntityType entityType) {
 
-        return userFollowsRepository.findByFollowerEnigmaUserIdAndFollowedEntityIdAndFollowedEntityType(userId, followId, entityType);
+        return userFollowsRepository.existsByFollowerEnigmaUserIdAndFollowedEntityIdAndFollowedEntityTypeAndIsAccepted(userId, followId, entityType, true);
+    }
+
+    public Boolean isUserFollowsEntityOrSentRequest(Long userId, Long followId, EntityType entityType) {
+
+        return userFollowsRepository.existsByFollowerEnigmaUserIdAndFollowedEntityIdAndFollowedEntityType(userId, followId, entityType);
     }
 }

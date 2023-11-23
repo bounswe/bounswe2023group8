@@ -20,10 +20,7 @@ import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.repository.EnigmaUserRepository;
 import com.wia.enigma.dal.repository.InterestAreaRepository;
-import com.wia.enigma.exceptions.custom.EnigmaBadRequestException;
-import com.wia.enigma.exceptions.custom.EnigmaConflictException;
-import com.wia.enigma.exceptions.custom.EnigmaDatabaseException;
-import com.wia.enigma.exceptions.custom.EnigmaUnauthorizedException;
+import com.wia.enigma.exceptions.custom.*;
 import com.wia.enigma.utilities.JwtUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +36,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -84,12 +80,12 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             birthdayDate = Date.valueOf(birthday);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaBadRequestException(ExceptionCodes.INVALID_DATE_FORMAT,
+            throw new EnigmaException(ExceptionCodes.INVALID_DATE_FORMAT,
                     "Birthday is not in the correct format. Use \"yyyy-[m]m-[d]d\"");
         }
 
         if (username.contains("@"))
-            throw new EnigmaBadRequestException(ExceptionCodes.INVALID_USERNAME,
+            throw new EnigmaException(ExceptionCodes.INVALID_USERNAME,
                     "Username cannot contain '@'.");
 
         EnigmaUser enigmaUser = EnigmaUser.builder()
@@ -107,7 +103,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             enigmaUser = enigmaUserRepository.save(enigmaUser);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_SAVE_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_SAVE_ERROR,
                     "Cannot save EnigmaUser.");
         }
 
@@ -116,7 +112,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             emailService.sendVerificationEmail(enigmaUser.getEmail(), verificationToken.getToken());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_SAVE_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_SAVE_ERROR,
                     "Cannot send verification email.");
         }
 
@@ -144,16 +140,16 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                 enigmaUser = enigmaUserRepository.findEnigmaUserByUsername(usernameOrEmail, true);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
                     "Cannot get EnigmaUser by username or email.");
         }
 
         if (enigmaUser == null)
-            throw new EnigmaBadRequestException(ExceptionCodes.USER_NOT_FOUND,
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
                     "EnigmaUser not found for username or email: " + usernameOrEmail);
 
         if (!passwordEncoder.matches(password, enigmaUser.getPassword()))
-            throw new EnigmaUnauthorizedException(ExceptionCodes.INVALID_PASSWORD,
+            throw new EnigmaException(ExceptionCodes.INVALID_PASSWORD,
                     "Password is not valid.");
 
         /* TODO: set up authorities structure */
@@ -184,11 +180,11 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
     public void logoutEnigmaUser(String authorizationHeader) {
 
         if (authorizationHeader == null)
-            throw new EnigmaUnauthorizedException(ExceptionCodes.MISSING_AUTHORIZATION_HEADER,
+            throw new EnigmaException(ExceptionCodes.MISSING_AUTHORIZATION_HEADER,
                     "Missing Authorization header");
 
         if (!authorizationHeader.startsWith(JwtUtils.getInstance().getTokenType()))
-            throw new EnigmaUnauthorizedException(ExceptionCodes.INVALID_AUTHORIZATION_HEADER,
+            throw new EnigmaException(ExceptionCodes.INVALID_AUTHORIZATION_HEADER,
                     "Invalid Authorization header");
 
         String jti = JwtUtils.getInstance()
@@ -199,7 +195,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             enigmaJwtId = Long.parseLong(jti);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaBadRequestException(ExceptionCodes.INVALID_JWT,
+            throw new EnigmaException(ExceptionCodes.INVALID_JWT,
                     "JTI is not valid.");
         }
 
@@ -207,7 +203,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             enigmaJwtService.revokeToken(enigmaJwtId);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_DELETE_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
                     "Cannot delete JWT.");
         }
     }
@@ -225,12 +221,12 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             exists = enigmaUserRepository.existsByUsernameOrEmail(username, email);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
                     "Cannot check EnigmaUser existence.");
         }
 
         if (exists)
-            throw new EnigmaConflictException(ExceptionCodes.DB_UNIQUE_CONSTRAINT_VIOLATION,
+            throw new EnigmaException(ExceptionCodes.DB_UNIQUE_CONSTRAINT_VIOLATION,
                     "EnigmaUser with username or email already exists.");
     }
 
@@ -251,12 +247,12 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             enigmaUser = enigmaUserRepository.findEnigmaUserByNotVerified(verificationToken.getEnigmaUserId());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
                     "Cannot get EnigmaUser by id.");
         }
 
         if (enigmaUser == null)
-            throw new EnigmaBadRequestException(ExceptionCodes.USER_NOT_FOUND,
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
                     "EnigmaUser not found for id: " + verificationToken.getEnigmaUserId() + " or it is already verified.");
 
         boolean alreadyExist;
@@ -264,12 +260,12 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             alreadyExist = enigmaUserRepository.existsByUsernameOrEmail(enigmaUser.getUsername(), enigmaUser.getEmail());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
                     "Cannot get EnigmaUser by username or email.");
         }
 
         if (alreadyExist)
-            throw new EnigmaBadRequestException(ExceptionCodes.USERNAME_OR_EMAIL_ALREADY_VERIFIED,
+            throw new EnigmaException(ExceptionCodes.USERNAME_OR_EMAIL_ALREADY_VERIFIED,
                     "A user with the same username  or email exists.");
 
         enigmaUser.setIsVerified(true);
@@ -277,7 +273,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             enigmaUserRepository.save(enigmaUser);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_SAVE_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_SAVE_ERROR,
                     "Cannot save EnigmaUser.");
         }
 
@@ -314,12 +310,12 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             enigmaUser = enigmaUserRepository.findEnigmaUserByEmail(email);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
                     "Cannot get EnigmaUser by email.");
         }
 
         if (enigmaUser == null)
-            throw new EnigmaBadRequestException(ExceptionCodes.USER_NOT_FOUND,
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
                     "EnigmaUser not found for email: " + email);
 
         VerificationToken verificationToken = verificationTokenService.createVerificationToken(enigmaUser.getId(), true);
@@ -337,7 +333,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
     public void resetPassword(String token, String newPassword1, String newPassword2) {
 
         if (!newPassword1.equals(newPassword2))
-            throw new EnigmaBadRequestException(ExceptionCodes.PASSWORDS_DO_NOT_MATCH,
+            throw new EnigmaException(ExceptionCodes.PASSWORDS_DO_NOT_MATCH,
                     "Passwords do not match.");
 
         VerificationToken verificationToken = verificationTokenService.verifyToken(token, true);
@@ -348,12 +344,12 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             enigmaUser = enigmaUserRepository.findEnigmaUserById(verificationToken.getEnigmaUserId());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
                     "Cannot get EnigmaUser by id.");
         }
 
         if (enigmaUser == null)
-            throw new EnigmaBadRequestException(ExceptionCodes.USER_NOT_FOUND,
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
                     "EnigmaUser not found for id: " + verificationToken.getEnigmaUserId());
 
         enigmaUser.setPassword(passwordEncoder.encode(newPassword1));
@@ -361,7 +357,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             enigmaUserRepository.save(enigmaUser);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_SAVE_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_SAVE_ERROR,
                     "Cannot save EnigmaUser.");
         }
 
@@ -376,23 +372,19 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
         EnigmaUserDto enigmaUser = getVerifiedUser(followId);
 
         if(enigmaUser == null) {
-            throw new IllegalArgumentException("User does not exist or unverified!");
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                    "User does not exist or unverified!");
         }
 
         if (userId.equals(followId)) {
-            throw new IllegalArgumentException("You cannot follow yourself");
+            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION,
+                    "You cannot follow yourself.");
         }
 
-        Optional<UserFollows> userFollows = userFollowsService.findUserFollowsEntity(userId, followId, EntityType.USER);
+        if(userFollowsService.isUserFollowsEntity(userId, followId, EntityType.USER)) {
 
-        if(userFollows.isPresent()) {
-
-            if(userFollows.get().getIsAccepted()){
-                throw new IllegalArgumentException("You are already following this " + EntityType.USER);
-            }
-            else {
-                throw new IllegalArgumentException("You already sent a follow request to this " + EntityType.USER);
-            }
+           throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION,
+                   "You are already following or sent follow request to this user.");
         }
 
         UserFollows userFollow = UserFollows.builder()
@@ -412,7 +404,8 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
         EnigmaUserDto enigmaUser = getVerifiedUser(followId);
 
         if(enigmaUser == null) {
-            throw new IllegalArgumentException("User does not exist or unverified!");
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                    "User does not exist or unverified!");
         }
 
         userFollowsService.unfollow(userId, followId, EntityType.USER);
@@ -424,7 +417,8 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
         EnigmaUserDto followedEnigmaUser = getVerifiedUser(followedId);
 
         if(followedEnigmaUser == null) {
-            throw new IllegalArgumentException("User does not exist or unverified!");
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                    "User does not exist or unverified!");
         }
 
         return userFollowsService.findAcceptedFollowers( followedId, EntityType.USER)
@@ -447,7 +441,8 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
         EnigmaUserDto followedEnigmaUser = getVerifiedUser(followerId);
 
         if(followedEnigmaUser == null) {
-            throw new IllegalArgumentException("User does not exist or unverified!");
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                    "User does not exist or unverified!");
         }
 
         return userFollowsService.findAcceptedFollowings(followerId, EntityType.USER)
@@ -490,12 +485,12 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             enigmaUser = enigmaUserRepository.findEnigmaUserById(userId);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
                     "Cannot get EnigmaUser by id.");
         }
 
         if (enigmaUser == null)
-            throw new EnigmaBadRequestException(ExceptionCodes.USER_NOT_FOUND,
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
                     "EnigmaUser not found for id: " + userId);
 
         return EnigmaUserDto.builder()

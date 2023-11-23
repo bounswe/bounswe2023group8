@@ -3,8 +3,8 @@ package com.wia.enigma.core.service.WikiService;
 import com.wia.enigma.core.data.dto.WikiTagDto;
 import com.wia.enigma.core.data.response.WikiTagResponse;
 import com.wia.enigma.core.data.response.WikiSearchResponse;
-import com.wia.enigma.core.service.WikiService.WikiService;
 import com.wia.enigma.dal.enums.ExceptionCodes;
+import com.wia.enigma.exceptions.custom.EnigmaException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.AccessLevel;
-import com.wia.enigma.exceptions.custom.EnigmaApiException;
 
 import java.util.List;
 import java.util.Map;
@@ -38,11 +37,11 @@ public class WikiServiceImpl implements WikiService {
             if (response != null && response.getSuccess() == 1) {
                 return response.getSearch();
             } else {
-                throw new EnigmaApiException(ExceptionCodes.API_RETURNED_NON_200,  "Wiki API responded non-success.");
+                throw new EnigmaException(ExceptionCodes.API_RETURNED_NON_200,  "Wiki API responded non-success.");
             }
         }catch (Exception ex) {
             log.error("Exception occurred during wiki API call: ", ex);
-            throw new EnigmaApiException(ExceptionCodes.INTERNAL_SERVER_ERROR, "Error occurred while fetching wiki tags.");
+            throw new EnigmaException(ExceptionCodes.INTERNAL_SERVER_ERROR, "Error occurred while fetching wiki tags.");
         }
     }
 
@@ -55,7 +54,7 @@ public class WikiServiceImpl implements WikiService {
             response = restTemplate.getForObject(url, WikiTagResponse.class);
         }catch (Exception ex) {
             log.error("Exception occurred during wiki API call: ", ex);
-            throw new EnigmaApiException(ExceptionCodes.INTERNAL_SERVER_ERROR, "Error occurred while fetching wiki tags.");
+            throw new EnigmaException(ExceptionCodes.INTERNAL_SERVER_ERROR, "Error occurred while fetching wiki tags.");
         }
 
         if (response != null && response.getSuccess() == 1) {
@@ -65,7 +64,7 @@ public class WikiServiceImpl implements WikiService {
         } else {
             // Handle the case where the response is not successful
             log.error("Wiki API responded non-success.");
-            throw new EnigmaApiException(ExceptionCodes.INVALID_WIKI_TAG_ID, "Invalid wiki tag id.");
+            throw new EnigmaException(ExceptionCodes.INVALID_WIKI_TAG_ID, "Invalid wiki tag id.");
         }
 
     }
@@ -85,7 +84,7 @@ public class WikiServiceImpl implements WikiService {
                     .isValidTag(!label.isEmpty())
                     .build();
         } else {
-            throw new EnigmaApiException(ExceptionCodes.INVALID_WIKI_TAG_ID, "Invalid wiki tag id: " + id);
+            throw new EnigmaException(ExceptionCodes.INVALID_WIKI_TAG_ID, "Invalid wiki tag id: " + id);
         }
     }
 
