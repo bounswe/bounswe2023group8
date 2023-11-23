@@ -4,6 +4,7 @@ import com.wia.enigma.core.data.dto.EnigmaUserDto;
 import com.wia.enigma.core.data.dto.InterestAreaDto;
 import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;
 import com.wia.enigma.core.data.dto.WikiTagDto;
+import com.wia.enigma.core.service.InterestAreaPostService.InterestAreaPostService;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.WikiService.WikiService;
 import com.wia.enigma.dal.entity.EntityTag;
@@ -37,6 +38,7 @@ public class InterestAreaServiceImpl implements InterestAreaService {
     final EntityTagsRepository entityTagsRepository;
     final WikiService wikiTagService;
     final UserFollowsService userFollowsService;
+    final InterestAreaPostService interestAreaPostService;
     final EnigmaUserRepository enigmaUserRepository;
 
     @Override
@@ -98,6 +100,11 @@ public class InterestAreaServiceImpl implements InterestAreaService {
         }
 
         interestAreaRepository.deleteById(id);
+
+        nestedInterestAreaRepository.deleteAllByParentInterestAreaId(id);
+        entityTagsRepository.deleteAllByEntityIdAndEntityType(id, EntityType.INTEREST_AREA);
+        interestAreaPostService.deleteAllByInterestAreaId(id);
+        userFollowsService.unfollowAll(id, EntityType.INTEREST_AREA);
     }
 
     @Override
@@ -107,7 +114,8 @@ public class InterestAreaServiceImpl implements InterestAreaService {
         InterestArea interestArea = interestAreaRepository.findInterestAreaById(interestAreaId);
 
         if(interestArea == null){
-            throw new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + interestAreaId);
+            throw new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: "
+                    + interestAreaId);
         }
 
         if(userFollowsService.isUserFollowsEntityOrSentRequest(enigmaUserId, interestAreaId, EntityType.INTEREST_AREA)) {
