@@ -12,6 +12,7 @@ import com.wia.enigma.core.service.JwtService.EnigmaJwtService;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.VerificationTokenService.VerificationTokenService;
 import com.wia.enigma.dal.entity.EnigmaUser;
+import com.wia.enigma.dal.entity.InterestArea;
 import com.wia.enigma.dal.entity.UserFollows;
 import com.wia.enigma.dal.entity.VerificationToken;
 import com.wia.enigma.dal.enums.AudienceType;
@@ -34,8 +35,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -460,21 +463,22 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
     }
 
     @Override
-    public List<InterestAreaSimpleDto> getFollowingInterestAreas(Long userId, Long followerId){
-
-        return userFollowsService.findAcceptedFollowings(followerId, EntityType.INTEREST_AREA)
+    public List<InterestAreaSimpleDto> getFollowingInterestAreas(Long followerId, Long userId) {
+        List<Long> followedEntityIds = userFollowsService.findAcceptedFollowings(followerId, EntityType.INTEREST_AREA)
                 .stream()
-                .map(userFollows -> interestAreaRepository.findInterestAreaById(userFollows.getFollowedEntityId()))
-                .map(interestArea -> InterestAreaSimpleDto.builder()
-                        .id(interestArea.getId())
-                        .title(interestArea.getTitle())
-                        .description(interestArea.getDescription())
-                        .enigmaUserId(interestArea.getEnigmaUserId())
-                        .accessLevel(interestArea.getAccessLevel())
-                        .createTime(interestArea.getCreateTime())
-                        .build()).
-                filter(interestAreaSimpleDto  -> Objects.equals(userId, followerId) || interestAreaSimpleDto.getAccessLevel().equals(EnigmaAccessLevel.PUBLIC))
-                .toList();
+                .map(UserFollows::getFollowedEntityId)
+                .collect(Collectors.toList());
+
+        if (followedEntityIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<InterestArea> interestAreas = interestAreaRepository.findAllById(followedEntityIds);
+
+        return interestAreas.stream()
+                .filter(interestArea -> Objects.equals(userId, followerId) || interestArea.getAccessLevel().equals(EnigmaAccessLevel.PUBLIC))
+                .map(this::mapToInterestAreaSimpleDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -515,5 +519,16 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                         .createTime(enigmaUser.getCreateTime())
                         .build())
                 .toList();
+    }
+
+    private InterestAreaSimpleDto mapToInterestAreaSimpleDto(InterestArea interestArea) {
+        return InterestAreaSimpleDto.builder()
+                .id(interestArea.getId())
+                .title(interestArea.getTitle())
+                .description(interestArea.getDescription())
+                .enigmaUserId(interestArea.getEnigmaUserId())
+                .accessLevel(interestArea.getAccessLevel())
+                .createTime(interestArea.getCreateTime())
+                .build();
     }
 }
