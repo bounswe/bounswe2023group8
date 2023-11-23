@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserFollowsRepository extends JpaRepository<UserFollows, Long> {
+    long countByFollowerEnigmaUserIdAndFollowedEntityTypeAndIsAccepted(Long followerEnigmaUserId, EntityType followedEntityType, Boolean isAccepted);
+    long countByFollowedEntityIdAndFollowedEntityTypeAndIsAccepted(Long followedEntityId, EntityType followedEntityType, Boolean isAccepted);
     long deleteByFollowedEntityIdAndFollowedEntityType(Long followedEntityId, EntityType followedEntityType);
     boolean existsByFollowerEnigmaUserIdAndFollowedEntityIdAndFollowedEntityType(Long followerEnigmaUserId, Long followedEntityId, EntityType followedEntityType);
     boolean existsByFollowerEnigmaUserIdAndFollowedEntityIdAndFollowedEntityTypeAndIsAccepted(Long followerEnigmaUserId, Long followedEntityId, EntityType followedEntityType, Boolean isAccepted);

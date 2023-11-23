@@ -1,6 +1,7 @@
 package com.wia.enigma.core.service.UserFollowsService;
 
 import com.wia.enigma.core.data.dto.EnigmaUserDto;
+import com.wia.enigma.dal.entity.InterestArea;
 import com.wia.enigma.dal.entity.UserFollows;
 import com.wia.enigma.dal.enums.EntityType;
 
@@ -15,9 +16,15 @@ public interface UserFollowsService {
     void unfollowAll(Long userId, EntityType entityType);
 
     List<UserFollows> findAcceptedFollowers(Long followedId, EntityType entityType);
+
+    Long countAcceptedFollowers(Long followedId, EntityType entityType);
     List<UserFollows> findAcceptedFollowings(Long followerId, EntityType entityType);
+
+    Long countAcceptedFollowings(Long followerId, EntityType entityType);
 
     Boolean isUserFollowsEntity(Long userId, Long followId, EntityType entityType);
 
     Boolean isUserFollowsEntityOrSentRequest(Long userId, Long followId, EntityType entityType);
+
+    void checkInterestAreaAccess(InterestArea interestArea, Long enigmaUserId);
 }
