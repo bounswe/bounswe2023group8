@@ -76,7 +76,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional
-    public PostDtoSimple createPost(Long userId, Long interestAreaId, String sourceLink, String title, List<String> wikiTags, PostLabel label, GeoLocation geolocation) {
+    public PostDtoSimple createPost(Long userId, Long interestAreaId, String sourceLink, String title, List<String> wikiTags, PostLabel label, String content, GeoLocation geolocation) {
 
         if(interestAreaService.isInterestAreaExist(interestAreaId) == false)
             throw new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, String.format("Interest area %d not found", interestAreaId));
@@ -90,6 +90,7 @@ public class PostServiceImpl implements PostService{
                 .sourceLink(sourceLink)
                 .title(title)
                 .label(label)
+                .content(content)
                 .geolocation(geolocation)
                 .createTime(new Timestamp(System.currentTimeMillis()))
                 .build();
@@ -124,6 +125,7 @@ public class PostServiceImpl implements PostService{
                 .title(post.getTitle())
                 .wikiTags(wikiTags)
                 .label(post.getLabel())
+                .content(post.getContent())
                 .geolocation(post.getGeolocation())
                 .createTime(post.getCreateTime())
                 .build();
@@ -131,7 +133,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional
-    public PostDtoSimple updatePost(Long userId, Long postId, String sourceLink, String title, List<String> wikiTags, PostLabel label, GeoLocation geolocation) {
+    public PostDtoSimple updatePost(Long userId, Long postId, String sourceLink, String title, List<String> wikiTags, PostLabel label, String content, GeoLocation geolocation) {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EnigmaNotFoundException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("Post %d not found", postId)));
@@ -143,6 +145,7 @@ public class PostServiceImpl implements PostService{
         post.setSourceLink(sourceLink);
         post.setTitle(title);
         post.setLabel(label);
+        post.setContent(content);
         post.setGeolocation(geolocation);
         post.setCreateTime(new Timestamp(System.currentTimeMillis()));
 
@@ -169,6 +172,7 @@ public class PostServiceImpl implements PostService{
                 .title(post.getTitle())
                 .wikiTags(wikiTags)
                 .label(post.getLabel())
+                .content(post.getContent())
                 .geolocation(post.getGeolocation())
                 .createTime(post.getCreateTime())
                 .build();
