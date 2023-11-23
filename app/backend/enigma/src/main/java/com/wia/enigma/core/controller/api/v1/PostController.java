@@ -43,6 +43,7 @@ public class PostController {
                 createPostRequest.getTitle(),
                 createPostRequest.getWikiTags(),
                 createPostRequest.getLabel(),
+                createPostRequest.getContent(),
                 createPostRequest.getGeoLocation()
         );
 
@@ -59,6 +60,7 @@ public class PostController {
                 updatePostRequest.getTitle(),
                 updatePostRequest.getWikiTags(),
                 updatePostRequest.getLabel(),
+                updatePostRequest.getContent(),
                 updatePostRequest.getGeoLocation()
         );
 

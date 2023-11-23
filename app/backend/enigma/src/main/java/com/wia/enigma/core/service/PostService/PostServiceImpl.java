@@ -143,6 +143,7 @@ public class PostServiceImpl implements PostService{
                 .sourceLink(sourceLink)
                 .title(title)
                 .label(label)
+                .content(content)
                 .geolocation(geolocation)
                 .createTime(new Timestamp(System.currentTimeMillis()))
                 .build();
@@ -182,6 +183,7 @@ public class PostServiceImpl implements PostService{
                 .title(post.getTitle())
                 .wikiTags(wikiTags)
                 .label(post.getLabel())
+                .content(post.getContent())
                 .geolocation(post.getGeolocation())
                 .createTime(post.getCreateTime())
                 .build();
@@ -198,6 +200,7 @@ public class PostServiceImpl implements PostService{
         post.setSourceLink(sourceLink);
         post.setTitle(title);
         post.setLabel(label);
+        post.setContent(content);
         post.setGeolocation(geolocation);
         post.setCreateTime(new Timestamp(System.currentTimeMillis()));
         postRepository.save(post);

@@ -10,9 +10,9 @@ import java.util.List;
 public interface PostService {
 
     PostDto getPost(Long postId, Long userId);
-    PostDtoSimple createPost(Long userId, Long interestAreaId, String sourceLink, String title, List<String> wikiTags, PostLabel label, GeoLocation geolocation);
+    PostDtoSimple createPost(Long userId, Long interestAreaId, String sourceLink, String title, List<String> wikiTags, PostLabel label, String content, GeoLocation geolocation);
 
-    PostDtoSimple updatePost(Long userId, Long postId, String sourceLink, String title, List<String> wikiTags, PostLabel label, GeoLocation geolocation);
+    PostDtoSimple updatePost(Long userId, Long postId, String sourceLink, String title, List<String> wikiTags, PostLabel label, String content, GeoLocation geolocation);
 
     void deletePost(Long postId, Long userId);
 }

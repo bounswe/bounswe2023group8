@@ -33,6 +33,9 @@ public class CreatePostRequest {
     PostLabel label;
 
     @NotNull
+    String content;
+
+    @NotNull
     GeoLocation geoLocation;
 
 }
