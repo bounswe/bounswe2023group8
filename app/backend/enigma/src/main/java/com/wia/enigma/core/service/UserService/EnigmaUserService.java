@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface EnigmaUserService {
 
-    RegisterResponse registerEnigmaUser(String username, String email, String password, String birthday);
+    RegisterResponse registerEnigmaUser(String username, String name, String email, String password, String birthday);
 
     LoginResponse loginEnigmaUser(String username, String password);
 
