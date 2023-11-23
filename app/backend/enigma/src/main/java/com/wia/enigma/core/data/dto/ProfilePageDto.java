@@ -20,6 +20,8 @@ public class ProfilePageDto {
 
         String username;
 
+        String name;
+
         Date birthday;
 
         List<EnigmaUserDto> followers;

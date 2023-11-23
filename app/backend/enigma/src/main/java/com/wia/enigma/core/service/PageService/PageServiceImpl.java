@@ -27,6 +27,7 @@ public class PageServiceImpl implements PageService{
 
                 .id(enigmaUserDto.getId())
                 .username(enigmaUserDto.getUsername())
+                .name(enigmaUserDto.getName())
                 .birthday(enigmaUserDto.getBirthday())
                 .followers(enigmaUserService.getFollowers(userId, profileId))
                 .following(enigmaUserService.getFollowings(userId, profileId))
