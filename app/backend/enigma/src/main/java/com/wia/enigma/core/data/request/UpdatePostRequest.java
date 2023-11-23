@@ -30,6 +30,9 @@ public class UpdatePostRequest {
     PostLabel label;
 
     @NotNull
+    String content;
+
+    @NotNull
     GeoLocation geoLocation;
 
 }

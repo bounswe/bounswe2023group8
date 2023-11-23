@@ -24,6 +24,7 @@ public class PostDtoSimple {
     String title;
     List<String> wikiTags;
     PostLabel label;
+    String content;
     GeoLocation geolocation;
     Timestamp createTime;
 }

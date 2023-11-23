@@ -24,6 +24,7 @@ public class PostDto {
     String title;
     List<WikiTagDto> wikiTags;
     PostLabel label;
+    String content;
     GeoLocation geolocation;
     Timestamp createTime;
 }

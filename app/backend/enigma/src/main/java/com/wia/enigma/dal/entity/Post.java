@@ -37,6 +37,9 @@ public class Post {
     @Column(name = "label")
     PostLabel label;
 
+    @Column(name = "content")
+    String content;
+
     @Embedded
     GeoLocation geolocation;
 
