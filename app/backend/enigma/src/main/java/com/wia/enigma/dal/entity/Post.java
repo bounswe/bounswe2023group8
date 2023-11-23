@@ -1,5 +1,6 @@
 package com.wia.enigma.dal.entity;
 
+import com.wia.enigma.core.data.dto.EnigmaUserDto;
 import com.wia.enigma.core.data.dto.PostDto;
 import com.wia.enigma.core.data.dto.PostDtoSimple;
 import com.wia.enigma.core.data.dto.WikiTagDto;
@@ -50,10 +51,10 @@ public class Post {
     @Column(name = "create_time")
     Timestamp createTime;
 
-    public PostDto mapToPostDto( List<WikiTagDto> wikiTags) {
+    public PostDto mapToPostDto( List<WikiTag> wikiTags, EnigmaUserDto enigmaUserDto) {
         return PostDto.builder()
                 .id(this.getId())
-                .enigmaUserId(this.getEnigmaUserId())
+                .enigmaUser(enigmaUserDto)
                 .interestAreaId(this.getInterestAreaId())
                 .sourceLink(this.getSourceLink())
                 .title(this.getTitle())

@@ -1,21 +1,19 @@
 package com.wia.enigma.core.service.PostService;
 
 import com.wia.enigma.core.data.dto.PostDto;
-import com.wia.enigma.core.data.dto.PostDtoSimple;
 import com.wia.enigma.core.data.dto.WikiTagDto;
 import com.wia.enigma.core.data.model.GeoLocation;
+import com.wia.enigma.core.service.InterestAreaPostService.InterestAreaPostService;
 import com.wia.enigma.core.service.InterestAreaService.InterestAreaService;
+import com.wia.enigma.core.service.InterestAreaService.InterestAreaServiceHelper;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
+import com.wia.enigma.core.service.UserService.EnigmaUserService;
 import com.wia.enigma.core.service.WikiService.WikiService;
-import com.wia.enigma.dal.entity.EntityTag;
-import com.wia.enigma.dal.entity.InterestAreaPost;
-import com.wia.enigma.dal.entity.Post;
+import com.wia.enigma.dal.entity.*;
 import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.enums.PostLabel;
-import com.wia.enigma.dal.repository.EntityTagsRepository;
-import com.wia.enigma.dal.repository.InterestAreaPostRepository;
-import com.wia.enigma.dal.repository.PostRepository;
+import com.wia.enigma.dal.repository.*;
 import com.wia.enigma.exceptions.custom.EnigmaException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,9 +29,14 @@ class PostServiceHelper {
     final PostRepository postRepository;
     final EntityTagsRepository entityTagsRepository;
     final InterestAreaPostRepository interestAreaPostRepository;
+    final InterestAreaPostService interestAreaPostService;
     final WikiService wikiTagService;
     final UserFollowsService userFollowsService;
     final InterestAreaService interestAreaService;
+    final InterestAreaServiceHelper interestAreaServiceHelper;
+    final EnigmaUserService enigmaUserService;
+    private final EnigmaUserRepository enigmaUserRepository;
+    private final WikiTagRepository wikiTagRepository;
 
 
     Post fetchPost(Long postId) {
@@ -47,7 +50,7 @@ class PostServiceHelper {
         }
     }
 
-    List<WikiTagDto> fetchWikiTagsForPost(Post post) {
+    List<WikiTag> fetchWikiTagsForPost(Post post) {
         return wikiTagService.getWikiTags(
                 entityTagsRepository.findAllByEntityIdAndEntityType(post.getId(), EntityType.POST).stream()
                         .map(EntityTag::getWikiDataTagId)
@@ -77,6 +80,12 @@ class PostServiceHelper {
                 .build();
 
         return postRepository.save(post);
+    }
+
+    List<WikiTag> getWikiTags(Long id) {
+        return wikiTagRepository.findAllById(entityTagsRepository.findAllByEntityIdAndEntityType(id, EntityType.POST).stream()
+                .map(EntityTag::getWikiDataTagId)
+                .collect(Collectors.toList()));
     }
 
     void saveWikiTagsForPost(Post post, List<String> wikiTags) {
@@ -132,5 +141,38 @@ class PostServiceHelper {
         ).collect(Collectors.toList());
 
         entityTagsRepository.saveAll(entityTags);
+    }
+
+
+    List<PostDto> getInterestAreaPosts(Long interestAreaId, Long userId) {
+
+        InterestArea interestArea = interestAreaServiceHelper.getInterestArea(interestAreaId);
+
+        userFollowsService.checkInterestAreaAccess(interestArea, userId); ;
+
+       List<Long> postIds =  interestAreaPostService.getPostsByInterestAreaId(interestAreaId).stream()
+                .map(InterestAreaPost::getPostId).toList();
+
+
+       List<EntityTag> entityTags =  entityTagsRepository.findByEntityIdInAndEntityType( postIds, EntityType.POST );
+
+
+       List<WikiTag> wikiTags = wikiTagRepository.findAllById(
+                entityTags.stream()
+                        .map(EntityTag::getWikiDataTagId)
+                        .collect(Collectors.toList())
+              );
+
+       List<Post> posts = postRepository.findAllById(postIds);
+
+       List<Long> userIds = posts.stream().map(Post::getEnigmaUserId).toList();
+
+       List<EnigmaUser> enigmaUsers = enigmaUserRepository.findAllById(userIds);
+
+
+         return posts.stream().map(post -> {
+              EnigmaUser enigmaUser = enigmaUsers.stream().filter(enigmaUser1 -> enigmaUser1.getId().equals(post.getEnigmaUserId())).findFirst().get();
+              return post.mapToPostDto(wikiTags, enigmaUser.mapToEnigmaUserDto());
+         }).toList();
     }
 }

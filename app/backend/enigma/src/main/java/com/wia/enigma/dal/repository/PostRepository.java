@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface PostRepository  extends JpaRepository<Post, Long> {
+    List<Post> findByEnigmaUserId(Long enigmaUserId);
     List<Post> findByIdIn(Collection<Long> ids);
 
     Post findPostById(Long id);
