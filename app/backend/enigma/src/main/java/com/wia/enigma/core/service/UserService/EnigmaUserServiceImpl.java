@@ -21,6 +21,7 @@ import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.repository.EnigmaUserRepository;
 import com.wia.enigma.dal.repository.InterestAreaRepository;
+import com.wia.enigma.dal.repository.UserFollowsRepository;
 import com.wia.enigma.exceptions.custom.*;
 import com.wia.enigma.utilities.JwtUtils;
 import lombok.AccessLevel;
@@ -45,6 +46,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EnigmaUserServiceImpl implements EnigmaUserService {
+
     private final InterestAreaRepository interestAreaRepository;
 
     final PasswordEncoder passwordEncoder;
@@ -71,6 +73,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
     @Override
     @Transactional
     public RegisterResponse registerEnigmaUser(String username,
+                                               String name,
                                                String email,
                                                String password,
                                                String birthday) {
@@ -93,6 +96,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
         EnigmaUser enigmaUser = EnigmaUser.builder()
                 .username(username)
+                .name(name)
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .birthday(birthdayDate)
@@ -384,20 +388,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                     "You cannot follow yourself.");
         }
 
-        if(userFollowsService.isUserFollowsEntity(userId, followId, EntityType.USER)) {
-
-           throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION,
-                   "You are already following or sent follow request to this user.");
-        }
-
-        UserFollows userFollow = UserFollows.builder()
-                .followerEnigmaUserId(userId)
-                .followedEntityId(followId)
-                .followedEntityType(EntityType.USER)
-                .isAccepted(true)
-                .build();
-
-        userFollowsService.follow(userFollow);
+        userFollowsService.follow(userId, followId, EntityType.USER, true);
     }
 
     @Override
@@ -477,7 +468,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
         return interestAreas.stream()
                 .filter(interestArea -> Objects.equals(userId, followerId) || interestArea.getAccessLevel().equals(EnigmaAccessLevel.PUBLIC))
-                .map(this::mapToInterestAreaSimpleDto)
+                .map(interestArea -> interestArea.mapToInterestAreaSimpleDto(null, null))
                 .collect(Collectors.toList());
     }
 
@@ -500,6 +491,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
         return EnigmaUserDto.builder()
                 .id(enigmaUser.getId())
                 .username(enigmaUser.getUsername())
+                .name(enigmaUser.getName())
                 .email(enigmaUser.getEmail())
                 .birthday(enigmaUser.getBirthday())
                 .build();
@@ -519,16 +511,5 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                         .createTime(enigmaUser.getCreateTime())
                         .build())
                 .toList();
-    }
-
-    private InterestAreaSimpleDto mapToInterestAreaSimpleDto(InterestArea interestArea) {
-        return InterestAreaSimpleDto.builder()
-                .id(interestArea.getId())
-                .title(interestArea.getTitle())
-                .description(interestArea.getDescription())
-                .enigmaUserId(interestArea.getEnigmaUserId())
-                .accessLevel(interestArea.getAccessLevel())
-                .createTime(interestArea.getCreateTime())
-                .build();
     }
 }
