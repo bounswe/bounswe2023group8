@@ -9,8 +9,7 @@ import java.util.Optional;
 
 public interface UserFollowsService {
 
-    void follow(UserFollows userFollows);
-
+    void follow(Long userId, Long followId, EntityType entityType, Boolean isAccepted);
     void unfollow(Long userId, Long followId, EntityType entityType);
 
     void unfollowAll(Long userId, EntityType entityType);

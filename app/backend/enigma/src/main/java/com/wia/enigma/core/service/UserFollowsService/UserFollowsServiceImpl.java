@@ -2,7 +2,9 @@ package com.wia.enigma.core.service.UserFollowsService;
 
 import com.wia.enigma.dal.entity.UserFollows;
 import com.wia.enigma.dal.enums.EntityType;
+import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.repository.UserFollowsRepository;
+import com.wia.enigma.exceptions.custom.EnigmaException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,8 +22,19 @@ public class UserFollowsServiceImpl implements UserFollowsService {
     final UserFollowsRepository userFollowsRepository;
 
     @Override
-    public void follow(UserFollows userFollows) {
+    public void follow(Long userId, Long followId, EntityType entityType, Boolean isAccepted) {
 
+        if(isUserFollowsEntity(userId, followId, entityType)) {
+
+            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION,
+                    String.format("You are already following or sent follow request to %s.", entityType));
+        }
+
+        UserFollows userFollows = new UserFollows();
+        userFollows.setFollowerEnigmaUserId(userId);
+        userFollows.setFollowedEntityId(followId);
+        userFollows.setFollowedEntityType(entityType);
+        userFollows.setIsAccepted(isAccepted);
         userFollowsRepository.save(userFollows);
     }
 
