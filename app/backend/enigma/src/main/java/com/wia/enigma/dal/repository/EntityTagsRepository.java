@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface EntityTagsRepository extends JpaRepository<EntityTag, Long> {
+    List<EntityTag> findByEntityIdInAndEntityType(Collection<Long> entityIds, EntityType entityType);
     List<EntityTag> findByWikiDataTagIdInAndEntityType(Collection<String> wikiDataTagIds, EntityType entityType);
     List<EntityTag> findByWikiDataTagIdIn(Collection<String> wikiDataTagIds);
 
