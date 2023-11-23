@@ -32,5 +32,7 @@ public class InterestAreaDto {
 
     List<WikiTagDto> wikiTags;
 
+    List<PostDto> posts;
+
     Timestamp createTime;
 }
