@@ -24,11 +24,9 @@ public class ProfilePageDto {
 
         Date birthday;
 
-        List<EnigmaUserDto> followers;
+        Long followers;
 
-        List<EnigmaUserDto> following;
-
-        List<InterestAreaSimpleDto> interestAreas;
+        Long following;
 
         List<Post> posts;
 }
