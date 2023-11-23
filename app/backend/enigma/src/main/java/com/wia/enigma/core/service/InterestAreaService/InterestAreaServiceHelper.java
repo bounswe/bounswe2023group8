@@ -1,14 +1,12 @@
 package com.wia.enigma.core.service.InterestAreaService;
 
 import com.wia.enigma.core.data.dto.EnigmaUserDto;
+import com.wia.enigma.core.data.dto.PostDto;
 import com.wia.enigma.core.data.dto.WikiTagDto;
 import com.wia.enigma.core.service.InterestAreaPostService.InterestAreaPostService;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.WikiService.WikiService;
-import com.wia.enigma.dal.entity.EntityTag;
-import com.wia.enigma.dal.entity.InterestArea;
-import com.wia.enigma.dal.entity.NestedInterestArea;
-import com.wia.enigma.dal.entity.UserFollows;
+import com.wia.enigma.dal.entity.*;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
@@ -24,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-class InterestAreaServiceHelper {
+public class InterestAreaServiceHelper {
 
     final WikiService wikiTagService;
     final UserFollowsService userFollowsService;
@@ -35,13 +33,15 @@ class InterestAreaServiceHelper {
     final InterestAreaPostService interestAreaPostService;
     final EnigmaUserRepository enigmaUserRepository;
     final UserFollowsRepository userFollowsRepository;
+    private final PostRepository postRepository;
+    private final WikiTagRepository wikiTagRepository;
 
 
     boolean isValidWikidataId(String id) {
         return id.matches("Q[0-9]+");
     }
 
-    InterestArea getInterestArea(Long id) {
+    public InterestArea getInterestArea(Long id) {
         return interestAreaRepository.findById(id)
                 .orElseThrow(() -> new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + id));
     }
@@ -50,18 +50,15 @@ class InterestAreaServiceHelper {
         return interestAreaRepository.existsById(id);
     }
 
-    void checkAccessLevel(InterestArea interestArea, Long enigmaUserId) {
-        if (interestArea.getAccessLevel() == EnigmaAccessLevel.PERSONAL && !interestArea.getEnigmaUserId().equals(enigmaUserId)) {
-            throw new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "You don't have access to this personal interest area:: " + interestArea.getId());
-        }
+    void checkInterestAreaAccess(InterestArea interestArea, Long enigmaUserId) {
 
-        if (interestArea.getAccessLevel() == EnigmaAccessLevel.PRIVATE && !interestArea.getEnigmaUserId().equals(enigmaUserId)
-                && !userFollowsService.isUserFollowsEntity(enigmaUserId, interestArea.getId(), EntityType.INTEREST_AREA)) {
-            throw new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "You don't have access to this interest area:: " + interestArea.getId());
-        }
+        userFollowsService.checkInterestAreaAccess(interestArea, enigmaUserId);
     }
 
-    List<InterestArea> getNestedInterestAreas(Long id) {
+    List<InterestArea> getNestedInterestAreas(Long id, Long enigmaUserId) {
+
+        checkInterestAreaAccess(getInterestArea(id), enigmaUserId);
+
         return interestAreaRepository.findAllByIdIn(
                 nestedInterestAreaRepository.findAllByParentInterestAreaId(id).stream()
                         .map(NestedInterestArea::getChildInterestAreaId)
@@ -69,16 +66,42 @@ class InterestAreaServiceHelper {
         );
     }
 
-    List<WikiTagDto> getWikiTags(Long id) {
-        return wikiTagService.getWikiTags(entityTagsRepository.findAllByEntityIdAndEntityType(id, EntityType.INTEREST_AREA).stream()
+
+
+    List<WikiTag> getWikiTags(Long id) {
+        return wikiTagRepository.findAllById(entityTagsRepository.findAllByEntityIdAndEntityType(id, EntityType.INTEREST_AREA).stream()
                 .map(EntityTag::getWikiDataTagId)
                 .collect(Collectors.toList()));
     }
 
-    void validateNestedInterestAreas(List<Long> nestedInterestAreas) {
-        if (!interestAreaRepository.existsAllByIdIsIn(nestedInterestAreas)) {
-            String errorMessage = "Nested interest areas not found for ids: " + nestedInterestAreas;
-            throw new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, errorMessage);
+    void validateNestedInterestAreas(List<Long> nestedInterestAreas, InterestArea interestArea) {
+
+
+        // public private personal
+        // public private personal
+
+        List<InterestArea> nestedInterestAreaList = interestAreaRepository.findAllById(nestedInterestAreas);
+
+        if (nestedInterestAreaList.size() != nestedInterestAreas.size()) {
+            String errorMessage = "Invalid nested interest area ids: " + nestedInterestAreas;
+            throw new EnigmaException(ExceptionCodes.INVALID_NESTED_INTEREST_AREA_IDS, errorMessage);
+        }
+
+        if (nestedInterestAreaList.stream().anyMatch(nestedInterestArea -> nestedInterestArea.getId().equals(interestArea.getId()))) {
+            String errorMessage = "Interest area cannot be nested to itself: " + nestedInterestAreas;
+            throw new EnigmaException(ExceptionCodes.INVALID_NESTED_INTEREST_AREA_IDS, errorMessage);
+        }
+
+        if (nestedInterestAreaList.stream().anyMatch(nestedInterestArea -> nestedInterestArea.getAccessLevel().equals(EnigmaAccessLevel.PRIVATE))) {
+            String errorMessage = "Private interest areas cannot be nested: " + nestedInterestAreas;
+            throw new EnigmaException(ExceptionCodes.INVALID_NESTED_INTEREST_AREA_IDS, errorMessage);
+        }
+
+        if(nestedInterestAreaList.stream().anyMatch(nestedInterestArea ->  nestedInterestArea.getAccessLevel().
+                equals(EnigmaAccessLevel.PERSONAL) && ( !interestArea.getAccessLevel().equals(EnigmaAccessLevel.PERSONAL)
+                || !nestedInterestArea.getEnigmaUserId().equals(interestArea.getEnigmaUserId() )))){
+            String errorMessage = "Personal interest areas cannot be nested to other users' interest areas or non personal interest areas: " + nestedInterestAreas;
+            throw new EnigmaException(ExceptionCodes.INVALID_NESTED_INTEREST_AREA_IDS, errorMessage);
         }
     }
 

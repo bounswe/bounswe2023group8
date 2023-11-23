@@ -4,6 +4,7 @@ import com.wia.enigma.core.data.dto.*;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.WikiService.WikiService;
 import com.wia.enigma.dal.entity.InterestArea;
+import com.wia.enigma.dal.entity.WikiTag;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class InterestAreaServiceImpl implements InterestAreaService {
+    private final WikiTagRepository wikiTagRepository;
 
     final InterestAreaRepository interestAreaRepository;
     final EntityTagsRepository entityTagsRepository;
@@ -35,15 +37,15 @@ public class InterestAreaServiceImpl implements InterestAreaService {
     @Override
     @Transactional(readOnly = true)
     public InterestAreaDto getInterestArea(Long id, Long enigmaUserId) {
+
         InterestArea interestArea = interestAreaRepository.findById(id)
                 .orElseThrow(() -> new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + id));
 
-        interestAreaServiceHelper.checkAccessLevel(interestArea, enigmaUserId);
+        interestAreaServiceHelper.checkInterestAreaAccess(interestArea, enigmaUserId);
 
-        List<InterestArea> nestedInterestAreas = interestAreaServiceHelper.getNestedInterestAreas(id);
-        List<WikiTagDto> wikiTags = interestAreaServiceHelper.getWikiTags(id);
+        List<WikiTag> wikiTags = interestAreaServiceHelper.getWikiTags(id);
 
-        return interestArea.mapToInterestAreaDto( nestedInterestAreas, wikiTags);
+        return interestArea.mapToInterestAreaDto(wikiTags);
     }
 
     @Override
@@ -52,12 +54,16 @@ public class InterestAreaServiceImpl implements InterestAreaService {
                                                     EnigmaAccessLevel accessLevel, List<Long> nestedInterestAreas,
                                                     List<String> wikiTags) {
 
-        interestAreaServiceHelper.validateNestedInterestAreas(nestedInterestAreas);
         interestAreaServiceHelper.validateWikiTags(wikiTags);
 
         InterestArea interestArea = interestAreaServiceHelper.createAndSaveInterestArea(enigmaUserId, title, description, accessLevel);
 
+        interestAreaServiceHelper.validateNestedInterestAreas(nestedInterestAreas, interestArea);
+
         interestAreaServiceHelper.saveNestedInterestAreas(nestedInterestAreas, interestArea);
+
+        wikiTagRepository.saveAll(wikiTagService.getWikiTags(wikiTags));
+
         interestAreaServiceHelper.saveEntityTags(wikiTags, interestArea);
 
         interestAreaServiceHelper.followInterestAreaWhenCreated(enigmaUserId, interestArea);
@@ -72,12 +78,14 @@ public class InterestAreaServiceImpl implements InterestAreaService {
                                                     List<Long> nestedInterestAreas,
                                                     List<String> wikiTags) {
 
-        interestAreaServiceHelper.validateNestedInterestAreas(nestedInterestAreas);
-        interestAreaServiceHelper.validateWikiTags(wikiTags);
-
         InterestArea interestArea = interestAreaServiceHelper.updateInterestAreaDetails(id, title, description, accessLevel);
 
+        interestAreaServiceHelper.validateNestedInterestAreas(nestedInterestAreas, interestArea );
+        interestAreaServiceHelper.validateWikiTags(wikiTags);
+
+
         interestAreaServiceHelper.updateNestedInterestAreas(interestArea, nestedInterestAreas);
+        wikiTagRepository.saveAll(wikiTagService.getWikiTags(wikiTags));
         interestAreaServiceHelper.updateWikiTags(interestArea, wikiTags);
 
         return interestArea.mapToInterestAreaSimpleDto( nestedInterestAreas, wikiTags);
@@ -120,13 +128,13 @@ public class InterestAreaServiceImpl implements InterestAreaService {
     public List<EnigmaUserDto> getFollowers(Long userId, Long followedId){
 
         InterestArea interestArea = interestAreaRepository.findById(followedId)
-                .orElseThrow(() -> new IllegalArgumentException("Interest area not found"));
+                .orElseThrow(() -> new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + followedId));
 
-        if(!interestArea.getAccessLevel().equals(EnigmaAccessLevel.PRIVATE)){
+        if(interestArea.getAccessLevel().equals(EnigmaAccessLevel.PRIVATE)){
 
             if(!userId.equals(interestArea.getEnigmaUserId())){
 
-                throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "You cannot get followers of this interest area type:" + EntityType.INTEREST_AREA);
+                throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "You cannot get followers of this interest area type:" + EnigmaAccessLevel.PRIVATE);
             }
         }
 
@@ -134,14 +142,19 @@ public class InterestAreaServiceImpl implements InterestAreaService {
     }
 
     @Override
+    public List<InterestArea> getNestedInterestAreas(Long id, Long enigmaUserId) {
+
+        return interestAreaServiceHelper.getNestedInterestAreas(id, enigmaUserId);
+    }
+
+        @Override
     public List<InterestAreaSimpleDto>  search(Long userId, String searchKey){
 
 
-        List<String> relatedWikiTags = wikiTagService.searchWikiTags(searchKey).stream().map(
-                searchResult ->(String) searchResult.get("id")
-        ).toList();
+        List <WikiTag> wikiTags = wikiTagRepository.findByLabelContainsOrDescriptionContains(searchKey, searchKey);
 
-        List<Long> relatedInterestAreaIds =  entityTagsRepository.findByWikiDataTagIdInAndEntityType(relatedWikiTags, EntityType.INTEREST_AREA)
+        List<Long> relatedInterestAreaIds =  entityTagsRepository.findByWikiDataTagIdInAndEntityType(wikiTags.stream()
+                                .map( wikiTag -> wikiTag.getId()).toList(), EntityType.INTEREST_AREA)
                 .stream()
                 .map(entityTag -> entityTag.getEntityId()).toList();
 
@@ -150,6 +163,7 @@ public class InterestAreaServiceImpl implements InterestAreaService {
                         .id(interestArea.getId())
                         .enigmaUserId(interestArea.getEnigmaUserId())
                         .title(interestArea.getTitle())
+                        .description(interestArea.getDescription())
                         .accessLevel(interestArea.getAccessLevel())
                         .createTime(interestArea.getCreateTime())
                         .build()

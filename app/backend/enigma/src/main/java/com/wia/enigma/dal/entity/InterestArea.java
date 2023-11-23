@@ -54,14 +54,12 @@ public class InterestArea {
                 .build();
     }
 
-    public InterestAreaDto mapToInterestAreaDto(List<InterestArea> nestedInterestAreas, List<WikiTagDto> wikiTags) {
+    public InterestAreaDto mapToInterestAreaDto(List<WikiTag> wikiTags) {
         return InterestAreaDto.builder()
                 .id(this.getId())
-                .enigmaUserId(this.getEnigmaUserId())
                 .title(this.getTitle())
                 .description(this.getDescription())
                 .accessLevel(this.getAccessLevel())
-                .nestedInterestAreas(nestedInterestAreas)
                 .wikiTags(wikiTags)
                 .createTime(this.getCreateTime())
                 .build();
