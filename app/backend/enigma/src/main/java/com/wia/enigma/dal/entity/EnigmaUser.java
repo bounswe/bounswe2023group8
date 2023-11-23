@@ -1,5 +1,6 @@
 package com.wia.enigma.dal.entity;
 
+import com.wia.enigma.core.data.dto.EnigmaUserDto;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -51,4 +52,16 @@ public class EnigmaUser {
 
     @Column(name = "delete_time")
     Timestamp deleteTime;
+
+
+    public EnigmaUserDto mapToEnigmaUserDto() {
+        return EnigmaUserDto.builder()
+                .id(this.getId())
+                .username(this.getUsername())
+                .name(this.getName())
+                .email(this.getEmail())
+                .birthday(this.getBirthday())
+                .createTime(this.getCreateTime())
+                .build();
+    }
 }

@@ -1,6 +1,7 @@
 package com.wia.enigma.core.data.dto;
 
 import com.wia.enigma.core.data.model.GeoLocation;
+import com.wia.enigma.dal.entity.WikiTag;
 import com.wia.enigma.dal.enums.PostLabel;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -18,11 +19,11 @@ import java.util.List;
 public class PostDto {
 
     Long id;
-    Long enigmaUserId;
+    EnigmaUserDto enigmaUser;
     Long interestAreaId;
     String sourceLink;
     String title;
-    List<WikiTagDto> wikiTags;
+    List<WikiTag> wikiTags;
     PostLabel label;
     String content;
     GeoLocation geolocation;

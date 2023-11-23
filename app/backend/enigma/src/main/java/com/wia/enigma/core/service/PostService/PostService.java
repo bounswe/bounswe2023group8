@@ -15,4 +15,6 @@ public interface PostService {
     PostDtoSimple updatePost(Long userId, Long postId, String sourceLink, String title, List<String> wikiTags, PostLabel label, String content, GeoLocation geolocation);
 
     void deletePost(Long postId, Long userId);
+
+    List<PostDto> getInterestAreaPosts(Long interestAreaId, Long userId);
 }

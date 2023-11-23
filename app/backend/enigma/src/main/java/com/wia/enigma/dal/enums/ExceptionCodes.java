@@ -13,7 +13,9 @@ public enum ExceptionCodes {
     INVALID_PASSWORD(103, "Invalid password"),
     PASSWORDS_DO_NOT_MATCH(104, "Passwords do not match"),
 
-    INVALID_REQUEST(105, "Invalid request"),
+    INVALID_NESTED_INTEREST_AREA_IDS(105, "Invalid nested interest area ids"),
+
+    INVALID_REQUEST(106, "Invalid request"),
 
     // Interest Area Related Errors
     INTEREST_AREA_NOT_FOUND(200, "Interest area not found"),

@@ -34,6 +34,7 @@ public class AuthController {
 
         RegisterResponse registerResponse = enigmaUserService.registerEnigmaUser(
                 signupRequest.getUsername(),
+                signupRequest.getName(),
                 signupRequest.getEmail(),
                 signupRequest.getPassword(),
                 signupRequest.getBirthday()

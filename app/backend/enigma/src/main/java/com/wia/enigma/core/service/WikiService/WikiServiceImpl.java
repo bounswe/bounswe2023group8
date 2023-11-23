@@ -3,6 +3,7 @@ package com.wia.enigma.core.service.WikiService;
 import com.wia.enigma.core.data.dto.WikiTagDto;
 import com.wia.enigma.core.data.response.WikiTagResponse;
 import com.wia.enigma.core.data.response.WikiSearchResponse;
+import com.wia.enigma.dal.entity.WikiTag;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.exceptions.custom.EnigmaException;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +47,7 @@ public class WikiServiceImpl implements WikiService {
     }
 
     @Override
-    public List<WikiTagDto> getWikiTags(List<String> ids) {
+    public List<WikiTag> getWikiTags(List<String> ids) {
         String url = constructWikiGetApiUrl(ids);
 
         WikiTagResponse response;
@@ -59,7 +60,7 @@ public class WikiServiceImpl implements WikiService {
 
         if (response != null && response.getSuccess() == 1) {
             return ids.stream()
-                    .map(id -> createWikiTagDto(response, id))
+                    .map(id -> createWikiTag(response, id))
                     .collect(Collectors.toList());
         } else {
             // Handle the case where the response is not successful
@@ -67,9 +68,11 @@ public class WikiServiceImpl implements WikiService {
             throw new EnigmaException(ExceptionCodes.INVALID_WIKI_TAG_ID, "Invalid wiki tag id.");
         }
 
+
+
     }
 
-    private WikiTagDto createWikiTagDto(WikiTagResponse response, String id) {
+    private WikiTag createWikiTag(WikiTagResponse response, String id) {
         if (response.getEntities().containsKey(id)) {
             WikiTagResponse.WikiEntity entity = response.getEntities().get(id);
             String label = entity.getLabels() != null && entity.getLabels().containsKey("en")
@@ -77,7 +80,7 @@ public class WikiServiceImpl implements WikiService {
             String description = entity.getDescriptions() != null && entity.getDescriptions().containsKey("en")
                     ? entity.getDescriptions().get("en").getValue() : "";
 
-            return WikiTagDto.builder()
+            return WikiTag.builder()
                     .id(id)
                     .label(label)
                     .description(description)

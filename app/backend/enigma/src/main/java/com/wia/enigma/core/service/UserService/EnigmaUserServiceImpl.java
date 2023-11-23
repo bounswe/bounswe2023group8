@@ -1,8 +1,6 @@
 package com.wia.enigma.core.service.UserService;
 
-import com.wia.enigma.core.data.dto.EnigmaUserDto;
-import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;
-import com.wia.enigma.core.data.dto.JwtGenerationDto;
+import com.wia.enigma.core.data.dto.*;
 import com.wia.enigma.core.data.response.LoginResponse;
 import com.wia.enigma.core.data.response.RegisterResponse;
 import com.wia.enigma.core.data.response.SecurityDetailsResponse;
@@ -11,16 +9,12 @@ import com.wia.enigma.core.service.EmailService.EmailService;
 import com.wia.enigma.core.service.JwtService.EnigmaJwtService;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.VerificationTokenService.VerificationTokenService;
-import com.wia.enigma.dal.entity.EnigmaUser;
-import com.wia.enigma.dal.entity.InterestArea;
-import com.wia.enigma.dal.entity.UserFollows;
-import com.wia.enigma.dal.entity.VerificationToken;
+import com.wia.enigma.dal.entity.*;
 import com.wia.enigma.dal.enums.AudienceType;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
-import com.wia.enigma.dal.repository.EnigmaUserRepository;
-import com.wia.enigma.dal.repository.InterestAreaRepository;
+import com.wia.enigma.dal.repository.*;
 import com.wia.enigma.exceptions.custom.*;
 import com.wia.enigma.utilities.JwtUtils;
 import lombok.AccessLevel;
@@ -45,6 +39,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EnigmaUserServiceImpl implements EnigmaUserService {
+    private final PostRepository postRepository;
+
     private final InterestAreaRepository interestAreaRepository;
 
     final PasswordEncoder passwordEncoder;
@@ -59,6 +55,37 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
     final UserFollowsService userFollowsService;
 
+    final WikiTagRepository wikiTagRepository;
+
+    final UserFollowsRepository userFollowsRepository;
+
+    final EntityTagsRepository entityTagsRepository;
+
+    @Override
+    public EnigmaUserDto getUser(Long id){
+
+        EnigmaUser enigmaUser = null;
+        try {
+            enigmaUser = enigmaUserRepository.findEnigmaUserById(id);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot get EnigmaUser by id.");
+        }
+
+        if (enigmaUser == null)
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                    "EnigmaUser not found for id: " + id);
+
+        return EnigmaUserDto.builder()
+                .id(enigmaUser.getId())
+                .username(enigmaUser.getUsername())
+                .name(enigmaUser.getName())
+                .email(enigmaUser.getEmail())
+                .birthday(enigmaUser.getBirthday())
+                .createTime(enigmaUser.getCreateTime())
+                .build();
+    }
 
     /**
      * Registers a new EnigmaUser.
@@ -71,6 +98,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
     @Override
     @Transactional
     public RegisterResponse registerEnigmaUser(String username,
+                                               String name,
                                                String email,
                                                String password,
                                                String birthday) {
@@ -93,6 +121,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
         EnigmaUser enigmaUser = EnigmaUser.builder()
                 .username(username)
+                .name(name)
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .birthday(birthdayDate)
@@ -384,20 +413,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                     "You cannot follow yourself.");
         }
 
-        if(userFollowsService.isUserFollowsEntity(userId, followId, EntityType.USER)) {
-
-           throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION,
-                   "You are already following or sent follow request to this user.");
-        }
-
-        UserFollows userFollow = UserFollows.builder()
-                .followerEnigmaUserId(userId)
-                .followedEntityId(followId)
-                .followedEntityType(EntityType.USER)
-                .isAccepted(true)
-                .build();
-
-        userFollowsService.follow(userFollow);
+        userFollowsService.follow(userId, followId, EntityType.USER, true);
     }
 
     @Override
@@ -439,6 +455,11 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
     }
 
     @Override
+    public Long getFollowerCount(Long userId) {
+        return userFollowsService.countAcceptedFollowers(userId, EntityType.USER);
+    }
+
+    @Override
     public List<EnigmaUserDto>  getFollowings(Long userId, Long followerId) {
 
         EnigmaUserDto followedEnigmaUser = getVerifiedUser(followerId);
@@ -463,7 +484,38 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
     }
 
     @Override
-    public List<InterestAreaSimpleDto> getFollowingInterestAreas(Long followerId, Long userId) {
+    public Long getFollowingCount(Long userId) {
+        return userFollowsService.countAcceptedFollowers(userId, EntityType.USER);
+    }
+
+    @Override
+    public List<PostDto> getPosts(Long requesterId, Long userId){
+
+        EnigmaUserDto enigmaUser = getVerifiedUser(userId);
+
+        if(enigmaUser == null) {
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                    "User does not exist or unverified!");
+        }
+
+        List<Post> posts = postRepository.findByEnigmaUserId(userId);
+
+        return posts.stream().filter(
+                post ->
+                {
+                    try{
+                        userFollowsService.checkInterestAreaAccess(interestAreaRepository.findInterestAreaById(post.getInterestAreaId()) , requesterId);
+                        return true;
+
+                    }catch (Exception e){
+                        return false;
+                    }
+                }
+        ).map(post -> post.mapToPostDto(getWikiTags(post.getId()), enigmaUser)).toList();
+    }
+
+    @Override
+    public List<InterestAreaDto> getFollowingInterestAreas(Long followerId, Long userId) {
         List<Long> followedEntityIds = userFollowsService.findAcceptedFollowings(followerId, EntityType.INTEREST_AREA)
                 .stream()
                 .map(UserFollows::getFollowedEntityId)
@@ -477,8 +529,14 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
         return interestAreas.stream()
                 .filter(interestArea -> Objects.equals(userId, followerId) || interestArea.getAccessLevel().equals(EnigmaAccessLevel.PUBLIC))
-                .map(this::mapToInterestAreaSimpleDto)
-                .collect(Collectors.toList());
+                .map(interestArea -> InterestAreaDto.builder()
+                        .id(interestArea.getId())
+                        .title(interestArea.getTitle())
+                        .description(interestArea.getDescription())
+                        .accessLevel(interestArea.getAccessLevel())
+                        .createTime(interestArea.getCreateTime())
+                        .wikiTags(getWikiTags(interestArea.getId()))
+                        .build()).toList();
     }
 
     @Override
@@ -500,6 +558,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
         return EnigmaUserDto.builder()
                 .id(enigmaUser.getId())
                 .username(enigmaUser.getUsername())
+                .name(enigmaUser.getName())
                 .email(enigmaUser.getEmail())
                 .birthday(enigmaUser.getBirthday())
                 .build();
@@ -521,14 +580,9 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                 .toList();
     }
 
-    private InterestAreaSimpleDto mapToInterestAreaSimpleDto(InterestArea interestArea) {
-        return InterestAreaSimpleDto.builder()
-                .id(interestArea.getId())
-                .title(interestArea.getTitle())
-                .description(interestArea.getDescription())
-                .enigmaUserId(interestArea.getEnigmaUserId())
-                .accessLevel(interestArea.getAccessLevel())
-                .createTime(interestArea.getCreateTime())
-                .build();
+    private List<WikiTag> getWikiTags(Long id) {
+        return wikiTagRepository.findAllById(entityTagsRepository.findAllByEntityIdAndEntityType(id, EntityType.INTEREST_AREA).stream()
+                .map(EntityTag::getWikiDataTagId)
+                .collect(Collectors.toList()));
     }
 }
