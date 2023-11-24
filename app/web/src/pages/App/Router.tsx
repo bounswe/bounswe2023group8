@@ -10,12 +10,14 @@ import { useAuth } from "../../contexts/AuthContext";
 import RegistrationConfirm from "../RegistrationConfirm";
 import PostViewPage from "../PostViewPage";
 import Toast from "../../components/Toast/Toast";
-import { useToastContext } from "../../contexts/ToastContext";
 import CreatePost from "../PostCreatePage";
 import MapTestPage from "../MapTestPage";
 import PostUpdatePage from "../PostUpdatePage";
 import CreateInterestArea from "../InterestAreaCreatePage";
 import InterestAreaViewPage from "../InterestAreaViewPage";
+import { useToastContext } from "../../contexts/ToastContext";
+import TimelineHomePage from "../TimelineHomePage";
+import TimelineExplorePage from "../TimelineExplorePage";
 
 const Router = () => {
   const { isAuthenticated } = useAuth();
@@ -54,10 +56,7 @@ const Router = () => {
         {/* Pages that have only a topbar go here */}
         <Route path="/" element={<OpeningPage />} />
         <Route path="/reset-password" element={<ConfirmNewPassword />} />
-        <Route
-          path="/registration-confirm"
-          element={<RegistrationConfirm />}
-        />
+        <Route path="/registration-confirm" element={<RegistrationConfirm />} />
         <Route
           element={
             <Row className="p-0 m-0 vw-100">
@@ -78,15 +77,25 @@ const Router = () => {
         >
           {/* Pages that have both a topbar and sidebar go here */}
           <Route path="/home" element={<OpeningPage />} />
-          {isAuthenticated && <Route path="/profile" element={<ProfilePage />} />}
+          {isAuthenticated && (
+            <Route path="/profile" element={<ProfilePage />} />
+          )}
           <Route path="/create_post" element={<CreatePost />} />
           <Route path="/update_post/:postId" element={<PostUpdatePage />} />
           <Route
             path="/create_interest_area"
             element={<CreateInterestArea />}
           />
-            <Route path="/interest-areas/:iaId" element={<InterestAreaViewPage />} />
-            <Route path="/posts/:postId" element={<PostViewPage />} />
+          <Route path="/timeline-homepage" element={<TimelineHomePage />} />
+          <Route
+            path="/timeline-explorepage"
+            element={<TimelineExplorePage />}
+          />
+          <Route
+            path="/interest-areas/:iaId"
+            element={<InterestAreaViewPage />}
+          />
+          <Route path="/posts/:postId" element={<PostViewPage />} />
 
           <Route path="/map-test" element={<MapTestPage />} />
           <Route path="*" element={<Navigate to="/" />} />
