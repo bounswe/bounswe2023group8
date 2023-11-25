@@ -1,10 +1,9 @@
 package com.wia.enigma.dal.entity;
 
-import com.wia.enigma.core.data.dto.EnigmaUserDto;
-import com.wia.enigma.core.data.dto.PostDto;
-import com.wia.enigma.core.data.dto.PostDtoSimple;
-import com.wia.enigma.core.data.dto.WikiTagDto;
+import com.wia.enigma.core.data.dto.*;
 import com.wia.enigma.core.data.model.GeoLocation;
+import com.wia.enigma.core.data.model.InterestAreaModel;
+import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import com.wia.enigma.dal.enums.PostLabel;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,6 +29,9 @@ public class Post {
     @Column(name = "enigma_user_id")
     Long enigmaUserId;
 
+    @Column(name = "access_level")
+    EnigmaAccessLevel accessLevel;
+
     @Column(name = "interest_area_id")
     Long interestAreaId;
 
@@ -51,11 +53,11 @@ public class Post {
     @Column(name = "create_time")
     Timestamp createTime;
 
-    public PostDto mapToPostDto( List<WikiTag> wikiTags, EnigmaUserDto enigmaUserDto) {
+    public PostDto mapToPostDto( List<WikiTag> wikiTags, EnigmaUserDto enigmaUserDto, InterestAreaModel interestAreaModel) {
         return PostDto.builder()
                 .id(this.getId())
                 .enigmaUser(enigmaUserDto)
-                .interestAreaId(this.getInterestAreaId())
+                .interestArea(interestAreaModel)
                 .sourceLink(this.getSourceLink())
                 .title(this.getTitle())
                 .wikiTags(wikiTags)

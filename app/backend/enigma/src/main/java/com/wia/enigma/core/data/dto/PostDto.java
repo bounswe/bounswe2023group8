@@ -1,6 +1,7 @@
 package com.wia.enigma.core.data.dto;
 
 import com.wia.enigma.core.data.model.GeoLocation;
+import com.wia.enigma.core.data.model.InterestAreaModel;
 import com.wia.enigma.dal.entity.WikiTag;
 import com.wia.enigma.dal.enums.PostLabel;
 import lombok.*;
@@ -20,7 +21,7 @@ public class PostDto {
 
     Long id;
     EnigmaUserDto enigmaUser;
-    Long interestAreaId;
+    InterestAreaModel interestArea;
     String sourceLink;
     String title;
     List<WikiTag> wikiTags;
