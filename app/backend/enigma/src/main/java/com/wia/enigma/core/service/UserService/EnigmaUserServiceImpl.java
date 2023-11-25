@@ -57,7 +57,6 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
     final WikiTagRepository wikiTagRepository;
 
-    final UserFollowsRepository userFollowsRepository;
 
     final EntityTagsRepository entityTagsRepository;
 
@@ -194,6 +193,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
         );
 
         return LoginResponse.builder()
+                .userId(enigmaUser.getId())
                 .authentication(SecurityDetailsResponse.builder()
                         .tokenType(JwtUtils.getInstance().getTokenType())
                         .accessToken(tokens.getFirst().getJwt())
@@ -500,18 +500,22 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
         List<Post> posts = postRepository.findByEnigmaUserId(userId);
 
+        List<Long> interestAreaIds = posts.stream().map(Post::getInterestAreaId).toList();
+
+        List<InterestArea> interestAreas = interestAreaRepository.findAllById(interestAreaIds);
+
         return posts.stream().filter(
                 post ->
                 {
                     try{
-                        userFollowsService.checkInterestAreaAccess(interestAreaRepository.findInterestAreaById(post.getInterestAreaId()) , requesterId);
+                        userFollowsService.checkInterestAreaAccess( interestAreas.stream().filter(interestArea -> interestArea.getId().equals(post.getInterestAreaId())).toList().get(0), requesterId);
                         return true;
 
                     }catch (Exception e){
                         return false;
                     }
                 }
-        ).map(post -> post.mapToPostDto(getWikiTags(post.getId()), enigmaUser)).toList();
+        ).map(post -> post.mapToPostDto(getWikiTags(post.getId()), enigmaUser,  interestAreas.stream().filter(interestArea -> interestArea.getId().equals(post.getInterestAreaId())).toList().get(0).mapToInterestAreaModel())).toList();
     }
 
     @Override
@@ -581,7 +585,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
     }
 
     private List<WikiTag> getWikiTags(Long id) {
-        return wikiTagRepository.findAllById(entityTagsRepository.findAllByEntityIdAndEntityType(id, EntityType.INTEREST_AREA).stream()
+        return wikiTagRepository.findAllById(entityTagsRepository.findAllByEntityIdAndEntityType(id, EntityType.POST).stream()
                 .map(EntityTag::getWikiDataTagId)
                 .collect(Collectors.toList()));
     }

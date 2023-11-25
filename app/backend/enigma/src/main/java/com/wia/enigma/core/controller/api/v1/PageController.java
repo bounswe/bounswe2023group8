@@ -1,6 +1,7 @@
 package com.wia.enigma.core.controller.api.v1;
 
 import com.wia.enigma.configuration.security.EnigmaAuthenticationToken;
+import com.wia.enigma.core.data.dto.HomePageDto;
 import com.wia.enigma.core.data.dto.ProfilePageDto;
 import com.wia.enigma.core.service.PageService.PageService;
 import jakarta.validation.Valid;
@@ -33,5 +34,16 @@ public class PageController {
         ProfilePageDto profilePageDto = pageService.getProfilePage(token.getEnigmaUserId(), id);
 
         return ResponseEntity.ok(profilePageDto);
+    }
+
+    /*
+        WA-16: Gets home page.
+     */
+    @GetMapping("/home")
+    public ResponseEntity<?> getHome(EnigmaAuthenticationToken token) {
+
+        HomePageDto homePageDto = pageService.getHomePage(token.getEnigmaUserId());
+
+        return ResponseEntity.ok(homePageDto);
     }
 }

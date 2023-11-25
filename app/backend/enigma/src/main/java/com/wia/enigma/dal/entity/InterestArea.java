@@ -4,6 +4,7 @@ package com.wia.enigma.dal.entity;
 import com.wia.enigma.core.data.dto.InterestAreaDto;
 import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;
 import com.wia.enigma.core.data.dto.WikiTagDto;
+import com.wia.enigma.core.data.model.InterestAreaModel;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import jakarta.persistence.*;
 import lombok.*;
@@ -61,6 +62,16 @@ public class InterestArea {
                 .description(this.getDescription())
                 .accessLevel(this.getAccessLevel())
                 .wikiTags(wikiTags)
+                .createTime(this.getCreateTime())
+                .build();
+    }
+
+    public InterestAreaModel mapToInterestAreaModel() {
+        return InterestAreaModel.builder()
+                .id(this.getId())
+                .title(this.getTitle())
+                .description(this.getDescription())
+                .accessLevel(this.getAccessLevel())
                 .createTime(this.getCreateTime())
                 .build();
     }

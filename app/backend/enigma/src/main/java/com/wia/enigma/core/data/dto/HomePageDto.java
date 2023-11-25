@@ -1,10 +1,8 @@
 package com.wia.enigma.core.data.dto;
 
-import com.wia.enigma.dal.entity.Post;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -14,17 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class ProfilePageDto {
+public class HomePageDto {
 
-        Long id;
+    List<PostDto> posts;
 
-        String username;
-
-        String name;
-
-        Date birthday;
-
-        Long followers;
-
-        Long following;
 }
