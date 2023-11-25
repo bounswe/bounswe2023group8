@@ -16,6 +16,7 @@ import MapTestPage from "../MapTestPage";
 import PostUpdatePage from "../PostUpdatePage";
 import CreateInterestArea from "../InterestAreaCreatePage";
 import InterestAreaViewPage from "../InterestAreaViewPage";
+import UpdateInterestArea from "../InterestAreaUpdatePage";
 
 const Router = () => {
   const { isAuthenticated } = useAuth();
@@ -54,10 +55,7 @@ const Router = () => {
         {/* Pages that have only a topbar go here */}
         <Route path="/" element={<OpeningPage />} />
         <Route path="/reset-password" element={<ConfirmNewPassword />} />
-        <Route
-          path="/registration-confirm"
-          element={<RegistrationConfirm />}
-        />
+        <Route path="/registration-confirm" element={<RegistrationConfirm />} />
         <Route path="/posts/:postId" element={<PostViewPage />} />
         <Route
           element={
@@ -79,14 +77,23 @@ const Router = () => {
         >
           {/* Pages that have both a topbar and sidebar go here */}
           <Route path="/home" element={<OpeningPage />} />
-          {isAuthenticated && <Route path="/profile" element={<ProfilePage />} />}
+          {isAuthenticated && (
+            <Route path="/profile" element={<ProfilePage />} />
+          )}
           <Route path="/create_post" element={<CreatePost />} />
           <Route path="/update_post/:postId" element={<PostUpdatePage />} />
           <Route
             path="/create_interest_area"
             element={<CreateInterestArea />}
           />
-            <Route path="/interest-areas/:iaId" element={<InterestAreaViewPage />} />
+          <Route
+            path="/update_interest_area/:interestAreaId"
+            element={<UpdateInterestArea />}
+          />
+          <Route
+            path="/interest-areas/:iaId"
+            element={<InterestAreaViewPage />}
+          />
 
           <Route path="/map-test" element={<MapTestPage />} />
           <Route path="*" element={<Navigate to="/" />} />
