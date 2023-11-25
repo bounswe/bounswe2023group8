@@ -1,14 +1,5 @@
 import React from 'react';
 
-const getRandomPastelColor = () => {
-    const letters = '6789AB'; // Exclude darker shades
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * letters.length)];
-    }
-    return color;
-};
-
 type ModifiedPostPreviewCardProps = {
     post: {
         headline: string;
