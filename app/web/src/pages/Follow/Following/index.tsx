@@ -8,9 +8,13 @@ const FollowingPage: React.FC = () => {
         setShowFollowingModal(true);//bunu sonra false yap
     };
 
+    const handleFollowingModal = () =>{
+        setShowFollowingModal(!showFollowingModal);
+    }
+
     return (
         <>
-            <FollowingModal show={showFollowingModal} onClose={closeFollowingModal} />
+            <FollowingModal show={showFollowingModal} setShow={handleFollowingModal}/>
         </>
     );
 };

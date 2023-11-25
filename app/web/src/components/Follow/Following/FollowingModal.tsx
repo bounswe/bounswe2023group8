@@ -1,44 +1,39 @@
 import React from 'react';
 import { Modal, Button, Col, Row } from 'react-bootstrap';
-import FollowingCard from './FollowingCard'; // Import your predefined FollowerCard component
+import FollowingCard from './FollowingCard';
 import mockUsers from '../../../mockData/milestone1/451_users.json';
 
-type FollowerModalProps = {
+type FollowingModalProps = {
     show: boolean;
-    //onClose: () => void;
     setShow: (value: boolean) => void;
 };
 
-const FollowingModal: React.FC<FollowerModalProps> = ({ show}) => {
-    const followersData = mockUsers.slice(0, 4);
+const FollowingModal: React.FC<FollowingModalProps> = ({ show, setShow }) => {
+    const shuffledUsers = mockUsers.sort(() => 0.5 - Math.random());
+    const FollowingsData = shuffledUsers.slice(0, 7);
 
     return (
-        <Modal
-            show={show}
-            //onHide={onClose}
-            centered
-            className="follower-modal"
-        >
+        <Modal show={show} centered className="Following-modal">
             <Modal.Header closeButton>
-                <Modal.Title>Followers</Modal.Title>
+                <Modal.Title className="text-center font-weight-bold">Following</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-                <Row>
-                    <Col md={12} className="text-center mb-3">
+            <Modal.Body style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                <Row className="Following-list">
+                    {FollowingsData.map((Following) => (
+                        <Col key={Following.id} md={12} className="mb-3">
+                            <FollowingCard user={Following} />
+                        </Col>
+                    ))}
+                </Row>
+                <Row className="justify-content-center">
+                    <Col md={2} className="text-center">
                         <Button
                             className="close-button"
                             variant="link"
-                            //onClick={onClose}
+                            onClick={() => setShow(false)}
                         >
                         </Button>
                     </Col>
-                </Row>
-                <Row className="follower-list">
-                    {followersData.map((follower) => (
-                        <Col key={follower.id} md={12} className="mb-3">
-                            <FollowingCard user={follower} />
-                        </Col>
-                    ))}
                 </Row>
             </Modal.Body>
         </Modal>

@@ -5,19 +5,19 @@ import mockUsers from '../../../mockData/milestone1/451_users.json';
 
 type FollowerModalProps = {
     show: boolean;
-    //onClose: () => void;  // Corrected prop name
     setShow: (value: boolean) => void;
 };
 
 const FollowerModal: React.FC<FollowerModalProps> = ({ show, setShow }) => {
-    const followersData = mockUsers.slice(0, 4);
+    const shuffledUsers = mockUsers.sort(() => 0.5 - Math.random());
+    const followersData = shuffledUsers.slice(0, 7);
 
     return (
-        <Modal show={show}  centered className="follower-modal">
+        <Modal show={show} centered className="follower-modal">
             <Modal.Header closeButton>
                 <Modal.Title className="text-center font-weight-bold">Followers</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body style={{ maxHeight: '400px', overflowY: 'auto' }}>
                 <Row className="follower-list">
                     {followersData.map((follower) => (
                         <Col key={follower.id} md={12} className="mb-3">

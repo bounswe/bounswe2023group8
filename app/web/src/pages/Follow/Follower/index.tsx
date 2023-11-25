@@ -3,6 +3,9 @@ import FollowerModal from '../../../components/Follow/Follower/FollowerModal';
 
 const FollowerPage: React.FC = () => {
     const [showFollowerModal, setShowFollowerModal] = useState(true);
+    const handleFollowerModal = () =>{
+        setShowFollowerModal(!showFollowerModal);
+    }
 
     const closeFollowerModal = () => {
         setShowFollowerModal(true);//bunu sonra false yap
@@ -10,7 +13,7 @@ const FollowerPage: React.FC = () => {
 
     return (
         <>
-            <FollowerModal show={showFollowerModal} onClose={closeFollowerModal} />
+            <FollowerModal show={showFollowerModal } setShow={handleFollowerModal} />
         </>
     );
 };
