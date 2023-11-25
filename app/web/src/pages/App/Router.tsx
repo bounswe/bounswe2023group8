@@ -8,6 +8,8 @@ import ProfilePage from "../ProfilePage";
 import {Col, Row} from "react-bootstrap";
 import {useAuth} from "../../contexts/AuthContext";
 import RegistrationConfirm from "../RegistrationConfirm";
+import FollowerPage from "../Follow/Follower";
+import FollowingPage from "../Follow/Following";
 import Toast from "../../components/Toast/Toast";
 import {useToastContext} from "../../contexts/ToastContext";
 import TimelineHomePage from "../TimelineHomePage";
@@ -44,6 +46,9 @@ const Router = () => {
                 <Route path="/reset-password" element={<ConfirmNewPassword/>}/>
                 <Route path="/registration-confirm" element={<RegistrationConfirm/>}/>
 
+                <Route path="/follower-page" element={<FollowerPage/>} />
+                <Route path="/following-page" element={<FollowingPage/>} />
+
                 <Route
                     element={
                         <Row className="p-0 m-0 vw-100">
@@ -56,12 +61,8 @@ const Router = () => {
                     {/*Pages that have both a topbar and sidebar go here*/}
                     <Route path="/home" element={<OpeningPage/>}/>
                     {isAuthenticated && <Route path="/profile" element={<ProfilePage/>}/>}
-<<<<<<< HEAD
-                    <Route path="/profile" element={<ProfilePage/>}/>
-=======
                     <Route path="/timeline-homepage" element={<TimelineHomePage />} />
                     <Route path="/timeline-explorepage" element={<TimelineExplorePage />} />
->>>>>>> WA/web/feature/web-timeline-view-340
                     <Route path="*" element={<Navigate to="/"/>}/>
                 </Route>
             </Route>
