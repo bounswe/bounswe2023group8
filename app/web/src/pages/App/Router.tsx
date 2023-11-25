@@ -10,6 +10,8 @@ import {useAuth} from "../../contexts/AuthContext";
 import RegistrationConfirm from "../RegistrationConfirm";
 import Toast from "../../components/Toast/Toast";
 import {useToastContext} from "../../contexts/ToastContext";
+import TimelineHomePage from "../TimelineHomePage";
+import TimelineExplorePage  from "../TimelineExplorePage";
 
 const Router = () => {
     const {isAuthenticated} = useAuth();
@@ -54,7 +56,12 @@ const Router = () => {
                     {/*Pages that have both a topbar and sidebar go here*/}
                     <Route path="/home" element={<OpeningPage/>}/>
                     {isAuthenticated && <Route path="/profile" element={<ProfilePage/>}/>}
+<<<<<<< HEAD
                     <Route path="/profile" element={<ProfilePage/>}/>
+=======
+                    <Route path="/timeline-homepage" element={<TimelineHomePage />} />
+                    <Route path="/timeline-explorepage" element={<TimelineExplorePage />} />
+>>>>>>> WA/web/feature/web-timeline-view-340
                     <Route path="*" element={<Navigate to="/"/>}/>
                 </Route>
             </Route>

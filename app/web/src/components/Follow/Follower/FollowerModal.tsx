@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from "react";
 import { Modal } from "react-bootstrap";
 import "@fontsource/inter";
@@ -8,11 +9,18 @@ import image2 from "./display2.svg";
 import image3 from "./display3.svg";
 import image4 from "./display4.svg";
 
+=======
+import React from 'react';
+import { Modal, Button, Col, Row } from 'react-bootstrap';
+import FollowerCard from './FollowerCard';
+import mockUsers from '../../../mockData/milestone1/451_users.json';
+>>>>>>> WA/web/feature/web-timeline-view-340
 
 type FollowerModalProps = {
     show: boolean;
     setShow: () => void;
 };
+<<<<<<< HEAD
 
 const FollowerModal = ({ show, setShow }: FollowerModalProps) => {
     // Define an array of 4 dummy followers
@@ -42,23 +50,19 @@ const FollowerModal = ({ show, setShow }: FollowerModalProps) => {
             profilePicture:image4,
         },
     ];
+=======
+const FollowerModal: React.FC<FollowerModalProps> = ({ show, onClose }) => {
+    const followersData = mockUsers.slice(0, 4);
+>>>>>>> WA/web/feature/web-timeline-view-340
 
     return (
         <Modal
             show={show}
             onHide={setShow}
             centered
-            style={{
-                width: "494px",
-                height: "416px",
-                top: "177px",
-                left: "436px",
-                borderRadius: "20px",
-                boxShadow: "0px 4px 10px 0px #00000040",
-                overflow: "hidden", // Prevent scrolling
-                backgroundColor: "#F6F6F6", // Set background color
-            }}
+            className="follower-modal"
         >
+<<<<<<< HEAD
             <div
                 className="follower-card"
                 style={{
@@ -229,8 +233,16 @@ const FollowerModal = ({ show, setShow }: FollowerModalProps) => {
               </span>
                         </button>
                     </div>
+=======
+            <Modal.Header closeButton className="text-center">
+                <Modal.Title className="text-center font-weight-bold">Followers</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                {followersData.map((follower) => (
+                    <FollowerCard key={follower.id} user={follower} style={{ margin: '0 auto' }} className="mb-3" />
+>>>>>>> WA/web/feature/web-timeline-view-340
                 ))}
-            </div>
+            </Modal.Body>
         </Modal>
     );
 };
