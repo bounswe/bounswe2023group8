@@ -33,7 +33,7 @@ const TimelineExplorePage: React.FC = () => {
         return shuffledUsers.slice(0, count);
     };
 
-    const randomTags = getRandomTags(5);
+    const randomTags = getRandomTags(6);
     const randomPosts = getRandomPosts(3);
     const randomUsers = getRandomUsers(4);
 
