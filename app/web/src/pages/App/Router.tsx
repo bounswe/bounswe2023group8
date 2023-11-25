@@ -11,6 +11,8 @@ import RegistrationConfirm from "../RegistrationConfirm";
 import Toast from "../../components/Toast/Toast";
 import {useToastContext} from "../../contexts/ToastContext";
 
+import BunchVisitor  from "../BunchVisitor";
+
 const Router = () => {
     const {isAuthenticated} = useAuth();
     const {toastState} = useToastContext();
@@ -53,6 +55,9 @@ const Router = () => {
                     {/*Pages that have both a topbar and sidebar go here*/}
                     <Route path="/home" element={<OpeningPage/>}/>
                     {isAuthenticated && <Route path="/profile" element={<ProfilePage/>}/>}
+
+                    <Route path="/bunch-visitor" element={<BunchVisitor/>}/>
+
                     <Route path="*" element={<Navigate to="/"/>}/>
                 </Route>
             </Route>
