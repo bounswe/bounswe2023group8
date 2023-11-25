@@ -27,6 +27,4 @@ public class ProfilePageDto {
         Long followers;
 
         Long following;
-
-        List<Post> posts;
 }
