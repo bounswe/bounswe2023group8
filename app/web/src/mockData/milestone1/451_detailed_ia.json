@@ -1,0 +1,15 @@
+[
+    {
+      "id": 1,
+      "area_name": "Football",
+      "related_ias": [2],
+      "ia_tags": ["football", "sports"]
+    },
+    {
+      "id": 2,
+      "area_name": "Basketball",
+      "related_ias": [1],
+      "ia_tags": ["basketball", "sports"]
+    }
+  ]
+  
