@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
+import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/models/spot.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
@@ -12,46 +13,49 @@ class InterestAreaController extends GetxController {
   final iaProvider = Get.find<IaProvider>();
 
   var routeLoading = true.obs;
-  late final InterestArea interestArea;
+  InterestArea interestArea = Get.arguments['interestArea'];
+  RxList<Spot> posts = <Spot>[].obs;
+  RxList<EnigmaUser> followers = <EnigmaUser>[].obs;
+  RxList<InterestArea> nestedIas = <InterestArea>[].obs;
 
-  void getInterestArea() async {
-    // id will be taken as route argument
-    try {
-      final ia = await iaProvider.getIa(
-        id: 27,
-        token: bottomNavigationController.token,
-      );
-      if (ia != null) {
-        interestArea = ia;
-      }
-    } catch (e) {
-      ErrorHandlingUtils.handleApiError(e);
-    }
-    routeLoading.value = false;
-  }
+
 
   void navigateToEdit() {
     Get.toNamed(Routes.editIa, arguments: {'interestArea': interestArea});
   }
-
-  @override
-  void onInit() {
-    super.onInit();
-    fetchData();
-
-    getInterestArea();
-  }
-
-
-  RxList<Spot> posts = <Spot>[].obs;
-
 
   void navigateToPostDetails(Spot post) {
     Get.toNamed(Routes.postDetails,
         arguments: {'post': post, 'visitor': false});
   }
 
-  void fetchData() {
+  void fetchData() async {
+    try {
+      posts.value = await iaProvider.getPosts(
+              id: interestArea.id, token: bottomNavigationController.token) ??
+          [];
+      followers.value = await iaProvider.getFollowers(
+              id: interestArea.id, token: bottomNavigationController.token) ??
+          [];
+      nestedIas.value = await iaProvider.getNestedIas(
+              id: interestArea.id, token: bottomNavigationController.token) ??
+          [];
+      routeLoading.value = false;
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void navigateToIa(InterestArea ia) {
+    routeLoading.value = true;
+    interestArea = ia;
+    fetchData();
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchData();
   }
 
   @override
