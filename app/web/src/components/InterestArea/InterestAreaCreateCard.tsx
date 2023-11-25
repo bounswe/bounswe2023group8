@@ -3,12 +3,13 @@ import { Card, CardBody } from "react-bootstrap";
 import Tag from "../Tag/Tag";
 import { useSearchWikitags } from "../../hooks/useWikiTags";
 import { useAuth } from "../../contexts/AuthContext";
+import { useSearchInterestArea } from "../../hooks/useInterestArea";
 
 export type CreateInterestAreaFormData = {
   title: string;
   description: string;
   wikiTags: { id: string; name: string }[];
-  nestedInterestAreas: string[];
+  nestedInterestAreas: { id: string; name: string }[];
   accessLevel: 0 | 1 | 2;
 };
 
@@ -43,8 +44,11 @@ const InterestAreaCreateCard = ({
 }: InterestAreaCreateCardProps) => {
   const [newTag, setNewTag] = useState("");
   const [newSubIA, setNewSubIA] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [tagSearchTerm, setTagSearchTerm] = useState("");
+  const [debouncedTagSearchTerm, setDebouncedTagSearchTerm] = useState("");
+  const [subIASearchTerm, setSubIASearchTerm] = useState("");
+  const [debouncedSubIASearchTerm, setDebouncedSubIASearchTerm] = useState("");
+  const [isSubIAInputFocused, setIsSubIAInputFocused] = useState(false);
   const [isTagInputFocused, setIsTagInputFocused] = useState(false);
 
   const handleTagInputBlur = () => {
@@ -53,28 +57,56 @@ const InterestAreaCreateCard = ({
     }, 150);
   };
 
+  const handleSubIAInputBlur = () => {
+    setTimeout(() => {
+      setIsSubIAInputFocused(false);
+    }, 150);
+  };
+
+  const { mutate: searchInterestAreas, data: searchInterestAreasData } =
+    useSearchInterestArea({});
+
   const { mutate: searchWikiTags, data: searchWikiTagsData } =
     useSearchWikitags({});
 
   const { axiosInstance } = useAuth();
   useEffect(() => {
     const timerId = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
+      setDebouncedTagSearchTerm(tagSearchTerm);
     }, 500);
 
     return () => {
       clearTimeout(timerId);
     };
-  }, [searchTerm]);
+  }, [tagSearchTerm]);
 
   useEffect(() => {
-    if (debouncedSearchTerm) {
+    const timerId = setTimeout(() => {
+      setDebouncedSubIASearchTerm(subIASearchTerm);
+    }, 500);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [subIASearchTerm]);
+
+  useEffect(() => {
+    if (debouncedTagSearchTerm) {
       searchWikiTags({
-        searchKey: debouncedSearchTerm,
+        searchKey: debouncedTagSearchTerm,
         axiosInstance: axiosInstance,
       });
     }
-  }, [debouncedSearchTerm]);
+  }, [debouncedTagSearchTerm]);
+
+  useEffect(() => {
+    if (debouncedSubIASearchTerm) {
+      searchInterestAreas({
+        searchKey: debouncedSubIASearchTerm,
+        axiosInstance: axiosInstance,
+      });
+    }
+  }, [debouncedSubIASearchTerm]);
 
   const handleAccessLevelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const numericValue = parseInt(e.target.value, 10);
@@ -84,10 +116,10 @@ const InterestAreaCreateCard = ({
     });
   };
 
-  const addSubIA = () => {
+  const addSubIA = (id: string, name: string) => {
+    const newSubIA = { id, name };
     if (
-      newSubIA &&
-      !interestAreaDetails.nestedInterestAreas.includes(newSubIA)
+      !interestAreaDetails.nestedInterestAreas.some((subIA) => subIA.id === id)
     ) {
       setInterestAreaDetails({
         ...interestAreaDetails,
@@ -96,14 +128,6 @@ const InterestAreaCreateCard = ({
           newSubIA,
         ],
       });
-      setNewSubIA("");
-    }
-  };
-
-  const handleKeyPress = (event: React.KeyboardEvent, action: () => void) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      action();
     }
   };
 
@@ -116,13 +140,22 @@ const InterestAreaCreateCard = ({
     });
   };
 
+  const onSubIASelect = (id: string, name: string) => {
+    addSubIA(id, name);
+  };
+
+  const handleSubIAInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewSubIA(e.target.value);
+    setSubIASearchTerm(e.target.value);
+  };
+
   const onTagSelect = (id: string, name: string) => {
     addTag(id, name);
   };
 
   const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewTag(e.target.value);
-    setSearchTerm(e.target.value);
+    setTagSearchTerm(e.target.value);
   };
 
   const addTag = (id: string, name: string) => {
@@ -241,7 +274,7 @@ const InterestAreaCreateCard = ({
             <div className="d-flex flex-wrap">
               {interestAreaDetails.nestedInterestAreas.map((subIA, index) => (
                 <div
-                  key={subIA}
+                  key={subIA.id}
                   className="d-flex justify-content-between align-items-center bg-light px-2 py-1 m-2 rounded shadow-sm"
                   onClick={() => removeSubIA(index)}
                 >
@@ -254,7 +287,7 @@ const InterestAreaCreateCard = ({
                       removeSubIA(index);
                     }}
                   ></button>
-                  <span>{subIA}</span>
+                  <span>{subIA.name}</span>
                 </div>
               ))}
 
@@ -263,16 +296,26 @@ const InterestAreaCreateCard = ({
                   type="text"
                   className="form-control"
                   value={newSubIA}
-                  onChange={(e) => setNewSubIA(e.target.value)}
-                  onKeyPress={(e) => handleKeyPress(e, addSubIA)}
+                  onChange={handleSubIAInputChange}
+                  onFocus={() => setIsSubIAInputFocused(true)}
+                  onBlur={handleSubIAInputBlur}
                 />
-                <button
-                  type="button"
-                  className="btn btn-ternary border mt-2"
-                  onClick={addSubIA}
-                >
-                  Add Sub IA
-                </button>
+                {isSubIAInputFocused &&
+                  searchInterestAreasData &&
+                  searchInterestAreasData.length > 0 && (
+                    <div className="dropdown-menu show">
+                      {searchInterestAreasData.map((result: any) => (
+                        <button
+                          key={result.id}
+                          className="dropdown-item"
+                          type="button"
+                          onClick={() => onSubIASelect(result.id, result.title)}
+                        >
+                          {result.title} - {result.description}
+                        </button>
+                      ))}
+                    </div>
+                  )}
               </div>
             </div>
           </div>
