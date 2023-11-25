@@ -18,6 +18,7 @@ import InterestAreaViewPage from "../InterestAreaViewPage";
 import { useToastContext } from "../../contexts/ToastContext";
 import TimelineHomePage from "../TimelineHomePage";
 import TimelineExplorePage from "../TimelineExplorePage";
+import UpdateInterestArea from "../InterestAreaUpdatePage";
 
 const Router = () => {
   const { isAuthenticated } = useAuth();
@@ -57,6 +58,7 @@ const Router = () => {
         <Route path="/" element={<OpeningPage />} />
         <Route path="/reset-password" element={<ConfirmNewPassword />} />
         <Route path="/registration-confirm" element={<RegistrationConfirm />} />
+        <Route path="/posts/:postId" element={<PostViewPage />} />
         <Route
           element={
             <Row className="p-0 m-0 vw-100">
@@ -90,6 +92,10 @@ const Router = () => {
           <Route
             path="/timeline-explorepage"
             element={<TimelineExplorePage />}
+          />
+          <Route
+            path="/update_interest_area/:interestAreaId"
+            element={<UpdateInterestArea />}
           />
           <Route
             path="/interest-areas/:iaId"
