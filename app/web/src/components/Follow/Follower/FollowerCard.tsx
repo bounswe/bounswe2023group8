@@ -23,51 +23,35 @@ const FollowerCard: React.FC<FollowerCardProps> = ({
                                                        className,
                                                    }) => {
     return (
-        <div className={`card mt-3 mb-1 ${className}`} style={style}>
-            <Row className="g-0">
-                <Col className="col-4 justify-content-center my-4" style={{ maxHeight: '80px', maxWidth: '80px' }}>
+        <div className={`card mt-3 mb-3 border-0 ${className}`} style={style}>
+            <Row className="g-0 align-items-center">
+                <Col xs={2} className="text-center">
                     <img
                         src={user_profile_image}
                         className="rounded-circle img-fluid object-fit-cover h-100 w-100"
-                        style={{ borderRadius: '50%' }}
                         alt={`${name} PP`}
+                        style={{ maxWidth: '50px' }}
                     />
                 </Col>
-                <Col className="col-8">
-                    <Row className="card-body">
-                        <Col className="col-10 m-auto">
-                            <h5 className="card-title">{name}</h5>
-                            <p className="card-text text-body-secondary">@{nickname}</p>
-                        </Col>
-                        <Col className="col-2 m-auto">
-                            <Button
-                                className="remove-button"
-                                style={{
-                                    border: 'none',
-                                    width: '90px',
-                                    height: '32px',
-                                    borderRadius: '20px',
-                                    background: '#F1F1F1',
-                                    marginLeft: 'auto',
-                                    // marginRight: '12px',
-                                }}
-                            >
-                                <span
-                                    style={{
-                                        fontFamily: 'Inter',
-                                        fontSize: '16px',
-                                        fontWeight: 400,
-                                        lineHeight: '19px',
-                                        letterSpacing: '-0.017em',
-                                        textAlign: 'center',
-                                        color: '#F13030',
-                                    }}
-                                >
-                                    Remove
-                                </span>
-                            </Button>
-                        </Col>
-                    </Row>
+                <Col xs={7} className="d-flex flex-column justify-content-center pl-2">
+                    <h5 className="card-title mb-0">{name}</h5>
+                    <p className="card-text text-body-secondary mt-0">@{nickname}</p>
+                </Col>
+                <Col xs={3} className="text-center">
+                    <Button
+                        className="remove-button p-0"
+                        style={{
+                            width: '90px',
+                            height: '32px',
+                            borderRadius: '20px',
+                            backgroundColor: '#F1F1F1',
+                            border: 'none',
+                        }}
+                    >
+                        <span className="font-weight-bold text-danger p-2" style={{ fontSize: '14px' }}>
+                            Remove
+                        </span>
+                    </Button>
                 </Col>
             </Row>
         </div>
