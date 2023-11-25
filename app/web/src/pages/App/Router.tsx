@@ -14,7 +14,8 @@ import { useToastContext } from "../../contexts/ToastContext";
 import CreatePost from "../PostCreatePage";
 import MapTestPage from "../MapTestPage";
 import PostUpdatePage from "../PostUpdatePage";
-import CreateInterestArea from "../InterestArea";
+import CreateInterestArea from "../InterestAreaCreatePage";
+import InterestAreaViewPage from "../InterestAreaViewPage";
 
 const Router = () => {
   const { isAuthenticated } = useAuth();
@@ -58,7 +59,6 @@ const Router = () => {
           element={<RegistrationConfirm />}
         />
         <Route path="/posts/:postId" element={<PostViewPage />} />
-
         <Route
           element={
             <Row className="p-0 m-0 vw-100">
@@ -86,6 +86,8 @@ const Router = () => {
             path="/create_interest_area"
             element={<CreateInterestArea />}
           />
+            <Route path="/interest-areas/:iaId" element={<InterestAreaViewPage />} />
+
           <Route path="/map-test" element={<MapTestPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Route>
