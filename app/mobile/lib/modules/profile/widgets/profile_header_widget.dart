@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/data/constants/assets.dart';
-import 'package:mobile/data/models/user_model.dart';
+import 'package:mobile/data/models/user_profile.dart';
 
 class ProfileHeaderWidget extends StatelessWidget {
-  final UserModel user;
-
+  final UserProfile user;
+  final int allTimeLikes;
+  final int allTimeDislikes;
   final void Function() onFollowersPressed;
   final void Function() onFollowingPressed;
   const ProfileHeaderWidget({
@@ -12,6 +13,8 @@ class ProfileHeaderWidget extends StatelessWidget {
     required this.user,
     required this.onFollowersPressed,
     required this.onFollowingPressed,
+    this.allTimeLikes = 0,
+    this.allTimeDislikes = 0,
   });
 
   @override
@@ -20,9 +23,10 @@ class ProfileHeaderWidget extends StatelessWidget {
         height: 75,
         child: Row(
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               radius: 30,
-              backgroundImage: NetworkImage(user.userProfileImage),
+              backgroundImage: NetworkImage(
+                  'https://avatars.githubusercontent.com/u/88164767?s=400&u=09da0dbc9d0ee0246d7492d938a20dbc4b2be7f1&v=4'),
             ),
             const SizedBox(width: 10),
             Column(
@@ -48,7 +52,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                       InkWell(
                         onTap: onFollowersPressed,
                         child: Text(
-                          '${user.followerCount} Followers',
+                          '${user.followers} Followers',
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
@@ -59,7 +63,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                       InkWell(
                         onTap: onFollowingPressed,
                         child: Text(
-                          '${user.followingCount} Following',
+                          '${user.following} Following',
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
@@ -89,14 +93,14 @@ class ProfileHeaderWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
-                  user.allTimeLikes.toString(),
+                  allTimeLikes.toString(),
                   style: const TextStyle(
                     fontSize: 15,
                   ),
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  user.allTimeDislikes.toString(),
+                  allTimeDislikes.toString(),
                   style: const TextStyle(
                     fontSize: 15,
                   ),

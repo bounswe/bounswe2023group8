@@ -1,11 +1,8 @@
-// interest_area_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/widgets/custom_search_bar.dart';
-import 'package:mobile/data/widgets/post_widget.dart';
 import '../controllers/ia_controller.dart';
 import '../../../data/widgets/custom_app_bar.dart';
-
 
 class InterestAreaView extends GetView<InterestAreaController> {
   const InterestAreaView({Key? key}) : super(key: key);
@@ -14,19 +11,20 @@ class InterestAreaView extends GetView<InterestAreaController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-          leadingAppIcon: true,
-          titleWidget: CustomSearchBar(),
+        leadingAppIcon: true,
+        titleWidget: const CustomSearchBar(),
         actions: [
           IconButton(
-              onPressed: controller.navigateToEdit, icon: Icon(Icons.edit))
+              onPressed: controller.navigateToEdit,
+              icon: const Icon(Icons.edit))
         ],
-        ),
-      body:  InterestBody(),
+      ),
+      body: InterestBody(),
     );
   }
 }
-class InterestBody extends GetView<InterestAreaController>  {
 
+class InterestBody extends GetView<InterestAreaController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -39,7 +37,7 @@ class InterestBody extends GetView<InterestAreaController>  {
           color: Colors.white,
           child: SingleChildScrollView(
               child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -52,7 +50,7 @@ class InterestBody extends GetView<InterestAreaController>  {
                           color: Colors.grey.shade300,
                           margin: const EdgeInsets.all(1.0),
                           child: Padding(
-                            padding: EdgeInsets.all(4.0),
+                            padding: const EdgeInsets.all(4.0),
                             child: Text(
                               controller.interestArea.name,
                               style: const TextStyle(
@@ -98,29 +96,23 @@ class InterestBody extends GetView<InterestAreaController>  {
                 const SizedBox(
                   height: 5,
                 ),
-                ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: controller.posts.length,
-                    itemBuilder: (context, index) {
-                      return PostTileWidget(
-                        onTap: () => controller
-                            .navigateToPostDetails(controller.posts[index]),
-                        post: controller.posts[index],
-                        getAreaNameById: controller.getAreaNameById,
-                        getUserNameById: controller.getUserNameById,
-                        hideTags: true,
-                      );
-                    })
+                // ListView.builder(
+                //     shrinkWrap: true,
+                //     physics: const NeverScrollableScrollPhysics(),
+                //     itemCount: controller.posts.length,
+                //     itemBuilder: (context, index) {
+                //       return PostTileWidget(
+                //         onTap: () => controller
+                //             .navigateToPostDetails(controller.posts[index]),
+                //         post: controller.posts[index],
+                //         getAreaNameById: controller.getAreaNameById,
+                //         getUserNameById: controller.getUserNameById,
+                //         hideTags: true,
+                //       );
+                //     })
               ],
             ),
-          ))
-        
-        
-        
-        );
-    }
-    );
+          )));
+    });
   }
 }
-

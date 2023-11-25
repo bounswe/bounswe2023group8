@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
+import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
 import 'package:mobile/modules/home/controllers/home_controller.dart';
 
-import '../../../data/models/user_model.dart';
-
 class MemberView extends GetView<HomeController> {
+  const MemberView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
-      child: SingleChildScrollView(
-        child:
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+        color: Colors.white,
+        child: SingleChildScrollView(
+            child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 5,),
+              const SizedBox(
+                height: 5,
+              ),
               ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -28,24 +29,19 @@ class MemberView extends GetView<HomeController> {
                       onTap: () => controller
                           .navigateToPostDetails(controller.posts[index]),
                       post: controller.posts[index],
-                      getAreaNameById: controller.getAreaNameById,
-                      getUserNameById: controller.getUserNameById,
                       hideTags: true,
                     );
                   })
             ],
           ),
-        )    
-       
-      )
-    );
+        )));
   }
 }
 
 class TagRectangle extends StatelessWidget {
   final String tag;
 
-  TagRectangle({required this.tag});
+  const TagRectangle({required this.tag});
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +55,7 @@ class TagRectangle extends StatelessWidget {
       child: Center(
         child: Text(
           tag,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
@@ -70,9 +66,9 @@ class TagRectangle extends StatelessWidget {
 }
 
 class PopularUserCard extends StatelessWidget {
-  final UserModel user;
+  final EnigmaUser user;
 
-  PopularUserCard({required this.user});
+  const PopularUserCard({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -82,19 +78,20 @@ class PopularUserCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 24,
-            backgroundImage: NetworkImage(user.userProfileImage),
+            backgroundImage: NetworkImage(
+                'https://avatars.githubusercontent.com/u/88164767?s=400&u=09da0dbc9d0ee0246d7492d938a20dbc4b2be7f1&v=4'),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             user.name,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 12,
             ),
           ),
           Text(
             '@${user.username}',
-            style: TextStyle(
+            style: const TextStyle(
               color: Color(0xFF7E7E7E),
               fontSize: 12,
             ),

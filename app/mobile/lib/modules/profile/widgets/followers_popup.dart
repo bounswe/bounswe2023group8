@@ -39,8 +39,8 @@ class FollowersPopup extends GetView<ProfileController> {
                       final follower = controller.followers[index];
                       return ListTile(
                         leading: CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(follower.userProfileImage),
+                          backgroundImage: NetworkImage(
+                              'https://avatars.githubusercontent.com/u/88164767?s=400&u=09da0dbc9d0ee0246d7492d938a20dbc4b2be7f1&v=4'),
                         ),
                         title: Text(follower.name),
                         subtitle: Text(follower.username),

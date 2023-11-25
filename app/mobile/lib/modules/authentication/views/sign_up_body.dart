@@ -50,9 +50,8 @@ class SignUpBody extends GetView<SignUpController> {
             ),
             const Spacer(flex: 1),
             InkWell(
-              onTap: () => controller.pickDate(),
-              child:
-              Container(
+                onTap: () => controller.pickDate(),
+                child: Container(
                   width: Get.width,
                   height: 48,
                   padding: const EdgeInsets.only(top: 14, left: 14),
@@ -82,8 +81,7 @@ class SignUpBody extends GetView<SignUpController> {
                             ? Colors.grey
                             : Colors.black),
                   ),
-                )
-            ),
+                )),
             const Spacer(flex: 1),
             CustomTextField(
                 hintText: 'Password',
@@ -101,12 +99,13 @@ class SignUpBody extends GetView<SignUpController> {
                 obscureText: controller.hideConfirmPassword.value,
                 onChanged: (value) => controller.onChangeConfirmPassword(value),
                 circularBorder: true,
-                onSuffixTap: () => controller.toggleConfirmPasswordVisibility()),
+                onSuffixTap: () =>
+                    controller.toggleConfirmPasswordVisibility()),
             const Spacer(flex: 1),
-            !controller.confirmPasswordValid.value ? const Text("Confirm password must match your password!",
-            style: TextStyle(
-              color: Colors.red
-            ),
+            !controller.confirmPasswordValid.value
+                ? const Text(
+                    "Confirm password must match your password!",
+                    style: TextStyle(color: Colors.red),
                   )
                 : const SizedBox(),
             const Spacer(flex: 2),
@@ -143,7 +142,7 @@ class SignUpBody extends GetView<SignUpController> {
             const Spacer(flex: 5),
             CustomButton(
                 onPressed: controller.onSignUp,
-                width: Get.width * 0.3,
+                width: Get.width * 0.4,
                 shadow: true,
                 text: 'Sign up',
                 inProgress: controller.signupInProgress.value,

@@ -1,54 +1,23 @@
 import 'package:get/get.dart';
+import 'package:mobile/data/models/spot.dart';
 
-import '../../../data/models/ia_model.dart';
-import '../../../data/models/post_model.dart';
-import '../../../data/models/user_model.dart';
 
 class PostDetailsController extends GetxController {
-  PostModel post = Get.arguments['post'];
+  Spot post = Get.arguments['post'];
   final bool visitor = Get.arguments['visitor'];
 
-  RxList<UserModel> allUsers = <UserModel>[].obs;
-  RxList<PostModel> posts = <PostModel>[].obs;
-  RxList<IaModel> ias = <IaModel>[].obs;
+  RxList<Spot> posts = <Spot>[].obs;
 
   var routeLoading = false.obs;
 
-  String getAreaNameById(int id) {
-    return ias.firstWhere((element) => element.id == id).areaName;
-  }
-
-  String getUserNameById(int id) {
-    return allUsers.firstWhere((element) => element.id == id).name;
-  }
-
-  String getProfileImageById(int id) {
-    return allUsers.firstWhere((element) => element.id == id).userProfileImage;
-  }
-
-  String getNameSurnameById(int id) {
-    return allUsers.firstWhere((element) => element.id == id).name;
-  }
-
-  String getIaNameById(int id) {
-    return ias.firstWhere((element) => element.id == id).areaName;
-  }
-
-  void changePost(PostModel argpost) {
+  void changePost(Spot argpost) {
     routeLoading.value = true;
     post = argpost;
     routeLoading.value = false;
   }
 
-  void fetchData() {
-    allUsers.value = dummyUsers.map((e) => UserModel.fromJson(e)).toList();
-    posts.value = dummyPosts.map((e) => PostModel.fromJson(e)).toList();
-    ias.value = dummyIas.map((e) => IaModel.fromJson(e)).toList();
-  }
-
   @override
   void onInit() {
-    fetchData();
     super.onInit();
   }
 }

@@ -41,7 +41,7 @@ class AuthProvider extends GetConnect {
     return false;
   }
 
-  Future<String?> login(
+  Future<Map<String, dynamic>?> login(
       {required String user, required String password}) async {
     final response = await get('auth/signin', query: {
       'user': user,
@@ -54,7 +54,10 @@ class AuthProvider extends GetConnect {
     } else if (response.statusCode == 200 || response.statusCode == 201) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!);
-        return body['authentication']['accessToken'];
+        return {
+          'token': body['authentication']['accessToken'],
+          'userId': body['userId'],
+        };
       }
     } else {
       if (response.bodyString != null) {

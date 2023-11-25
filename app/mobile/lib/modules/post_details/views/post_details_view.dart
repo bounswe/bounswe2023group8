@@ -35,11 +35,9 @@ class PostDetailsView extends GetView<PostDetailsController> {
             child: Column(
               children: [
                 PostDetailWidget(
-                    visitor: controller.visitor,
-                    post: controller.post,
-                    getProfileImageById: controller.getProfileImageById,
-                    getIANameById: controller.getAreaNameById,
-                    getNameSurnameById: controller.getNameSurnameById),
+                  visitor: controller.visitor,
+                  post: controller.post,
+                ),
                 const SizedBox(height: 20),
                 Container(
                   padding:
@@ -75,7 +73,7 @@ class PostDetailsView extends GetView<PostDetailsController> {
                         CircleAvatar(
                           radius: 20,
                           backgroundImage: NetworkImage(
-                              controller.allUsers.first.userProfileImage),
+                              'https://avatars.githubusercontent.com/u/88164767?s=400&u=09da0dbc9d0ee0246d7492d938a20dbc4b2be7f1&v=4'),
                         ),
                         const SizedBox(
                           width: 10,
@@ -133,8 +131,6 @@ class PostDetailsView extends GetView<PostDetailsController> {
                         onTap: () =>
                             controller.changePost(controller.posts[index]),
                         post: controller.posts[index],
-                        getAreaNameById: controller.getAreaNameById,
-                        getUserNameById: controller.getUserNameById,
                         hideTags: false,
                       );
                     })

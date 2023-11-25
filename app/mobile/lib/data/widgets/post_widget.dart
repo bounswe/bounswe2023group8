@@ -1,20 +1,12 @@
-
 import 'package:flutter/material.dart';
-import 'package:mobile/data/models/post_model.dart';
+import 'package:mobile/data/models/spot.dart';
 
 class PostTileWidget extends StatelessWidget {
-  final PostModel post;
+  final Spot post;
   final void Function()? onTap;
-  final String Function(int id) getAreaNameById;
-  final String Function(int id) getUserNameById;
   final bool hideTags;
   const PostTileWidget(
-      {super.key,
-      required this.post,
-      this.onTap,
-      required this.getAreaNameById,
-      required this.getUserNameById,
-      required this.hideTags});
+      {super.key, required this.post, this.onTap, required this.hideTags});
 
   @override
   Widget build(BuildContext context) {
@@ -51,14 +43,15 @@ class PostTileWidget extends StatelessWidget {
 
             Row(
               children: [
-                const Text("Created By ", style: TextStyle(fontSize: 10)),
+                
                 Text(
-                  getUserNameById(post.userId),
+                  post.enigmaUser.name,
                   style: const TextStyle(fontSize: 10, color: Colors.brown),
                 ),
                 const Spacer(),
+
                 Text(
-                  post.createdAt.split(' ')[0].split('-').reversed.join('.'),
+                  post.createTime,
                   style: const TextStyle(fontSize: 10),
                 ),
               ],
@@ -69,7 +62,7 @@ class PostTileWidget extends StatelessWidget {
             ? const SizedBox()
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: post.iaIds.map<Widget>((iaId) {
+                children: post.wikiTags.map<Widget>((wikitag) {
                   return ClipRRect(
                       borderRadius: BorderRadius.circular(16.0),
                       child: Container(
@@ -80,7 +73,7 @@ class PostTileWidget extends StatelessWidget {
                           padding: const EdgeInsets.all(
                               4.0), // Adjust padding as needed
                           child: Text(
-                            "#${getAreaNameById(iaId)}",
+                            "#${wikitag.label}",
                             style: const TextStyle(
                               fontSize: 12,
                               color: Colors

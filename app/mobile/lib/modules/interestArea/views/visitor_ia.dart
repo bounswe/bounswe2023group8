@@ -1,8 +1,5 @@
-// visitor_interest_area_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:mobile/data/widgets/custom_search_bar.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
 import '../../../data/widgets/visitor_bottom_bar.dart';
@@ -38,7 +35,7 @@ class VisitorInterestBody extends GetView<InterestAreaController> {
         color: Colors.white,
         child: SingleChildScrollView(
             child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -106,8 +103,6 @@ class VisitorInterestBody extends GetView<InterestAreaController> {
                       onTap: () => controller
                           .navigateToPostDetails(controller.posts[index]),
                       post: controller.posts[index],
-                      getAreaNameById: controller.getAreaNameById,
-                      getUserNameById: controller.getUserNameById,
                       hideTags: true,
                     );
                   })
