@@ -57,5 +57,29 @@
     "all_time_likes": 7,
     "all_time_dislikes": 7,
     "user_profile_image": "https://camo.githubusercontent.com/cfa748056f5bcfbac110fb8f5f5c31da8bdd180ecfe45943e33957ef8bd0b8c3/68747470733a2f2f692e6962622e636f2f7470786876644c2f37382d44302d4544302d452d3036312d452d342d45312d442d414535302d38343134302d42343934352d44312e6a7067"
+  },
+
+  {
+    "id": 1006,
+    "name": "Meriç Keskin",
+    "nickname": "marcolphin",
+    "ia_ids": [1,2,3,4,5],
+    "follower_count": 7,
+    "following_count": 7,
+    "all_time_likes": 7,
+    "all_time_dislikes": 7,
+    "user_profile_image": "https://avatars.githubusercontent.com/u/88164767?s=400&u=09da0dbc9d0ee0246d7492d938a20dbc4b2be7f1&v=4"
+  },
+
+  {
+    "id": 1007,
+    "name": "Miraç Öztürk",
+    "nickname": "magarasemenderi",
+    "ia_ids": [1,2,3,4,5],
+    "follower_count": 7,
+    "following_count": 7,
+    "all_time_likes": 7,
+    "all_time_dislikes": 7,
+    "user_profile_image": "https://www.a-z-hayvanlar.com/wp-content/uploads/2021/02/olm-3.jpg"
   }
 ]
