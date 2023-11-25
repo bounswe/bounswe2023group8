@@ -4,16 +4,16 @@
 
 import { AxiosInstance } from "axios";
 import { useMutation } from "react-query";
-import { CreateInterestAreaFormData } from "../components/InterestArea/InterestAreaCreateCard";
+import { CreateInterestAreaRequestData } from "../components/InterestArea/InterestAreaCreateCard";
 
-export type CreateInterestAreaProps = CreateInterestAreaFormData & {
+export type CreateInterestAreaProps = CreateInterestAreaRequestData & {
   axiosInstance: AxiosInstance;
 };
 
 const createInterestArea = async (props: CreateInterestAreaProps) => {
   const { axiosInstance, ...data } = props;
   const response = await axiosInstance.post(
-    `${process.env.REACT_APP_BACKEND_API_URL}/interest-area`,
+    `${process.env.REACT_APP_BACKEND_API_URL}/v1/interest-area`,
     data
   );
   if (response.status >= 200 && response.status < 300) {

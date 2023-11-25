@@ -1,8 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardBody } from "react-bootstrap";
 import Tag from "../Tag/Tag";
+import { useSearchWikitags } from "../../hooks/useWikiTags";
+import { useAuth } from "../../contexts/AuthContext";
 
 export type CreateInterestAreaFormData = {
+  title: string;
+  description: string;
+  wikiTags: { id: string; name: string }[];
+  nestedInterestAreas: string[];
+  accessLevel: 0 | 1 | 2;
+};
+
+export type CreateInterestAreaRequestData = {
   title: string;
   description: string;
   wikiTags: string[];
@@ -33,6 +43,38 @@ const InterestAreaCreateCard = ({
 }: InterestAreaCreateCardProps) => {
   const [newTag, setNewTag] = useState("");
   const [newSubIA, setNewSubIA] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [isTagInputFocused, setIsTagInputFocused] = useState(false);
+
+  const handleTagInputBlur = () => {
+    setTimeout(() => {
+      setIsTagInputFocused(false);
+    }, 150);
+  };
+
+  const { mutate: searchWikiTags, data: searchWikiTagsData } =
+    useSearchWikitags({});
+
+  const { axiosInstance } = useAuth();
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      searchWikiTags({
+        searchKey: debouncedSearchTerm,
+        axiosInstance: axiosInstance,
+      });
+    }
+  }, [debouncedSearchTerm]);
 
   const handleAccessLevelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const numericValue = parseInt(e.target.value, 10);
@@ -74,13 +116,22 @@ const InterestAreaCreateCard = ({
     });
   };
 
-  const addTag = () => {
-    if (newTag && !interestAreaDetails.wikiTags.includes(newTag)) {
+  const onTagSelect = (id: string, name: string) => {
+    addTag(id, name);
+  };
+
+  const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewTag(e.target.value);
+    setSearchTerm(e.target.value);
+  };
+
+  const addTag = (id: string, name: string) => {
+    const newTag = { id, name };
+    if (!interestAreaDetails.wikiTags.some((tag) => tag.id === id)) {
       setInterestAreaDetails({
         ...interestAreaDetails,
         wikiTags: [...interestAreaDetails.wikiTags, newTag],
       });
-      setNewTag("");
     }
   };
 
@@ -144,12 +195,12 @@ const InterestAreaCreateCard = ({
             <div className="d-flex flex-wrap">
               {interestAreaDetails.wikiTags.map((tag, index) => (
                 <div
-                  key={index}
+                  key={tag.id}
                   className="m-2"
                   style={{ cursor: "pointer" }}
                   onClick={() => removeTag(index)}
                 >
-                  <Tag className={""} name={tag} />
+                  <Tag className={""} name={tag.name} />
                 </div>
               ))}
               <div className="w-100 text-center">
@@ -157,16 +208,28 @@ const InterestAreaCreateCard = ({
                   type="text"
                   className="form-control"
                   value={newTag}
-                  onChange={(e) => setNewTag(e.target.value)}
-                  onKeyPress={(e) => handleKeyPress(e, addTag)}
+                  onChange={handleTagInputChange}
+                  onFocus={() => setIsTagInputFocused(true)}
+                  onBlur={handleTagInputBlur}
                 />
-                <button
-                  type="button"
-                  className="btn btn-ternary border mt-2"
-                  onClick={addTag}
-                >
-                  Add Tag
-                </button>
+                {isTagInputFocused &&
+                  searchWikiTagsData &&
+                  searchWikiTagsData.length > 0 && (
+                    <div className="dropdown-menu show">
+                      {searchWikiTagsData.map((result: any) => (
+                        <button
+                          key={result.id}
+                          className="dropdown-item"
+                          type="button"
+                          onClick={() =>
+                            onTagSelect(result.id, result.display.label.value)
+                          }
+                        >
+                          {result.display.label.value} - {result.description}
+                        </button>
+                      ))}
+                    </div>
+                  )}
               </div>
             </div>
           </div>
