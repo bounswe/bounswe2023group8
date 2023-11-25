@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import PostCreateCard, {CreatePostFormData} from "../../components/Post/Create/PostCreateCard";
-import {SelectedLocationFormData} from "../../components/Geolocation/LocationPicker";
-import {useParams} from "react-router-dom";
-import {useGetPost, useUpdatePost} from "../../hooks/usePost";
-
+import PostCreateCard, {
+  CreatePostFormData,
+} from "../../components/Post/Create/PostCreateCard";
+import { SelectedLocationFormData } from "../../components/Geolocation/LocationPicker";
+import { useParams } from "react-router-dom";
+import { useGetPost, useUpdatePost } from "../../hooks/usePost";
 
 const PostUpdatePage = () => {
   const { axiosInstance } = useAuth();
@@ -14,7 +15,7 @@ const PostUpdatePage = () => {
     title: "",
     link: "",
     description: "",
-    tags: [],
+    wikiTags: [],
     label: "",
     source: "",
     publicationDate: new Date(),
@@ -24,22 +25,22 @@ const PostUpdatePage = () => {
     latitude: 41,
     longitude: 29,
     address: "",
-    locationSelected: false
-  }
+    locationSelected: false,
+  };
 
   const [postDetails, setPostDetails] = useState(defaultPostDetails);
-  const [locationDetails, setLocationDetails] = useState(defaultLocationDetails);
+  const [locationDetails, setLocationDetails] = useState(
+    defaultLocationDetails
+  );
 
   const mutateUpdatePost = useUpdatePost({}).mutate;
   const mutateGetPost = useGetPost({}).mutate;
-
-
 
   useEffect(() => {
     const getData = async () => {
       const data = mutateGetPost({
         axiosInstance: axiosInstance,
-        id: params.postId || ""
+        id: params.postId || "",
       });
       console.log(params.postId);
       console.log(data);
@@ -49,7 +50,7 @@ const PostUpdatePage = () => {
         title: "Derbi Heyecanı",
         link: "Placeholder Link",
         description: " Galatasaray vs. Fenerbahçe",
-        tags: ["Futbol", "Galatasaray", "Fenerbahçe"],
+        wikiTags: [],
         label: "News",
         source: "asdasd",
         publicationDate: new Date(),
@@ -58,16 +59,16 @@ const PostUpdatePage = () => {
         latitude: 40.987673250682725,
         longitude: 29.03688669204712,
         address: "Kadıköy/İstanbul, Türkiye",
-        locationSelected: true
-      }
-      const mockData = {...defaultPostDetails, ...defaultLocationDetails}
+        locationSelected: true,
+      };
+      const mockData = { ...defaultPostDetails, ...defaultLocationDetails };
 
-      setPostDetails(mockData)
-      setLocationDetails(mockData)
-    }
+      setPostDetails(mockData);
+      setLocationDetails(mockData);
+    };
 
     getData();
-  }, [])
+  }, []);
   const handleInputChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -78,13 +79,7 @@ const PostUpdatePage = () => {
       value: string;
       name: string;
     };
-    if (name === "tags") {
-      const tagsArray = value.split(" ").filter((tag: string) => tag !== "");
-      setPostDetails({
-        ...postDetails,
-        [name]: tagsArray,
-      });
-    } else if (name === "publicationDate") {
+    if (name === "publicationDate") {
       setPostDetails({
         ...postDetails,
         [name]: new Date(value),
@@ -98,10 +93,12 @@ const PostUpdatePage = () => {
   };
 
   const handleSubmit = (event: React.FormEvent) => {
+    const wikiTagIds = postDetails.wikiTags.map((tag) => tag.id);
     event.preventDefault();
     mutateUpdatePost({
       axiosInstance,
       ...postDetails,
+      wikiTags: wikiTagIds,
       ...locationDetails,
     });
   };
@@ -110,10 +107,15 @@ const PostUpdatePage = () => {
     <div className="d-flex">
       <div className="container mt-4 col-6">
         <h2 className="fw-bold">Update Post</h2>
-        <PostCreateCard setPostDetails={setPostDetails} postDetails={postDetails}
-                        handleInputChange={handleInputChange} handleSubmit={handleSubmit}
-                        locationDetails={locationDetails} setLocationDetails={setLocationDetails}
-                        cardType={"update"}/>
+        <PostCreateCard
+          setPostDetails={setPostDetails}
+          postDetails={postDetails}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          locationDetails={locationDetails}
+          setLocationDetails={setLocationDetails}
+          cardType={"update"}
+        />
       </div>
       <div className="col-6 mt-5"></div>
     </div>
