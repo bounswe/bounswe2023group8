@@ -7,23 +7,25 @@ services:
     expose:
       - "8080"
     restart: always
+    depends_on:
+      - db
 
     # Add any additional configuration for the server service
 
-  client:
-    build: ./web/
-    env_file:
-      - ./web/.env.development
-    expose:
-      - "3000"
-    restart: always
-    # Add any additional configuration for the client service
+  #  client:
+  #    build: ./web/
+  #    env_file:
+  #      - ./web/.env.development
+  #    expose:
+  #      - "3000"
+  #    restart: always
+  #    # Add any additional configuration for the client service
 
   front:
     image: nginx
     depends_on:
       - server
-      - client
+    #      - client
     ports:
       - "80:80"
       - "443:443"
@@ -31,3 +33,19 @@ services:
       - ./nginx/.well-known:/usr/share/nginx/html/
       - ./nginx/:/etc/nginx/conf.d/
     restart: always
+
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'punchcard'
+      MYSQL_USER: 'baki'
+      MYSQL_PASSWORD: '20899717'
+      MYSQL_ROOT_PASSWORD: '20899717'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"  # Expose port for MySQL
+
+volumes:
+  mysql_data:  # This defines the named volume
