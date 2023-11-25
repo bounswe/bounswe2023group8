@@ -58,7 +58,6 @@ const Router = () => {
           path="/registration-confirm"
           element={<RegistrationConfirm />}
         />
-        <Route path="/posts/:postId" element={<PostViewPage />} />
         <Route
           element={
             <Row className="p-0 m-0 vw-100">
@@ -87,6 +86,7 @@ const Router = () => {
             element={<CreateInterestArea />}
           />
             <Route path="/interest-areas/:iaId" element={<InterestAreaViewPage />} />
+            <Route path="/posts/:postId" element={<PostViewPage />} />
 
           <Route path="/map-test" element={<MapTestPage />} />
           <Route path="*" element={<Navigate to="/" />} />
