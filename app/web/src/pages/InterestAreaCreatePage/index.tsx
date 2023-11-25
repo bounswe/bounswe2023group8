@@ -1,17 +1,12 @@
 import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import InterestAreaCreateCard from "../../components/InterestArea/InterestAreaCreateCard";
+import InterestAreaCreateCard, {
+  CreateInterestAreaFormData,
+} from "../../components/InterestArea/InterestAreaCreateCard";
 import { useCreateInterestArea } from "../../hooks/useInterestArea";
 
 const CreateInterestArea = () => {
   const { axiosInstance } = useAuth();
-  type CreateInterestAreaFormData = {
-    title: string;
-    nestedInterestAreas: string[];
-    wikiTags: string[];
-    description: string;
-    accessLevel: 0 | 1 | 2;
-  };
 
   const defaultInterestAreaDetails: CreateInterestAreaFormData = {
     title: "",
@@ -52,9 +47,14 @@ const CreateInterestArea = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    const wikiTagIds = interestAreaDetails.wikiTags.map((tag) => tag.id);
+    const dataToSend = {
+      ...interestAreaDetails,
+      wikiTags: wikiTagIds,
+    };
     mutate({
       axiosInstance,
-      ...interestAreaDetails,
+      ...dataToSend,
     });
   };
 

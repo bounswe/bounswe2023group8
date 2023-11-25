@@ -4,9 +4,9 @@
 
 import { AxiosInstance } from "axios";
 import { useMutation } from "react-query";
-import { CreateInterestAreaFormData } from "../components/InterestArea/InterestAreaCreateCard";
+import { CreateInterestAreaRequestData } from "../components/InterestArea/InterestAreaCreateCard";
 
-export type CreateInterestAreaProps = CreateInterestAreaFormData & {
+export type CreateInterestAreaProps = CreateInterestAreaRequestData & {
   axiosInstance: AxiosInstance;
 };
 
