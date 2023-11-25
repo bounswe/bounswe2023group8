@@ -32,6 +32,15 @@ class SignUpBody extends GetView<SignUpController> {
                     color: Palette.primaryColor)),
             const Spacer(flex: 4),
             CustomTextField(
+              hintText: 'Name',
+              initialValue: controller.signUpName.value,
+              isValid: controller.signUpNameValid.value,
+              onChanged: (value) => controller.onChangeName(value),
+              circularBorder: true,
+              showSuffix: false,
+            ),
+            const Spacer(flex: 1),
+            CustomTextField(
               hintText: 'E-mail',
               initialValue: controller.signUpEmail.value,
               isValid: controller.signUpEmailValid.value,
@@ -149,7 +158,8 @@ class SignUpBody extends GetView<SignUpController> {
                 active: controller.signUpUsernameValid.value &&
                     controller.signUpPasswordValid.value &&
                     controller.signUpEmailValid.value &&
-                    controller.confirmPasswordValid.value &&
+                    controller.confirmPasswordValid.value && 
+                    controller.signUpNameValid.value &&
                     controller.acceptTerms.value),
             const Spacer(flex: 5),
             Row(
