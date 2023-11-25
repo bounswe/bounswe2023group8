@@ -45,10 +45,8 @@ class PostServiceHelper {
                 .orElseThrow(() -> new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("Post %d not found", postId)));
     }
 
-    void validateUserFollowsInterestArea(Long userId, Post post) {
-        if (!userFollowsService.isUserFollowsEntity(userId, post.getInterestAreaId(), EntityType.INTEREST_AREA)) {
-            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, String.format("User %d is not following interest area %d", userId, post.getInterestAreaId()));
-        }
+    void checkInterestAreaAccess(Long interestAreaId,  Long userId) {
+        userFollowsService.checkInterestAreaAccess(interestAreaServiceHelper.getInterestArea(interestAreaId), userId);
     }
 
     List<WikiTag> fetchWikiTagsForPost(Post post) {

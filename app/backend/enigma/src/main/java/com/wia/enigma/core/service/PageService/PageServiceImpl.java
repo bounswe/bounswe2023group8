@@ -70,16 +70,10 @@ public class PageServiceImpl implements PageService{
         List<Long> followedEnigmaUserIds = enigmaUserService.getFollowings(userId, userId).stream( )
                 .map(EnigmaUserDto::getId).collect(Collectors.toList());
 
-        System.out.println("patladı");
-
         List<Long> followedInterestAreaPostIds = interestAreaPostRepository.findByInterestAreaIdIn(followedInterestAreaIds)
                 .stream().map(InterestAreaPost::getPostId).collect(Collectors.toList());
 
-        System.out.println("patladı2");
-
         List<Post> posts = postRepository.findByEnigmaUserIdInOrPostIdIn(followedEnigmaUserIds, followedInterestAreaPostIds);
-
-        System.out.println("patladı3");
 
         List<Long> postInterestAreaIds = posts.stream().map(Post::getInterestAreaId).collect(Collectors.toList());
 

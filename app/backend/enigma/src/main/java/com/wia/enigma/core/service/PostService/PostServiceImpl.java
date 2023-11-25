@@ -40,7 +40,7 @@ public class PostServiceImpl implements PostService{
     @Override
     public PostDto getPost(Long postId, Long userId) {
         Post post = postServiceHelper.fetchPost(postId);
-        postServiceHelper.validateUserFollowsInterestArea(userId, post);
+        postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
 
         List<WikiTag> wikiTags = postServiceHelper.getWikiTags(postId);
 
