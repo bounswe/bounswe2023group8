@@ -6,13 +6,11 @@ import com.wia.enigma.core.data.dto.PostDtoSimple;
 import com.wia.enigma.core.data.dto.WikiTagDto;
 import com.wia.enigma.core.data.model.GeoLocation;
 import com.wia.enigma.core.service.WikiService.WikiService;
-import com.wia.enigma.dal.entity.EnigmaUser;
-import com.wia.enigma.dal.entity.InterestAreaPost;
-import com.wia.enigma.dal.entity.Post;
-import com.wia.enigma.dal.entity.WikiTag;
+import com.wia.enigma.dal.entity.*;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.enums.PostLabel;
 import com.wia.enigma.dal.repository.EnigmaUserRepository;
+import com.wia.enigma.dal.repository.InterestAreaRepository;
 import com.wia.enigma.dal.repository.PostRepository;
 import com.wia.enigma.dal.repository.WikiTagRepository;
 import com.wia.enigma.exceptions.custom.EnigmaException;
@@ -31,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostServiceImpl implements PostService{
+    private final InterestAreaRepository interestAreaRepository;
     private final WikiTagRepository wikiTagRepository;
     private final EnigmaUserRepository enigmaUserRepository;
 
@@ -47,11 +46,13 @@ public class PostServiceImpl implements PostService{
 
         EnigmaUser enigmaUser= enigmaUserRepository.findEnigmaUserById(post.getEnigmaUserId());
 
+        InterestArea interestArea = interestAreaRepository.findInterestAreaById(post.getInterestAreaId());
+
         if(enigmaUser == null){
             throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("Enigma user %d not found", post.getEnigmaUserId()));
         }
 
-        return post.mapToPostDto(wikiTags, enigmaUser.mapToEnigmaUserDto() );
+        return post.mapToPostDto(wikiTags, enigmaUser.mapToEnigmaUserDto(), interestArea.mapToInterestAreaModel() );
     }
 
     @Override
@@ -61,7 +62,10 @@ public class PostServiceImpl implements PostService{
                                     GeoLocation geolocation) {
 
         postServiceHelper.validateInterestAreaAndUserFollowing(interestAreaId, userId);
-        Post post = postServiceHelper.createAndSavePost(userId, interestAreaId, sourceLink, title, label, content, geolocation);
+
+        InterestArea interestArea = interestAreaRepository.findInterestAreaById(interestAreaId);
+
+        Post post = postServiceHelper.createAndSavePost(userId,interestArea.getAccessLevel(), interestAreaId,  sourceLink, title, label, content, geolocation);
 
         wikiTagRepository.saveAll(wikiTagService.getWikiTags(wikiTags));
 

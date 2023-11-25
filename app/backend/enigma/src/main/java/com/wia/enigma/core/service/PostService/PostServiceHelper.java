@@ -10,6 +10,7 @@ import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.UserService.EnigmaUserService;
 import com.wia.enigma.core.service.WikiService.WikiService;
 import com.wia.enigma.dal.entity.*;
+import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.enums.PostLabel;
@@ -66,10 +67,11 @@ class PostServiceHelper {
             throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "User " + userId + " is not following interest area " + interestAreaId);
     }
 
-    Post createAndSavePost(Long userId, Long interestAreaId, String sourceLink,
-                                   String title, PostLabel label, String content, GeoLocation geolocation) {
+    Post createAndSavePost(Long userId, EnigmaAccessLevel accessLevel, Long interestAreaId, String sourceLink,
+                           String title, PostLabel label, String content, GeoLocation geolocation) {
         Post post = Post.builder()
                 .enigmaUserId(userId)
+                .accessLevel(accessLevel)
                 .interestAreaId(interestAreaId)
                 .sourceLink(sourceLink)
                 .title(title)
@@ -150,29 +152,28 @@ class PostServiceHelper {
 
         userFollowsService.checkInterestAreaAccess(interestArea, userId); ;
 
-       List<Long> postIds =  interestAreaPostService.getPostsByInterestAreaId(interestAreaId).stream()
+        List<Long> postIds =  interestAreaPostService.getPostsByInterestAreaId(interestAreaId).stream()
                 .map(InterestAreaPost::getPostId).toList();
 
 
-       List<EntityTag> entityTags =  entityTagsRepository.findByEntityIdInAndEntityType( postIds, EntityType.POST );
+        List<EntityTag> entityTags =  entityTagsRepository.findByEntityIdInAndEntityType( postIds, EntityType.POST );
 
 
-       List<WikiTag> wikiTags = wikiTagRepository.findAllById(
+        List<WikiTag> wikiTags = wikiTagRepository.findAllById(
                 entityTags.stream()
                         .map(EntityTag::getWikiDataTagId)
                         .collect(Collectors.toList())
               );
+        List<Post> posts = postRepository.findAllById(postIds);
 
-       List<Post> posts = postRepository.findAllById(postIds);
+        List<Long> userIds = posts.stream().map(Post::getEnigmaUserId).toList();
 
-       List<Long> userIds = posts.stream().map(Post::getEnigmaUserId).toList();
-
-       List<EnigmaUser> enigmaUsers = enigmaUserRepository.findAllById(userIds);
+        List<EnigmaUser> enigmaUsers = enigmaUserRepository.findAllById(userIds);
 
 
          return posts.stream().map(post -> {
               EnigmaUser enigmaUser = enigmaUsers.stream().filter(enigmaUser1 -> enigmaUser1.getId().equals(post.getEnigmaUserId())).findFirst().get();
-              return post.mapToPostDto(wikiTags, enigmaUser.mapToEnigmaUserDto());
+              return post.mapToPostDto(wikiTags, enigmaUser.mapToEnigmaUserDto(), interestArea.mapToInterestAreaModel());
          }).toList();
     }
 }
