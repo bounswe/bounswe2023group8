@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface EnigmaUserRepository extends JpaRepository<EnigmaUser, Long> {
+    List<EnigmaUser> findByIdIn(Collection<Long> ids);
     @Query("SELECT u FROM EnigmaUser u WHERE u.isVerified = true AND (u.username LIKE %:username% OR u.name LIKE %:name%)")
     List<EnigmaUser> findByIsVerifiedTrueAndUsernameContainsOrNameContains(@Param("username") String username, @Param("name") String name);
 
