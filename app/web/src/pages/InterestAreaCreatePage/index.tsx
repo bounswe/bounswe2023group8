@@ -48,9 +48,13 @@ const CreateInterestArea = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const wikiTagIds = interestAreaDetails.wikiTags.map((tag) => tag.id);
+    const nestedInterestAreaIds = interestAreaDetails.nestedInterestAreas.map(
+      (subIA) => subIA.id
+    );
     const dataToSend = {
       ...interestAreaDetails,
       wikiTags: wikiTagIds,
+      nestedInterestAreas: nestedInterestAreaIds,
     };
     mutate({
       axiosInstance,
