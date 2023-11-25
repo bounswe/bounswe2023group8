@@ -1,237 +1,314 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from "react";
 import Tag from "../../Tag/Tag";
-import LocationPicker, {SelectedLocationFormData} from "../../Geolocation/LocationPicker";
-import {Card, CardBody} from "react-bootstrap";
+import LocationPicker, {
+  SelectedLocationFormData,
+} from "../../Geolocation/LocationPicker";
+import { Card, CardBody } from "react-bootstrap";
+import { useSearchWikitags } from "../../../hooks/useWikiTags";
+import { useAuth } from "../../../contexts/AuthContext";
 
 export type CreatePostFormData = {
-    interestArea: string;
-    title: string;
-    link: string;
-    description: string;
-    tags: string[];
-    label: string;
-    source: string;
-    publicationDate: Date;
+  interestArea: string;
+  title: string;
+  link: string;
+  description: string;
+  wikiTags: { id: string; name: string }[];
+  label: string;
+  source: string;
+  publicationDate: Date;
+};
+
+export type CreatePostRequestData = {
+  interestArea: string;
+  title: string;
+  link: string;
+  description: string;
+  wikiTags: string[];
+  label: string;
+  source: string;
+  publicationDate: Date;
 };
 
 export type PostCreateCardProps = {
-    handleSubmit: (_: React.FormEvent) => void;
-    postDetails: CreatePostFormData;
-    setPostDetails: React.Dispatch<React.SetStateAction<CreatePostFormData>>;
-    handleInputChange: (e:
-                            | React.ChangeEvent<HTMLInputElement>
-                            | React.ChangeEvent<HTMLSelectElement>
-                            | React.ChangeEvent<HTMLTextAreaElement>
-    ) => void;
-    locationDetails: SelectedLocationFormData;
-    setLocationDetails: React.Dispatch<React.SetStateAction<SelectedLocationFormData>>;
-    cardType: "create" | "update"
-}
+  handleSubmit: (_: React.FormEvent) => void;
+  postDetails: CreatePostFormData;
+  setPostDetails: React.Dispatch<React.SetStateAction<CreatePostFormData>>;
+  handleInputChange: (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) => void;
+  locationDetails: SelectedLocationFormData;
+  setLocationDetails: React.Dispatch<
+    React.SetStateAction<SelectedLocationFormData>
+  >;
+  cardType: "create" | "update";
+};
 const PostCreateCard = ({
-                            handleInputChange, handleSubmit, postDetails,
-                            setPostDetails, locationDetails, setLocationDetails,
-                            cardType
-                        }: PostCreateCardProps) => {
+  handleInputChange,
+  handleSubmit,
+  postDetails,
+  setPostDetails,
+  locationDetails,
+  setLocationDetails,
+  cardType,
+}: PostCreateCardProps) => {
+  const defaultLocationDetails: SelectedLocationFormData = {
+    latitude: 41,
+    longitude: 29,
+    address: "",
+    locationSelected: false,
+  };
+  const [showLocationPickerModal, setShowLocationPickerModal] = useState(false);
+  const [newTag, setNewTag] = useState("");
+  const [tagSearchTerm, setTagSearchTerm] = useState("");
+  const [debouncedTagSearchTerm, setDebouncedTagSearchTerm] = useState("");
+  const [isTagInputFocused, setIsTagInputFocused] = useState(false);
 
-    const defaultLocationDetails: SelectedLocationFormData = {
-        latitude: 41,
-        longitude: 29,
-        address: "",
-        locationSelected: false
+  const onTagSelect = (id: string, name: string) => {
+    addTag(id, name);
+  };
+
+  const handleTagInputBlur = () => {
+    setTimeout(() => {
+      setIsTagInputFocused(false);
+    }, 150);
+  };
+
+  const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewTag(e.target.value);
+    setTagSearchTerm(e.target.value);
+  };
+
+  const addTag = (id: string, name: string) => {
+    const newTag = { id, name };
+    if (!postDetails.wikiTags.some((tag) => tag.id === id)) {
+      setPostDetails({
+        ...postDetails,
+        wikiTags: [...postDetails.wikiTags, newTag],
+      });
     }
-    const [showLocationPickerModal, setShowLocationPickerModal] = useState(false);
-    const [newTag, setNewTag] = useState("");
+  };
 
-    const addTag = () => {
-        if (newTag && !postDetails.tags.includes(newTag)) {
-            setPostDetails({
-                ...postDetails,
-                tags: [...postDetails.tags, newTag],
-            });
-            setNewTag("");
-        }
+  const removeTag = (indexToRemove: number) => {
+    setPostDetails({
+      ...postDetails,
+      wikiTags: postDetails.wikiTags.filter(
+        (_, index) => index != indexToRemove
+      ),
+    });
+  };
+
+  const { mutate: searchWikiTags, data: searchWikiTagsData } =
+    useSearchWikitags({});
+
+  const { axiosInstance } = useAuth();
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setDebouncedTagSearchTerm(tagSearchTerm);
+    }, 500);
+
+    return () => {
+      clearTimeout(timerId);
     };
+  }, [tagSearchTerm]);
 
-    const removeTag = (indexToRemove: number) => {
-        setPostDetails({
-            ...postDetails,
-            tags: postDetails.tags.filter((element, index) => index != indexToRemove)
-        })
+  useEffect(() => {
+    if (debouncedTagSearchTerm) {
+      searchWikiTags({
+        searchKey: debouncedTagSearchTerm,
+        axiosInstance: axiosInstance,
+      });
     }
+  }, [debouncedTagSearchTerm]);
 
-    return <Card className="border-3 border-primary-subtle">
-        <CardBody className="">
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3 d-flex flex-row align-items-center">
-                    <label htmlFor="interestArea" className="form-label text-nowrap">
-                        Interest Area:
-                    </label>
-                    <select
-                        id="interestArea"
-                        className="form-select bg-dark-subtle ms-5"
-                        name="interestArea"
-                        value={postDetails.interestArea}
-                        onChange={handleInputChange}
-                    >
-                        <option value="Furkanin Futbol Köşesi">
-                            Furkanın Futbol Köşesi
-                        </option>
-                    </select>
-                </div>
-                <div className="mb-3 d-flex flex-row align-items-center">
-                    <label htmlFor="title" className="form-label text-nowrap">
-                        Title:
-                    </label>
-                    <input
-                        id="title"
-                        type="text"
-                        className="form-control bg-dark-subtle ms-5"
-                        name="title"
-                        value={postDetails.title}
-                        onChange={handleInputChange}
-                    />
-                </div>
+  return (
+    <Card className="">
+      <CardBody className="">
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label htmlFor="interestArea" className="form-label">
+              Interest Area:
+            </label>
+            <select
+              id="interestArea"
+              className="form-select"
+              name="interestArea"
+              value={postDetails.interestArea}
+              onChange={handleInputChange}
+            >
+              <option value="Furkanin Futbol Köşesi">
+                Furkanın Futbol Köşesi
+              </option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="title" className="form-label">
+              Title:
+            </label>
+            <input
+              id="title"
+              type="text"
+              className="form-control"
+              name="title"
+              value={postDetails.title}
+              onChange={handleInputChange}
+            />
+          </div>
 
-                {/* Link */}
-                <div className="mb-3 d-flex flex-row align-items-center">
-                    <label htmlFor="link" className="form-label text-nowrap">
-                        Link:
-                    </label>
-                    <input
-                        id="link"
-                        type="text"
-                        className="form-control bg-dark-subtle ms-5"
-                        name="link"
-                        value={postDetails.link}
-                        onChange={handleInputChange}
-                    />
+          {/* Link */}
+          <div className="mb-3">
+            <label htmlFor="link" className="form-label">
+              Link:
+            </label>
+            <input
+              id="link"
+              type="text"
+              className="form-control"
+              name="link"
+              value={postDetails.link}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="description" className="form-label ">
+              Description/Comment:
+            </label>
+            <textarea
+              id="description"
+              className="form-control"
+              name="description"
+              value={postDetails.description}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="wikiTags" className="form-label ">
+              Tags:
+            </label>
+            <div className="d-flex flex-wrap">
+              {postDetails.wikiTags.map((tag, index) => (
+                <div
+                  key={tag.id}
+                  className="m-2"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => removeTag(index)}
+                >
+                  <Tag className={""} name={tag.name} />
                 </div>
-                <div className="mb-3 d-flex flex-row align-items-start">
-                    <label htmlFor="description" className="form-label text-nowrap">
-                        Description/Comment:
-                    </label>
-                    <textarea
-                        id="description"
-                        className="form-control bg-dark-subtle ms-5"
-                        name="description"
-                        value={postDetails.description}
-                        onChange={handleInputChange}
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="tags" className="form-label text-nowrap">
-                        Tags:
-                    </label>
-                    <div
-                        className="d-flex flex-row align-items-center"
-                        style={{gap: "0.5rem"}}
-                    >
-                        <div
-                            className="d-flex flex-wrap flex-grow-1"
-                            style={{gap: "0.5rem"}}
-                        >
-                            {postDetails.tags.map((tag, index) => (
-                                <div key={index} className="m-2" style={{cursor: "pointer"}}
-                                     onClick={() => removeTag(index)}>
-                                    <Tag className={""} name={tag}/>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="d-flex align-items-center">
-                            {" "}
-                            {/* This div for input and button should stay on the right */}
-                            <input
-                                type="text"
-                                className="form-control bg-dark-subtle ms-5"
-                                value={newTag}
-                                onChange={(e) => setNewTag(e.target.value)}
-                                onKeyPress={(e) => e.key === "Enter" && addTag()}
-                                style={{width: "150px"}} // Fixed width for input
-                            />
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                onClick={addTag}
-                                style={{marginLeft: "0.5rem"}} // Add margin to separate from input
-                            >
-                                +
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div className="mb-3 d-flex flex-row align-items-center">
-                    <label htmlFor="label" className="form-label text-nowrap">
-                        Label:
-                    </label>
-                    <select
-                        id="label"
-                        className="form-select bg-dark-subtle ms-5"
-                        name="label"
-                        value={postDetails.label}
-                        onChange={handleInputChange}
-                    >
-                        <option value="News">News</option>
-                    </select>
-                </div>
-                <div className="mb-3 d-flex flex-row align-items-center">
-                    <label htmlFor="source" className="form-label text-nowrap">
-                        Source:
-                    </label>
-                    <input
-                        id="source"
-                        type="text"
-                        className="form-control bg-dark-subtle ms-5"
-                        name="source"
-                        value={postDetails.source}
-                        onChange={handleInputChange}
-                    />
-                </div>
-                <div className="mb-3 d-flex flex-row align-items-center">
-                    <label htmlFor="publicationDate" className="form-label text-nowrap">
-                        Publication Date:
-                    </label>
-                    <input
-                        id="publicationDate"
-                        type="date"
-                        className="form-control bg-dark-subtle ms-5"
-                        name="publicationDate"
-                        value={postDetails.publicationDate.toISOString().substring(0, 10)}
-                        onChange={handleInputChange}
-                    />
-                </div>
-                <div className="mb-3 d-flex flex-row align-items-center">
-                    <button
-                        className="btn btn-secondary"
-                        type="button"
-                        onClick={() => setShowLocationPickerModal(!showLocationPickerModal)}
-                    >
-                        {locationDetails.locationSelected ? "Change Location" : "Add Location"}
-                    </button>
-                    <span className="px-2"> {locationDetails.address} </span>
-                    {locationDetails.locationSelected &&
-                        <button
-                            className="btn btn-secondary"
-                            type="button"
-                            onClick={() => {
-                                setLocationDetails(defaultLocationDetails);
-                            }}
-                        >Delete Location</button>}
+              ))}
+            </div>
+            <div className="w-100 text-center">
+              <input
+                type="text"
+                className="form-control"
+                value={newTag}
+                onChange={handleTagInputChange}
+                onFocus={() => setIsTagInputFocused(true)}
+                onBlur={handleTagInputBlur}
+              />
+              {isTagInputFocused &&
+                searchWikiTagsData &&
+                searchWikiTagsData.length > 0 && (
+                  <div className="dropdown-menu show">
+                    {searchWikiTagsData.map((tag: any) => (
+                      <div
+                        key={tag.id}
+                        className="dropdown-item"
+                        onClick={() =>
+                          onTagSelect(tag.id, tag.display.label.value)
+                        }
+                      >
+                        {tag.display.label.value} - {tag.description}
+                      </div>
+                    ))}
+                  </div>
+                )}
+            </div>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="label" className="form-label ">
+              Label:
+            </label>
+            <select
+              id="label"
+              className="form-select"
+              name="label"
+              value={postDetails.label}
+              onChange={handleInputChange}
+            >
+              <option value="News">News</option>
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="source" className="form-label ">
+              Source:
+            </label>
+            <input
+              id="source"
+              type="text"
+              className="form-control"
+              name="source"
+              value={postDetails.source}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="publicationDate" className="form-label ">
+              Publication Date:
+            </label>
+            <input
+              id="publicationDate"
+              type="date"
+              className="form-control"
+              name="publicationDate"
+              value={postDetails.publicationDate.toISOString().substring(0, 10)}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="mb-3">
+            <button
+              className="btn btn-secondary"
+              type="button"
+              onClick={() =>
+                setShowLocationPickerModal(!showLocationPickerModal)
+              }
+            >
+              {locationDetails.locationSelected
+                ? "Change Location"
+                : "Add Location"}
+            </button>
+            <span className="px-2"> {locationDetails.address} </span>
+            {locationDetails.locationSelected && (
+              <button
+                className="btn btn-secondary"
+                type="button"
+                onClick={() => {
+                  setLocationDetails(defaultLocationDetails);
+                }}
+              >
+                Delete Location
+              </button>
+            )}
+          </div>
 
-                </div>
-
-                <div className="d-flex justify-content-center">
-                    <button type="submit" className="btn btn-primary">
-                        {cardType == "create" && "Create Post"}
-                        {cardType == "update" && "Update Post"}
-                    </button>
-                </div>
-            </form>
-            <LocationPicker showLocationPickerModal={showLocationPickerModal}
-                            setShowLocationPickerModal={setShowLocationPickerModal}
-                            locationFormData={locationDetails}
-                            setLocationFormData={setLocationDetails}/>
-        </CardBody>
+          <div className="d-flex justify-content-center">
+            <button type="submit" className="btn btn-primary">
+              {cardType == "create" && "Create Post"}
+              {cardType == "update" && "Update Post"}
+            </button>
+          </div>
+        </form>
+        <LocationPicker
+          showLocationPickerModal={showLocationPickerModal}
+          setShowLocationPickerModal={setShowLocationPickerModal}
+          locationFormData={locationDetails}
+          setLocationFormData={setLocationDetails}
+        />
+      </CardBody>
     </Card>
-}
+  );
+};
 
 export default PostCreateCard;
