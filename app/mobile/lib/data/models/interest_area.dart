@@ -28,7 +28,7 @@ class InterestArea {
       id: json['id'] ?? 0,
       enigmaUserId: json['enigmaUserId'] ?? 0,
       accessLevel: json['accessLevel'] ?? '',
-      name: json['name'] ?? '',
+      name: json['title'] ?? '',
       nestedInterestAreas: List<String>.from(json['nestedInterestAreas'] ?? []),
       wikiTags: parsedWikiTags,
       createTime: DateTime.parse(json['createTime'] ?? ''),

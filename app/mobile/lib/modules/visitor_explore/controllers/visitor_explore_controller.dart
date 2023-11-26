@@ -3,7 +3,6 @@ import 'package:mobile/routes/app_pages.dart';
 
 import '../../../data/models/post_model.dart';
 import '../../../data/models/user_model.dart';
-import '../../opening/controllers/opening_controller.dart';
 
 class VisitorExploreController extends GetxController {
   RxList<UserModel> allUsers = <UserModel>[].obs;

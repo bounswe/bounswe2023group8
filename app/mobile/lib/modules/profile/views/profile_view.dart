@@ -31,15 +31,21 @@ class ProfileView extends GetView<ProfileController> {
           )
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding:
             const EdgeInsets.only(left: 14, right: 14, top: 20, bottom: 50),
-        child: SingleChildScrollView(
-          child: Column(
+        child: Obx(() {
+          if (controller.routeLoading.value) {
+            return SizedBox(
+                height: Get.height - 200,
+                child: const Center(child: CircularProgressIndicator()));
+          }
+
+          return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ProfileHeaderWidget(
-                user: controller.bottomNavController.signedInUser,
+                user: controller.userProfile,
                 onFollowersPressed: () {
                   Get.dialog(FollowersPopup());
                 },
@@ -67,16 +73,18 @@ class ProfileView extends GetView<ProfileController> {
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () {
-                            Get.toNamed(Routes.interestArea, arguments: controller.ias[index]);
+                            Get.toNamed(Routes.interestArea,
+                                arguments: controller.ias[index]);
                           },
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
                             decoration: BoxDecoration(
                               color: Palette.lightColor,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                              controller.ias[index].areaName,
+                              controller.ias[index].name,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
@@ -110,14 +118,14 @@ class ProfileView extends GetView<ProfileController> {
                       onTap: () => controller
                           .navigateToPostDetails(controller.posts[index]),
                       post: controller.posts[index],
-                      getAreaNameById: controller.getAreaNameById,
-                      getUserNameById: controller.getUserNameById,
                       hideTags: false,
                     );
                   })
             ],
+          );
+        }
           ),
-        ),
+        
       ),
     );
   }

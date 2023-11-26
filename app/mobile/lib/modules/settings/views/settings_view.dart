@@ -10,11 +10,11 @@ class SettingsView extends GetView<SettingsController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       appBar: CustomAppBar(
         leadingAppIcon: true,
       ),
-      body: const Center(
+      body: Center(
         child: Text(
           'SettingsView is working',
           style: TextStyle(fontSize: 20),

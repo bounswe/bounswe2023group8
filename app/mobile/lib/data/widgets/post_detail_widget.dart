@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/data/models/post_model.dart';
+import 'package:mobile/data/models/spot.dart';
 import '../../../data/constants/assets.dart';
 
 class PostDetailWidget extends StatelessWidget {
   final bool visitor;
-  final PostModel post;
-  final String Function(int id) getProfileImageById;
-  final String Function(int id) getIANameById;
-  final String Function(int id) getNameSurnameById;
+  final Spot post;
 
-  const PostDetailWidget(
-      {super.key,
-      this.visitor = false,
-      required this.post,
-      required this.getProfileImageById,
-      required this.getIANameById,
-      required this.getNameSurnameById});
+  const PostDetailWidget({
+    super.key,
+    this.visitor = false,
+    required this.post,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +23,10 @@ class PostDetailWidget extends StatelessWidget {
           children: [
             Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 30,
-                  backgroundImage:
-                      NetworkImage(getProfileImageById(post.userId)),
+                  backgroundImage: NetworkImage(
+                      'https://avatars.githubusercontent.com/u/88164767?s=400&u=09da0dbc9d0ee0246d7492d938a20dbc4b2be7f1&v=4'),
                 ),
                 const SizedBox(
                   width: 10,
@@ -40,29 +35,29 @@ class PostDetailWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      getIANameById(post.iaIds.first),
+                      post.interestArea.name,
                       style: const TextStyle(
                           color: Color(
                             0xff9a208e,
                           ),
                           fontWeight: FontWeight.w600),
                     ),
-                    Text(getNameSurnameById(post.userId)),
+                    Text(post.enigmaUser.name),
                     if (!visitor)
-                    OutlinedButton(
-                      onPressed: () {
-                        //Follow
+                      OutlinedButton(
+                        onPressed: () {
+                          //Follow
                         },
-                      style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15))),
+                        style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15))),
                         child: const Text("Follow"),
-                    )
+                      )
                   ],
                 ),
               ],
             ),
-            Text(post.createdAt)
+            Text(post.createTime)
           ],
         ),
         Column(
@@ -73,7 +68,7 @@ class PostDetailWidget extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
             ),
             Wrap(
-              children: post.iaIds
+              children: post.wikiTags
                   .map((e) => Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: Container(
@@ -82,7 +77,7 @@ class PostDetailWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12)),
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 4),
-                          child: Text(getIANameById(e)),
+                          child: Text(e.label),
                         ),
                       ))
                   .toList(),
@@ -151,26 +146,26 @@ class PostDetailWidget extends StatelessWidget {
               width: 20,
             ),
             if (!visitor)
-            InkWell(
-              child: Container(
+              InkWell(
+                child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: const Color(0XFFBA1F1F),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Text(
-                  "Report",
-                  style: TextStyle(color: Colors.white),
+                    "Report",
+                    style: TextStyle(color: Colors.white),
                   ),
+                ),
               ),
-            ),
           ],
         ),
         const SizedBox(
           height: 10,
         ),
         Wrap(
-          children: post.iaIds
+          children: post.wikiTags
               .map((e) => Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: Container(
@@ -179,7 +174,7 @@ class PostDetailWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12)),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
-                      child: Text(getIANameById(e)),
+                      child: Text(e.label),
                     ),
                   ))
               .toList(),

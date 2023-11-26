@@ -40,9 +40,9 @@ class FollowingsPopup extends GetView<ProfileController> {
                   itemBuilder: (context, index) {
                     final following = controller.followings[index];
                     return ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage:
-                            NetworkImage(following.userProfileImage),
+                      leading: const CircleAvatar(
+                        backgroundImage: NetworkImage(
+                            'https://avatars.githubusercontent.com/u/88164767?s=400&u=09da0dbc9d0ee0246d7492d938a20dbc4b2be7f1&v=4'),
                       ),
                       title: Text(following.name),
                       subtitle: Text(following.username),

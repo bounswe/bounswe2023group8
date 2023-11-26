@@ -16,7 +16,7 @@ class OpeningController extends GetxController {
     Get.until((route) => Get.currentRoute == Routes.opening);
     navigateToAuthentication(toLogin: login);
   }
-  
+
   final _box = GetStorage();
 
   final _provider = Get.find<OpeningProvider>();
@@ -26,9 +26,12 @@ class OpeningController extends GetxController {
       final String username = _box.read('username') ?? '';
       final String password = _box.read('password') ?? '';
       if (username.isNotEmpty && password.isNotEmpty) {
-        final token = await _provider.login(user: username, password: password);
-        if (token != null) {
-          Get.offAllNamed(Routes.bottomNavigation, arguments: {'token': token});
+        final map = await _provider.login(user: username, password: password);
+        if (map != null) {
+          final token = map['token'];
+          final userId = map['userId'];
+          Get.offAllNamed(Routes.bottomNavigation,
+              arguments: {'token': token, 'userId': userId});
           return;
         }
       }

@@ -52,13 +52,15 @@ class LoginController extends GetxController {
   }
 
   void onSignIn() async {
-
     loginInProgress.value = true;
 
     try {
-      final token = await loginProvider.login(
+      final map = await loginProvider.login(
           user: loginUsername.value, password: loginPassword.value);
-      if (token != null) {
+
+      if (map != null) {
+        final token = map['token'];
+        final userId = map['userId'];
         if (rememberMe.value) {
           await _box.write('username', loginUsername.value);
           await _box.write('password', loginPassword.value);
@@ -66,13 +68,14 @@ class LoginController extends GetxController {
           await _box.write('username', '');
           await _box.write('password', '');
         }
-        Get.offAllNamed(Routes.bottomNavigation, arguments: {'token': token});
+        Get.offAllNamed(Routes.bottomNavigation,
+            arguments: {'token': token, 'userId': userId});
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
 
-    loginInProgress.value = false; 
+    loginInProgress.value = false;
   }
 
   @override
