@@ -9,11 +9,11 @@ export type CreateInterestAreaFormData = {
   title: string;
   description: string;
   wikiTags: { id: string; name: string }[];
-  nestedInterestAreas: { id: string; name: string }[];
+  nestedInterestAreas: { id: string; title: string }[];
   accessLevel: 0 | 1 | 2;
 };
 
-export type CreateInterestAreaRequestData = {
+export type InterestAreaRequestData = {
   title: string;
   description: string;
   wikiTags: string[];
@@ -116,8 +116,8 @@ const InterestAreaCreateCard = ({
     });
   };
 
-  const addSubIA = (id: string, name: string) => {
-    const newSubIA = { id, name };
+  const addSubIA = (id: string, title: string) => {
+    const newSubIA = { id, title };
     if (
       !interestAreaDetails.nestedInterestAreas.some((subIA) => subIA.id === id)
     ) {
@@ -287,7 +287,7 @@ const InterestAreaCreateCard = ({
                       removeSubIA(index);
                     }}
                   ></button>
-                  <span>{subIA.name}</span>
+                  <span>{subIA.title}</span>
                 </div>
               ))}
 
