@@ -1,5 +1,5 @@
 import React from 'react';
-import PostPreviewCard from '../../components/Post/PostPreviewCard';
+import PostPreviewCard from '../../components/Post/PostSmallPreview/PostPreviewCard';
 import mockPosts from '../../mockData/milestone1/451_posts.json';
 import mockUsers from "../../mockData/milestone1/451_users.json";
 import mockTags from "../../mockData/milestone1/451_tags.json";
