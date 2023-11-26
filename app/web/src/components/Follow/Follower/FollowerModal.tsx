@@ -5,25 +5,36 @@ import mockUsers from '../../../mockData/milestone1/451_users.json';
 
 type FollowerModalProps = {
     show: boolean;
-    onClose: () => void;
+    setShow: (value: boolean) => void;
 };
-const FollowerModal: React.FC<FollowerModalProps> = ({ show, onClose }) => {
-    const followersData = mockUsers.slice(0, 4);
+
+const FollowerModal: React.FC<FollowerModalProps> = ({ show, setShow }) => {
+    const shuffledUsers = mockUsers.sort(() => 0.5 - Math.random());
+    const followersData = shuffledUsers.slice(0, 7);
 
     return (
-        <Modal
-            show={show}
-            onHide={onClose}
-            centered
-            className="follower-modal"
-        >
-            <Modal.Header closeButton className="text-center">
+        <Modal show={show} centered className="follower-modal">
+            <Modal.Header closeButton>
                 <Modal.Title className="text-center font-weight-bold">Followers</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-                {followersData.map((follower) => (
-                    <FollowerCard key={follower.id} user={follower} style={{ margin: '0 auto' }} className="mb-3" />
-                ))}
+            <Modal.Body style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                <Row className="follower-list">
+                    {followersData.map((follower) => (
+                        <Col key={follower.id} md={12} className="mb-3">
+                            <FollowerCard user={follower} />
+                        </Col>
+                    ))}
+                </Row>
+                <Row className="justify-content-center">
+                    <Col md={2} className="text-center">
+                        <Button
+                            className="close-button"
+                            variant="link"
+                            onClick={() => setShow(false)}
+                        >
+                        </Button>
+                    </Col>
+                </Row>
             </Modal.Body>
         </Modal>
     );
