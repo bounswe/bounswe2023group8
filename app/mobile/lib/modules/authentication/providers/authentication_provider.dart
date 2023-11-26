@@ -15,10 +15,12 @@ class AuthProvider extends GetConnect {
 
   Future<bool> signUp(
       {required String username,
+      required String name,
       required String email,
       required String password,
       required String birthday}) async {
     final response = await post('auth/signup', {
+      'name': name,
       'username': username,
       'email': email,
       'password': password,
