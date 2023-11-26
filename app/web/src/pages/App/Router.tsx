@@ -19,6 +19,7 @@ import { useToastContext } from "../../contexts/ToastContext";
 import TimelineHomePage from "../TimelineHomePage";
 import TimelineExplorePage from "../TimelineExplorePage";
 import UpdateInterestArea from "../InterestAreaUpdatePage";
+import BunchVisitorPage from "../BunchVisitorPage";
 
 const Router = () => {
   const { isAuthenticated } = useAuth();
@@ -101,6 +102,9 @@ const Router = () => {
             path="/interest-areas/:iaId"
             element={<InterestAreaViewPage />}
           />
+
+          <Route path="/bunch-visitor" element={<BunchVisitorPage />} />
+
           <Route path="/posts/:postId" element={<PostViewPage />} />
 
           <Route path="/map-test" element={<MapTestPage />} />
