@@ -72,10 +72,8 @@ class ProfileView extends GetView<ProfileController> {
                       itemCount: controller.ias.length,
                       itemBuilder: (context, index) {
                         return InkWell(
-                          onTap: () {
-                            Get.toNamed(Routes.interestArea,
-                                arguments: controller.ias[index]);
-                          },
+                          onTap: () =>
+                              controller.navigateToIa(controller.ias[index]),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
