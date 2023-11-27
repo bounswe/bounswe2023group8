@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/models/enigma_user.dart';
 
 class ProfileColumn extends StatelessWidget {
@@ -14,9 +15,7 @@ class ProfileColumn extends StatelessWidget {
           onTap: onTap,
           child: CircleAvatar(
             radius: 40,
-            backgroundImage: NetworkImage(
-                'https://avatars.githubusercontent.com/u/88164767?s=400&u=09da0dbc9d0ee0246d7492d938a20dbc4b2be7f1&v=4'),
-          ),
+                backgroundImage: AssetImage(Assets.profilePlaceholder))
         ),
         const SizedBox(height: 4),
         Text(
