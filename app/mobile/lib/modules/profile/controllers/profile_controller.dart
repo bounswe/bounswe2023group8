@@ -13,6 +13,8 @@ class ProfileController extends GetxController {
   final bottomNavController = Get.find<BottomNavigationController>();
   final profileProvider = Get.find<ProfileProvider>();
 
+  int userId = Get.arguments['userId'];
+
   var routeLoading = true.obs;
   late final UserProfile userProfile;
 
@@ -21,10 +23,12 @@ class ProfileController extends GetxController {
   var posts = <Spot>[].obs;
   var ias = <InterestArea>[].obs;
 
+
+
   void fetchUser() async {
     try {
       final profile = await profileProvider.getProfilePage(
-          id: bottomNavController.userId, token: bottomNavController.token);
+          id: userId, token: bottomNavController.token);
       if (profile != null) {
         userProfile = profile;
         posts.value = await profileProvider.getPosts(
@@ -56,7 +60,10 @@ class ProfileController extends GetxController {
   }
 
   void navigateToIa(InterestArea ia) {
-    Get.toNamed(Routes.interestArea, arguments: {'interestArea': ia});
+    Get.toNamed(Routes.interestArea, arguments: {
+      'interestArea': ia,
+      'isOwner': userId == bottomNavController.userId
+    });
   }
 
   @override

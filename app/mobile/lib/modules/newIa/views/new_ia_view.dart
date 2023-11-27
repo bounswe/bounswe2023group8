@@ -27,7 +27,7 @@ class NewIaView extends GetView<NewIaController> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Create a new Interest Area!",
+                const Text("Create a new Bunch!",
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 22,
@@ -75,9 +75,10 @@ class NewIaView extends GetView<NewIaController> {
                 const SizedBox(height: 4),
                 // Sub-IA list
                 const SizedBox(height: 8),
-            
+
                 TextField(
                   onChanged: controller.onChangeSubIaQuery,
+                  onSubmitted: controller.submitSubIaQuery,
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.zero,
                       border: OutlineInputBorder(
@@ -85,6 +86,10 @@ class NewIaView extends GetView<NewIaController> {
                       ),
                       prefixIcon: const Icon(Icons.search)),
                 ),
+
+                if (controller.searchSubIaResults.isNotEmpty)
+                  _searchIaResults(),
+                if (controller.selectedSubIas.isNotEmpty) selectedIas(),
                 const SizedBox(
                   height: 10,
                 ),
@@ -280,6 +285,90 @@ class NewIaView extends GetView<NewIaController> {
                     InkWell(
                       onTap: () {
                         controller.removeTag(tag);
+                      },
+                      child: const Icon(
+                        Icons.close,
+                        size: 16,
+                      ),
+                    )
+                  ],
+                ),
+              )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _searchIaResults() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: SizedBox(
+        height: 40,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: controller.searchSubIaResults.length,
+          itemBuilder: (context, index) {
+            var ia = controller.searchSubIaResults[index];
+            return InkWell(
+              onTap: () {
+                controller.addSubIa(ia);
+              },
+              child: Container(
+                margin: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF1F1F1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(ia.name),
+                    const SizedBox(width: 4),
+                    const Icon(
+                      Icons.add,
+                      size: 16,
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget selectedIas() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Container(
+        height: 100,
+        width: Get.width,
+        decoration: BoxDecoration(
+          color: Palette.lightColor,
+          border: Border.all(color: Palette.primaryColor, width: 1),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Wrap(
+          children: [
+            for (var ia in controller.selectedSubIas)
+              Container(
+                margin: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(ia.name),
+                    const SizedBox(width: 4),
+                    InkWell(
+                      onTap: () {
+                        controller.removeSubIa(ia);
                       },
                       child: const Icon(
                         Icons.close,

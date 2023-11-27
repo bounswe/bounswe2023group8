@@ -45,7 +45,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
       backgroundColor: Colors.white,
-      actions: actions,
+      actions: (actions ?? []).isEmpty
+          ? [
+              SizedBox(
+                width: 30,
+              )
+            ]
+          : actions,
     );
   }
 

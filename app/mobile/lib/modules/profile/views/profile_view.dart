@@ -3,12 +3,12 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/palette.dart';
+import 'package:mobile/data/widgets/bunch_widget.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
 import 'package:mobile/modules/profile/widgets/profile_header_widget.dart';
 
 import '../../../data/constants/assets.dart';
 import '../../../data/widgets/custom_app_bar.dart';
-import '../../../routes/app_pages.dart';
 import '../controllers/profile_controller.dart';
 import '../widgets/followers_popup.dart';
 import '../widgets/followings_popup.dart';
@@ -57,7 +57,7 @@ class ProfileView extends GetView<ProfileController> {
               ExpansionTile(
                 tilePadding: EdgeInsets.zero,
                 title: Text(
-                  'Interest Areas',
+                  'Bunches',
                   style: TextStyle(color: Palette.hintColor, fontSize: 16),
                 ),
                 subtitle: const Divider(
@@ -71,25 +71,10 @@ class ProfileView extends GetView<ProfileController> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: controller.ias.length,
                       itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: () =>
-                              controller.navigateToIa(controller.ias[index]),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: Palette.lightColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              controller.ias[index].name,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        );
+                        return BunchWidget(
+                            ia: controller.ias[index],
+                            onTap: () =>
+                                controller.navigateToIa(controller.ias[index]));    
                       },
                       separatorBuilder: (context, index) => const SizedBox(
                             height: 14,
@@ -100,7 +85,7 @@ class ProfileView extends GetView<ProfileController> {
                 height: 20,
               ),
               Text(
-                'Posts',
+                'Spots',
                 style: TextStyle(color: Palette.hintColor, fontSize: 16),
               ),
               const Divider(

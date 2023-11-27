@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/enigma_user.dart';
@@ -14,14 +15,41 @@ class InterestAreaController extends GetxController {
 
   var routeLoading = true.obs;
   InterestArea interestArea = Get.arguments['interestArea'];
+  bool isOwner = Get.arguments['isOwner'] ?? false;
+
+  final TextEditingController searchController = TextEditingController();
+
   RxList<Spot> posts = <Spot>[].obs;
   RxList<EnigmaUser> followers = <EnigmaUser>[].obs;
   RxList<InterestArea> nestedIas = <InterestArea>[].obs;
 
+  var searchIas = <InterestArea>[].obs;
 
+  var searchQuery = ''.obs;
+
+  void onSearchQueryChanged(String value) {
+    searchQuery.value = value;
+    searchIas.clear();
+    if (value.isNotEmpty) {
+      search();
+    }
+  }
+
+  void search() async {
+    try {
+      final searchRes = await iaProvider.searchIas(
+          key: searchQuery.value, token: bottomNavigationController.token);
+      if (searchRes != null) {
+        searchIas.value = searchRes;
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
 
   void navigateToEdit() {
-    Get.toNamed(Routes.editIa, arguments: {'interestArea': interestArea});
+    Get.toNamed(Routes.editIa,
+        arguments: {'interestArea': interestArea, 'nestedIas': nestedIas});
   }
 
   void navigateToPostDetails(Spot post) {
@@ -48,6 +76,9 @@ class InterestAreaController extends GetxController {
 
   void navigateToIa(InterestArea ia) {
     routeLoading.value = true;
+    searchQuery.value = '';
+    searchIas.clear();
+    searchController.clear();
     interestArea = ia;
     fetchData();
   }
