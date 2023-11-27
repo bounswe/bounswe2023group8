@@ -6,6 +6,7 @@ class CustomButton extends StatelessWidget {
   final String text;
   final bool active;
   final double? width;
+  final double? height;
   final Color? backgroundColor;
   final Color? textColor;
   final double disabledOpacity;
@@ -13,15 +14,18 @@ class CustomButton extends StatelessWidget {
   final bool shadow;
   final bool secondaryColor;
   final double? fontSize;
+  final FontWeight? fontWeight;
   const CustomButton(
       {this.onPressed,
       required this.text,
       this.width,
+      this.height,
       this.active = true,
       this.backgroundColor,
       this.textColor,
       this.disabledOpacity = 0.25,
       this.fontSize,
+      this.fontWeight,
       this.secondaryColor = false,
       this.inProgress = false,
       this.shadow = false,
@@ -31,7 +35,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: width,
-      height: 52,
+      height: height,
       decoration: shadow
           ? active
               ? BoxDecoration(
@@ -79,7 +83,7 @@ class CustomButton extends StatelessWidget {
                     color: secondaryColor
                         ? ThemePalette.main
                         : textColor ?? ThemePalette.light,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: fontWeight ?? FontWeight.w600,
                     fontSize: fontSize ?? 20)),
       ),
     );
