@@ -74,7 +74,7 @@ class ProfileView extends GetView<ProfileController> {
                         return BunchWidget(
                             ia: controller.ias[index],
                             onTap: () =>
-                                controller.navigateToIa(controller.ias[index]));    
+                                controller.navigateToIa(controller.ias[index]));
                       },
                       separatorBuilder: (context, index) => const SizedBox(
                             height: 14,
@@ -106,9 +106,7 @@ class ProfileView extends GetView<ProfileController> {
                   })
             ],
           );
-        }
-          ),
-        
+        }),
       ),
     );
   }
