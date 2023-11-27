@@ -32,15 +32,20 @@ class PostTileWidget extends StatelessWidget {
                 // maxLines: 2,
               ),
             ),
-            // Text(
-            //   "Content: ${item['content']}",
-            //   maxLines: 2,
-            //   overflow: TextOverflow.ellipsis,
-            // ),
+          
             const SizedBox(
-              height: 16,
+              height: 5,
             ),
-
+            Text(post.sourceLink,
+                style: const TextStyle(
+                    fontSize: 10,
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline)),
+            Text(post.interestArea.name,
+                style: const TextStyle(
+                    fontSize: 10,
+                    color: Colors.brown,
+                    fontWeight: FontWeight.bold)),
             Row(
               children: [
                 
