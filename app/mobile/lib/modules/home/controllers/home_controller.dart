@@ -32,6 +32,8 @@ class HomeController extends GetxController {
     searchIas.clear();
     if (value.isNotEmpty) {
       search();
+    } else {
+      fetchData();
     }
   }
 
