@@ -22,8 +22,8 @@ class Assets {
   static const String createBunch = 'assets/icons/create_bunch.svg';
   static const String explore = 'assets/icons/explore.svg';
   static const String notification = 'assets/icons/notification.svg';
-  static const String upvote = 'assets/icons/upvote.svg';
-  static const String downvote = 'assets/icons/downvote.svg';
+  static const String upvote = 'assets/icons/upvote.png';
+  static const String downvote = 'assets/icons/downvote.png';
   static const String sortNew = 'assets/icons/sort_new.svg';
   static const String sortTop = 'assets/icons/sort_top.svg';
   static const String public = 'assets/icons/public.svg';
