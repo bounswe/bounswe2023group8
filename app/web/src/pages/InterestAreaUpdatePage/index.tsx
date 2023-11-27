@@ -10,6 +10,14 @@ import {
   useUpdateInterestArea,
 } from "../../hooks/useInterestArea";
 
+export type AccessLevel = "PUBLIC" | "PRIVATE" | "PERSONAL";
+
+export const accessLevelMapping: { [key in AccessLevel]: 0 | 1 | 2 } = {
+  PUBLIC: 0,
+  PRIVATE: 1,
+  PERSONAL: 2,
+};
+
 const UpdateInterestArea = () => {
   const { axiosInstance } = useAuth();
   const params = useParams();
@@ -55,14 +63,6 @@ const UpdateInterestArea = () => {
         },
       },
     });
-
-  type AccessLevel = "PUBLIC" | "PRIVATE" | "PERSONAL";
-
-  const accessLevelMapping: { [key in AccessLevel]: 0 | 1 | 2 } = {
-    PUBLIC: 0,
-    PRIVATE: 1,
-    PERSONAL: 2,
-  };
 
   const [initialInterestAreaDetails, setInitialInterestAreaDetails] =
     useState<CreateInterestAreaFormData>({

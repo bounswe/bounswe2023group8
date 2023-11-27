@@ -44,8 +44,7 @@ const CreateInterestArea = () => {
   };
 
   const { mutate } = useCreateInterestArea({});
-
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const wikiTagIds = interestAreaDetails.wikiTags.map((tag) => tag.id);
     const nestedInterestAreaIds = interestAreaDetails.nestedInterestAreas.map(

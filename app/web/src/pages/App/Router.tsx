@@ -99,7 +99,7 @@ const Router = () => {
             element={<UpdateInterestArea />}
           />
           <Route
-            path="/interest-areas/:iaId"
+            path="/interest-area/:iaId"
             element={<InterestAreaViewPage />}
           />
 
