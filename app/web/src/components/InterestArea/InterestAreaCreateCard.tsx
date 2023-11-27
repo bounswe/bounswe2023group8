@@ -180,154 +180,156 @@ const InterestAreaCreateCard = ({
   return (
     <Card className="">
       <CardBody className="">
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label htmlFor="accessLevel" className="form-label">
-              Access Level:
-            </label>
-            <select
-              id="accessLevel"
-              className="form-select"
-              value={interestAreaDetails.accessLevel}
-              onChange={handleAccessLevelChange}
-            >
-              <option value={0}>Public</option>
-              <option value={1}>Private</option>
-              <option value={2}>Personal</option>
-            </select>
-          </div>
-          <div className="mb-3">
-            <label htmlFor="title" className="form-label">
-              Title:
-            </label>
-            <input
-              id="title"
-              type="text"
-              className="form-control"
-              name="title"
-              value={interestAreaDetails.title}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="description" className="form-label">
-              Description:
-            </label>
-            <textarea
-              id="description"
-              className="form-control"
-              name="description"
-              value={interestAreaDetails.description}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="wikiTags" className="form-label">
-              Tags:
-            </label>
-            <div className="d-flex flex-wrap">
-              {interestAreaDetails.wikiTags.map((tag, index) => (
-                <div
-                  key={tag.id}
-                  className="m-2"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => removeTag(index)}
-                >
-                  <Tag className={""} name={tag.name} />
-                </div>
-              ))}
-              <div className="w-100 text-center">
-                <input
-                  type="text"
-                  className="form-control"
-                  value={newTag}
-                  onChange={handleTagInputChange}
-                  onFocus={() => setIsTagInputFocused(true)}
-                  onBlur={handleTagInputBlur}
-                />
-                {isTagInputFocused &&
-                  searchWikiTagsData &&
-                  searchWikiTagsData.length > 0 && (
-                    <div className="dropdown-menu show">
-                      {searchWikiTagsData.map((result: any) => (
-                        <button
-                          key={result.id}
-                          className="dropdown-item"
-                          type="button"
-                          onClick={() =>
-                            onTagSelect(result.id, result.display.label.value)
-                          }
-                        >
-                          {result.display.label.value} - {result.description}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+        <div className="mb-3">
+          <label htmlFor="accessLevel" className="form-label">
+            Access Level:
+          </label>
+          <select
+            id="accessLevel"
+            className="form-select"
+            value={interestAreaDetails.accessLevel}
+            onChange={handleAccessLevelChange}
+          >
+            <option value={0}>Public</option>
+            <option value={1}>Private</option>
+            <option value={2}>Personal</option>
+          </select>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="title" className="form-label">
+            Title:
+          </label>
+          <input
+            id="title"
+            type="text"
+            className="form-control"
+            name="title"
+            value={interestAreaDetails.title}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="description" className="form-label">
+            Description:
+          </label>
+          <textarea
+            id="description"
+            className="form-control"
+            name="description"
+            value={interestAreaDetails.description}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="wikiTags" className="form-label">
+            Tags:
+          </label>
+          <div className="d-flex flex-wrap">
+            {interestAreaDetails.wikiTags.map((tag, index) => (
+              <div
+                key={tag.id}
+                className="m-2"
+                style={{ cursor: "pointer" }}
+                onClick={() => removeTag(index)}
+              >
+                <Tag className={""} name={tag.name} />
               </div>
+            ))}
+            <div className="w-100 text-center">
+              <input
+                type="text"
+                className="form-control"
+                value={newTag}
+                onChange={handleTagInputChange}
+                onFocus={() => setIsTagInputFocused(true)}
+                onBlur={handleTagInputBlur}
+              />
+              {isTagInputFocused &&
+                searchWikiTagsData &&
+                searchWikiTagsData.length > 0 && (
+                  <div className="dropdown-menu show">
+                    {searchWikiTagsData.map((result: any) => (
+                      <button
+                        key={result.id}
+                        className="dropdown-item"
+                        type="button"
+                        onClick={() =>
+                          onTagSelect(result.id, result.display.label.value)
+                        }
+                      >
+                        {result.display.label.value} - {result.description}
+                      </button>
+                    ))}
+                  </div>
+                )}
             </div>
           </div>
+        </div>
 
-          <div className="mb-3">
-            <label htmlFor="nestedInterestAreas" className="form-label">
-              Sub-IAs:
-            </label>
-            <div className="d-flex flex-wrap">
-              {interestAreaDetails.nestedInterestAreas.map((subIA, index) => (
-                <div
-                  key={subIA.id}
-                  className="d-flex justify-content-between align-items-center bg-light px-2 py-1 m-2 rounded shadow-sm"
-                  onClick={() => removeSubIA(index)}
-                >
-                  <button
-                    type="button"
-                    className="btn-close"
-                    aria-label="Close"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeSubIA(index);
-                    }}
-                  ></button>
-                  <span>{subIA.title}</span>
-                </div>
-              ))}
-
-              <div className="w-100 text-center mt-2">
-                <input
-                  type="text"
-                  className="form-control"
-                  value={newSubIA}
-                  onChange={handleSubIAInputChange}
-                  onFocus={() => setIsSubIAInputFocused(true)}
-                  onBlur={handleSubIAInputBlur}
-                />
-                {isSubIAInputFocused &&
-                  searchInterestAreasData &&
-                  searchInterestAreasData.length > 0 && (
-                    <div className="dropdown-menu show">
-                      {searchInterestAreasData.map((result: any) => (
-                        <button
-                          key={result.id}
-                          className="dropdown-item"
-                          type="button"
-                          onClick={() => onSubIASelect(result.id, result.title)}
-                        >
-                          {result.title} - {result.description}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+        <div className="mb-3">
+          <label htmlFor="nestedInterestAreas" className="form-label">
+            Sub-IAs:
+          </label>
+          <div className="d-flex flex-wrap">
+            {interestAreaDetails.nestedInterestAreas.map((subIA, index) => (
+              <div
+                key={subIA.id}
+                className="d-flex justify-content-between align-items-center bg-light px-2 py-1 m-2 rounded shadow-sm"
+                onClick={() => removeSubIA(index)}
+              >
+                <button
+                  type="button"
+                  className="btn-close"
+                  aria-label="Close"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeSubIA(index);
+                  }}
+                ></button>
+                <span>{subIA.title}</span>
               </div>
+            ))}
+
+            <div className="w-100 text-center mt-2">
+              <input
+                type="text"
+                className="form-control"
+                value={newSubIA}
+                onChange={handleSubIAInputChange}
+                onFocus={() => setIsSubIAInputFocused(true)}
+                onBlur={handleSubIAInputBlur}
+              />
+              {isSubIAInputFocused &&
+                searchInterestAreasData &&
+                searchInterestAreasData.length > 0 && (
+                  <div className="dropdown-menu show">
+                    {searchInterestAreasData.map((result: any) => (
+                      <button
+                        key={result.id}
+                        className="dropdown-item"
+                        type="button"
+                        onClick={() => onSubIASelect(result.id, result.title)}
+                      >
+                        {result.title} - {result.description}
+                      </button>
+                    ))}
+                  </div>
+                )}
             </div>
           </div>
+        </div>
 
-          <div className="d-flex justify-content-center mt-4">
-            <button type="submit" className="btn btn-primary">
-              {cardType === "create"
-                ? "Create Interest Area"
-                : "Update Interest Area"}
-            </button>
-          </div>
-        </form>
+        <div className="d-flex justify-content-center mt-4">
+          <button
+            type="submit"
+            className="btn btn-primary"
+            onClick={handleSubmit}
+          >
+            {cardType === "create"
+              ? "Create Interest Area"
+              : "Update Interest Area"}
+          </button>
+        </div>
       </CardBody>
     </Card>
   );
