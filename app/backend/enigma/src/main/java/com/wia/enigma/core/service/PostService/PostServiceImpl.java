@@ -112,4 +112,9 @@ public class PostServiceImpl implements PostService{
 
        return postServiceHelper.getInterestAreaPosts(interestAreaId, userId );
     }
+
+    @Override
+    public List<PostDto> search(Long userId, String searchKey) {
+        return postServiceHelper.search(userId, searchKey);
+    }
 }

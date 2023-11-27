@@ -519,7 +519,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
     }
 
     @Override
-    public List<InterestAreaDto> getFollowingInterestAreas(Long followerId, Long userId) {
+    public List<InterestAreaDto> getFollowingInterestAreas(Long userId, Long followerId ) {
         List<Long> followedEntityIds = userFollowsService.findAcceptedFollowings(followerId, EntityType.INTEREST_AREA)
                 .stream()
                 .map(UserFollows::getFollowedEntityId)

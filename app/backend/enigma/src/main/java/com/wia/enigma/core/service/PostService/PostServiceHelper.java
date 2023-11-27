@@ -174,4 +174,33 @@ class PostServiceHelper {
               return post.mapToPostDto(wikiTags, enigmaUser.mapToEnigmaUserDto(), interestArea.mapToInterestAreaModel());
          }).toList();
     }
+
+    List<PostDto> search(Long userId, String searchKey){
+
+
+        List<Post> post = postRepository.findByTitleContainsOrContentContainsOrSourceLinkContains(searchKey, searchKey, searchKey);
+
+        List<Post> filteredPosts =  post.stream().filter(post1 -> post1.getAccessLevel().equals(EnigmaAccessLevel.PUBLIC) ||  userFollowsService.isUserFollowsEntity(userId, post1.getInterestAreaId(), EntityType.INTEREST_AREA)).toList();
+
+        List<Long> filteredPostIds = filteredPosts.stream().map(Post::getId).toList();
+
+        List<EntityTag> entityTags =  entityTagsRepository.findByEntityIdInAndEntityType( filteredPostIds, EntityType.POST );
+
+        List<WikiTag> wikiTags = wikiTagRepository.findAllById(
+                entityTags.stream()
+                        .map(EntityTag::getWikiDataTagId)
+                        .collect(Collectors.toList())
+        );
+
+        List<Long> userIds = filteredPosts.stream().map(Post::getEnigmaUserId).toList();
+
+
+        List<EnigmaUser> enigmaUsers = enigmaUserRepository.findAllById(userIds);
+
+        return filteredPosts.stream().map(post1 -> {
+            EnigmaUser enigmaUser = enigmaUsers.stream().filter(enigmaUser1 -> enigmaUser1.getId().equals(post1.getEnigmaUserId())).findFirst().get();
+            return post1.mapToPostDto(wikiTags, enigmaUser.mapToEnigmaUserDto(), interestAreaServiceHelper.getInterestArea(post1.getInterestAreaId()).mapToInterestAreaModel());
+        }).toList();
+
+    }
 }
