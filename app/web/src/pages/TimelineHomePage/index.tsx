@@ -32,18 +32,20 @@ const TimelineHomePage: React.FC = () => {
   const randomTagsAbove = getRandomTags(4);
   const randomTagsBelow = getRandomTags(4);
 
-  return (
-    <div className="container mt-3">
-      {randomPosts.map((post) => (
-        <div key={post.id} className="mb-4">
-          {/* <PostPreviewCard
-                        post={post}
-                        userName={getUserName(post)}
-                        interestAreas={getRandomTags(8)}
-                        //tagsAbove={randomTagsAbove}
-                        //tagsBelow={randomTagsBelow}
-                        // Additional props as needed
-                    /> */}
+    return (
+        <div className="container mt-3">
+            {/*{randomPosts.map((post) => (*/}
+            {/*    <div key={post.id} className="mb-4">*/}
+            {/*        <PostPreviewCard*/}
+            {/*            post={post}*/}
+            {/*            userName={getUserName(post)}*/}
+            {/*            tags={getRandomTags(8)}*/}
+            {/*            //tagsAbove={randomTagsAbove}*/}
+            {/*            //tagsBelow={randomTagsBelow}*/}
+            {/*            // Additional props as needed*/}
+            {/*        />*/}
+            {/*    </div>*/}
+            {/*))}*/}
         </div>
       ))}
     </div>
