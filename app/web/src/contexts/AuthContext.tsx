@@ -9,11 +9,12 @@ import React, {
 import axios, { AxiosInstance, AxiosRequestHeaders } from "axios";
 import { FormData } from "../components/Register/RegisterModal";
 import { LoginFormData } from "../components/Login/LoginModal";
+import { useGetUser } from "../hooks/useUser";
 
 interface AuthState {
   isAuthenticated: boolean;
   token: string | null;
-  enigmaUserId: number | null;
+  userId: number | null;
   authentication: {
     tokenType: string;
     accessToken: string;
@@ -22,12 +23,21 @@ interface AuthState {
   } | null;
 }
 
+type userData = {
+  id: number;
+  username: string;
+  name: string;
+  email: string;
+  birthday: string;
+  createTime: string;
+};
 interface AuthContextType extends AuthState {
   login: (data: LoginFormData) => Promise<void>;
   signup: (data: FormData) => Promise<void>;
   logout: () => void;
   axiosInstance: AxiosInstance;
   confirmSignupToken: (token: string) => Promise<void>;
+  userData: userData;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,14 +50,32 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
   const [authState, setAuthState] = useState<AuthState>({
     isAuthenticated: sessionStorage.getItem("token") ? true : false,
     token: sessionStorage.getItem("token"),
-    enigmaUserId: null,
+    userId: null,
     authentication: null,
+  });
+  const [userData, setUserData] = useState<userData>({
+    id: -1,
+    username: "",
+    name: "",
+    email: "",
+    birthday: "",
+    createTime: "",
   });
 
   const axiosInstance = axios.create({
     baseURL: `${process.env.REACT_APP_BACKEND_API_URL}`,
     headers: {
       "Content-Type": "application/json",
+    },
+  });
+
+  const { mutate } = useGetUser({
+    axiosInstance: axiosInstance,
+    userId: authState.userId as number,
+    config: {
+      onSuccess: (data: any) => {
+        setUserData(data);
+      },
     },
   });
 
@@ -69,14 +97,32 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
       }).toString();
 
       const response = await axiosInstance.get(`/auth/signin?${params}`);
-      const { enigmaUserId, authentication } = response.data;
+      const { userId, authentication } = response.data;
       setAuthState({
         isAuthenticated: true,
         token: authentication.accessToken,
-        enigmaUserId,
+        userId,
         authentication,
       });
       sessionStorage.setItem("token", authentication.accessToken);
+      const newAxiosInstance = axios.create({
+        baseURL: `${process.env.REACT_APP_BACKEND_API_URL}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authentication.accessToken}`,
+        },
+      });
+      mutate(
+        {
+          axiosInstance: newAxiosInstance,
+          userId: userId,
+        },
+        {
+          onSuccess: (data: any) => {
+            setUserData(data);
+          },
+        }
+      );
     } catch (error) {
       console.error("Login failed:", error);
       throw error;
@@ -96,7 +142,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
     try {
       await axiosInstance.post("/auth/logout");
       setAuthState({
-        enigmaUserId: null,
+        userId: null,
         authentication: null,
         isAuthenticated: false,
         token: null,
@@ -112,11 +158,11 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
     async (token: string) => {
       try {
         const response = await axiosInstance.get(`/auth/verify?token=${token}`);
-        const { enigmaUserId, authentication } = response.data;
+        const { userId, authentication } = response.data;
         setAuthState({
           isAuthenticated: true,
           token: authentication.accessToken,
-          enigmaUserId,
+          userId,
           authentication,
         });
         sessionStorage.setItem("token", authentication.accessToken);
@@ -136,6 +182,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
         signup,
         logout,
         axiosInstance,
+        userData,
         confirmSignupToken,
       }}
     >
