@@ -263,8 +263,8 @@ class NewIaView extends GetView<NewIaController> {
         height: 100,
         width: Get.width,
         decoration: BoxDecoration(
-          color: Palette.lightColor,
-          border: Border.all(color: Palette.primaryColor, width: 1),
+          color: ThemePalette.light,
+          border: Border.all(color: ThemePalette.main, width: 1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Wrap(
@@ -347,8 +347,8 @@ class NewIaView extends GetView<NewIaController> {
         height: 100,
         width: Get.width,
         decoration: BoxDecoration(
-          color: Palette.lightColor,
-          border: Border.all(color: Palette.primaryColor, width: 1),
+          color: ThemePalette.light,
+          border: Border.all(color: ThemePalette.main, width: 1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Wrap(

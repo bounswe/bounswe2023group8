@@ -43,7 +43,7 @@ class PostDetailsView extends GetView<PostDetailsController> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   decoration: BoxDecoration(
-                    color: Palette.lightColor,
+                    color: ThemePalette.light,
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Column(children: [

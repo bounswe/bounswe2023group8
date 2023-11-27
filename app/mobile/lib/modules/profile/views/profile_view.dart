@@ -58,7 +58,7 @@ class ProfileView extends GetView<ProfileController> {
                 tilePadding: EdgeInsets.zero,
                 title: Text(
                   'Bunches',
-                  style: TextStyle(color: Palette.hintColor, fontSize: 16),
+                  style: TextStyle(color: ThemePalette.dark, fontSize: 16),
                 ),
                 subtitle: const Divider(
                   thickness: 1,
@@ -86,7 +86,7 @@ class ProfileView extends GetView<ProfileController> {
               ),
               Text(
                 'Spots',
-                style: TextStyle(color: Palette.hintColor, fontSize: 16),
+                style: TextStyle(color: ThemePalette.dark, fontSize: 16),
               ),
               const Divider(
                 thickness: 1,
