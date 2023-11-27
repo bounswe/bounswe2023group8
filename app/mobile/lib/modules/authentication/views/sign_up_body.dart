@@ -29,7 +29,7 @@ class SignUpBody extends GetView<SignUpController> {
                 style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Palette.primaryColor)),
+                    color: ThemePalette.main)),
             const Spacer(flex: 4),
             CustomTextField(
               hintText: 'Name',
@@ -66,7 +66,7 @@ class SignUpBody extends GetView<SignUpController> {
                   padding: const EdgeInsets.only(top: 14, left: 14),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(24.0),
-                    color: Colors.white,
+                    color: ThemePalette.white,
                     boxShadow: const [
                       BoxShadow(
                         color: Color.fromRGBO(0, 0, 0, 0.05),
@@ -87,8 +87,8 @@ class SignUpBody extends GetView<SignUpController> {
                     style: TextStyle(
                         fontSize: 16,
                         color: controller.birthday.value.isEmpty
-                            ? Colors.grey
-                            : Colors.black),
+                            ? ThemePalette.dark.withOpacity(0.4)
+                            : ThemePalette.dark),
                   ),
                 )),
             const Spacer(flex: 1),
@@ -112,9 +112,9 @@ class SignUpBody extends GetView<SignUpController> {
                     controller.toggleConfirmPasswordVisibility()),
             const Spacer(flex: 1),
             !controller.confirmPasswordValid.value
-                ? const Text(
+                ? Text(
                     "Confirm password must match your password!",
-                    style: TextStyle(color: Colors.red),
+                    style: TextStyle(color: ThemePalette.negative),
                   )
                 : const SizedBox(),
             const Spacer(flex: 2),
@@ -135,7 +135,7 @@ class SignUpBody extends GetView<SignUpController> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        activeColor: Colors.green,
+                        activeColor: ThemePalette.positive,
                         side: const BorderSide(color: Colors.grey),
                       ),
                     ),
@@ -158,7 +158,7 @@ class SignUpBody extends GetView<SignUpController> {
                 active: controller.signUpUsernameValid.value &&
                     controller.signUpPasswordValid.value &&
                     controller.signUpEmailValid.value &&
-                    controller.confirmPasswordValid.value && 
+                    controller.confirmPasswordValid.value &&
                     controller.signUpNameValid.value &&
                     controller.acceptTerms.value),
             const Spacer(flex: 5),
@@ -173,7 +173,7 @@ class SignUpBody extends GetView<SignUpController> {
                   onTap: controller.navigateToSignin,
                   child: Text('Log in',
                       style: TextStyle(
-                          color: Palette.primaryColor,
+                          color: ThemePalette.main,
                           fontSize: 20,
                           fontWeight: FontWeight.bold)),
                 ),

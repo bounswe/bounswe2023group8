@@ -34,16 +34,16 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
           left: Get.width * 0.5 - 24,
           child: Center(
             child: CircleAvatar(
-                backgroundColor: Palette.primaryColor,
+                backgroundColor: ThemePalette.main,
                 radius: 24,
                 child: InkWell(
                   onTap: () {
                     controller.changePage(2);
                   },
-                  child: const Icon(
+                  child: Icon(
                     Icons.add,
                     size: 40,
-                    color: Colors.white,
+                    color: ThemePalette.light,
                   ),
                 )),
           ),
@@ -68,50 +68,47 @@ class BottomNavbar extends StatelessWidget {
     return SizedBox(
       height: 50,
       child: Container(
-            height: 50,
-            width: Get.width,
-            color: Palette.lightColor,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _bottomNavBarItem(
-                  asset: Assets.home,
-                  label: 'Home',
-                  selected: selected == 0,
-                  onTap: () {
-                    onTap(0);
-                  },
-                ),
-                _bottomNavBarItem(
-                  asset: Assets.profile,
-                  label: 'Profile',
-                  selected: selected == 1,
-                  onTap: () {
-                    onTap(1);
-                  },
-                ),
-                const SizedBox(),
-                _bottomNavBarItem(
-                    asset: Assets.newIa,
-                    label: 'NewIa',
-                    selected: selected == 3,
-                    onTap: () {
-                      onTap(3);
-                    }),
-                _bottomNavBarItem(
-                    asset: Assets.settings,
-                    label: 'Settings',
-                    selected: selected == 4,
-                    onTap: () {
-                      onTap(4);
-                    }),
-              ],
+        height: 50,
+        width: Get.width,
+        color: BackgroundPalette.soft,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _bottomNavBarItem(
+              asset: Assets.home,
+              label: 'Home',
+              selected: selected == 0,
+              onTap: () {
+                onTap(0);
+              },
             ),
-          ),
-        
-       
-      
+            _bottomNavBarItem(
+              asset: Assets.profile,
+              label: 'Profile',
+              selected: selected == 1,
+              onTap: () {
+                onTap(1);
+              },
+            ),
+            const SizedBox(),
+            _bottomNavBarItem(
+                asset: Assets.createBunch,
+                label: 'CreateBunch',
+                selected: selected == 3,
+                onTap: () {
+                  onTap(3);
+                }),
+            _bottomNavBarItem(
+                asset: Assets.settings,
+                label: 'Settings',
+                selected: selected == 4,
+                onTap: () {
+                  onTap(4);
+                }),
+          ],
+        ),
+      ),
     );
   }
 
@@ -127,12 +124,12 @@ class BottomNavbar extends StatelessWidget {
               ? SvgPicture.asset(
                   asset,
                   height: 26,
-                  color: Palette.primaryColor,
+                  color: ThemePalette.main,
                 )
               : SvgPicture.asset(
                   asset,
                   height: 26,
-                  color: Colors.black,
+                  color: ThemePalette.dark,
                 ),
         ));
   }

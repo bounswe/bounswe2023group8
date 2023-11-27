@@ -20,7 +20,7 @@ class Dialogs {
         title: Container(
           padding: const EdgeInsets.symmetric(vertical: 15),
           decoration: BoxDecoration(
-              color: Palette.lightColor,
+              color: ThemePalette.light,
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(10), topRight: Radius.circular(10))),
           child: Center(
@@ -38,7 +38,7 @@ class Dialogs {
               Expanded(
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: Palette.hintColor,
+                    backgroundColor: ThemePalette.dark,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6)),
                   ),
@@ -47,8 +47,8 @@ class Dialogs {
                         Get.back();
                       },
                   child: Text(cancelText,
-                      style: const TextStyle(
-                          color: Colors.white,
+                      style: TextStyle(
+                          color: ThemePalette.light,
                           fontWeight: FontWeight.w400,
                           fontSize: 15)),
                 ),
@@ -58,13 +58,13 @@ class Dialogs {
                 child: TextButton(
                   onPressed: onAction,
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.red,
+                    backgroundColor: ThemePalette.negative,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6)),
                   ),
                   child: Text(actionText,
-                      style: const TextStyle(
-                          color: Colors.white,
+                      style: TextStyle(
+                          color: ThemePalette.light,
                           fontWeight: FontWeight.w400,
                           fontSize: 15)),
                 ),

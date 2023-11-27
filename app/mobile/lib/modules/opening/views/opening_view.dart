@@ -54,7 +54,7 @@ class OpeningView extends GetView<OpeningController> {
                           'Continue as Visitor',
                           style: TextStyle(
                             decoration: TextDecoration.underline,
-                            color: Palette.primaryColor,
+                            color: ThemePalette.main,
                           ),
                         ),
                       ),
@@ -63,8 +63,7 @@ class OpeningView extends GetView<OpeningController> {
               ])
             ],
           );
-        }
-        ),
+        }),
       ),
     );
   }

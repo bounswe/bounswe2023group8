@@ -56,16 +56,15 @@ class CustomButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           shadowColor: Colors.transparent,
           disabledBackgroundColor: secondaryColor
-              ? Palette.secondaryButtonColor
+              ? BackgroundPalette.regular
               : backgroundColor ??
-                  Palette.primaryColor
-                      .withOpacity(active ? 1 : disabledOpacity),
+                  ThemePalette.main.withOpacity(active ? 1 : disabledOpacity),
           disabledForegroundColor:
-              secondaryColor ? Palette.primaryColor : textColor,
+              secondaryColor ? ThemePalette.main : textColor,
           backgroundColor: secondaryColor
-              ? Palette.secondaryButtonColor
+              ? BackgroundPalette.regular
               : backgroundColor ??
-              Palette.primaryColor.withOpacity(active ? 1 : disabledOpacity),
+                  ThemePalette.main.withOpacity(active ? 1 : disabledOpacity),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
         ),
@@ -73,14 +72,13 @@ class CustomButton extends StatelessWidget {
             ? const SizedBox(
                 height: 20,
                 width: 20,
-                child: CircularProgressIndicator(
-                ),
+                child: CircularProgressIndicator(),
               )
             : Text(text,
                 style: TextStyle(
                     color: secondaryColor
-                        ? Palette.primaryColor
-                        : textColor ?? Colors.white,
+                        ? ThemePalette.main
+                        : textColor ?? ThemePalette.light,
                     fontWeight: FontWeight.w600,
                     fontSize: fontSize ?? 20)),
       ),
