@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/models/post_model.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/data/widgets/visitor_bottom_bar.dart';
@@ -180,9 +181,7 @@ Widget popularUserCard({required UserModel user}) {
       children: [
         CircleAvatar(
           radius: 24,
-          backgroundImage: NetworkImage(
-              'https://avatars.githubusercontent.com/u/88164767?s=400&u=09da0dbc9d0ee0246d7492d938a20dbc4b2be7f1&v=4'),
-        ),
+          backgroundImage: AssetImage(Assets.profilePlaceholder)),
         const SizedBox(height: 8),
         Text(
           user.name,

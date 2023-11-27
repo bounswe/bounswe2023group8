@@ -25,9 +25,7 @@ class PostDetailWidget extends StatelessWidget {
               children: [
                 const CircleAvatar(
                   radius: 30,
-                  backgroundImage: NetworkImage(
-                      'https://avatars.githubusercontent.com/u/88164767?s=400&u=09da0dbc9d0ee0246d7492d938a20dbc4b2be7f1&v=4'),
-                ),
+                    backgroundImage: AssetImage(Assets.profilePlaceholder)),
                 const SizedBox(
                   width: 10,
                 ),

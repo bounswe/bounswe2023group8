@@ -11,6 +11,9 @@ class Assets {
   static const String sampleImage7 = 'assets/images/sample_image7.png';
   static const String sampleImage8 = 'assets/images/sample_image8.png';
   static const String factCheck = 'assets/images/fact_check.png';
+  static const String spot = 'assets/images/spot.png';
+  static const String profilePlaceholder =
+      'assets/images/profile-placeholder.png';
 
   // Icons
 
