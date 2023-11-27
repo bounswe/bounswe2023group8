@@ -25,6 +25,8 @@ class InterestAreaController extends GetxController {
 
   var searchIas = <InterestArea>[].obs;
 
+  var isFollower = false.obs;
+
   var searchQuery = ''.obs;
 
   void onSearchQueryChanged(String value) {
@@ -83,10 +85,38 @@ class InterestAreaController extends GetxController {
     fetchData();
   }
 
+  void followIa() async {
+    try {
+      final res = await iaProvider.followIa(
+          id: interestArea.id, token: bottomNavigationController.token);
+      if (res) {
+        isFollower.value = true;
+        bottomNavigationController.followIa(interestArea);
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void unfollowIa() async {
+    try {
+      final res = await iaProvider.unfollowIa(
+          id: interestArea.id, token: bottomNavigationController.token);
+      if (res) {
+        isFollower.value = false;
+        bottomNavigationController.unfollowIa(interestArea);
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();
     fetchData();
+    isFollower.value =
+        bottomNavigationController.isIaFollowing(interestArea.id);
   }
 
   @override

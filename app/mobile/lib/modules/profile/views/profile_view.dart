@@ -45,6 +45,8 @@ class ProfileView extends GetView<ProfileController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ProfileHeaderWidget(
+                followerCount: controller.followers.length,
+                followingCount: controller.followings.length,
                 user: controller.userProfile,
                 onFollowersPressed: () {
                   Get.dialog(FollowersPopup());
@@ -53,6 +55,21 @@ class ProfileView extends GetView<ProfileController> {
                   Get.dialog(FollowingsPopup());
                 },
               ),
+              const SizedBox(
+                height: 20,
+              ),
+              if (controller.userId != controller.bottomNavController.userId)
+                controller.isFollowing.value
+                    ? OutlinedButton(
+                        onPressed: () =>
+                            controller.unfollowUser(controller.userId),
+                        child: Text('Unfollow',
+                            style: TextStyle(color: ThemePalette.main)))
+                    : OutlinedButton(
+                        onPressed: () =>
+                            controller.followUser(controller.userId),
+                        child: Text('Follow',
+                            style: TextStyle(color: ThemePalette.main))),
               const SizedBox(height: 20),
               ExpansionTile(
                 tilePadding: EdgeInsets.zero,

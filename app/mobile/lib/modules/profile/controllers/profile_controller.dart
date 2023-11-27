@@ -23,7 +23,7 @@ class ProfileController extends GetxController {
   var posts = <Spot>[].obs;
   var ias = <InterestArea>[].obs;
 
-
+  var isFollowing = false.obs;
 
   void fetchUser() async {
     try {
@@ -32,21 +32,13 @@ class ProfileController extends GetxController {
       if (profile != null) {
         userProfile = profile;
         posts.value = await profileProvider.getPosts(
-                id: bottomNavController.userId,
-                token: bottomNavController.token) ??
+                id: userId, token: bottomNavController.token) ??
             [];
         ias.value = await profileProvider.getIas(
-                id: bottomNavController.userId,
-                token: bottomNavController.token) ??
+                id: userId, token: bottomNavController.token) ??
             [];
-        followers.value = await profileProvider.getFollowers(
-                id: bottomNavController.userId,
-                token: bottomNavController.token) ??
-            [];
-        followings.value = await profileProvider.getFollowings(
-                id: bottomNavController.userId,
-                token: bottomNavController.token) ??
-            [];
+        fetchFollowers();
+        fetchFollowings();
         routeLoading.value = false;
       }
     } catch (e) {
@@ -66,10 +58,70 @@ class ProfileController extends GetxController {
     });
   }
 
+  void fetchFollowers() async {
+    try {
+      followers.value = await profileProvider.getFollowers(
+              id: userId, token: bottomNavController.token) ??
+          followers;
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void fetchFollowings() async {
+    try {
+      followings.value = await profileProvider.getFollowings(
+              id: userId, token: bottomNavController.token) ??
+          followings;
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void followUser(int targetId) async {
+    try {
+      final res = await profileProvider.followUser(
+          id: targetId, token: bottomNavController.token);
+      if (res) {
+        if (userId != bottomNavController.userId) {
+          isFollowing.value = true;
+          bottomNavController.followUser();
+          fetchFollowers();
+        } else {
+          fetchFollowings();
+          bottomNavController.followUser();
+        }
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void unfollowUser(int targetId) async {
+    try {
+      final res = await profileProvider.unfollowUser(
+          id: targetId, token: bottomNavController.token);
+      if (res) {
+        if (userId != bottomNavController.userId) {
+          isFollowing.value = false;
+          bottomNavController.unfollowUser(userId);
+          followers.removeWhere(
+              (element) => element.id == bottomNavController.userId);
+        } else {
+          followings.removeWhere((element) => element.id == targetId);
+          bottomNavController.unfollowUser(targetId);
+        }
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();
     fetchUser();
+    isFollowing.value = bottomNavController.isUserFollowing(userId);
   }
 
   @override

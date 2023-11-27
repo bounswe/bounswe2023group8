@@ -50,6 +50,10 @@ class HomeController extends GetxController {
     }
   }
 
+  void navigateToProfile(int id) {
+    Get.toNamed(Routes.profile, arguments: {'userId': id});
+  }
+
   void navigateToIa(InterestArea ia) {
     Get.toNamed(Routes.interestArea, arguments: {'interestArea': ia});
   }

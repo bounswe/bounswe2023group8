@@ -6,6 +6,8 @@ class ProfileHeaderWidget extends StatelessWidget {
   final UserProfile user;
   final int allTimeLikes;
   final int allTimeDislikes;
+  final int followerCount;
+  final int followingCount;
   final void Function() onFollowersPressed;
   final void Function() onFollowingPressed;
   const ProfileHeaderWidget({
@@ -13,6 +15,8 @@ class ProfileHeaderWidget extends StatelessWidget {
     required this.user,
     required this.onFollowersPressed,
     required this.onFollowingPressed,
+    required this.followerCount,
+    required this.followingCount,
     this.allTimeLikes = 0,
     this.allTimeDislikes = 0,
   });
@@ -51,7 +55,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                       InkWell(
                         onTap: onFollowersPressed,
                         child: Text(
-                          '${user.followers} Followers',
+                          '$followerCount Followers',
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
@@ -62,7 +66,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                       InkWell(
                         onTap: onFollowingPressed,
                         child: Text(
-                          '${user.following} Following',
+                          '$followingCount Following',
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w400,

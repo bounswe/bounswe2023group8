@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/bunch_widget.dart';
+import 'package:mobile/data/widgets/custom_button.dart';
 import 'package:mobile/data/widgets/custom_search_bar.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
 import '../controllers/ia_controller.dart';
@@ -67,6 +69,17 @@ class InterestAreaView extends GetView<InterestAreaController> {
                 const SizedBox(
                   height: 5,
                 ),
+                    if (!controller.isOwner)
+                      controller.isFollower.value
+                          ? OutlinedButton(
+                              onPressed: controller.unfollowIa,
+                              child: Text('Unfollow',
+                                  style: TextStyle(color: ThemePalette.main)))
+                          : OutlinedButton(
+                              onPressed: controller.followIa,
+                              child: Text('Follow',
+                                  style: TextStyle(color: ThemePalette.main))),
+
                   if (controller.nestedIas.isNotEmpty) ...[
                     const Text(
                         'Sub Bunches',
