@@ -8,6 +8,7 @@ import 'package:mobile/modules/editIA/providers/edit_ia_provider.dart';
 
 class EditIaController extends GetxController {
   InterestArea interestArea = Get.arguments['interestArea'];
+  List<InterestArea> nestedIas = Get.arguments['nestedIas'];
 
   var routeLoading = false.obs;
 
@@ -22,6 +23,10 @@ class EditIaController extends GetxController {
 
   RxList<WikiTag> searchTagResults = <WikiTag>[].obs;
   RxList<WikiTag> selectedTags = <WikiTag>[].obs;
+
+  RxList<InterestArea> searchSubIaResults = <InterestArea>[].obs;
+  RxList<InterestArea> selectedSubIas = <InterestArea>[].obs;
+
 
   final bottomNavController = Get.find<BottomNavigationController>();
   final newIaProvider = Get.find<EditIaProvider>();
@@ -44,7 +49,14 @@ class EditIaController extends GetxController {
 
   void onChangeSubIaQuery(String value) {
     subIaQuery.value = value;
+    searchSubIaResults.clear();
+    if (value == '') {
+      return;
+    }
+    searchSubIa();
   }
+
+
 
   void onChangeTagQuery(String value) {
     searchTagResults.clear();
@@ -53,6 +65,10 @@ class EditIaController extends GetxController {
       return;
     }
     searchTags();
+  }
+
+  void submitSubIaQuery(String val) {
+    searchSubIaResults.clear();
   }
 
   void submitTagQuery(String val) {
@@ -68,7 +84,26 @@ class EditIaController extends GetxController {
     selectedTags.remove(tag);
   }
 
-  void searchSubIa() async {}
+  void addSubIa(InterestArea ia) {
+    selectedSubIas.add(ia);
+    searchSubIaResults.remove(ia);
+  }
+
+  void removeSubIa(InterestArea ia) {
+    selectedSubIas.remove(ia);
+  }
+
+  void searchSubIa() async {
+    try {
+      final subIas = await newIaProvider.searchSubIas(
+          key: subIaQuery.value, token: bottomNavController.token);
+      if (subIas != null) {
+        searchSubIaResults.value = subIas;
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
 
   void searchTags() async {
     try {
@@ -123,6 +158,7 @@ class EditIaController extends GetxController {
     description.value = '';
     accesLevel.value = interestArea.accessInt;
     selectedTags.value = interestArea.wikiTags;
+    selectedSubIas.value = nestedIas;
   }
 
   @override

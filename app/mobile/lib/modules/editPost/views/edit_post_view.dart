@@ -19,7 +19,7 @@ class EditPostView extends GetView<EditPostController> {
           child: Column(
             children: <Widget>[
               TextField(
-                decoration: const InputDecoration(labelText: 'Interest Area'),
+              decoration: const InputDecoration(labelText: 'Bunch'),
                 onChanged: (value) => controller.interestArea(value),
               ),
               TextField(

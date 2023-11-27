@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile/data/widgets/bunch_widget.dart';
 import 'package:mobile/data/widgets/custom_search_bar.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
 import '../controllers/ia_controller.dart';
@@ -13,8 +14,12 @@ class InterestAreaView extends GetView<InterestAreaController> {
     return Scaffold(
       appBar: CustomAppBar(
         leadingAppIcon: true,
-        titleWidget: const CustomSearchBar(),
+        titleWidget: CustomSearchBar(
+          controller: controller.searchController,
+          onChanged: controller.onSearchQueryChanged,
+        ),
         actions: [
+          if (controller.isOwner)
           IconButton(
               onPressed: controller.navigateToEdit,
               icon: const Icon(Icons.edit))
@@ -25,13 +30,13 @@ class InterestAreaView extends GetView<InterestAreaController> {
         return const Center(
           child: CircularProgressIndicator(),
         );
-      }
-      return Container(
-          color: Colors.white,
-          child: SingleChildScrollView(
+        }
+        return SingleChildScrollView(
               child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-            child: Column(
+          child: controller.searchQuery.value.isNotEmpty
+              ? _searchBody()
+              : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
@@ -64,7 +69,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
                 ),
                   if (controller.nestedIas.isNotEmpty) ...[
                     const Text(
-                      'Sub Interest Areas',
+                        'Sub Bunches',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -126,8 +131,46 @@ class InterestAreaView extends GetView<InterestAreaController> {
                       })
               ],
             ),
-          )));
+        ));
       }),
+    );
+  }
+
+  Widget _searchBody() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (controller.searchIas.isNotEmpty) ...[
+          const Text('Bunches',
+              style: TextStyle(
+                fontSize: 16,
+              )),
+          const Divider(),
+          const SizedBox(
+            height: 5,
+          ),
+          ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: controller.searchIas.length,
+              itemBuilder: (context, index) {
+                final ia = controller.searchIas[index];
+                return BunchWidget(
+                    ia: ia, onTap: () => controller.navigateToIa(ia));
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(
+                  height: 10,
+                );
+              }),
+          const SizedBox(
+            height: 10,
+          ),
+        ],
+        const SizedBox(
+          height: 50,
+        ),
+      ],
     );
   }
 }
