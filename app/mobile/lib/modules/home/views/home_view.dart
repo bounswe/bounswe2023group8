@@ -121,7 +121,9 @@ class HomeView extends GetView<HomeController> {
                 itemCount: controller.searchUsers.length,
                 itemBuilder: (context, index) {
                   final user = controller.searchUsers[index];
-                  return ProfileColumn(user: user);
+                  return ProfileColumn(
+                      user: user,
+                      onTap: () => controller.navigateToProfile(user.id));
                 },
                 separatorBuilder: (context, index) {
                   return const SizedBox(

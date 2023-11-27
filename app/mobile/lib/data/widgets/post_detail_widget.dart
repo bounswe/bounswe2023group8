@@ -41,16 +41,6 @@ class PostDetailWidget extends StatelessWidget {
                           fontWeight: FontWeight.w600),
                     ),
                     Text(post.enigmaUser.name),
-                    if (!visitor)
-                      OutlinedButton(
-                        onPressed: () {
-                          //Follow
-                        },
-                        style: OutlinedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15))),
-                        child: const Text("Follow"),
-                      )
                   ],
                 ),
               ],
@@ -96,18 +86,7 @@ class PostDetailWidget extends StatelessWidget {
           height: 10,
         ),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(
-              children: [
-                Text('Kaynak: '),
-              ],
-            ),
-            Row(
-              children: [
-                Text('Paylaşım Tarihi: '),
-              ],
-            ),
-          ]),
+          
           Row(
             children: [
               Image.asset(Assets.factCheck),
