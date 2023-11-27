@@ -41,7 +41,7 @@ class OpeningView extends GetView<OpeningController> {
                       const SizedBox(height: 10),
                       CustomButton(
                         width: 152,
-                        height: 52,
+                        height: 50,
                         text: 'Sign up',
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
