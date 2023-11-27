@@ -18,7 +18,7 @@ class VisitorBottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-      color: Palette.lightColor,
+      color: ThemePalette.light,
       height: 56,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -29,7 +29,7 @@ class VisitorBottomBar extends StatelessWidget {
               CustomButton(
                 width: 100,
                 text: 'Login',
-                textColor: Colors.white,
+                textColor: ThemePalette.light,
                 fontSize: 16,
                 onPressed: onLoginPressed,
               ),

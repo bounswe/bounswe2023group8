@@ -15,10 +15,10 @@ class SelectCircle extends StatelessWidget {
         },
         child: CircleAvatar(
           radius: 8,
-          backgroundColor: Palette.primaryColor,
-          child: const CircleAvatar(
+          backgroundColor: ThemePalette.main,
+          child: CircleAvatar(
             radius: 4,
-            backgroundColor: Colors.white,
+            backgroundColor: ThemePalette.light,
           ),
         ),
       );
@@ -32,9 +32,9 @@ class SelectCircle extends StatelessWidget {
           width: 16,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.0),
-            color: Colors.white,
+            color: ThemePalette.light,
             border: Border.all(
-              color: Palette.primaryColor,
+              color: ThemePalette.main,
               width: 1,
             ),
           ),

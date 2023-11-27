@@ -29,7 +29,7 @@ class LoginBody extends GetView<LoginController> {
                 style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Palette.primaryColor)),
+                    color: ThemePalette.main)),
             const Spacer(flex: 4),
             CustomTextField(
               hintText: 'E-mail or Username',
@@ -66,7 +66,7 @@ class LoginBody extends GetView<LoginController> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        activeColor: Colors.green,
+                        activeColor: ThemePalette.positive,
                         side: const BorderSide(color: Colors.grey),
                       ),
                     ),
@@ -83,7 +83,7 @@ class LoginBody extends GetView<LoginController> {
                   },
                   child: Text('Forgot password?',
                       style: TextStyle(
-                        color: Palette.primaryColor,
+                        color: ThemePalette.main,
                         fontSize: 16,
                       )),
                 ),
@@ -110,7 +110,7 @@ class LoginBody extends GetView<LoginController> {
                   onTap: controller.navigateToSignUp,
                   child: Text(' Sign up',
                       style: TextStyle(
-                          color: Palette.primaryColor,
+                          color: ThemePalette.main,
                           fontSize: 20,
                           fontWeight: FontWeight.bold)),
                 ),
