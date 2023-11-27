@@ -5,7 +5,7 @@ import mockUsers from '../../../mockData/milestone1/451_users.json';
 
 type FollowingModalProps = {
     show: boolean;
-    setShow: (value: boolean) => void;
+    setShow: () => void;
 };
 
 const FollowingModal: React.FC<FollowingModalProps> = ({ show, setShow }) => {
@@ -13,7 +13,7 @@ const FollowingModal: React.FC<FollowingModalProps> = ({ show, setShow }) => {
     const FollowingsData = shuffledUsers.slice(0, 7);
 
     return (
-        <Modal show={show} centered className="Following-modal">
+        <Modal show={show} centered className="Following-modal" onHide={setShow}>
             <Modal.Header closeButton>
                 <Modal.Title className="text-center font-weight-bold">Following</Modal.Title>
             </Modal.Header>
@@ -30,7 +30,7 @@ const FollowingModal: React.FC<FollowingModalProps> = ({ show, setShow }) => {
                         <Button
                             className="close-button"
                             variant="link"
-                            onClick={() => setShow(false)}
+                            onClick={setShow}
                         >
                         </Button>
                     </Col>

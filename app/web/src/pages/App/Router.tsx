@@ -81,7 +81,7 @@ const Router = () => {
           {/* Pages that have both a topbar and sidebar go here */}
           <Route path="/home" element={<OpeningPage />} />
           {isAuthenticated && (
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile/:userId" element={<ProfilePage />} />
           )}
           <Route path="/create_post" element={<CreatePost />} />
           <Route path="/update_post/:postId" element={<PostUpdatePage />} />

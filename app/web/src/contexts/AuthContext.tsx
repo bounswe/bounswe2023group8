@@ -54,9 +54,9 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
     authentication: null,
   });
   const [userData, setUserData] = useState<userData>({
-    id: -1,
+    id: parseInt(sessionStorage.getItem('id') || "-1"),
     username: "",
-    name: "",
+    name: sessionStorage.getItem("name") || "",
     email: "",
     birthday: "",
     createTime: "",
@@ -118,8 +118,10 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
           userId: userId,
         },
         {
-          onSuccess: (data: any) => {
+          onSuccess: (data: userData) => {
             setUserData(data);
+            sessionStorage.setItem('id', data.id.toString());
+            sessionStorage.setItem('name', data.name);
           },
         }
       );
@@ -147,6 +149,14 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
         isAuthenticated: false,
         token: null,
       });
+      setUserData({
+          id: -1,
+          username: "",
+          name: "",
+          email: "",
+          birthday: "",
+          createTime: "",
+      })
       sessionStorage.clear();
     } catch (error) {
       console.error("Logout failed:", error);

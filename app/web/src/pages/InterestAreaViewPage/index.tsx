@@ -55,12 +55,12 @@ const ViewInterestArea = () => {
         <h1 className="fw-bold" style={{ marginBottom: "50px",display: "inline-block",padding: "10px 20px 10px 20px", textTransform: "uppercase", background: "#E0E0E0", borderRadius: "20px"}}>{selectedIA.area_name}</h1>
         {iaPosts.map((post) => (
           <div key={post.id} style={{ marginBottom: "35px"}}>
-          <PostPreviewCard
-            
-            post={post}
-            userName={getUserName(post)}
-            interestAreas={createInterestAreaListOfPost(post.ia_ids)}  
-           />
+          {/*<PostPreviewCard*/}
+          {/*  */}
+          {/*  post={post}*/}
+          {/*  userName={getUserName(post)}*/}
+          {/*  tags={createInterestAreaListOfPost(post.ia_ids)}*/}
+          {/* />*/}
           </div>
         ))}
       </div>
