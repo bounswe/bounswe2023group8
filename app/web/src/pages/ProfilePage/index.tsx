@@ -8,7 +8,11 @@ import {useGetUserFollowingInterestAreas, useGetUserPosts, useGetUserProfile} fr
 import {useParams} from "react-router-dom";
 
 const ProfilePage = () => {
-
+  const createInterestAreaListFromMockData = (postIAs: number[]) => {
+    return mockInterestAreas.filter((interestArea) => {
+      return postIAs.find((postIA) => postIA === interestArea.id);
+    });
+  };
     const { userId } = useParams();
 
     const {axiosInstance} = useAuth();
@@ -69,7 +73,7 @@ const ProfilePage = () => {
             </Col>
         </Row>
     </>
-}
+  );
+};
 
-export default ProfilePage
-;
+export default ProfilePage;

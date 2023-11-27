@@ -5,6 +5,7 @@
 import { AxiosInstance } from "axios";
 import { useMutation, useQuery } from "react-query";
 import { InterestAreaRequestData } from "../components/InterestArea/InterestAreaCreateCard";
+import { useNavigate } from "react-router-dom";
 
 export type CreateInterestAreaProps = InterestAreaRequestData & {
   axiosInstance: AxiosInstance;
@@ -22,7 +23,11 @@ const createInterestArea = async (props: CreateInterestAreaProps) => {
 };
 
 export const useCreateInterestArea = (props: {}) => {
-  return useMutation(createInterestArea, props);
+  const navigate = useNavigate();
+  return useMutation(createInterestArea, {
+    ...props,
+    onSuccess: (data: any) => navigate(`/interest-area/${data.id}`),
+  });
 };
 
 //
@@ -154,6 +159,43 @@ export const useGetSubInterestAreasOfInterestArea = (
   return useQuery(
     ["getSubInterestAreasOfInterestArea", interestAreaId],
     () => getSubInterestAreasOfInterestArea(props),
+    config
+  );
+};
+
+//
+// GET POSTS OF INTEREST AREA
+//
+
+export type GetPostsOfInterestAreaProps = {
+  axiosInstance: AxiosInstance;
+  interestAreaId: number;
+};
+
+const getPostsOfInterestArea = async ({
+  axiosInstance,
+  interestAreaId,
+}: GetPostsOfInterestAreaProps) => {
+  const response = await axiosInstance.get(
+    `${process.env.REACT_APP_BACKEND_API_URL}/v1/interest-area/${interestAreaId}/posts`
+  );
+
+  if (response.status >= 200 && response.status < 300) {
+    return response.data;
+  }
+};
+
+type useGetPostsOfInterestAreaProps = GetPostsOfInterestAreaProps & {
+  config?: any;
+};
+
+export const useGetPostsOfInterestArea = (
+  props: useGetPostsOfInterestAreaProps
+) => {
+  const { interestAreaId, config } = props;
+  return useQuery(
+    ["getPostsOfInterestArea", interestAreaId],
+    () => getPostsOfInterestArea(props),
     config
   );
 };
