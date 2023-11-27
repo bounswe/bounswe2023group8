@@ -1,11 +1,10 @@
-package com.wia.enigma.core.service;
+package com.wia.enigma.core.service.VerificationTokenService;
 
 
 import com.wia.enigma.dal.entity.VerificationToken;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.repository.VerificationTokenRepository;
-import com.wia.enigma.exceptions.custom.EnigmaBadRequestException;
-import com.wia.enigma.exceptions.custom.EnigmaDatabaseException;
+import com.wia.enigma.exceptions.custom.EnigmaException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -68,20 +67,20 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
             verificationToken = verificationTokenRepository.findByTokenAndIsResetPasswordToken(token, isResetPasswordToken);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
                         "Cannot get "+ tokenType +" by token.");
         }
 
         if (verificationToken == null)
-            throw new EnigmaBadRequestException(ExceptionCodes.VERIFICATION_TOKEN_NOT_FOUND,
+            throw new EnigmaException(ExceptionCodes.VERIFICATION_TOKEN_NOT_FOUND,
                     tokenType + " not found for token: " + token);
 
         if (verificationToken.getExpiresAt().before(new Timestamp(System.currentTimeMillis())))
-            throw new EnigmaBadRequestException(ExceptionCodes.VERIFICATION_TOKEN_EXPIRED,
+            throw new EnigmaException(ExceptionCodes.VERIFICATION_TOKEN_EXPIRED,
                     tokenType + " is expired for token: " + token);
 
         if(verificationToken.getIsRevoked())
-            throw new EnigmaBadRequestException(ExceptionCodes.VERIFICATION_TOKEN_EXPIRED,
+            throw new EnigmaException(ExceptionCodes.VERIFICATION_TOKEN_EXPIRED,
                     tokenType + " is already used for token: " + token);
 
         return verificationToken;
@@ -100,7 +99,7 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
         } catch (Exception e) {
 
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_SAVE_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_SAVE_ERROR,
                     "Cannot save VerificationToken.");
         }
     }
@@ -119,7 +118,7 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
         } catch (Exception e) {
 
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_SAVE_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_SAVE_ERROR,
                     "Cannot save VerificationToken.");
         }
     }

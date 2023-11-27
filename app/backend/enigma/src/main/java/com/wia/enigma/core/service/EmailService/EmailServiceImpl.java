@@ -1,5 +1,6 @@
-package com.wia.enigma.core.service;
+package com.wia.enigma.core.service.EmailService;
 
+import com.wia.enigma.core.service.EmailService.EmailService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

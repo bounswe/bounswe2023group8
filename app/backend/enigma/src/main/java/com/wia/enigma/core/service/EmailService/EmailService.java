@@ -1,4 +1,4 @@
-package com.wia.enigma.core.service;
+package com.wia.enigma.core.service.EmailService;
 
 public interface EmailService {
 

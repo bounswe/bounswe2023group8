@@ -1,13 +1,6 @@
 package com.wia.enigma;
 
-import com.wia.enigma.core.data.response.LoginResponse;
-import com.wia.enigma.core.data.response.SecurityDetailsResponse;
-import com.wia.enigma.core.service.EnigmaJwtService;
-import com.wia.enigma.core.service.EnigmaUserService;
-import com.wia.enigma.dal.enums.ExceptionCodes;
-import com.wia.enigma.dal.entity.EnigmaUser;
-import com.wia.enigma.exceptions.custom.EnigmaBadRequestException;
-import com.wia.enigma.exceptions.custom.EnigmaUnauthorizedException;
+import com.wia.enigma.core.service.UserService.EnigmaUserService;
 import com.wia.enigma.utilities.JwtUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +12,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

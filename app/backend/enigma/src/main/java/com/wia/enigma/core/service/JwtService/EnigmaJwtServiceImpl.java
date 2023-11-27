@@ -1,4 +1,4 @@
-package com.wia.enigma.core.service;
+package com.wia.enigma.core.service.JwtService;
 
 import com.wia.enigma.configuration.security.EnigmaAuthenticationToken;
 import com.wia.enigma.core.data.dto.JwtGenerationDto;
@@ -6,9 +6,7 @@ import com.wia.enigma.dal.entity.EnigmaJwt;
 import com.wia.enigma.dal.enums.AudienceType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.repository.EnigmaJwtRepository;
-import com.wia.enigma.exceptions.custom.EnigmaBadRequestException;
-import com.wia.enigma.exceptions.custom.EnigmaDatabaseException;
-import com.wia.enigma.exceptions.custom.EnigmaUnauthorizedException;
+import com.wia.enigma.exceptions.custom.EnigmaException;
 import com.wia.enigma.utilities.AuthUtils;
 import com.wia.enigma.utilities.JwtUtils;
 import io.jsonwebtoken.Claims;
@@ -50,14 +48,14 @@ public class EnigmaJwtServiceImpl implements EnigmaJwtService {
 
         Claims claims = JwtUtils.getInstance().extractClaims(jwt);
         if (claims == null)
-            throw new EnigmaUnauthorizedException(ExceptionCodes.INVALID_JWT,
+            throw new EnigmaException(ExceptionCodes.INVALID_JWT,
                     "Could not extract claims from JWT.");
 
         long jti;
         try {
             jti = Long.parseLong(claims.getId());
         } catch (Exception e) {
-            throw new EnigmaUnauthorizedException(ExceptionCodes.INVALID_JWT_ID,
+            throw new EnigmaException(ExceptionCodes.INVALID_JWT_ID,
                     "Invalid JWT id.");
         }
 
@@ -66,20 +64,20 @@ public class EnigmaJwtServiceImpl implements EnigmaJwtService {
             enigmaJwt = enigmaJwtRepository.findEnigmaJwtById(jti);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
                     "Could not get EnigmaJwt.");
         }
 
         if (enigmaJwt == null)
-            throw new EnigmaUnauthorizedException(ExceptionCodes.INVALID_JWT_ID,
+            throw new EnigmaException(ExceptionCodes.INVALID_JWT_ID,
                     "EnigmaJwt not found for id: " + claims.getId());
 
         if (enigmaJwt.getRevokedAt() != null)
-            throw new EnigmaUnauthorizedException(ExceptionCodes.REVOKED_JWT,
+            throw new EnigmaException(ExceptionCodes.REVOKED_JWT,
                     "EnigmaJwt is revoked.");
 
         if (enigmaJwt.getExpiresAt().before(new Timestamp(System.currentTimeMillis())))
-            throw new EnigmaUnauthorizedException(ExceptionCodes.INVALID_JWT_EXPIRATION,
+            throw new EnigmaException(ExceptionCodes.INVALID_JWT_EXPIRATION,
                     "EnigmaJwt is expired.");
 
         return new EnigmaAuthenticationToken(
@@ -105,12 +103,12 @@ public class EnigmaJwtServiceImpl implements EnigmaJwtService {
             enigmaJwt = enigmaJwtRepository.findEnigmaJwtById(enigmaJwtId);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
                     "Could not get EnigmaJwt.");
         }
 
         if (enigmaJwt == null)
-            throw new EnigmaBadRequestException(ExceptionCodes.INVALID_JWT_ID,
+            throw new EnigmaException(ExceptionCodes.INVALID_JWT_ID,
                     "EnigmaJwt not found for id: " + enigmaJwtId);
 
         enigmaJwt.setRevokedAt(new Timestamp(System.currentTimeMillis()));
@@ -118,7 +116,7 @@ public class EnigmaJwtServiceImpl implements EnigmaJwtService {
             enigmaJwtRepository.save(enigmaJwt);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_SAVE_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_SAVE_ERROR,
                     "Could not save EnigmaJwt.");
         }
     }
@@ -189,7 +187,7 @@ public class EnigmaJwtServiceImpl implements EnigmaJwtService {
             enigmaJwtRepository.save(enigmaJwt);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_SAVE_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_SAVE_ERROR,
                     "Cannot save Enigma Jwt.");
         }
 

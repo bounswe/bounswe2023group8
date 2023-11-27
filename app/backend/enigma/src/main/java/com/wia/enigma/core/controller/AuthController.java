@@ -1,30 +1,20 @@
 package com.wia.enigma.core.controller;
 
 
-import com.wia.enigma.configuration.security.EnigmaAuthenticationToken;
-import com.wia.enigma.configuration.security.EnigmaUserDetailsService;
 import com.wia.enigma.core.data.request.SignupRequest;
 import com.wia.enigma.core.data.response.LoginResponse;
 import com.wia.enigma.core.data.response.RegisterResponse;
 import com.wia.enigma.core.data.response.VerificationResponse;
-import com.wia.enigma.core.service.EnigmaJwtService;
-import com.wia.enigma.core.service.EnigmaUserService;
-import com.wia.enigma.dal.entity.EnigmaUser;
-import com.wia.enigma.dal.repository.EnigmaUserRepository;
-import com.wia.enigma.exceptions.custom.EnigmaUnauthorizedException;
+import com.wia.enigma.core.service.UserService.EnigmaUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.apache.coyote.Response;
-import org.springframework.data.util.Pair;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -44,6 +34,7 @@ public class AuthController {
 
         RegisterResponse registerResponse = enigmaUserService.registerEnigmaUser(
                 signupRequest.getUsername(),
+                signupRequest.getName(),
                 signupRequest.getEmail(),
                 signupRequest.getPassword(),
                 signupRequest.getBirthday()
