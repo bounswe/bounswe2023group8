@@ -16,5 +16,6 @@ public class SearchDto {
 
         List<InterestAreaSimpleDto> interestAreas;
         List<EnigmaUserDto> users;
+        List<PostDto> posts;
 
 }

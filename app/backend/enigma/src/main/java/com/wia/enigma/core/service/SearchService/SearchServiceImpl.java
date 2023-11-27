@@ -2,6 +2,7 @@ package com.wia.enigma.core.service.SearchService;
 
 import com.wia.enigma.core.data.dto.SearchDto;
 import com.wia.enigma.core.service.InterestAreaService.InterestAreaService;
+import com.wia.enigma.core.service.PostService.PostService;
 import com.wia.enigma.core.service.UserService.EnigmaUserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ public class SearchServiceImpl implements SearchService {
 
     final EnigmaUserService enigmaUserService;
     final InterestAreaService interestAreaService;
+    final PostService postService;
 
     @Override
     public SearchDto search(Long userId, String searchKey){
@@ -27,6 +29,7 @@ public class SearchServiceImpl implements SearchService {
             SearchDto searchDto = SearchDto.builder()
                     .users(enigmaUserService.search(userId, searchKey))
                     .interestAreas(interestAreaService.search(userId, searchKey))
+                    .posts(postService.search(userId, searchKey))
                     .build();
 
             return searchDto;
