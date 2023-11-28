@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PostPreviewCard from "../../components/Post/PostSmallPreview/PostPreviewCard";
 import {Link, useParams} from "react-router-dom";
 import Tag from "../../components/Tag/Tag";
@@ -95,6 +95,17 @@ const ViewInterestArea = () => {
         },
       },
     });
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    // Set a timeout to update the state after 2 seconds
+    const timeoutId = setTimeout(() => {
+      setShowContent(true);
+    }, 700);
+
+    // Clean up the timeout to avoid memory leaks
+    return () => clearTimeout(timeoutId);
+  }, []); // Empty dependency array ensures the effect runs only once on component mount
 
   const { isSuccess: isPostsSuccess } = useGetPostsOfInterestArea({
     axiosInstance,
@@ -218,7 +229,7 @@ const ViewInterestArea = () => {
           </div>
         </div>
       ) : (
-        <div style={{
+         showContent && <div style={{
             backgroundColor: "#f0f0f0",
             padding: "10px",
             border: "1px solid #ccc",
