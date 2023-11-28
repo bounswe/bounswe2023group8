@@ -45,4 +45,5 @@ class Spot {
             ? '${json['createTime'].toString().substring(8, 10)}.${json['createTime'].toString().substring(5, 7)}.${json['createTime'].toString().substring(0, 4)} ${json['createTime'].toString().substring(11, 16)}'
             : '');
   }
+
 }

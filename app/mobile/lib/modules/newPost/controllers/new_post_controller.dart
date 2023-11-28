@@ -1,32 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile/data/helpers/error_handling_utils.dart';
+import 'package:mobile/data/models/interest_area.dart';
+import 'package:mobile/data/models/wiki_tag.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
 import 'package:mobile/modules/newPost/providers/new_post_provider.dart';
 
 class NewPostController extends GetxController {
-  // Observable variable for text input
-  var inputText = ''.obs;
-  var interestArea = ''.obs;
+  var label = 0.obs;
+
   var title = ''.obs;
-  var link = ''.obs;
-  var description = ''.obs;
-  var tags = [].obs;
-  var label = ''.obs;
-  var source = ''.obs;
+  var content = ''.obs;
+  var tagQuery = ''.obs;
+  var sourceLink = ''.obs;
+
+  var createInProgress = false.obs;
+
+  final titleController = TextEditingController();
+  final contentController = TextEditingController();
+  final sourceLinkController = TextEditingController();
+
+  Rx<InterestArea?> selectedIa = Rx<InterestArea?>(null);
+
+  RxList<WikiTag> searchTagResults = <WikiTag>[].obs;
+  RxList<WikiTag> selectedTags = <WikiTag>[].obs;
+
+  RxList<InterestArea> iaResults = <InterestArea>[].obs;
+
   var publicationDate = ''.obs;
-  var location = ''.obs;
-  // Static list of suggestions
-  final List<String> allSuggestions = [
-    "Suggestion 1",
-    "Suggestion 2",
-    "Suggestion 3",
-    "Suggestion 4",
-    "Suggestion 5",
-    // ... more suggestions
-  ];
-  // Observable list of shown suggestions
-  var shownSuggestions = <String>[].obs;
 
   final bottomNavController = Get.find<BottomNavigationController>();
   final newPostProvider = Get.find<NewPostProvider>();
@@ -34,8 +36,78 @@ class NewPostController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Initially, all suggestions are shown
-    shownSuggestions.value = allSuggestions;
+    fetchIa();
+  }
+
+  get isFormValid =>
+      title.value.isNotEmpty &&
+      content.value.isNotEmpty &&
+      selectedIa.value != null;
+
+  void onChangeLabel(int value) {
+    label.value = value;
+  }
+
+  void onChangeSourceLink(String value) {
+    sourceLink.value = value;
+  }
+
+  void onChangeTitle(String value) {
+    title.value = value;
+  }
+
+  void onChangeContent(String value) {
+    content.value = value;
+  }
+
+  void onChangeTagQuery(String value) {
+    searchTagResults.clear();
+    tagQuery.value = value;
+    if (value == '') {
+      return;
+    }
+    searchTags();
+  }
+
+  void submitTagQuery(String val) {
+    searchTagResults.clear();
+  }
+
+  void addTag(WikiTag tag) {
+    selectedTags.add(tag);
+    searchTagResults.remove(tag);
+  }
+
+  void removeTag(WikiTag tag) {
+    selectedTags.remove(tag);
+  }
+
+  void removeIa() {
+    selectedIa.value = null;
+  }
+
+  void fetchIa() async {
+    try {
+      final subIas = await newPostProvider.getIas(
+          id: bottomNavController.userId, token: bottomNavController.token);
+      if (subIas != null) {
+        iaResults.value = subIas;
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void searchTags() async {
+    try {
+      final tags = await newPostProvider.searchTags(
+          key: tagQuery.value, token: bottomNavController.token);
+      if (tags != null) {
+        searchTagResults.value = tags;
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
   }
 
   void pickDate() async {
@@ -51,110 +123,141 @@ class NewPostController extends GetxController {
     }
   }
 
+  void showIaSelectionModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Obx(
+                () => Expanded(
+                  child: ListView.builder(
+                    itemCount: iaResults.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final ia = iaResults[index];
+                      return ListTile(
+                        title: Text(ia.name),
+                        onTap: () {
+                          selectedIa.value = ia;
+                          Navigator.pop(context);
+                          // Handle the tap event on a suggestion
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void showLabelSelectionModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Expanded(
+                child: ListView(
+                  children: [
+                    ListTile(
+                      title: const Text('Documentation'),
+                      onTap: () {
+                        label.value = 0;
+                        Navigator.pop(context);
+                        // Handle the tap event on a suggestion
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('Learning'),
+                      onTap: () {
+                        label.value = 1;
+                        Navigator.pop(context);
+                        // Handle the tap event on a suggestion
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('News'),
+                      onTap: () {
+                        label.value = 2;
+                        Navigator.pop(context);
+                        // Handle the tap event on a suggestion
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('Research'),
+                        onTap: () {
+                        label.value = 3;
+                        Navigator.pop(context);
+                          // Handle the tap event on a suggestion
+                        },
+                    ),
+                    ListTile(
+                      title: const Text('Discussion'),
+                      onTap: () {
+                        label.value = 4;
+                        Navigator.pop(context);
+                        // Handle the tap event on a suggestion
+                      },
+                    ),
+                  ],
+                ),
+                
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   void onCreatePost() async {
-    newPostProvider.createNewPost(
-        title: 'title',
-        description: 'description',
-        tags: [],
-        token: 'token',
-        link: '');
-  }
+    try {
+      final res = await newPostProvider.createNewPost(
+        title: title.value,
+        latitude: 1.2421,
+        longitude: 3.4523,
+        address: 'Atlanta',
+        content: content.value,
+        tags: selectedTags.map((e) => e.id).toList(),
+        token: bottomNavController.token,
+        sourceLink: sourceLink.value,
+        interestAreaId: selectedIa.value!.id,
+        label: label.value,
+      );
+      if (res) {
+        title.value = '';
+        content.value = '';
+        selectedTags.clear();
+        selectedIa.value = null;
+        sourceLink.value = '';
+        label.value = 0;
+        titleController.clear();
+        contentController.clear();
+        sourceLinkController.clear();
 
-  void updateSuggestions(String input) {
-    if (input.isEmpty) {
-      shownSuggestions.value = allSuggestions;
-    } else {
-      // Filter the list of suggestions based on the input text
-      shownSuggestions.value = allSuggestions
-          .where((suggestion) =>
-              suggestion.toLowerCase().contains(input.toLowerCase()))
-          .toList();
+        Get.snackbar(
+          'Success',
+          'Spot created successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.brown,
+          borderRadius: 0,
+          colorText: Colors.white,
+          margin: EdgeInsets.zero,
+        );
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
     }
-  }
-
-  void showSuggestionModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Type something',
-                  prefixIcon: Icon(Icons.search),
-                ),
-                onChanged: updateSuggestions,
-              ),
-              Obx(
-                () => Expanded(
-                  child: ListView.builder(
-                    itemCount: shownSuggestions.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        title: Text(shownSuggestions[index]),
-                        onTap: () {
-                          String suggestionToAdd = shownSuggestions[index];
-                          if (!tags.contains(suggestionToAdd)) {
-                            // If it's not in the list, add it
-                            tags.add(suggestionToAdd);
-                          }
-                          print(tags);
-                          // Handle the tap event on a suggestion
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void showLabelModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Type something',
-                  prefixIcon: Icon(Icons.search),
-                ),
-                onChanged: updateSuggestions,
-              ),
-              Obx(
-                () => Expanded(
-                  child: ListView.builder(
-                    itemCount: shownSuggestions.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        title: Text(shownSuggestions[index]),
-                        onTap: () {
-                          label.value = shownSuggestions[index];
-                          print(15);
-                          print(label);
-                          // Handle the tap event on a suggestion
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
   }
 
   @override

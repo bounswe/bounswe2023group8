@@ -66,7 +66,7 @@ class NewIaView extends GetView<NewIaController> {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  "Sub-IAs:",
+                  "Sub-Bunchs:",
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
