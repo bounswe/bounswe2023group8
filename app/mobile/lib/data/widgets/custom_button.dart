@@ -6,20 +6,26 @@ class CustomButton extends StatelessWidget {
   final String text;
   final bool active;
   final double? width;
+  final double? height;
   final Color? backgroundColor;
   final Color? textColor;
   final double disabledOpacity;
   final bool inProgress;
   final bool shadow;
   final bool secondaryColor;
+  final double? fontSize;
+  final FontWeight? fontWeight;
   const CustomButton(
       {this.onPressed,
       required this.text,
       this.width,
+      this.height,
       this.active = true,
       this.backgroundColor,
       this.textColor,
       this.disabledOpacity = 0.25,
+      this.fontSize,
+      this.fontWeight,
       this.secondaryColor = false,
       this.inProgress = false,
       this.shadow = false,
@@ -29,7 +35,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: width,
-      height: 52,
+      height: height,
       decoration: shadow
           ? active
               ? BoxDecoration(
@@ -53,10 +59,16 @@ class CustomButton extends StatelessWidget {
         onPressed: !active || inProgress ? () {} : onPressed,
         style: ElevatedButton.styleFrom(
           shadowColor: Colors.transparent,
-          backgroundColor: secondaryColor
-              ? Palette.secondaryButtonColor
+          disabledBackgroundColor: secondaryColor
+              ? BackgroundPalette.regular
               : backgroundColor ??
-              Palette.primaryColor.withOpacity(active ? 1 : disabledOpacity),
+                  ThemePalette.main.withOpacity(active ? 1 : disabledOpacity),
+          disabledForegroundColor:
+              secondaryColor ? ThemePalette.main : textColor,
+          backgroundColor: secondaryColor
+              ? BackgroundPalette.regular
+              : backgroundColor ??
+                  ThemePalette.main.withOpacity(active ? 1 : disabledOpacity),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
         ),
@@ -64,14 +76,15 @@ class CustomButton extends StatelessWidget {
             ? const SizedBox(
                 height: 20,
                 width: 20,
-                child: CircularProgressIndicator(
-                ),
+                child: CircularProgressIndicator(),
               )
             : Text(text,
                 style: TextStyle(
-                    color: secondaryColor ? Palette.primaryColor : textColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20)),
+                    color: secondaryColor
+                        ? ThemePalette.main
+                        : textColor ?? ThemePalette.light,
+                    fontWeight: fontWeight ?? FontWeight.w600,
+                    fontSize: fontSize ?? 20)),
       ),
     );
   }

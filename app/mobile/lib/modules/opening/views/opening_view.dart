@@ -29,14 +29,22 @@ class OpeningView extends GetView<OpeningController> {
                   Column(
                     children: [
                       CustomButton(
+                        width: 152,
+                        height: 52,
                         text: 'Log in',
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
                         onPressed: () {
                           controller.navigateToAuthentication(toLogin: true);
                         },
                       ),
                       const SizedBox(height: 10),
                       CustomButton(
+                        width: 152,
+                        height: 50,
                         text: 'Sign up',
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
                         secondaryColor: true,
                         onPressed: () {
                           controller.navigateToAuthentication(toLogin: false);
@@ -45,18 +53,19 @@ class OpeningView extends GetView<OpeningController> {
                       const SizedBox(height: 10),
                       const Text(
                         'or',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       const SizedBox(height: 10),
                       InkWell(
-                        onTap: () {
-                          // Handle "Continue as Visitor" click
-                        },
+                        onTap: controller.navigateoToVisitorExplore,
                         child: Text(
                           'Continue as Visitor',
                           style: TextStyle(
                             decoration: TextDecoration.underline,
-                            color: Palette.primaryColor,
+                            color: ThemePalette.main,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
                           ),
                         ),
                       ),
@@ -65,8 +74,7 @@ class OpeningView extends GetView<OpeningController> {
               ])
             ],
           );
-        }
-        ),
+        }),
       ),
     );
   }
