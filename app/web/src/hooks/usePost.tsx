@@ -5,6 +5,7 @@
 import { AxiosInstance } from "axios";
 import { useMutation } from "react-query";
 import { CreatePostRequestData } from "../components/Post/Create/PostCreateCard";
+import {useNavigate} from "react-router-dom";
 
 export type CreatePostProps = CreatePostRequestData & {
     geoLocation: {
@@ -28,14 +29,30 @@ const createPost = async (props: CreatePostProps) => {
 };
 
 export const useCreatePost = (props: {}) => {
-  return useMutation(createPost, props);
+  const navigate = useNavigate();
+  return useMutation(createPost, {
+    ...props,
+    onSuccess: (data: any) => navigate(`/interest-area/${data.interestAreaId}`)});
 };
 
-const updatePost = async (props: CreatePostProps) => {
-  const { axiosInstance, ...data } = props;
+export type UpdatePostsProps = CreatePostRequestData & {
+  geoLocation: {
+    latitude: number,
+    longitude: number,
+    address: string,
+  };
+  axiosInstance: AxiosInstance;
+  id: string;
+};
+
+const updatePost = async (props: UpdatePostsProps) => {
+  const { axiosInstance, id,...data} = props;
   console.log(data);
-  const response = await axiosInstance.post(
-    `${process.env.REACT_APP_BACKEND_API_URL}/v1/update_post`,
+  const params = new URLSearchParams({
+    id: id
+  })
+  const response = await axiosInstance.put(
+    `${process.env.REACT_APP_BACKEND_API_URL}/v1/post?${params}`,
     data
   );
   if (response.status >= 200 && response.status < 300) {
@@ -44,7 +61,10 @@ const updatePost = async (props: CreatePostProps) => {
 };
 
 export const useUpdatePost = (props: {}) => {
-  return useMutation(updatePost, props);
+  const navigate = useNavigate();
+  return useMutation(updatePost,{
+    ...props,
+    onSuccess: (data: any) => navigate(`/posts/${data.id}`)});
 };
 
 export type getPostProps = {

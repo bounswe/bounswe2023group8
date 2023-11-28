@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PostPreviewCard from "../../components/Post/PostSmallPreview/PostPreviewCard";
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import Tag from "../../components/Tag/Tag";
 import { useAuth } from "../../contexts/AuthContext";
 import {
@@ -9,6 +9,7 @@ import {
   useGetSubInterestAreasOfInterestArea,
 } from "../../hooks/useInterestArea";
 import { AccessLevel, accessLevelMapping } from "../InterestAreaUpdatePage";
+import {Button} from "react-bootstrap";
 
 export interface EnigmaUser {
   id: number;
@@ -54,11 +55,13 @@ export interface Post {
 }
 
 const ViewInterestArea = () => {
-  const { axiosInstance } = useAuth();
+  const { axiosInstance, userData } = useAuth();
   const { iaId } = useParams();
   const [interestAreaData, setInterestAreaData] = useState<any>(null);
   const [subInterestAreasData, setSubInterestAreasData] = useState<any>(null);
   const [postsData, setPostsData] = useState<Post[] | null>(null);
+
+
 
   const { isSuccess } = useGetInterestArea({
     axiosInstance,
@@ -147,12 +150,19 @@ const ViewInterestArea = () => {
             <p className="d-flex  justify-content-between">
               <span>{interestAreaData?.description}</span>
               <span className="">
-                <Link className="btn btn-primary"
-                      to={"/create_post"}
-                      state={{ interestAreaId: iaId, interestAreaTitle: interestAreaData?.title}}
-                >
-                  Create New Spot
-                </Link>
+                <span>
+                  <Link className="btn btn-primary mx-2"
+                        to={"/create_post"}
+                        state={{ interestAreaId: iaId, interestAreaTitle: interestAreaData?.title}}
+                  >
+                    Create New Spot
+                  </Link>
+                  <a href={`/update_interest_area/${iaId}`}>
+                      <div className="btn btn-primary mx-2">
+                        Edit Bunch
+                      </div>
+                    </a>
+                </span>
               </span></p>
             <hr></hr>
             {postsData &&

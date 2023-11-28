@@ -5,12 +5,15 @@ import mockUsers from "../../mockData/milestone1/451_users.json";
 import { Col, Row } from "react-bootstrap";
 import { Post, EnigmaUser, Geolocation, InterestArea, WikiTag} from "../../pages/InterestAreaViewPage";
 import LocationViewer from "../Geolocation/LocationViewer";
+import {useAuth} from "../../contexts/AuthContext";
+import {Link} from "react-router-dom";
 
 export type DetailedPostCardProps = {
   post: Post
 }
 
 const  DetailedPostCard = (props: DetailedPostCardProps) => {
+  const { userData} = useAuth();
   const [locationModalShow, setLocationModalShow] = useState(false);
   const handleLocationModalShow = () => {
     setLocationModalShow(!locationModalShow);
@@ -98,7 +101,12 @@ const  DetailedPostCard = (props: DetailedPostCardProps) => {
                     <p className="fs-5 bi-hand-thumbs-down-fill text-danger">
                       2
                     </p>
-                    <button className="btn btn-danger ms-4 ms-auto">Report Post</button>
+                    {userData.id == post.enigmaUser.id
+                    ? <Link to={`/update_post/${post.id}`} state={{post: post}}
+                            className="btn btn-primary ms-4 ms-auto">Update Post</Link>
+                    : <button className="btn btn-danger ms-4 ms-auto">Report Post</button>
+                    }
+
                   </Col>
                 </Row>
               </div>
@@ -116,7 +124,7 @@ const  DetailedPostCard = (props: DetailedPostCardProps) => {
                   <Tag
                     className={""}
                     key={`${tag.id}`}
-                    name={tag.label}
+                    label={tag.label}
                   />
                 ))}
               </div>
