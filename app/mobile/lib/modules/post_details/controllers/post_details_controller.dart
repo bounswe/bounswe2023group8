@@ -1,10 +1,13 @@
 import 'package:get/get.dart';
 import 'package:mobile/data/models/spot.dart';
-
+import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
+import 'package:mobile/routes/app_pages.dart';
 
 class PostDetailsController extends GetxController {
   Spot post = Get.arguments['post'];
   final bool visitor = Get.arguments['visitor'];
+
+  BottomNavigationController? bottomNavController;
 
   RxList<Spot> posts = <Spot>[].obs;
 
@@ -16,9 +19,18 @@ class PostDetailsController extends GetxController {
     routeLoading.value = false;
   }
 
+  void navigateToEditPost() {
+    Get.toNamed(Routes.editPost, arguments: {'spot': post});
+  }
+
   @override
   void onInit() {
     super.onInit();
+    try {
+      bottomNavController = Get.find<BottomNavigationController>();
+    } catch (e) {
+      bottomNavController = null;
+    }
   }
 }
 

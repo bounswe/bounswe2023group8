@@ -23,8 +23,16 @@ class PostDetailsView extends GetView<PostDetailsController> {
                 onSignUpPressed: () =>
                     Get.find<OpeningController>().backToAuth(false))
             : null,
-        appBar: const CustomAppBar(
+        appBar: CustomAppBar(
           leadingAppIcon: true,
+          actions: [
+            if (!controller.visitor &&
+                controller.post.enigmaUser.id ==
+                    controller.bottomNavController!.userId)
+              IconButton(
+                  onPressed: controller.navigateToEditPost,
+                  icon: const Icon(Icons.edit))
+          ],
         ),
         body: Obx(() {
           if (controller.routeLoading.value) {

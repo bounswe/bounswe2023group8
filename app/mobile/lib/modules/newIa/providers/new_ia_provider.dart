@@ -23,7 +23,7 @@ class NewIaProvider extends GetConnect {
       required String description,
       required String token}) async {
     final response = await post('v1/interest-area', {
-      'name': name,
+      'title': name,
       'nestedInterestAreas': nestedIas,
       'wikiTags': wikiTags,
       'accessLevel': accessLevel,

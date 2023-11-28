@@ -25,9 +25,9 @@ class EditIaView extends GetView<EditIaController> {
                         controller.onDeleteIa();
                         Get.back();
                       },
-                      title: 'Delete Interes Area',
+                      title: 'Delete Bunch',
                       content: Text(
-                          'Are you sure you want to delete the ${controller.interestArea.name} interest are?'),
+                          'Are you sure you want to delete the ${controller.interestArea.name} bunch?'),
                       cancelText: 'No',
                       actionText: 'Yes');
                 },
