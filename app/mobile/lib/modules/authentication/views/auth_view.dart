@@ -12,7 +12,7 @@ class AuthView extends GetView<AuthenticationController> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: ThemePalette.white,
+        backgroundColor: BackgroundPalette.soft,
         body: Obx(() {
           if (controller.isLogin.value) {
             return const LoginBody();

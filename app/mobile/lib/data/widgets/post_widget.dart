@@ -13,7 +13,7 @@ class PostTileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.blue.shade50,
+      color: BackgroundPalette.regular,
       child: ListTile(
         onTap: onTap,
         title: Column(
@@ -31,54 +31,58 @@ class PostTileWidget extends StatelessWidget {
                 Text(
                   'Spotted by',
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                    color: ThemePalette.dark,
+                    fontWeight: FontWeight.normal,
                     fontSize: 10,
                   ),
                 ),
-                const SizedBox(
-                  width: 5,
-                ),
+                const SizedBox(width: 4),
                 Text(
                   '@${post.enigmaUser.username}',
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.normal,
                       fontSize: 10,
                       color: ThemePalette.main),
                 ),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text('•'),
+                const SizedBox(width: 4),
+                Text('•',
+                    style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 10,
+                        color: ThemePalette.dark)),
                 const SizedBox(
                   width: 5,
                 ),
                 Text(
                   post.createTime,
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                    color: ThemePalette.dark,
+                    fontWeight: FontWeight.normal,
                     fontSize: 10,
                   ),
                 ),
               ],
             ),
-            const SizedBox(
-              height: 5,
-            ),
+            const SizedBox(height: 8),
           ],
         ),
-        contentPadding: const EdgeInsets.all(4),
+        contentPadding: const EdgeInsets.all(8),
         subtitle: Stack(
+          clipBehavior: Clip.none,
           children: [
             Container(
-              padding: EdgeInsets.only(left: 30, bottom: 10),
-              decoration: BoxDecoration(color: Colors.white),
+              padding: EdgeInsets.only(left: 27, bottom: 10),
+              decoration: BoxDecoration(
+                  color: BackgroundPalette.light,
+                  borderRadius: BorderRadius.circular(10)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 4),
                   Text(
                     post.title,
                     style: const TextStyle(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
                       fontSize: 12,
                     ),
                   ),
@@ -87,21 +91,15 @@ class PostTileWidget extends StatelessWidget {
                           fontSize: 10,
                           color: ThemePalette.main,
                           decoration: TextDecoration.underline)),
+                  const SizedBox(height: 4),
                   Text(
                     post.content,
-                    style: const TextStyle(
-                        // color: Colors.blue,
+                    style: TextStyle(
+                        color: ThemePalette.dark,
                         fontSize: 12,
-                        fontWeight: FontWeight.w500),
-
-                    // maxLines: 2,
-                    
+                        fontWeight: FontWeight.normal),
                   ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                
-                 
+                  const SizedBox(height: 4),
                   hideTags == true
                       ? const SizedBox()
                       : SizedBox(
@@ -112,17 +110,15 @@ class PostTileWidget extends StatelessWidget {
                             scrollDirection: Axis.horizontal,
                             separatorBuilder:
                                 (BuildContext context, int index) {
-                              return const SizedBox(
-                                width: 5,
-                              );
+                              return const SizedBox(width: 4);
                             },
                             itemBuilder: (BuildContext context, int index) {
                               final wikitag = post.wikiTags[index];
                               return ClipRRect(
                                   borderRadius: BorderRadius.circular(16.0),
                                   child: Container(
-                                    color: Colors
-                                        .grey, // Set the grey background color
+                                    color: SeparatorPalette
+                                        .light, // Set the grey background color
                                     margin: const EdgeInsets.all(
                                         1.0), // Add margin between rows
                                     child: Padding(
@@ -130,10 +126,10 @@ class PostTileWidget extends StatelessWidget {
                                           4.0), // Adjust padding as needed
                                       child: Text(
                                         "#${wikitag.label}",
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 12,
-                                          color: Colors
-                                              .black54, // Text color inside the grey background
+                                          color: SeparatorPalette
+                                              .dark, // Text color inside the grey background
                                         ),
                                       ),
                                     ),
@@ -145,15 +141,14 @@ class PostTileWidget extends StatelessWidget {
               ),
             ),
             Positioned(
-                left: 0,
-                top: 0,
+                left: -5,
+                top: -5,
                 child: Image.asset(
                   Assets.spot,
-                  width: 30,
+                  width: 32,
                 ))
           ],
         ),
-       
       ),
     );
   }

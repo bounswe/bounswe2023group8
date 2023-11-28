@@ -27,7 +27,7 @@ class SignUpBody extends GetView<SignUpController> {
             const Spacer(flex: 1),
             Text('Sign Up',
                 style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 30,
                     fontWeight: FontWeight.bold,
                     color: ThemePalette.main)),
             const Spacer(flex: 4),
@@ -135,8 +135,8 @@ class SignUpBody extends GetView<SignUpController> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        activeColor: ThemePalette.positive,
-                        side: const BorderSide(color: Colors.grey),
+                        activeColor: ThemePalette.main,
+                        side: BorderSide(color: ThemePalette.dark),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -151,9 +151,12 @@ class SignUpBody extends GetView<SignUpController> {
             const Spacer(flex: 5),
             CustomButton(
                 onPressed: controller.onSignUp,
-                width: Get.width * 0.4,
+                width: 152,
+                height: 50,
                 shadow: true,
                 text: 'Sign up',
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
                 inProgress: controller.signupInProgress.value,
                 active: controller.signUpUsernameValid.value &&
                     controller.signUpPasswordValid.value &&
@@ -163,7 +166,7 @@ class SignUpBody extends GetView<SignUpController> {
                     controller.acceptTerms.value),
             const Spacer(flex: 5),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 const Text('Already have an account?',
                     style: TextStyle(
