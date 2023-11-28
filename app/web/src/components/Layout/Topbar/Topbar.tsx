@@ -25,6 +25,8 @@ const Topbar = () => {
     const [showRegisterModal, setShowRegisterModal] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+    const {userData} = useAuth();
+
     const navigate = useNavigate();
     const handleRegisterShow = () => {
         setShowRegisterModal(!showRegisterModal);
@@ -74,7 +76,11 @@ const Topbar = () => {
                                                 {notification.title}
                                             </NavDropdown.Item>)}
                                 </NavDropdown>
-                                <NavDropdown title={<span className="fs-5 bi bi-person"></span>}
+                                <NavDropdown title={
+                                    <span>
+                                        <span className="fs-5 bi bi-person"></span>
+                                        <span>{userData.name}</span>
+                                    </span>}
                                              id="collapsible-nav-dropdown"
                                              drop="start">
                                     <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
