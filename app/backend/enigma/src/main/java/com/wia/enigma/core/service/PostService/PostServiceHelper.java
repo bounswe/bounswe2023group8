@@ -20,8 +20,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -169,10 +173,21 @@ class PostServiceHelper {
         List<EnigmaUser> enigmaUsers = enigmaUserRepository.findAllById(userIds);
 
 
-         return posts.stream().map(post -> {
+        List<InterestArea> nestedInterestAreas = interestAreaService.getNestedInterestAreas(interestAreaId, userId);
+
+        List<Long> nestedInterestAreaIds = nestedInterestAreas.stream().map( interestArea1 -> interestArea1.getId() ).toList();
+
+
+        Stream<PostDto> nestedInterestAreaPosts = nestedInterestAreaIds.stream()
+                .flatMap(interestAreaId1 -> getInterestAreaPosts(interestAreaId1, userId).stream());
+
+        Stream<PostDto> interestAreaPosts =  posts.stream().map(post -> {
               EnigmaUser enigmaUser = enigmaUsers.stream().filter(enigmaUser1 -> enigmaUser1.getId().equals(post.getEnigmaUserId())).findFirst().get();
               return post.mapToPostDto(wikiTags, enigmaUser.mapToEnigmaUserDto(), interestArea.mapToInterestAreaModel());
-         }).toList();
+         });
+
+        return Stream.concat(interestAreaPosts, nestedInterestAreaPosts)
+                .collect(Collectors.toList());
     }
 
     List<PostDto> search(Long userId, String searchKey){

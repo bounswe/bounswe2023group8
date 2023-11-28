@@ -18,12 +18,14 @@ import org.springframework.stereotype.Service;
 import javax.swing.text.html.parser.Entity;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PageServiceImpl implements PageService{
+    private final NestedInterestAreaRepository nestedInterestAreaRepository;
     final EnigmaUserRepository enigmaUserRepository;
     final InterestAreaRepository interestAreaRepository;
     final PostRepository postRepository;
@@ -63,14 +65,27 @@ public class PageServiceImpl implements PageService{
 
     private List<PostDto> getPosts(Long userId) {
 
-        List<Long> followedInterestAreaIds = enigmaUserService.getFollowingInterestAreas(userId, userId).stream()
-                .map(InterestAreaDto::getId).collect(Collectors.toList());
+        // Collect the initial stream to a list to reuse it
+        List<Long> followedInterestAreaIdList = enigmaUserService.getFollowingInterestAreas(userId, userId).stream()
+                .map(InterestAreaDto::getId)
+                .collect(Collectors.toList());
 
+        // Use the list to create a stream for nestedFollowedInterestAreaIds
+        Stream<Long> nestedFollowedInterestAreaIds = nestedInterestAreaRepository.findByParentInterestAreaIdIn(followedInterestAreaIdList)
+                .stream()
+                .map(nestedInterestArea -> nestedInterestArea.getChildInterestAreaId());
+
+        // Now, create a new stream from the list for concatenation
+        Stream<Long> followedInterestAreaIdsStream = followedInterestAreaIdList.stream();
+
+        // Concatenate and collect
+        List<Long> allRelatedInterestAreaIds =  Stream.concat(followedInterestAreaIdsStream, nestedFollowedInterestAreaIds)
+                .collect(Collectors.toList());
 
         List<Long> followedEnigmaUserIds = enigmaUserService.getFollowings(userId, userId).stream( )
                 .map(EnigmaUserDto::getId).collect(Collectors.toList());
 
-        List<Long> followedInterestAreaPostIds = interestAreaPostRepository.findByInterestAreaIdIn(followedInterestAreaIds)
+        List<Long> followedInterestAreaPostIds = interestAreaPostRepository.findByInterestAreaIdIn(allRelatedInterestAreaIds)
                 .stream().map(InterestAreaPost::getPostId).collect(Collectors.toList());
 
         List<Post> posts = postRepository.findByEnigmaUserIdInOrPostIdIn(followedEnigmaUserIds, followedInterestAreaPostIds);
