@@ -17,4 +17,6 @@ public interface PostService {
     void deletePost(Long postId, Long userId);
 
     List<PostDto> getInterestAreaPosts(Long interestAreaId, Long userId);
+
+    List<PostDto> search(Long userId, String searchKey);
 }

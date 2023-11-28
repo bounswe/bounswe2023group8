@@ -20,8 +20,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -169,9 +173,51 @@ class PostServiceHelper {
         List<EnigmaUser> enigmaUsers = enigmaUserRepository.findAllById(userIds);
 
 
-         return posts.stream().map(post -> {
+        List<InterestArea> nestedInterestAreas = interestAreaService.getNestedInterestAreas(interestAreaId, userId);
+
+        List<Long> nestedInterestAreaIds = nestedInterestAreas.stream().map( interestArea1 -> interestArea1.getId() ).toList();
+
+
+        Stream<PostDto> nestedInterestAreaPosts = nestedInterestAreaIds.stream()
+                .flatMap(interestAreaId1 -> getInterestAreaPosts(interestAreaId1, userId).stream());
+
+        Stream<PostDto> interestAreaPosts =  posts.stream().map(post -> {
               EnigmaUser enigmaUser = enigmaUsers.stream().filter(enigmaUser1 -> enigmaUser1.getId().equals(post.getEnigmaUserId())).findFirst().get();
-              return post.mapToPostDto(wikiTags, enigmaUser.mapToEnigmaUserDto(), interestArea.mapToInterestAreaModel());
-         }).toList();
+              return post.mapToPostDto(wikiTags.stream().filter(wikiTag ->
+                      entityTags.stream().filter(entityTag -> entityTag.getEntityId().equals(post.getId())).map(EntityTag::getWikiDataTagId).collect(Collectors.toList()).contains(wikiTag.getId())).collect(Collectors.toList()
+                      ), enigmaUser.mapToEnigmaUserDto(), interestArea.mapToInterestAreaModel());
+         });
+
+        return Stream.concat(interestAreaPosts, nestedInterestAreaPosts)
+                .collect(Collectors.toList());
+    }
+
+    List<PostDto> search(Long userId, String searchKey){
+
+
+        List<Post> post = postRepository.findByTitleContainsOrContentContainsOrSourceLinkContains(searchKey, searchKey, searchKey);
+
+        List<Post> filteredPosts =  post.stream().filter(post1 -> post1.getAccessLevel().equals(EnigmaAccessLevel.PUBLIC) ||  userFollowsService.isUserFollowsEntity(userId, post1.getInterestAreaId(), EntityType.INTEREST_AREA)).toList();
+
+        List<Long> filteredPostIds = filteredPosts.stream().map(Post::getId).toList();
+
+        List<EntityTag> entityTags =  entityTagsRepository.findByEntityIdInAndEntityType( filteredPostIds, EntityType.POST );
+
+        List<WikiTag> wikiTags = wikiTagRepository.findAllById(
+                entityTags.stream()
+                        .map(EntityTag::getWikiDataTagId)
+                        .collect(Collectors.toList())
+        );
+
+        List<Long> userIds = filteredPosts.stream().map(Post::getEnigmaUserId).toList();
+
+
+        List<EnigmaUser> enigmaUsers = enigmaUserRepository.findAllById(userIds);
+
+        return filteredPosts.stream().map(post1 -> {
+            EnigmaUser enigmaUser = enigmaUsers.stream().filter(enigmaUser1 -> enigmaUser1.getId().equals(post1.getEnigmaUserId())).findFirst().get();
+            return post1.mapToPostDto(wikiTags, enigmaUser.mapToEnigmaUserDto(), interestAreaServiceHelper.getInterestArea(post1.getInterestAreaId()).mapToInterestAreaModel());
+        }).toList();
+
     }
 }
