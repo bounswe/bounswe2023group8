@@ -225,14 +225,14 @@ const InterestAreaCreateCard = ({
             Tags:
           </label>
           <div className="d-flex flex-wrap">
-            {interestAreaDetails.wikiTags.map((tag, index) => (
+            {interestAreaDetails.wikiTags && interestAreaDetails.wikiTags.map((tag, index) => (
               <div
                 key={tag.id}
                 className="m-2"
                 style={{ cursor: "pointer" }}
                 onClick={() => removeTag(index)}
               >
-                <Tag className={""} name={tag.name} />
+                <Tag className={""} label={tag.name} />
               </div>
             ))}
             <div className="w-100 text-center">
@@ -271,7 +271,7 @@ const InterestAreaCreateCard = ({
             Sub-IAs:
           </label>
           <div className="d-flex flex-wrap">
-            {interestAreaDetails.nestedInterestAreas.map((subIA, index) => (
+            {interestAreaDetails.nestedInterestAreas && interestAreaDetails.nestedInterestAreas.map((subIA, index) => (
               <div
                 key={subIA.id}
                 className="d-flex justify-content-between align-items-center bg-light px-2 py-1 m-2 rounded shadow-sm"

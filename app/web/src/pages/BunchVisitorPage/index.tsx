@@ -67,7 +67,7 @@ const BunchVisitor: React.FC<BunchVisitorProps> = () => {
           </Card>
           <div className="mb-3">
             {bunchTags.map((tag, index) => (
-              <Tag key={index} className="mb-3" name={tag.name} />
+              <Tag key={index} className="mb-3" label={tag.name} />
             ))}
           </div>
           {/* Space */}
@@ -82,7 +82,7 @@ const BunchVisitor: React.FC<BunchVisitorProps> = () => {
           </Card>
           <div className="mb-3">
             {relatedBunches.map((tag, index) => (
-              <Tag key={index} className="mb-3" name={tag.name} />
+              <Tag key={index} className="mb-3" label={tag.name} />
             ))}
           </div>
         </Col>

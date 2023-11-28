@@ -46,7 +46,7 @@ const TimelineExplorePage: React.FC = () => {
                     <Col key={tag.id} xs={6} md={2}>
                         <Tag
                             className={`mb-2 ${index === randomTags.length - 1 ? 'me-auto' : ''}`}
-                            name={tag.area_name}
+                            label={tag.area_name}
                         />
                     </Col>
                 ))}

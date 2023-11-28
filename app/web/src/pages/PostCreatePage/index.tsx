@@ -73,7 +73,6 @@ const CreatePost = () => {
         address: locationDetails.address
       }
     });
-    navigate(`/interest-area/${interestAreaId}`);
   };
 
   return (
