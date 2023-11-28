@@ -5,10 +5,13 @@
 import { AxiosInstance } from "axios";
 import { useMutation } from "react-query";
 import { CreatePostRequestData } from "../components/Post/Create/PostCreateCard";
-import { SelectedLocationFormData } from "../components/Geolocation/LocationPicker";
 
-export type CreatePostProps = CreatePostRequestData &
-  SelectedLocationFormData & {
+export type CreatePostProps = CreatePostRequestData & {
+    geoLocation: {
+      latitude: number,
+      longitude: number,
+      address: string,
+    }
     axiosInstance: AxiosInstance;
   };
 
@@ -16,7 +19,7 @@ const createPost = async (props: CreatePostProps) => {
   const { axiosInstance, ...data } = props;
   console.log(data);
   const response = await axiosInstance.post(
-    `${process.env.REACT_APP_BACKEND_API_URL}/v1/create_post`,
+    `${process.env.REACT_APP_BACKEND_API_URL}/v1/post`,
     data
   );
   if (response.status >= 200 && response.status < 300) {
@@ -50,8 +53,12 @@ export type getPostProps = {
 };
 
 const getPost = async ({ axiosInstance, id }: getPostProps) => {
+  const params = new URLSearchParams({
+    id: id
+  }).toString();
+
   const response = await axiosInstance.get(
-    `${process.env.REACT_APP_BACKEND_API_URL}/get_post/${id}`
+    `${process.env.REACT_APP_BACKEND_API_URL}/v1/post?${params}`
   );
 
   if (response.status >= 200 && response.status < 300) {

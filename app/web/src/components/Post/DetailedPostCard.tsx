@@ -1,53 +1,21 @@
-import React from "react";
+import React, {useState} from "react";
 import { format } from "date-fns";
 import Tag from "../Tag/Tag";
 import mockUsers from "../../mockData/milestone1/451_users.json";
 import { Col, Row } from "react-bootstrap";
+import { Post, EnigmaUser, Geolocation, InterestArea, WikiTag} from "../../pages/InterestAreaViewPage";
+import LocationViewer from "../Geolocation/LocationViewer";
 
-type DetailedPostCardProps = {
-  post: {
-    id: number;
-    user_id: number;
-    ia_ids: number[];
-    header: string;
-    source_link: string;
-    content: string;
-    source: string;
-    date: string;
-    spotted_at: string; // "2023-10-25 10:30:00"
-    liked: number;
-    disliked: number;
-  };
-  userName: string | undefined;
-  interestAreas: {
-    id: number;
-    area_name: string;
-  }[];
-};
+export type DetailedPostCardProps = {
+  post: Post
+}
 
-class DetailedPostCard extends React.Component<DetailedPostCardProps> {
-  render() {
-    const {
-      interestAreas,
-      post: {
-        header,
-        content,
-        ia_ids,
-        spotted_at,
-        date,
-        source_link,
-        liked,
-        disliked,
-        source,
-      },
-      userName,
-    } = this.props;
-
-    const bunchNames = ia_ids.map((ia_id) => {
-      const interestArea = interestAreas.find((ia) => ia.id === ia_id);
-      return interestArea ? interestArea.area_name : null;
-    });
-
+const  DetailedPostCard = (props: DetailedPostCardProps) => {
+  const [locationModalShow, setLocationModalShow] = useState(false);
+  const handleLocationModalShow = () => {
+    setLocationModalShow(!locationModalShow);
+  }
+  const { post } = props;
     return (
       <div
         style={{
@@ -57,14 +25,14 @@ class DetailedPostCard extends React.Component<DetailedPostCardProps> {
           borderRadius: "10px",
         }}
       >
-        <h3>{bunchNames}</h3>
+        <h3>{post.interestArea.title}</h3>
         <div
           className={`card mt-3 mb-1`}
           style={{ backgroundColor: "#FFFAF6" }}
         >
           <Row className="g-0">
             <Col
-              className="col-4 justify-content-center my-4"
+              className=" justify-content-center my-4"
               style={{
                 maxHeight: "80px",
                 maxWidth: "80px",
@@ -81,13 +49,16 @@ class DetailedPostCard extends React.Component<DetailedPostCardProps> {
             <Col className="col-8">
               <Row className="card-body">
                 <Col className="col-10">
-                  <h5 className="card-title">{mockUsers[0].name}</h5>
+                  <h5 className="card-title">{post.enigmaUser.name}</h5>
                   <div className="card-text" style={{ marginBottom: "10px" }}>
-                    @{mockUsers[0].nickname}
+                    @{post.enigmaUser.username}
                   </div>
 
                   {/* Follow button */}
-                  <button className="btn btn-primary">Follow</button>
+                  <div className="d-flex justify-content-between">
+                    <button className="btn btn-primary">Follow</button>
+                    <button className="btn btn-primary" onClick={handleLocationModalShow}>View Location</button>
+                  </div>
                 </Col>
               </Row>
             </Col>
@@ -98,21 +69,17 @@ class DetailedPostCard extends React.Component<DetailedPostCardProps> {
             <div className="col-12" style={{ width: "80%" }}>
             
               <div className="card-body">
-              <p className="text-body-secondary" style={{textAlign:"right"}}>{spotted_at}</p>
-
-                <h4 className="card-title">{header}</h4>
+              <p className="text-body-secondary" style={{textAlign:"right"}}>
+                {format(new Date(post.createTime), "dd/MM/yyyy")}</p>
+                <h4 className="card-title">{post.title}</h4>
                 
-                <a href={source_link} className="link-primary">
-                  {source_link}
+                <a href={""} className="link-primary">
+                  {post.sourceLink}
                 </a>
-                <p className="card-text">{content}</p>
-                <p>
-                  <p>Source: {source}</p>
-                  <p>Date: {date}</p>
-                </p>
+                <p className="card-text">{post.content}</p>
                 <p className="card-text justify-content-between d-flex">
                   <small className="text-body-secondary">
-                    Spotted by {userName}
+                    Spotted by {post.enigmaUser.name}
                   </small>
                 </p>
 
@@ -126,10 +93,10 @@ class DetailedPostCard extends React.Component<DetailedPostCardProps> {
                         marginRight: "15px",
                       }}
                     >
-                      {liked}
+                      51
                     </p>
                     <p className="fs-5 bi-hand-thumbs-down-fill text-danger">
-                      {disliked}
+                      2
                     </p>
                     <button className="btn btn-danger ms-4 ms-auto">Report Post</button>
                   </Col>
@@ -145,20 +112,21 @@ class DetailedPostCard extends React.Component<DetailedPostCardProps> {
                 className="mx-auto align-self-center overflow-y-auto"
                 style={{ maxHeight: "200px" }}
               >
-                {interestAreas.map((area) => (
+                {post.wikiTags.map((tag) => (
                   <Tag
                     className={""}
-                    key={`${area.id}`}
-                    name={area.area_name}
+                    key={`${tag.id}`}
+                    name={tag.label}
                   />
                 ))}
               </div>
             </div>
           </div>
         </div>
+        <LocationViewer showLocationViewerModal={locationModalShow}
+                        setShowLocationViewerModal={handleLocationModalShow} locationData={post.geolocation}></LocationViewer>
       </div>
     );
-  }
 }
 
 export default DetailedPostCard;

@@ -24,7 +24,8 @@ const PostPreviewCard = ({
       <div className="row g-0">
         <div className="col-9">
           <div className="card-body">
-            <h6 className="card-title truncate-text-4">{content}</h6>
+            <a href={`/posts/${id}`}><h6 className="card-title truncate-text-4">{title}</h6></a>
+            <div className="card-title truncate-text-4">{content}</div>
             <p>
               <a href={sourceLink} className="link-primary">
                 {sourceLink}
@@ -47,15 +48,6 @@ const PostPreviewCard = ({
             {wikiTags.map((tag: any) => (
               <Tag className={""} key={`${id}-${tag.id}`} name={tag.label} />
             ))}
-          </div>
-        </div>
-        <div className="col-3 container d-flex justify-content-start p-1 m-0 ">
-          <div className="vr my-3 col-1"></div>
-          <div
-            className="mx-auto align-self-center overflow-y-auto"
-            style={{ maxHeight: "200px" }}
-          >
-            Title: {interestArea.title} - {interestArea.description}
           </div>
         </div>
       </div>

@@ -8,28 +8,26 @@ import { useSearchWikitags } from "../../../hooks/useWikiTags";
 import { useAuth } from "../../../contexts/AuthContext";
 
 export type CreatePostFormData = {
-  interestArea: string;
+  interestAreaId: number;
   title: string;
-  link: string;
-  description: string;
+  content: string;
   wikiTags: { id: string; name: string }[];
-  label: string;
-  source: string;
-  publicationDate: Date;
+  label: number;
+  sourceLink: string;
 };
 
 export type CreatePostRequestData = {
-  interestArea: string;
+  interestAreaId: number;
   title: string;
-  link: string;
-  description: string;
+  content: string;
   wikiTags: string[];
-  label: string;
-  source: string;
-  publicationDate: Date;
+  label: number;
+  sourceLink: string;
 };
 
 export type PostCreateCardProps = {
+  interestAreaId: number
+  interestAreaTitle: string,
   handleSubmit: (_: React.FormEvent) => void;
   postDetails: CreatePostFormData;
   setPostDetails: React.Dispatch<React.SetStateAction<CreatePostFormData>>;
@@ -46,6 +44,8 @@ export type PostCreateCardProps = {
   cardType: "create" | "update";
 };
 const PostCreateCard = ({
+    interestAreaId,
+    interestAreaTitle,
   handleInputChange,
   handleSubmit,
   postDetails,
@@ -135,11 +135,11 @@ const PostCreateCard = ({
               id="interestArea"
               className="form-select"
               name="interestArea"
-              value={postDetails.interestArea}
+              value={interestAreaId}
               onChange={handleInputChange}
             >
-              <option value="Furkanin Futbol Köşesi">
-                Furkanın Futbol Köşesi
+              <option value={postDetails.interestAreaId}>
+                {interestAreaTitle}
               </option>
             </select>
           </div>
@@ -156,30 +156,28 @@ const PostCreateCard = ({
               onChange={handleInputChange}
             />
           </div>
-
-          {/* Link */}
           <div className="mb-3">
-            <label htmlFor="link" className="form-label">
+            <label htmlFor="sourceLink" className="form-label ">
               Link:
             </label>
             <input
-              id="link"
-              type="text"
-              className="form-control"
-              name="link"
-              value={postDetails.link}
-              onChange={handleInputChange}
+                id="sourceLink"
+                type="text"
+                className="form-control"
+                name="sourceLink"
+                value={postDetails.sourceLink}
+                onChange={handleInputChange}
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="description" className="form-label ">
+            <label htmlFor="content" className="form-label ">
               Description/Comment:
             </label>
             <textarea
-              id="description"
+              id="content"
               className="form-control"
-              name="description"
-              value={postDetails.description}
+              name="content"
+              value={postDetails.content}
               onChange={handleInputChange}
             />
           </div>
@@ -241,33 +239,20 @@ const PostCreateCard = ({
               <option value="News">News</option>
             </select>
           </div>
-          <div className="mb-3">
-            <label htmlFor="source" className="form-label ">
-              Source:
-            </label>
-            <input
-              id="source"
-              type="text"
-              className="form-control"
-              name="source"
-              value={postDetails.source}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="publicationDate" className="form-label ">
-              Publication Date:
-            </label>
-            <input
-              id="publicationDate"
-              type="date"
-              className="form-control"
-              name="publicationDate"
-              value={postDetails.publicationDate.toISOString().substring(0, 10)}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="mb-3">
+          {/*<div className="mb-3">*/}
+          {/*  <label htmlFor="publicationDate" className="form-label ">*/}
+          {/*    Publication Date:*/}
+          {/*  </label>*/}
+          {/*  <input*/}
+          {/*    id="publicationDate"*/}
+          {/*    type="date"*/}
+          {/*    className="form-control"*/}
+          {/*    name="publicationDate"*/}
+          {/*    value={postDetails.publicationDate.toISOString().substring(0, 10)}*/}
+          {/*    onChange={handleInputChange}*/}
+          {/*  />*/}
+          {/*</div>*/}
+          <div className="mb-3 d-flex">
             <button
               className="btn btn-secondary"
               type="button"

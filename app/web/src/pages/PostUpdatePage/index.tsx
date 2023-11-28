@@ -11,14 +11,12 @@ const PostUpdatePage = () => {
   const { axiosInstance } = useAuth();
   const params = useParams();
   const defaultPostDetails: CreatePostFormData = {
-    interestArea: "",
+    interestAreaId: -1,
     title: "",
-    link: "",
-    description: "",
+    content: "",
     wikiTags: [],
-    label: "",
-    source: "",
-    publicationDate: new Date(),
+    label: 1,
+    sourceLink: "",
   };
 
   const defaultLocationDetails: SelectedLocationFormData = {
@@ -46,14 +44,12 @@ const PostUpdatePage = () => {
       console.log(data);
 
       const defaultPostDetails: CreatePostFormData = {
-        interestArea: "",
+        interestAreaId: -1,
         title: "Derbi Heyecanı",
-        link: "Placeholder Link",
-        description: " Galatasaray vs. Fenerbahçe",
+        content: " Galatasaray vs. Fenerbahçe",
         wikiTags: [],
-        label: "News",
-        source: "asdasd",
-        publicationDate: new Date(),
+        label: 1,
+        sourceLink: "asdasd",
       };
       const defaultLocationDetails: SelectedLocationFormData = {
         latitude: 40.987673250682725,
@@ -80,10 +76,10 @@ const PostUpdatePage = () => {
       name: string;
     };
     if (name === "publicationDate") {
-      setPostDetails({
-        ...postDetails,
-        [name]: new Date(value),
-      });
+      // setPostDetails({
+      //   ...postDetails,
+      //   [name]: new Date(value),
+      // });
     } else {
       setPostDetails({
         ...postDetails,
@@ -99,7 +95,11 @@ const PostUpdatePage = () => {
       axiosInstance,
       ...postDetails,
       wikiTags: wikiTagIds,
-      ...locationDetails,
+      geoLocation: {
+        latitude: locationDetails.latitude,
+        longitude: locationDetails.longitude,
+        address: locationDetails.address,
+      }
     });
   };
 
@@ -108,6 +108,8 @@ const PostUpdatePage = () => {
       <div className="container mt-4 col-6">
         <h2 className="fw-bold">Update Post</h2>
         <PostCreateCard
+            interestAreaId={1}
+            interestAreaTitle={"asdasd"}
           setPostDetails={setPostDetails}
           postDetails={postDetails}
           handleInputChange={handleInputChange}

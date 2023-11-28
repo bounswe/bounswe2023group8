@@ -46,8 +46,8 @@ const TimelineHomePage: React.FC = () => {
             {/*        />*/}
             {/*    </div>*/}
             {/*))}*/}
-        </div>
-      ))}
+      {/*  </div>*/}
+      {/*))}*/}
     </div>
   );
 };
