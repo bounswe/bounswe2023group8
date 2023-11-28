@@ -2,7 +2,7 @@ import React from 'react'
 
 type TagProps = {
     className: string,
-    name: string,
+    label: string,
 }
 
 const stringToRGBWithOpacity = (name: string, opacity: number): string | undefined => {
@@ -29,13 +29,13 @@ const stringToRGBWithOpacity = (name: string, opacity: number): string | undefin
 }
 
 const Tag = (props: TagProps) => {
-    const {className, name} = props;
-    const colour = stringToRGBWithOpacity(name, 0.6);
+    const {className, label} = props;
+    const colour = stringToRGBWithOpacity(label, 0.6);
     return <p
         className={`rounded-4 text-center m-1 px-2 ${className}`}
         style={{backgroundColor: colour}}
     >
-        #{name}
+        #{label}
     </p>
 }
 

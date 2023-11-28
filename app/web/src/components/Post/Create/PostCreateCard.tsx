@@ -193,7 +193,7 @@ const PostCreateCard = ({
                   style={{ cursor: "pointer" }}
                   onClick={() => removeTag(index)}
                 >
-                  <Tag className={""} name={tag.name} />
+                  <Tag className={""} label={tag.name} />
                 </div>
               ))}
             </div>
@@ -280,8 +280,8 @@ const PostCreateCard = ({
 
           <div className="d-flex justify-content-center">
             <button type="submit" className="btn btn-primary">
-              {cardType == "create" && "Create Post"}
-              {cardType == "update" && "Update Post"}
+              {cardType == "create" && "Create Spot"}
+              {cardType == "update" && "Update Spot"}
             </button>
           </div>
         </form>

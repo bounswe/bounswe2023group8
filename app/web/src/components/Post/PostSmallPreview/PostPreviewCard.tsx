@@ -46,7 +46,7 @@ const PostPreviewCard = ({
             style={{ maxHeight: "200px" }}
           >
             {wikiTags.map((tag: any) => (
-              <Tag className={""} key={`${id}-${tag.id}`} name={tag.label} />
+              <Tag className={""} key={`${id}-${tag.id}`} label={tag.label} />
             ))}
           </div>
         </div>

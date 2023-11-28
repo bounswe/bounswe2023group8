@@ -78,7 +78,9 @@ const Router = () => {
           }
         >
           {/* Pages that have both a topbar and sidebar go here */}
-          <Route path="/home" element={<OpeningPage />} />
+          {isAuthenticated && (
+              <Route path="/home" element={<TimelineHomePage />} />
+          )}
           {isAuthenticated && (
             <Route path="/profile/:userId" element={<ProfilePage />} />
           )}
@@ -88,7 +90,6 @@ const Router = () => {
             path="/create_interest_area"
             element={<CreateInterestArea />}
           />
-          <Route path="/timeline-homepage" element={<TimelineHomePage />} />
           <Route
             path="/timeline-explorepage"
             element={<TimelineExplorePage />}

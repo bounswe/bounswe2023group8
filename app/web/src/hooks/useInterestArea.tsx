@@ -85,7 +85,11 @@ const updateInterestArea = async ({
 };
 
 export const useUpdateInterestArea = (props: {}) => {
-  return useMutation(updateInterestArea, props);
+  const navigate = useNavigate();
+  return useMutation(updateInterestArea, {
+    ...props,
+    onSuccess: (data: any) => navigate(`/interest-area/${data.id}`),
+  });
 };
 
 //
