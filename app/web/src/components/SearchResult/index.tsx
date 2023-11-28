@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSearchGlobally } from "../../hooks/useSearch";
 import { useAuth } from "../../contexts/AuthContext";
 import { Container, Row, Col, ListGroup, Card } from "react-bootstrap";
+import PostPreviewCard from "../Post/PostSmallPreview/PostPreviewCard";
 
 const SearchResults = () => {
   const { searchTerm } = useParams();
@@ -37,6 +38,14 @@ const SearchResults = () => {
     navigate(`/interest-area/${id}`);
   }
 
+  function handleUserClick(id: any): void {
+    navigate(`/profile/${id}`);
+  }
+
+  function handlePostClick(id: any): void {
+    navigate(`/posts/${id}`);
+  }
+
   return (
     <Container className="mt-3">
       <Row>
@@ -46,7 +55,8 @@ const SearchResults = () => {
             {interestAreaResults.map((area: any) => (
               <ListGroup.Item
                 key={area.id}
-                onClick={() => handleInterestAreaClick(area.id)} // Set the click handler
+                onClick={() => handleInterestAreaClick(area.id)}
+                style={{ cursor: "pointer" }}
                 action
               >
                 <Row>
@@ -75,7 +85,11 @@ const SearchResults = () => {
           {userResults && userResults.length > 0 && (
             <ListGroup>
               {userResults.map((user: any) => (
-                <ListGroup.Item key={user.id} action>
+                <ListGroup.Item
+                  key={user.id}
+                  onClick={() => handleUserClick(user.id)}
+                  action
+                >
                   <Card>
                     <Card.Body>
                       <Card.Title>{user.name}</Card.Title>
@@ -93,19 +107,14 @@ const SearchResults = () => {
           <h2>Spots</h2>
           {postResults && postResults.length > 0 && (
             <ListGroup>
-              {postResults.map((post: any) => (
-                <ListGroup.Item key={post.id}>
-                  <Card>
-                    <Card.Body>
-                      <Card.Title>{post.title}</Card.Title>
-                      <Card.Subtitle className="mb-2 text-muted">
-                        Spotted by {post.enigmaUser.username} -{" "}
-                        {post.createTime}
-                      </Card.Subtitle>
-                      <Card.Link href={post.sourceLink}>Source Link</Card.Link>
-                    </Card.Body>
-                  </Card>
-                </ListGroup.Item>
+              {postResults.map((post: any, index: number) => (
+                <div
+                  key={index}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handlePostClick(post.id)}
+                >
+                  <PostPreviewCard post {...post}></PostPreviewCard>
+                </div>
               ))}
             </ListGroup>
           )}
