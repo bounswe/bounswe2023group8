@@ -6,18 +6,19 @@ import ProfileHeader from "../../components/ProfileHeader/ProfileHeader";
 import {useAuth} from "../../contexts/AuthContext";
 import {useGetUserFollowingInterestAreas, useGetUserPosts, useGetUserProfile} from "../../hooks/useProfile";
 import {useParams} from "react-router-dom";
+import {Post} from "../InterestAreaViewPage";
 
 const ProfilePage = () => {
-  const createInterestAreaListFromMockData = (postIAs: number[]) => {
-    return mockInterestAreas.filter((interestArea) => {
-      return postIAs.find((postIA) => postIA === interestArea.id);
-    });
-  };
-    const { userId } = useParams();
+
+    const {userId} = useParams();
 
     const {axiosInstance} = useAuth();
     const {mutate: getUserProfile, data: profileData, isSuccess: isSuccessProfile} = useGetUserProfile({});
-    const {mutate: getUserFollowingInterestAreas, data: interestAreas, isSuccess: isSuccessInterestAreas} = useGetUserFollowingInterestAreas({});
+    const {
+        mutate: getUserFollowingInterestAreas,
+        data: interestAreas,
+        isSuccess: isSuccessInterestAreas
+    } = useGetUserFollowingInterestAreas({});
     const {mutate: getUserPosts, data: posts, isSuccess: isSuccessPosts} = useGetUserPosts({});
 
     useEffect(() => {
@@ -60,12 +61,13 @@ const ProfilePage = () => {
                 <div className="card border-0" style={{maxHeight: '70vh'}}>
                     <hr className="m-0 mx-2"/>
                     {isSuccessPosts && <div className="card-body overflow-y-auto">
-                        {posts.map((post: any) => {
+                        {posts.map((post: Post) => {
                             return <PostPreviewCard
-                                key={post.id}
-                                post={post}
-                                userName={post.enigmaUser.name}
-                                tags={post.wikiTags}/>
+                                key={post.id} content={post.content}
+                                createTime={post.createTime} enigmaUser={post.enigmaUser}
+                                geolocation={post.geolocation} id={post.id} interestArea={post.interestArea}
+                                wikiTags={post.wikiTags} label={post.label} title={post.title}
+                                sourceLink={post.sourceLink}/>
                         })
                         }
                     </div>}
@@ -73,7 +75,7 @@ const ProfilePage = () => {
             </Col>
         </Row>
     </>
-  );
+        ;
 };
 
 export default ProfilePage;

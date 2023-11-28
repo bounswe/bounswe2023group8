@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PostPreviewCard from "../../components/Post/PostSmallPreview/PostPreviewCard";
-import { useParams } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import Tag from "../../components/Tag/Tag";
 import { useAuth } from "../../contexts/AuthContext";
 import {
@@ -142,9 +142,18 @@ const ViewInterestArea = () => {
                 borderRadius: "20px",
               }}
             >
-              {interestAreaData.title}
+              {interestAreaData?.title}
             </h1>
-            <p>{interestAreaData.description}</p>
+            <p className="d-flex  justify-content-between">
+              <span>{interestAreaData?.description}</span>
+              <span className="">
+                <Link className="btn btn-primary"
+                      to={"/create_post"}
+                      state={{ interestAreaId: iaId, interestAreaTitle: interestAreaData?.title}}
+                >
+                  Create New Spot
+                </Link>
+              </span></p>
             <hr></hr>
             {postsData &&
               postsData.length > 0 &&
@@ -162,7 +171,7 @@ const ViewInterestArea = () => {
                 className="solid"
                 style={{ borderTop: "3px solid black" }}
               ></hr>
-              {interestAreaData.wikiTags.map((tag: any) => (
+              {interestAreaData?.wikiTags.map((tag: any) => (
                 <div
                   key={tag.id}
                   style={{
@@ -187,7 +196,7 @@ const ViewInterestArea = () => {
                 className="solid"
                 style={{ borderTop: "3px solid black" }}
               ></hr>
-              {subInterestAreasData.map((subIA: any, index: number) => (
+              {subInterestAreasData?.map((subIA: any, index: number) => (
                 <div
                   key={index}
                   style={{

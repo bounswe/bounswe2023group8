@@ -59,7 +59,6 @@ const Router = () => {
         <Route path="/" element={<OpeningPage />} />
         <Route path="/reset-password" element={<ConfirmNewPassword />} />
         <Route path="/registration-confirm" element={<RegistrationConfirm />} />
-        <Route path="/posts/:postId" element={<PostViewPage />} />
         <Route
           element={
             <Row className="p-0 m-0 vw-100">

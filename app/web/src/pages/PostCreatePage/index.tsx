@@ -5,18 +5,17 @@ import PostCreateCard, {
 } from "../../components/Post/Create/PostCreateCard";
 import { SelectedLocationFormData } from "../../components/Geolocation/LocationPicker";
 import { useCreatePost } from "../../hooks/usePost";
+import {useLocation, useNavigate} from "react-router-dom";
 
 const CreatePost = () => {
   const { axiosInstance } = useAuth();
   const defaultPostDetails: CreatePostFormData = {
-    interestArea: "",
+    interestAreaId: -1,
     title: "",
-    link: "",
-    description: "",
+    content: "",
     wikiTags: [],
-    label: "",
-    source: "",
-    publicationDate: new Date(),
+    label: 1,
+    sourceLink: ""
   };
 
   const defaultLocationDetails: SelectedLocationFormData = {
@@ -26,6 +25,9 @@ const CreatePost = () => {
     locationSelected: false,
   };
 
+  const propsFromParent = useLocation();
+  const {interestAreaTitle} = propsFromParent.state;
+  const interestAreaId = parseInt(propsFromParent.state.interestAreaId);
   const [postDetails, setPostDetails] = useState(defaultPostDetails);
   const [locationDetails, setLocationDetails] = useState(
     defaultLocationDetails
@@ -42,19 +44,21 @@ const CreatePost = () => {
       name: string;
     };
     if (name === "publicationDate") {
-      setPostDetails({
-        ...postDetails,
-        [name]: new Date(value),
-      });
+      // setPostDetails({
+      //   ...postDetails,
+      //   [name]: new Date(value),
+      // });
     } else {
       setPostDetails({
         ...postDetails,
         [name]: value,
+        interestAreaId: interestAreaId
       });
     }
   };
 
   const { mutate } = useCreatePost({});
+  const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent) => {
     const wikiTagIds = postDetails.wikiTags.map((tag) => tag.id);
@@ -63,15 +67,22 @@ const CreatePost = () => {
       axiosInstance,
       ...postDetails,
       wikiTags: wikiTagIds,
-      ...locationDetails,
+      geoLocation: {
+        latitude: locationDetails.latitude,
+        longitude: locationDetails.longitude,
+        address: locationDetails.address
+      }
     });
+    navigate(`/interest-area/${interestAreaId}`);
   };
 
   return (
     <div className="d-flex">
       <div className="container mt-4 col-6">
-        <h2 className="fw-bold">Create a New Post!</h2>
+        <h2 className="fw-bold">Create a New Spot!</h2>
         <PostCreateCard
+            interestAreaTitle={interestAreaTitle}
+            interestAreaId={interestAreaId}
           setPostDetails={setPostDetails}
           postDetails={postDetails}
           handleInputChange={handleInputChange}
