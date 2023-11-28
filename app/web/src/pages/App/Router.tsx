@@ -20,6 +20,7 @@ import TimelineHomePage from "../TimelineHomePage";
 import TimelineExplorePage from "../TimelineExplorePage";
 import UpdateInterestArea from "../InterestAreaUpdatePage";
 import BunchVisitorPage from "../BunchVisitorPage";
+import SearchResults from "../../components/SearchResult";
 
 const Router = () => {
   const { isAuthenticated } = useAuth();
@@ -82,6 +83,11 @@ const Router = () => {
           {isAuthenticated && (
             <Route path="/profile/:userId" element={<ProfilePage />} />
           )}
+          <Route
+            path="/search_results/:searchTerm"
+            element={<SearchResults />}
+          />
+
           <Route path="/create_post" element={<CreatePost />} />
           <Route path="/update_post/:postId" element={<PostUpdatePage />} />
           <Route
