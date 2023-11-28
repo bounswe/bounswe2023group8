@@ -34,7 +34,7 @@ const SearchResults = () => {
 
   const navigate = useNavigate();
   function handleInterestAreaClick(id: any): void {
-    navigate(`/interest-areas/${id}`);
+    navigate(`/interest-area/${id}`);
   }
 
   return (
