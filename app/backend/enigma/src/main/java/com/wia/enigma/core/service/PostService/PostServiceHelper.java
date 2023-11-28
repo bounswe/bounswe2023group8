@@ -183,7 +183,9 @@ class PostServiceHelper {
 
         Stream<PostDto> interestAreaPosts =  posts.stream().map(post -> {
               EnigmaUser enigmaUser = enigmaUsers.stream().filter(enigmaUser1 -> enigmaUser1.getId().equals(post.getEnigmaUserId())).findFirst().get();
-              return post.mapToPostDto(wikiTags, enigmaUser.mapToEnigmaUserDto(), interestArea.mapToInterestAreaModel());
+              return post.mapToPostDto(wikiTags.stream().filter(wikiTag ->
+                      entityTags.stream().filter(entityTag -> entityTag.getEntityId().equals(post.getId())).map(EntityTag::getWikiDataTagId).collect(Collectors.toList()).contains(wikiTag.getId())).collect(Collectors.toList()
+                      ), enigmaUser.mapToEnigmaUserDto(), interestArea.mapToInterestAreaModel());
          });
 
         return Stream.concat(interestAreaPosts, nestedInterestAreaPosts)
