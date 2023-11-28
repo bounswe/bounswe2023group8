@@ -218,7 +218,23 @@ const ViewInterestArea = () => {
           </div>
         </div>
       ) : (
-        <div>Waiting for data...</div>
+        <div style={{
+            backgroundColor: "#f0f0f0",
+            padding: "10px",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+            textAlign: "center",
+            fontFamily: "Arial, sans-serif",
+            color: "#333",
+          }}>
+          <h2>Private Interest Area</h2>
+          <p>
+            This section contains private and confidential information. Access is restricted to authorized individuals only.
+          </p>
+          <p>
+            If you have the necessary permissions, please proceed responsibly.
+          </p>
+        </div>
       )}
     </>
   );
