@@ -4,7 +4,7 @@ import com.wia.enigma.dal.enums.AudienceType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.projection.EnigmaUserDetailsProjection;
 import com.wia.enigma.dal.repository.EnigmaUserRepository;
-import com.wia.enigma.exceptions.custom.EnigmaDatabaseException;
+import com.wia.enigma.exceptions.custom.EnigmaException;
 import com.wia.enigma.utilities.AuthUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class EnigmaUserDetailsService implements UserDetailsService {
             enigmaUser = userRepository.findUserDetailsByUsername(username);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaDatabaseException(ExceptionCodes.DB_GET_ERROR,
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
                     "Error while fetching user details from database.");
         }
 
