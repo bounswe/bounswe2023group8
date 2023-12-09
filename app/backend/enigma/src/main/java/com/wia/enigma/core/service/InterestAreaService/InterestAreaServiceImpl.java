@@ -1,9 +1,11 @@
 package com.wia.enigma.core.service.InterestAreaService;
 
 import com.wia.enigma.core.data.dto.*;
+import com.wia.enigma.core.data.response.FollowRequestsResponse;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.WikiService.WikiService;
 import com.wia.enigma.dal.entity.InterestArea;
+import com.wia.enigma.dal.entity.UserFollows;
 import com.wia.enigma.dal.entity.WikiTag;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import com.wia.enigma.dal.enums.EntityType;
@@ -24,6 +26,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class InterestAreaServiceImpl implements InterestAreaService {
+    private final UserFollowsRepository userFollowsRepository;
+    private final EnigmaUserRepository enigmaUserRepository;
     private final WikiTagRepository wikiTagRepository;
 
     final InterestAreaRepository interestAreaRepository;
@@ -173,5 +177,56 @@ public class InterestAreaServiceImpl implements InterestAreaService {
     @Override
     public Boolean checkInterestAreaExist(Long id) {
         return interestAreaServiceHelper.checkInterestAreaExist(id);
+    }
+
+    @Override
+    public List<FollowRequestsResponse> getFollowRequests(Long userId, Long interestAreaId) {
+
+        InterestArea interestArea = interestAreaRepository.findById(interestAreaId)
+                .orElseThrow(() -> new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + interestAreaId));
+
+        if(!interestArea.getEnigmaUserId().equals(userId)){
+            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "You cannot get follow requests of this interest area:" + interestAreaId);
+        }
+
+       return interestAreaServiceHelper.getFollowRequests(interestAreaId);
+    }
+
+    @Override
+    public void acceptFollowRequest(Long requestId, Long userId) {
+
+        UserFollows userFollows = userFollowsRepository.findByIdAndIsAcceptedFalse(requestId);
+
+        if(userFollows == null){
+            throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, "Follow request not found for id: " + requestId);
+        }
+
+        InterestArea interestArea = interestAreaRepository.findById(userFollows.getFollowedEntityId())
+                .orElseThrow(() -> new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + userFollows.getFollowedEntityId()));
+
+        if(!interestArea.getEnigmaUserId().equals(userId)){
+            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "You cannot get follow requests of this interest area:" + userFollows.getFollowedEntityId());
+        }
+
+        userFollowsService.acceptFollowRequest(userFollows);
+    }
+
+    @Override
+    public void rejectFollowRequest(Long requestId, Long userId){
+
+        UserFollows userFollows = userFollowsRepository.findByIdAndIsAcceptedFalse(requestId);
+
+        if(userFollows == null){
+            throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, "Follow request not found for id: " + requestId);
+        }
+
+        InterestArea interestArea = interestAreaRepository.findById(userFollows.getFollowedEntityId())
+                .orElseThrow(() -> new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + userFollows.getFollowedEntityId()));
+
+        if(!interestArea.getEnigmaUserId().equals(userId)){
+            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "You cannot get follow requests of this interest area:" + userFollows.getFollowedEntityId());
+        }
+
+        userFollowsService.rejectFollowRequest(userFollows);
     }
 }
