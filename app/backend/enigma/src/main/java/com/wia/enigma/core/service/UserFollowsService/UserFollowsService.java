@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface UserFollowsService {
 
     void follow(Long userId, Long followId, EntityType entityType, Boolean isAccepted);
+
     void unfollow(Long userId, Long followId, EntityType entityType);
 
     void unfollowAll(Long userId, EntityType entityType);
@@ -18,13 +19,12 @@ public interface UserFollowsService {
     List<UserFollows> findAcceptedFollowers(Long followedId, EntityType entityType);
 
     Long countAcceptedFollowers(Long followedId, EntityType entityType);
-    List<UserFollows> findAcceptedFollowings(Long followerId, EntityType entityType);
 
-    Long countAcceptedFollowings(Long followerId, EntityType entityType);
+    List<UserFollows> findAcceptedFollowings(Long followerId, EntityType entityType);
 
     Boolean isUserFollowsEntity(Long userId, Long followId, EntityType entityType);
 
-    Boolean isUserFollowsEntityOrSentRequest(Long userId, Long followId, EntityType entityType);
-
     void checkInterestAreaAccess(InterestArea interestArea, Long enigmaUserId);
+
+    void deleteAllForUser(Long enigmaUserId);
 }

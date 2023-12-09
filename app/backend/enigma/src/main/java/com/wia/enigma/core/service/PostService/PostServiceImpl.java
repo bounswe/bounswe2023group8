@@ -28,10 +28,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PostServiceImpl implements PostService{
-    private final InterestAreaRepository interestAreaRepository;
-    private final WikiTagRepository wikiTagRepository;
-    private final EnigmaUserRepository enigmaUserRepository;
+public class PostServiceImpl implements PostService {
+
+    final InterestAreaRepository interestAreaRepository;
+    final WikiTagRepository wikiTagRepository;
+    final EnigmaUserRepository enigmaUserRepository;
 
     final PostRepository postRepository;
     final PostServiceHelper postServiceHelper;
@@ -116,5 +117,23 @@ public class PostServiceImpl implements PostService{
     @Override
     public List<PostDto> search(Long userId, String searchKey) {
         return postServiceHelper.search(userId, searchKey);
+    }
+
+    /**
+     * Deletes all posts of the user
+     *
+     * @param enigmaUserId EnigmaUser.Id
+     */
+    @Override
+    @Transactional
+    public void deleteAllForUser(Long enigmaUserId) {
+
+        try {
+            postRepository.deleteAllByEnigmaUserId(enigmaUserId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
+                    "Could not delete posts.");
+        }
     }
 }

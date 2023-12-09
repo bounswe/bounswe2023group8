@@ -14,4 +14,5 @@ public interface InterestAreaPostRepository extends JpaRepository<InterestAreaPo
 
     void deleteAllByInterestAreaId(Long interestAreaId);
 
+    void deleteAllByInterestAreaIdIn(Collection<Long> interestAreaIds);
 }

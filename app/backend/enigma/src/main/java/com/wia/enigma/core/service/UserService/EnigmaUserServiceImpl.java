@@ -6,7 +6,9 @@ import com.wia.enigma.core.data.response.RegisterResponse;
 import com.wia.enigma.core.data.response.SecurityDetailsResponse;
 import com.wia.enigma.core.data.response.VerificationResponse;
 import com.wia.enigma.core.service.EmailService.EmailService;
+import com.wia.enigma.core.service.InterestAreaService.InterestAreaService;
 import com.wia.enigma.core.service.JwtService.EnigmaJwtService;
+import com.wia.enigma.core.service.PostService.PostService;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.VerificationTokenService.VerificationTokenService;
 import com.wia.enigma.dal.entity.*;
@@ -48,6 +50,8 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
     final EmailService emailService;
     final EnigmaJwtService enigmaJwtService;
+    final InterestAreaService interestAreaService;
+    final PostService postService;
     final UserFollowsService userFollowsService;
     final VerificationTokenService verificationTokenService;
 
@@ -581,6 +585,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
      * @param userId  enigma user id
      */
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
 
         EnigmaUser enigmaUser;
@@ -603,6 +608,11 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
                     "Cannot delete EnigmaUser.");
         }
+
+        enigmaJwtService.revokeAllTokens(userId);
+        interestAreaService.deleteInterestAreasForUser(userId);
+        userFollowsService.deleteAllForUser(userId);
+        postService.deleteAllForUser(userId);
     }
 
     private List<WikiTag> getWikiTags(Long id) {

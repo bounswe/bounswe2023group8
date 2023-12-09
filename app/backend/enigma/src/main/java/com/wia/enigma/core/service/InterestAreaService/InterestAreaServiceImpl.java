@@ -18,18 +18,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class InterestAreaServiceImpl implements InterestAreaService {
-    private final WikiTagRepository wikiTagRepository;
 
-    final InterestAreaRepository interestAreaRepository;
     final EntityTagsRepository entityTagsRepository;
-    final WikiService wikiTagService;
+    final InterestAreaRepository interestAreaRepository;
+    final InterestAreaPostRepository interestAreaPostRepository;
+    final WikiTagRepository wikiTagRepository;
+
     final UserFollowsService userFollowsService;
+    final WikiService wikiTagService;
 
     final InterestAreaServiceHelper interestAreaServiceHelper;
 
@@ -173,5 +177,57 @@ public class InterestAreaServiceImpl implements InterestAreaService {
     @Override
     public Boolean checkInterestAreaExist(Long id) {
         return interestAreaServiceHelper.checkInterestAreaExist(id);
+    }
+
+    /**
+     * Deletes all interest areas and interest area related data for the user.
+     *
+     * @param enigmaUserId  EnigmaUser.Id
+     */
+    @Override
+    @Transactional
+    public void deleteInterestAreasForUser(Long enigmaUserId) {
+
+        List<InterestArea> interestAreas;
+        try {
+            interestAreas = interestAreaRepository.findAllByEnigmaUserId(enigmaUserId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Could not get InterestArea list.");
+        }
+
+        if (interestAreas == null)
+            throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND,
+                    "InterestArea list not found for user id: " + enigmaUserId);
+
+        Set<Long> interestAreasToDelete = interestAreas.stream()
+                .filter(interestArea -> interestArea.getAccessLevel() == EnigmaAccessLevel.PERSONAL)
+                .map(InterestArea::getId)
+                .collect(Collectors.toSet());
+
+        try {
+            interestAreaRepository.deleteAllByIdInBatch(interestAreasToDelete);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
+                    "Could not delete InterestArea list.");
+        }
+
+        try {
+            interestAreaPostRepository.deleteAllByInterestAreaIdIn(interestAreasToDelete);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
+                    "Could not delete InterestAreaPost list.");
+        }
+
+        try {
+            entityTagsRepository.deleteAllByEntityIdInAndEntityType(interestAreasToDelete, EntityType.INTEREST_AREA);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
+                    "Could not delete EntityTag list.");
+        }
     }
 }

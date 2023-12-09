@@ -1,13 +1,11 @@
 package com.wia.enigma.core.service.PostService;
 
 import com.wia.enigma.core.data.dto.PostDto;
-import com.wia.enigma.core.data.dto.WikiTagDto;
 import com.wia.enigma.core.data.model.GeoLocation;
 import com.wia.enigma.core.service.InterestAreaPostService.InterestAreaPostService;
 import com.wia.enigma.core.service.InterestAreaService.InterestAreaService;
 import com.wia.enigma.core.service.InterestAreaService.InterestAreaServiceHelper;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
-import com.wia.enigma.core.service.UserService.EnigmaUserService;
 import com.wia.enigma.core.service.WikiService.WikiService;
 import com.wia.enigma.dal.entity.*;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
@@ -20,10 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,9 +34,8 @@ class PostServiceHelper {
     final UserFollowsService userFollowsService;
     final InterestAreaService interestAreaService;
     final InterestAreaServiceHelper interestAreaServiceHelper;
-    final EnigmaUserService enigmaUserService;
-    private final EnigmaUserRepository enigmaUserRepository;
-    private final WikiTagRepository wikiTagRepository;
+    final EnigmaUserRepository enigmaUserRepository;
+    final WikiTagRepository wikiTagRepository;
 
 
     Post fetchPost(Long postId) {

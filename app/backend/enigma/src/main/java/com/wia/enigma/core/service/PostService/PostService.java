@@ -10,6 +10,7 @@ import java.util.List;
 public interface PostService {
 
     PostDto getPost(Long postId, Long userId);
+
     PostDtoSimple createPost(Long userId, Long interestAreaId, String sourceLink, String title, List<String> wikiTags, PostLabel label, String content, GeoLocation geolocation);
 
     PostDtoSimple updatePost(Long userId, Long postId, String sourceLink, String title, List<String> wikiTags, PostLabel label, String content, GeoLocation geolocation);
@@ -19,4 +20,6 @@ public interface PostService {
     List<PostDto> getInterestAreaPosts(Long interestAreaId, Long userId);
 
     List<PostDto> search(Long userId, String searchKey);
+
+    void deleteAllForUser(Long enigmaUserId);
 }
