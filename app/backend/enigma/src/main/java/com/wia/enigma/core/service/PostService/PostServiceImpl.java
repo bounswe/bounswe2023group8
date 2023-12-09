@@ -1,18 +1,12 @@
 package com.wia.enigma.core.service.PostService;
 
-import com.wia.enigma.core.data.dto.EnigmaUserDto;
-import com.wia.enigma.core.data.dto.PostDto;
-import com.wia.enigma.core.data.dto.PostDtoSimple;
-import com.wia.enigma.core.data.dto.WikiTagDto;
+import com.wia.enigma.core.data.dto.*;
 import com.wia.enigma.core.data.model.GeoLocation;
 import com.wia.enigma.core.service.WikiService.WikiService;
 import com.wia.enigma.dal.entity.*;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.enums.PostLabel;
-import com.wia.enigma.dal.repository.EnigmaUserRepository;
-import com.wia.enigma.dal.repository.InterestAreaRepository;
-import com.wia.enigma.dal.repository.PostRepository;
-import com.wia.enigma.dal.repository.WikiTagRepository;
+import com.wia.enigma.dal.repository.*;
 import com.wia.enigma.exceptions.custom.EnigmaException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostServiceImpl implements PostService{
+    private final PostVoteRepository postVoteRepository;
     private final InterestAreaRepository interestAreaRepository;
     private final WikiTagRepository wikiTagRepository;
     private final EnigmaUserRepository enigmaUserRepository;
@@ -52,7 +48,13 @@ public class PostServiceImpl implements PostService{
             throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("Enigma user %d not found", post.getEnigmaUserId()));
         }
 
-        return post.mapToPostDto(wikiTags, enigmaUser.mapToEnigmaUserDto(), interestArea.mapToInterestAreaModel() );
+        return post.mapToPostDto(
+                wikiTags,
+                enigmaUser.mapToEnigmaUserDto(),
+                interestArea.mapToInterestAreaModel(),
+                postVoteRepository.countByPostIdAndVote(postId, true),
+                postVoteRepository.countByPostIdAndVote(postId, false)
+        );
     }
 
     @Override
@@ -105,6 +107,62 @@ public class PostServiceImpl implements PostService{
         }
 
         postRepository.delete(post);
+    }
+
+    @Override
+    @Transactional
+    public void votePost(Long postId, Long userId, Boolean vote) {
+
+        Post post = postServiceHelper.fetchPost(postId);
+
+        postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
+
+        PostVote postVote = postVoteRepository.findByEnigmaUserIdAndPostId(userId, postId);
+
+        if(postVote == null){
+            if(vote == null) return;
+
+            postVote = PostVote.builder()
+                    .enigmaUserId(userId)
+                    .postId(postId)
+                    .vote(vote)
+                    .createTime(new Timestamp(System.currentTimeMillis()))
+                    .build();
+            postVoteRepository.save(postVote);
+        }else{
+
+            if(vote == null){
+                postVoteRepository.delete(postVote);
+                return;
+            }
+
+            postVote.setVote(vote);
+            postVoteRepository.save(postVote);
+        }
+    }
+
+    @Override
+    public List<PostVoteDto> getPostVotes(Long postId, Long userId){
+
+        Post post = postServiceHelper.fetchPost(postId);
+
+        postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
+
+
+
+        return postVoteRepository.findByPostId(postId).stream().map(
+
+                postVote -> {
+                    EnigmaUser enigmaUser = enigmaUserRepository.findEnigmaUserById(postVote.getEnigmaUserId());
+                    return PostVoteDto.builder()
+                            .id(postVote.getId())
+                            .postId(postVote.getPostId())
+                            .enigmaUser(enigmaUser.mapToEnigmaUserDto())
+                            .isUpvote(postVote.getVote())
+                            .build();
+                }
+        ).collect(Collectors.toList()
+        );
     }
 
     @Override
