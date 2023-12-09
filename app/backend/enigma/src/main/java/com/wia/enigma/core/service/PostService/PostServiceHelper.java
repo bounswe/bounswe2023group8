@@ -116,23 +116,26 @@ class PostServiceHelper {
     }
 
     void validatePostOwnership(Long userId, Post post) {
-        if (!post.getEnigmaUserId().equals(userId)) {
-            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "User " + userId + " is not the owner of post " + post.getId());
-        }
+        if (!post.getEnigmaUserId().equals(userId))
+            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION,
+                    "User " + userId + " is not the owner of post " + post.getId());
     }
 
-    void updatePostDetails(Post post, String sourceLink, String title,
-                                   PostLabel label, String content, GeoLocation geolocation) {
+    void updatePostDetails(Post post, String sourceLink, String title, PostLabel label, String content,
+                           GeoLocation geolocation) {
+
         post.setSourceLink(sourceLink);
         post.setTitle(title);
         post.setLabel(label);
         post.setContent(content);
         post.setGeolocation(geolocation);
         post.setCreateTime(new Timestamp(System.currentTimeMillis()));
+
         postRepository.save(post);
     }
 
     void updateWikiTagsForPost(Post post, List<String> wikiTags) {
+
         entityTagsRepository.deleteAllByEntityIdAndEntityType(post.getId(), EntityType.POST);
 
         List<EntityTag> entityTags = wikiTags.stream().map(wikiTag ->
@@ -141,8 +144,8 @@ class PostServiceHelper {
                         .entityType(EntityType.POST)
                         .wikiDataTagId(wikiTag)
                         .createTime(new Timestamp(System.currentTimeMillis()))
-                        .build()
-        ).collect(Collectors.toList());
+                        .build())
+                .collect(Collectors.toList());
 
         entityTagsRepository.saveAll(entityTags);
     }
@@ -157,15 +160,14 @@ class PostServiceHelper {
         List<Long> postIds =  interestAreaPostService.getPostsByInterestAreaId(interestAreaId).stream()
                 .map(InterestAreaPost::getPostId).toList();
 
-
         List<EntityTag> entityTags =  entityTagsRepository.findByEntityIdInAndEntityType( postIds, EntityType.POST );
-
 
         List<WikiTag> wikiTags = wikiTagRepository.findAllById(
                 entityTags.stream()
                         .map(EntityTag::getWikiDataTagId)
                         .collect(Collectors.toList())
               );
+
         List<Post> posts = postRepository.findAllById(postIds);
 
         List<Long> userIds = posts.stream().map(Post::getEnigmaUserId).toList();
