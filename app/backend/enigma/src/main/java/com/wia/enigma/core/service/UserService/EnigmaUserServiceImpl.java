@@ -39,26 +39,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EnigmaUserServiceImpl implements EnigmaUserService {
-    private final PostRepository postRepository;
-
-    private final InterestAreaRepository interestAreaRepository;
-
-    final PasswordEncoder passwordEncoder;
 
     final EnigmaUserRepository enigmaUserRepository;
-
-    final EnigmaJwtService enigmaJwtService;
-
-    final VerificationTokenService verificationTokenService;
-
-    final EmailService emailService;
-
-    final UserFollowsService userFollowsService;
-
+    final EntityTagsRepository entityTagsRepository;
+    final InterestAreaRepository interestAreaRepository;
+    final PostRepository postRepository;
     final WikiTagRepository wikiTagRepository;
 
+    final EmailService emailService;
+    final EnigmaJwtService enigmaJwtService;
+    final UserFollowsService userFollowsService;
+    final VerificationTokenService verificationTokenService;
 
-    final EntityTagsRepository entityTagsRepository;
+    final PasswordEncoder passwordEncoder;
 
     @Override
     public EnigmaUserDto getUser(Long id){
@@ -125,7 +118,6 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                 .password(passwordEncoder.encode(password))
                 .birthday(birthdayDate)
                 .audienceType(AudienceType.USER.getName())
-                .isDeleted(false)
                 .isVerified(false)
                 .createTime(new Timestamp(System.currentTimeMillis()))
                 .build();
