@@ -441,7 +441,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                     "User does not exist or unverified!");
         }
 
-        return userFollowsService.findAcceptedFollowers( followedId, EntityType.USER)
+        return userFollowsService.findFollowers( followedId, EntityType.USER, true)
                 .stream()
                 .map(userFollows -> enigmaUserRepository.findEnigmaUserById(userFollows.getFollowerEnigmaUserId()))
                 .map(enigmaUser -> EnigmaUserDto.builder()
@@ -470,7 +470,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                     "User does not exist or unverified!");
         }
 
-        return userFollowsService.findAcceptedFollowings(followerId, EntityType.USER)
+        return userFollowsService.findFollowings(followerId, EntityType.USER, true)
                 .stream()
                 .map(userFollows -> enigmaUserRepository.findEnigmaUserById(userFollows.getFollowedEntityId()))
                 .map(enigmaUser -> EnigmaUserDto.builder()
@@ -528,7 +528,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
     @Override
     public List<InterestAreaDto> getFollowingInterestAreas(Long userId, Long followerId ) {
-        List<Long> followedEntityIds = userFollowsService.findAcceptedFollowings(followerId, EntityType.INTEREST_AREA)
+        List<Long> followedEntityIds = userFollowsService.findFollowings(followerId, EntityType.INTEREST_AREA, true)
                 .stream()
                 .map(UserFollows::getFollowedEntityId)
                 .collect(Collectors.toList());
