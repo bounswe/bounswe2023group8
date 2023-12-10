@@ -1,6 +1,6 @@
 package com.wia.enigma.core.controller.api.v1;
 
-import com.wia.enigma.core.service.WikiService;
+import com.wia.enigma.core.service.WikiService.WikiService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;

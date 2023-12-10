@@ -4,7 +4,8 @@ import com.wia.enigma.configuration.security.EnigmaAuthenticationToken;
 import com.wia.enigma.core.data.dto.InterestAreaDto;
 import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;
 import com.wia.enigma.core.data.request.CreateInterestAreaRequest;
-import com.wia.enigma.core.service.InterestAreaService;
+import com.wia.enigma.core.service.InterestAreaService.InterestAreaService;
+import com.wia.enigma.core.service.PostService.PostService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -15,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -23,14 +27,15 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class InterestAreaController {
 
     final InterestAreaService interestAreaService;
+    final PostService postService;
 
     /*
         WA-8: Gets interest areas.
      */
     @GetMapping()
-    public ResponseEntity<?> getInterestArea(@Valid  @NotNull @RequestParam(name = "id") Long id ) {
+    public ResponseEntity<?> getInterestArea(@Valid  @NotNull @RequestParam(name = "id") Long id, EnigmaAuthenticationToken token ) {
 
-        InterestAreaDto interestAreaDto = interestAreaService.getInterestArea(id);
+        InterestAreaDto interestAreaDto = interestAreaService.getInterestArea(id,  token.getEnigmaUserId());
 
         return ResponseEntity.ok(interestAreaDto);
 
@@ -44,7 +49,8 @@ public class InterestAreaController {
 
         InterestAreaSimpleDto interestAreaSimpleDto = interestAreaService.createInterestArea(
                 token.getEnigmaUserId(),
-                createInterestAreaRequest.getName(),
+                createInterestAreaRequest.getTitle(),
+                createInterestAreaRequest.getDescription(),
                 createInterestAreaRequest.getAccessLevel(),
                 createInterestAreaRequest.getNestedInterestAreas(),
                 createInterestAreaRequest.getWikiTags()
@@ -69,7 +75,8 @@ public class InterestAreaController {
 
         InterestAreaSimpleDto interestAreaSimpleDto = interestAreaService.updateInterestArea(
                 id,
-                createInterestAreaRequest.getName(),
+                createInterestAreaRequest.getTitle(),
+                createInterestAreaRequest.getDescription(),
                 createInterestAreaRequest.getAccessLevel(),
                 createInterestAreaRequest.getNestedInterestAreas(),
                 createInterestAreaRequest.getWikiTags()
@@ -89,5 +96,68 @@ public class InterestAreaController {
 
         return ResponseEntity.ok().build();
     }
+
+    /*
+        WA-14: Follows interest area.
+     */
+    @GetMapping("follow")
+    public ResponseEntity<?> followInterestArea(@Valid @NotNull @RequestParam(name = "id") Long id, EnigmaAuthenticationToken token) {
+
+        interestAreaService.followInterestArea(token.getEnigmaUserId(), id);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+        WA-15: Unfollows interest area.
+     */
+    @GetMapping("unfollow")
+    public ResponseEntity<?> unfollowInterestArea(@Valid @NotNull @RequestParam(name = "id") Long id, EnigmaAuthenticationToken token) {
+
+        interestAreaService.unfollowInterestArea(token.getEnigmaUserId(), id);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+        WA-27: Gets followers.
+     */
+    @GetMapping("/{id}/followers")
+    public ResponseEntity<?> getFollowers(@Valid @NotNull @PathVariable(value = "id") Long id, EnigmaAuthenticationToken token) {
+
+        return ResponseEntity.ok(interestAreaService.getFollowers(token.getEnigmaUserId(), id));
+    }
+
+    /*
+        WA-28: Gets posts.
+     */
+    @GetMapping("/{id}/posts")
+    public ResponseEntity<?> getPosts(@Valid @NotNull @PathVariable(value = "id") Long id, EnigmaAuthenticationToken token) {
+
+        return ResponseEntity.ok(postService.getInterestAreaPosts(id, token.getEnigmaUserId()));
+    }
+
+    /*
+        WA-30: Gets nested interest areas.
+     */
+    @GetMapping("/{id}/nested-interest-areas")
+    public ResponseEntity<?> getNestedInterestAreas(@Valid @NotNull @PathVariable(value = "id") Long id, EnigmaAuthenticationToken token) {
+
+        return ResponseEntity.ok(interestAreaService.getNestedInterestAreas(id, token.getEnigmaUserId()));
+    }
+
+
+    /*
+        WA-17: Searches interest areas.
+     */
+    @GetMapping("/search")
+    public ResponseEntity<?>  searchInterestArea(@Valid @NotNull @RequestParam(name = "searchKey") String searchKey,  EnigmaAuthenticationToken token) {
+
+        List<InterestAreaSimpleDto> search = interestAreaService.search(token.getEnigmaUserId(), searchKey);
+
+        return ResponseEntity.ok(search);
+    }
+
+
 
 }

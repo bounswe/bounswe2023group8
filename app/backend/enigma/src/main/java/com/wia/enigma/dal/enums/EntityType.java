@@ -3,7 +3,9 @@ package com.wia.enigma.dal.enums;
 public enum EntityType {
 
     INTEREST_AREA("interest_area"),
-    POST("post");
+    POST("post"),
+
+    USER("user");
 
     private final String name;
 
