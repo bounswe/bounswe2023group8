@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostServiceImpl implements PostService{
+    private final PostCommentRepository postCommentRepository;
     private final PostVoteRepository postVoteRepository;
     private final InterestAreaRepository interestAreaRepository;
     private final WikiTagRepository wikiTagRepository;
@@ -53,7 +54,8 @@ public class PostServiceImpl implements PostService{
                 enigmaUser.mapToEnigmaUserDto(),
                 interestArea.mapToInterestAreaModel(),
                 postVoteRepository.countByPostIdAndVote(postId, true),
-                postVoteRepository.countByPostIdAndVote(postId, false)
+                postVoteRepository.countByPostIdAndVote(postId, false),
+                postCommentRepository.countByPostId(postId)
         );
     }
 
@@ -174,5 +176,78 @@ public class PostServiceImpl implements PostService{
     @Override
     public List<PostDto> search(Long userId, String searchKey) {
         return postServiceHelper.search(userId, searchKey);
+    }
+
+    @Override
+    public void commentOnPost(Long postId, Long userId, String content) {
+        Post post = postServiceHelper.fetchPost(postId);
+        postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
+
+        PostComment postComment = PostComment.builder()
+                .enigmaUserId(userId)
+                .postId(postId)
+                .content(content)
+                .createTime(new Timestamp(System.currentTimeMillis()))
+                .build();
+
+        postCommentRepository.save(postComment);
+    }
+
+    @Override
+    public void updatePostComment(Long postId, Long userId, Long commentId, String content) {
+        Post post = postServiceHelper.fetchPost(postId);
+        postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
+
+        PostComment postComment = postCommentRepository.findById(commentId)
+                .orElseThrow(() -> new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("Post comment %d not found", commentId)));
+
+        if(!postComment.getEnigmaUserId().equals(userId)){
+            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, String.format("User %d is not the owner of post comment %d", userId, postComment.getId()));
+        }
+
+        postComment.setContent(content);
+        postCommentRepository.save(postComment);
+    }
+
+    @Override
+    public void deletePostComment(Long postId, Long userId, Long commentId) {
+        Post post = postServiceHelper.fetchPost(postId);
+        postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
+
+        PostComment postComment = postCommentRepository.findById(commentId)
+                .orElseThrow(() -> new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("Post comment %d not found", commentId)));
+
+        if(!postComment.getEnigmaUserId().equals(userId)){
+            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, String.format("User %d is not the owner of post comment %d", userId, postComment.getId()));
+        }
+
+        postCommentRepository.delete(postComment);
+    }
+
+    @Override
+    public List<PostCommentDto> getPostComments(Long postId, Long userId){
+
+        Post post = postServiceHelper.fetchPost(postId);
+        postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
+
+        List<PostComment> postComments = postCommentRepository.findByPostId(postId);
+
+        List<Long> userIds = postComments.stream().map(PostComment::getEnigmaUserId).collect(Collectors.toList());
+
+        List<EnigmaUser> enigmaUsers = enigmaUserRepository.findAllById(userIds);
+
+
+        return postComments.stream().map(
+                postComment -> {
+                    EnigmaUser enigmaUser = enigmaUsers.stream().filter(user -> user.getId().equals(postComment.getEnigmaUserId())).findFirst().orElse(null);
+                    return PostCommentDto.builder()
+                            .id(postComment.getId())
+                            .postId(postComment.getPostId())
+                            .enigmaUser(enigmaUser.mapToEnigmaUserDto())
+                            .content(postComment.getContent())
+                            .createTime(postComment.getCreateTime())
+                            .build();
+                }
+        ).collect(Collectors.toList());
     }
 }

@@ -1,5 +1,6 @@
 package com.wia.enigma.core.service.PostService;
 
+import com.wia.enigma.core.data.dto.PostCommentDto;
 import com.wia.enigma.core.data.dto.PostDto;
 import com.wia.enigma.core.data.dto.PostDtoSimple;
 import com.wia.enigma.core.data.dto.PostVoteDto;
@@ -25,4 +26,13 @@ public interface PostService {
     List<PostDto> getInterestAreaPosts(Long interestAreaId, Long userId);
 
     List<PostDto> search(Long userId, String searchKey);
+
+    void commentOnPost(Long postId, Long userId, String content);
+
+    void updatePostComment(Long postId, Long userId, Long commentId, String content);
+
+    void deletePostComment(Long postId, Long userId, Long commentId);
+
+    List<PostCommentDto> getPostComments(Long postId, Long userId);
+
 }

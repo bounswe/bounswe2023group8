@@ -43,6 +43,7 @@ class PostServiceHelper {
     private final EnigmaUserRepository enigmaUserRepository;
     private final WikiTagRepository wikiTagRepository;
     private final PostVoteRepository postVoteRepository;
+    private final PostCommentRepository postCommentRepository;
 
 
     Post fetchPost(Long postId) {
@@ -192,8 +193,8 @@ class PostServiceHelper {
                         enigmaUser.mapToEnigmaUserDto(),
                         interestArea.mapToInterestAreaModel(),
                         postVoteRepository.countByPostIdAndVote(post.getId(), true),
-                        postVoteRepository.countByPostIdAndVote(post.getId(), false)
-
+                        postVoteRepository.countByPostIdAndVote(post.getId(), false),
+                        postCommentRepository.countByPostId(post.getId())
                       );
          });
 
@@ -230,7 +231,8 @@ class PostServiceHelper {
                     enigmaUser.mapToEnigmaUserDto(),
                     interestAreaServiceHelper.getInterestArea(post1.getInterestAreaId()).mapToInterestAreaModel(),
                     postVoteRepository.countByPostIdAndVote(post1.getId(), true),
-                    postVoteRepository.countByPostIdAndVote(post1.getId(), false)
+                    postVoteRepository.countByPostIdAndVote(post1.getId(), false),
+                    postCommentRepository.countByPostId(post1.getId())
             );
         }).toList();
     }
