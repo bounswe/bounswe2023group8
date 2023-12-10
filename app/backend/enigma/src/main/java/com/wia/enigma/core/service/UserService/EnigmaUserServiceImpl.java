@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EnigmaUserServiceImpl implements EnigmaUserService {
+    private final PostCommentRepository postCommentRepository;
     private final PostVoteRepository postVoteRepository;
     private final PostRepository postRepository;
 
@@ -522,7 +523,8 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                 interestAreas.stream().filter(interestArea -> interestArea.getId().equals(post.getInterestAreaId()))
                         .toList().get(0).mapToInterestAreaModel(),
                 postVoteRepository.countByPostIdAndVote(post.getId(), true),
-                postVoteRepository.countByPostIdAndVote(post.getId(), false)
+                postVoteRepository.countByPostIdAndVote(post.getId(), false),
+                postCommentRepository.countByPostId(post.getId())
         )).toList();
     }
 

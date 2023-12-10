@@ -29,6 +29,7 @@ public class PostDto {
     String content;
     Long upvoteCount;
     Long downvoteCount;
+    Long commentCount;
     GeoLocation geolocation;
     Timestamp createTime;
 }

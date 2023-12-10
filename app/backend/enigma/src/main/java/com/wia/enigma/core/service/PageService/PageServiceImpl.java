@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PageServiceImpl implements PageService{
+    private final PostCommentRepository postCommentRepository;
     private final PostVoteRepository postVoteRepository;
     private final NestedInterestAreaRepository nestedInterestAreaRepository;
     final EnigmaUserRepository enigmaUserRepository;
@@ -115,7 +116,8 @@ public class PageServiceImpl implements PageService{
                         enigmaUserDtos.stream().filter(enigmaUserDto -> enigmaUserDto.getId().equals(post.getEnigmaUserId())).findFirst().orElse(null),
                         interestAreaModels.stream().filter(interestAreaModel -> interestAreaModel.getId().equals(post.getInterestAreaId())).findFirst().orElse(null),
                         postVoteRepository.countByPostIdAndVote(post.getId(), true),
-                        postVoteRepository.countByPostIdAndVote(post.getId(), false)
+                        postVoteRepository.countByPostIdAndVote(post.getId(), false),
+                        postCommentRepository.countByPostId(post.getId())
                 )).toList();
     }
 }

@@ -1,10 +1,13 @@
 package com.wia.enigma.core.controller.api.v1;
 
 import com.wia.enigma.configuration.security.EnigmaAuthenticationToken;
+import com.wia.enigma.core.data.dto.PostCommentDto;
 import com.wia.enigma.core.data.dto.PostDto;
 import com.wia.enigma.core.data.dto.PostDtoSimple;
 import com.wia.enigma.core.data.dto.PostVoteDto;
+import com.wia.enigma.core.data.request.CreateCommentRequest;
 import com.wia.enigma.core.data.request.CreatePostRequest;
+import com.wia.enigma.core.data.request.UpdateCommentRequest;
 import com.wia.enigma.core.data.request.UpdatePostRequest;
 import com.wia.enigma.core.service.PostService.PostService;
 import com.wia.enigma.dal.entity.PostVote;
@@ -132,5 +135,49 @@ public class PostController {
         List<PostVoteDto> postVotes = postService.getPostVotes(id, token.getEnigmaUserId());
 
         return ResponseEntity.ok(postVotes);
+    }
+
+    /*
+        WA-41: Comment on post.
+     */
+    @PostMapping("/{id}/comment")
+    public ResponseEntity<?> commentOnPost(@Valid @NotNull @PathVariable(value = "id") Long id, @RequestBody @Valid @NotNull CreateCommentRequest createCommentRequest, EnigmaAuthenticationToken token){
+
+        postService.commentOnPost(id, token.getEnigmaUserId(), createCommentRequest.getContent());
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+        WA-42: Update post comment.
+     */
+    @PutMapping("/{id}/comment")
+    public ResponseEntity<?> updatePostComment(@Valid @NotNull @PathVariable(value = "id") Long id, @RequestBody @Valid @NotNull UpdateCommentRequest updateCommentRequest, EnigmaAuthenticationToken token){
+
+        postService.updatePostComment(id, token.getEnigmaUserId(), updateCommentRequest.getCommentId(), updateCommentRequest.getContent());
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+        WA-43: Delete post comment.
+     */
+    @DeleteMapping("/{id}/comment/{commentId}")
+    public ResponseEntity<?> deletePostComment(@Valid @NotNull @PathVariable(value = "id") Long id, @Valid @NotNull @PathVariable(value = "commentId") Long commentId, EnigmaAuthenticationToken token){
+
+        postService.deletePostComment(id, token.getEnigmaUserId(), commentId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+        WA-44: Get post comments.
+     */
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<?> getPostComments(@Valid @NotNull @PathVariable(value = "id") Long id, EnigmaAuthenticationToken token){
+
+        List<PostCommentDto> postComments = postService.getPostComments(id, token.getEnigmaUserId());
+
+        return ResponseEntity.ok(postComments);
     }
 }
