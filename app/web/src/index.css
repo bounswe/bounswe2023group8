@@ -40,3 +40,84 @@ code {
   flex: 0 0 auto;
   height: 33%;
 }
+
+.WA-theme-main{
+  color: #0B68B1
+}
+
+.WA-theme-bg-main{
+  background-color: #0B68B1;
+}
+
+.WA-theme-white{
+  color: #FFFFFF
+}
+
+.WA-theme-bg-white{
+  background-color: #FFFFFF
+}
+
+.WA-theme-black{
+  color: #000000
+}
+
+.WA-theme-bg-black{
+  background-color: #000000
+}
+
+.WA-theme-light{
+  color: #F1F1F1
+}
+
+.WA-theme-bg-light{
+  background-color: #FFFAF6
+}
+
+.WA-theme-dark{
+  color: #434343
+}
+
+.WA-theme-bg-dark{
+  background-color: #486376
+}
+
+.WA-theme-positive{
+  color: #31BC63
+}
+
+.WA-theme-bg-positive{
+  background-color: #31BC63
+}
+
+.WA-theme-negative {
+  color: #C32626
+}
+
+.WA-theme-bg-negative{
+  background-color: #C32626
+}
+
+.WA-theme-bg-soft{
+  background-color: #EEF0EB
+}
+
+.WA-theme-bg-regular{
+  background-color: #CDCFCF
+}
+
+.WA-theme-bg-solid{
+  background-color: #7EA4B9
+}
+
+.WA-theme-separator-light{
+  border-color: #E6EFF4
+}
+
+.WA-theme-separator-dark{
+  border-color: #203376
+}
+
+.WA-theme-gradient-main{
+  background: rgb(11,104,177);
+  background: linear-gradient(180deg, rgba(11,104,177,0) 0%, rgba(11,104,177,1) 70%);
+}
