@@ -53,7 +53,7 @@ public class Post {
     @Column(name = "create_time")
     Timestamp createTime;
     public PostDto mapToPostDto( List<WikiTag> wikiTags, EnigmaUserDto enigmaUserDto, InterestAreaModel interestAreaModel,
-                                 Long upvoteCount, Long downvoteCount) {
+                                 Long upvoteCount, Long downvoteCount, Long commentCount) {
         return PostDto.builder()
                 .id(this.getId())
                 .enigmaUser(enigmaUserDto)
@@ -65,6 +65,7 @@ public class Post {
                 .content(this.getContent())
                 .upvoteCount(upvoteCount)
                 .downvoteCount(downvoteCount)
+                .commentCount(commentCount)
                 .geolocation(this.getGeolocation())
                 .createTime(this.getCreateTime())
                 .build();
