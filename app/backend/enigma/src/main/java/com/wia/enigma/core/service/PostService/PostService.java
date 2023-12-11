@@ -22,4 +22,8 @@ public interface PostService {
     List<PostDto> search(Long userId, String searchKey);
 
     void deleteAllForUser(Long enigmaUserId);
+
+    void validateExistence(Long postId);
+
+    Integer getPostCount(Long enigmaUserId);
 }

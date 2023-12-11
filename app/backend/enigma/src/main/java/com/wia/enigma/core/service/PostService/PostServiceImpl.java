@@ -1,9 +1,7 @@
 package com.wia.enigma.core.service.PostService;
 
-import com.wia.enigma.core.data.dto.EnigmaUserDto;
 import com.wia.enigma.core.data.dto.PostDto;
 import com.wia.enigma.core.data.dto.PostDtoSimple;
-import com.wia.enigma.core.data.dto.WikiTagDto;
 import com.wia.enigma.core.data.model.GeoLocation;
 import com.wia.enigma.core.service.WikiService.WikiService;
 import com.wia.enigma.dal.entity.*;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -134,6 +131,46 @@ public class PostServiceImpl implements PostService {
             log.error(e.getMessage(), e);
             throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
                     "Could not delete posts.");
+        }
+    }
+
+    /**
+     * Validates the existence of a post
+     *
+     * @param postId   Post.Id
+     */
+    @Override
+    public void validateExistence(Long postId) {
+
+        Post post;
+        try {
+            post = postRepository.findById(postId).orElse(null);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Could not fetch post.");
+        }
+
+        if (post == null)
+            throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND,
+                    "Post with id " + postId + " does not exist.");
+    }
+
+    /**
+     * Gets the number of posts of a user
+     *
+     * @param enigmaUserId  EnigmaUser.Id
+     * @return              Integer
+     */
+    @Override
+    public Integer getPostCount(Long enigmaUserId) {
+
+        try {
+            return postRepository.countAllByEnigmaUserId(enigmaUserId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Could not fetch post count.");
         }
     }
 }

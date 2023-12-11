@@ -615,6 +615,28 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
         postService.deleteAllForUser(userId);
     }
 
+    /**
+     * Validates the existence of the EnigmaUser.
+     *
+     * @param userId   enigma user id
+     */
+    @Override
+    public void validateExistence(Long userId) {
+
+            EnigmaUser enigmaUser;
+            try {
+                enigmaUser = enigmaUserRepository.findEnigmaUserById(userId);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                        "Cannot get EnigmaUser by id.");
+            }
+
+            if (enigmaUser == null)
+                throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                        "EnigmaUser not found for id: " + userId);
+    }
+
     private List<WikiTag> getWikiTags(Long id) {
         return wikiTagRepository.findAllById(entityTagsRepository.findAllByEntityIdAndEntityType(id, EntityType.POST).stream()
                 .map(EntityTag::getWikiDataTagId)
