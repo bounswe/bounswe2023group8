@@ -78,7 +78,7 @@ const PostPreviewCard = ({
                                   style={{textDecoration: 'none'}}
                                   className="card-title truncate-text-2 WA-theme-dark fs-5 fw-bold">{title}</Link>
                             <Label className="" label={label}/>
-                            <Link to={sourceLink} className="truncate-text-2 WA-theme-main fw-bold mt-1">
+                            <Link to={sourceLink} className="truncate-text-2 WA-theme-main fw-bold">
                                 {sourceLink}
                             </Link>
                             <div className="card-title truncate-text-4 WA-theme-dark">{content}</div>
@@ -87,7 +87,7 @@ const PostPreviewCard = ({
                     <div className="col-3 container d-flex justify-content-start p-1 m-0 ">
                         <div className="vr my-3 col-1"></div>
                         <div
-                            className="mx-auto flex-fill align-self-center overflow-y-auto px-3 py-1"
+                            className="mx-auto flex-fill align-self-center overflow-y-auto"
                             style={{maxHeight: "200px"}}
                         >
                             {wikiTags.map((tag: any) => (
