@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { format } from "date-fns";
 import Tag from "../Tag/Tag";
 import mockUsers from "../../mockData/milestone1/451_users.json";
@@ -12,12 +12,132 @@ export type DetailedPostCardProps = {
   post: Post
 }
 
+type Annotation = {
+  startIndex: number,
+  endIndex: number,
+  content: string,
+}
+
 const  DetailedPostCard = (props: DetailedPostCardProps) => {
   const { userData} = useAuth();
   const [locationModalShow, setLocationModalShow] = useState(false);
   const handleLocationModalShow = () => {
     setLocationModalShow(!locationModalShow);
   }
+  
+  const [annotations, setAnnotations] = useState<Annotation[]>([]);
+  const [mergedRanges, setMergedRanges] = useState<{start: number, end: number}[]>([]);
+
+  useEffect(() => {
+    // set annotations by api
+    // mock data for now
+    const ann1 : Annotation = {
+      startIndex: 0,
+      endIndex: 10,
+      content: "Ankara",
+    }
+    const ann2 : Annotation = {
+      startIndex: 45,
+      endIndex: 50,
+      content: "Ankara",
+    }
+    const ann4 : Annotation = {
+      startIndex: 40,
+      endIndex: 50,
+      content: "Ankara",
+    }
+    const ann5 : Annotation = {
+      startIndex: 45,
+      endIndex: 70,
+      content: "Ankara",
+    }
+    const ann6 : Annotation = {
+      startIndex: 5,
+      endIndex: 20,
+      content: "Ankara",
+    }
+    setAnnotations([ann1, ann2, ann4, ann5, ann6]);
+  }, []);
+
+  useEffect(() => {
+    if (annotations.length == 0) return;
+      setMergedRanges(mergeOverlappingRanges(annotations))
+  }, [annotations])
+
+  function mergeOverlappingRanges(annotations: Annotation[]) {
+    annotations.sort((a, b) => a.startIndex - b.startIndex);
+  
+    const mergedRanges = [];
+  
+    let currentStartIndex = annotations[0].startIndex;
+    let currentEndIndex = annotations[0].endIndex;
+  
+    for (let i = 1; i < annotations.length; i++) {
+      const nextStartIndex = annotations[i].startIndex;
+      const nextEndIndex = annotations[i].endIndex;
+  
+      if (currentEndIndex >= nextStartIndex) {
+        // Merge overlapping ranges
+        currentEndIndex = Math.max(currentEndIndex, nextEndIndex);
+      } else {
+        // Add the merged range
+        mergedRanges.push({ start: currentStartIndex, end: currentEndIndex });
+  
+        // Update currentStartIndex and currentEndIndex
+        currentStartIndex = nextStartIndex;
+        currentEndIndex = nextEndIndex;
+      }
+    }
+  
+    // Add the last merged range
+    mergedRanges.push({ start: currentStartIndex, end: currentEndIndex });
+  
+    return mergedRanges;
+  }
+
+  const renderHighlightedText = () => {
+    let currentPosition = 0;
+    const result = [];
+
+    mergedRanges.forEach((range, index) => {
+      const { start, end } = range;
+
+      // Get the text between the current position and the start index
+      const beforeHighlight = post.content.slice(currentPosition, start);
+
+      // Get the highlighted text
+      const highlightedText = post.content.slice(start, end);
+
+      // Update the current position to the end index for the next iteration
+      currentPosition = end;
+
+      // Add the non-highlighted part to the result
+      if (beforeHighlight) {
+        result.push(<span key={`non-highlighted-${index}`}>{beforeHighlight}</span>);
+      }
+
+      // Add the highlighted part to the result
+      result.push(<span onMouseEnter={() => {hoverAnnotation(start, end)}} key={`highlighted-${index}`} className="highlighted-text" style={{backgroundColor: "red"}}>{highlightedText}</span>);
+    });
+
+    // Add any remaining non-highlighted text after the last annotation
+    if (currentPosition < post.content.length) {
+      result.push(<span key={`non-highlighted-last`}>{post.content.slice(currentPosition)}</span>);
+    }
+
+    return result;
+  };
+
+  const hoverAnnotation = (startIndex: number, endIndex: number) => {
+    const annotationsInRange : Annotation[] = [];
+    annotations.forEach((annotation) => {
+      if (annotation.startIndex >= startIndex && annotation.endIndex <= endIndex) {
+        annotationsInRange.push(annotation);
+      }
+    });
+    console.log(annotationsInRange)
+  }
+
   const { post } = props;
     return (
       <div
@@ -79,6 +199,9 @@ const  DetailedPostCard = (props: DetailedPostCardProps) => {
                 <a href={""} className="link-primary">
                   {post.sourceLink}
                 </a>
+
+                <p className="card-text">{renderHighlightedText()}</p>
+
                 <p className="card-text">{post.content}</p>
                 <p className="card-text justify-content-between d-flex">
                   <small className="text-body-secondary">
