@@ -42,82 +42,82 @@ code {
 }
 
 .WA-theme-main{
-  color: #0B68B1
+  color: #0B68B1 !important;
 }
 
 .WA-theme-bg-main{
-  background-color: #0B68B1;
+  background-color: #0B68B1 !important;
 }
 
 .WA-theme-white{
-  color: #FFFFFF
+  color: #FFFFFF !important;
 }
 
 .WA-theme-bg-white{
-  background-color: #FFFFFF
+  background-color: #FFFFFF !important;
 }
 
 .WA-theme-black{
-  color: #000000
+  color: #000000 !important;
 }
 
 .WA-theme-bg-black{
-  background-color: #000000
+  background-color: #000000 !important;
 }
 
 .WA-theme-light{
-  color: #F1F1F1
+  color: #F1F1F1 !important;
 }
 
 .WA-theme-bg-light{
-  background-color: #FFFAF6
+  background-color: #FFFAF6 !important;
 }
 
 .WA-theme-dark{
-  color: #434343
+  color: #434343 !important;
 }
 
 .WA-theme-bg-dark{
-  background-color: #486376
+  background-color: #486376 !important;
 }
 
 .WA-theme-positive{
-  color: #31BC63
+  color: #31BC63 !important;
 }
 
 .WA-theme-bg-positive{
-  background-color: #31BC63
+  background-color: #31BC63 !important;
 }
 
 .WA-theme-negative {
-  color: #C32626
+  color: #C32626 !important;
 }
 
 .WA-theme-bg-negative{
-  background-color: #C32626
+  background-color: #C32626 !important;
 }
 
 .WA-theme-bg-soft{
-  background-color: #EEF0EB
+  background-color: #EEF0EB !important;
 }
 
 .WA-theme-bg-regular{
-  background-color: #CDCFCF
+  background-color: #CDCFCF !important;
 }
 
 .WA-theme-bg-solid{
-  background-color: #7EA4B9
+  background-color: #7EA4B9 !important;
 }
 
 .WA-theme-separator-light{
-  border-color: #E6EFF4
+  border-color: #E6EFF4 !important;
 }
 
 .WA-theme-separator-dark{
-  border-color: #203376
+  border-color: #203376 !important;
 }
 
 .WA-theme-gradient-main{
-  background: rgb(11,104,177);
-  background: linear-gradient(180deg, rgba(11,104,177,0) 0%, rgba(11,104,177,1) 70%);
+  background: rgb(11,104,177) !important;
+  background: linear-gradient(180deg, rgba(11,104,177,0) 0%, rgba(11,104,177,1) 70%) !important;
 }
