@@ -60,6 +60,10 @@ class InterestAreaController extends GetxController {
   }
 
   void fetchData() async {
+    if (interestArea.accessLevel != 'PUBLIC') {
+      routeLoading.value = false;
+      return;
+    }
     try {
       posts.value = await iaProvider.getPosts(
               id: interestArea.id, token: bottomNavigationController.token) ??

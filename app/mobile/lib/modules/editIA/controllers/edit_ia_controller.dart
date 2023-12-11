@@ -32,6 +32,7 @@ class EditIaController extends GetxController {
   final newIaProvider = Get.find<EditIaProvider>();
 
   final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   get isFormValid => title.value.isNotEmpty && description.value.isNotEmpty;
 
@@ -139,7 +140,7 @@ class EditIaController extends GetxController {
           id: interestArea.id,
           token: bottomNavController.token,
           name: title.value,
-          nestedIas: [],
+          nestedIas: selectedSubIas.map((e) => e.id).toList(),
           wikiTags: selectedTags.map((e) => e.id).toList(),
           accessLevel: accesLevel.value,
           description: description.value);
@@ -155,7 +156,8 @@ class EditIaController extends GetxController {
   initFields() {
     title.value = interestArea.name;
     titleController.text = title.value;
-    description.value = '';
+    description.value = interestArea.description;
+    descriptionController.text = description.value;
     accesLevel.value = interestArea.accessInt;
     selectedTags.value = interestArea.wikiTags;
     selectedSubIas.value = nestedIas;

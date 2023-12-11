@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/models/spot.dart';
@@ -71,6 +72,7 @@ class PostTileWidget extends StatelessWidget {
           clipBehavior: Clip.none,
           children: [
             Container(
+              width: Get.width,
               padding: EdgeInsets.only(left: 27, bottom: 10),
               decoration: BoxDecoration(
                   color: BackgroundPalette.light,

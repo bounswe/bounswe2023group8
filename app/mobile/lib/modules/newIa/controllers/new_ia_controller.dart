@@ -116,7 +116,7 @@ class NewIaController extends GetxController {
       final success = await newIaProvider.createNewIa(
           token: bottomNavController.token,
           name: title.value,
-          nestedIas: [],
+          nestedIas: selectedSubIas.map((e) => e.id).toList(),
           wikiTags: selectedTags.map((e) => e.id).toList(),
           accessLevel: accesLevel.value,
           description: description.value);

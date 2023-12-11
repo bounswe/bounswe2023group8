@@ -80,6 +80,16 @@ class InterestAreaView extends GetView<InterestAreaController> {
                               child: Text('Follow',
                                   style: TextStyle(color: ThemePalette.main))),
 
+                    if (controller.interestArea.accessLevel != 'PUBLIC')
+                      Text(
+                        'This bunch is private',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.red,
+                        ),
+                      ),
+
                   if (controller.nestedIas.isNotEmpty) ...[
                     const Text(
                         'Sub Bunches',
