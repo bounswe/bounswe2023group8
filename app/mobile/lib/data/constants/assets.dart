@@ -14,6 +14,7 @@ class Assets {
   static const String spot = 'assets/images/spot.png';
   static const String profilePlaceholder =
       'assets/images/profile-placeholder.png';
+  static const String bunch = 'assets/images/bunch.png';
 
   // Icons
 
@@ -35,6 +36,8 @@ class Assets {
   static const String add = 'assets/icons/add.svg';
   static const String cancel = 'assets/icons/cancel.svg';
   static const String check = 'assets/icons/check.svg';
+  static const String edit = 'assets/icons/edit.png';
+  static const String geolocation = 'assets/icons/geolocation.png';
 
   // Radios
 
