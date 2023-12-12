@@ -24,24 +24,14 @@ public class ReputationController {
     final ReputationService reputationService;
 
     /*
-        WA-45: Vote on a user or a post
+        WA-45: Vote on a user
      */
     @PostMapping("/vote")
     public ResponseEntity<?> vote(EnigmaAuthenticationToken token,
                                   @RequestBody @Valid VoteRequest voteRequest) {
 
-        if (voteRequest.getVotedEnigmaUserId() != null && voteRequest.getPostId() != null)
-            throw new IllegalArgumentException("Only one of votedEnigmaUserId and postId must be provided");
-
-        if (voteRequest.getVotedEnigmaUserId() == null && voteRequest.getPostId() == null)
-            throw new IllegalArgumentException("One of votedEnigmaUserId and postId must be provided");
-
-        if (voteRequest.getVotedEnigmaUserId() != null)
-            reputationService.voteOnUser(token.getEnigmaUserId(), voteRequest.getVotedEnigmaUserId(),
+        reputationService.voteOnUser(token.getEnigmaUserId(), voteRequest.getVotedEnigmaUserId(),
                     voteRequest.getVote(), voteRequest.getComment());
-        else
-            reputationService.voteOnPost(token.getEnigmaUserId(), voteRequest.getPostId(), voteRequest.getVote(),
-                    voteRequest.getComment());
 
         return ResponseEntity.noContent().build();
     }

@@ -21,6 +21,7 @@ public interface InterestAreaService {
     InterestAreaSimpleDto updateInterestArea(Long id, String name, String description, EnigmaAccessLevel accessLevel, List<Long> nestedInterestAreas, List<String> entityTags);
 
     void deleteInterestArea(Long id);
+
     void followInterestArea(Long enigmaUserId, Long interestAreaId);
 
     void unfollowInterestArea(Long enigmaUserId, Long interestAreaId);

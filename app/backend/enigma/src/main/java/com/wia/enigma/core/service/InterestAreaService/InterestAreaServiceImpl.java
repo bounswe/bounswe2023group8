@@ -218,7 +218,6 @@ public class InterestAreaServiceImpl implements InterestAreaService {
     public void rejectFollowRequest(Long requestId, Long userId) {
 
         UserFollows userFollows = userFollowsRepository.findByIdAndIsAcceptedFalse(requestId);
-
         if (userFollows == null) {
             throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, "Follow request not found for id: " + requestId);
         }

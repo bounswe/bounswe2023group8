@@ -25,4 +25,9 @@ public interface PostRepository  extends JpaRepository<Post, Long> {
            "FROM Post P " +
            "WHERE P.id = :postId")
     Long findInterestAreaIdByPostId(Long postId);
+
+    @Query("SELECT P.enigmaUserId " +
+           "FROM Post P " +
+           "WHERE P.id = :postId")
+    Long findEnigmaUserIdByPostId(Long postId);
 }

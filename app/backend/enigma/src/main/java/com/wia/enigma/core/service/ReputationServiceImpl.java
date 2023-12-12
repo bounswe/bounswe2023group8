@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -33,10 +34,10 @@ public class ReputationServiceImpl implements ReputationService {
     /**
      * Creates a new reputation vote for a user
      *
-     * @param voterEnigmaUserId     voter
-     * @param votedEnigmaUserId     voted
-     * @param vote                  vote value (1 - 5)
-     * @param comment               comment
+     * @param voterEnigmaUserId voter
+     * @param votedEnigmaUserId voted
+     * @param vote              vote value (1 - 5)
+     * @param comment           comment
      */
     @Override
     public void voteOnUser(Long voterEnigmaUserId, Long votedEnigmaUserId, Integer vote, String comment) {
@@ -53,50 +54,27 @@ public class ReputationServiceImpl implements ReputationService {
         if (comment != null && comment.length() > 255)
             throw new IllegalArgumentException("Comment cannot be longer than 255 characters");
 
-        ReputationVote reputationVote = ReputationVote.builder()
-                .voterEnigmaUserId(voterEnigmaUserId)
-                .votedEnigmaUserId(votedEnigmaUserId)
-                .vote(vote)
-                .comment(comment)
-                .createTime(new Timestamp(System.currentTimeMillis()))
-                .build();
-
+        ReputationVote reputationVote;
         try {
-            reputationVoteRepository.save(reputationVote);
+            reputationVote = reputationVoteRepository.findByVoterEnigmaUserIdAndVotedEnigmaUserId(voterEnigmaUserId, votedEnigmaUserId);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            throw new EnigmaException(ExceptionCodes.DB_SAVE_ERROR,
-                    "Could not save reputation vote.");
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Could not fetch reputation vote.");
         }
-    }
 
-    /**
-     * Creates a new reputation vote for a post
-     *
-     * @param voterEnigmaUserId     voter
-     * @param postId                post
-     * @param vote                  vote value (1 - 5)
-     * @param comment               comment
-     */
-    @Override
-    public void voteOnPost(Long voterEnigmaUserId, Long postId, Integer vote, String comment) {
-
-        enigmaUserService.validateExistence(voterEnigmaUserId);
-        postService.validateExistence(postId);
-
-        if (vote < 1 || vote > 5)
-            throw new IllegalArgumentException("Vote value must be between 1 and 5");
-
-        if (comment != null && comment.length() > 255)
-            throw new IllegalArgumentException("Comment cannot be longer than 255 characters");
-
-        ReputationVote reputationVote = ReputationVote.builder()
-                .voterEnigmaUserId(voterEnigmaUserId)
-                .postId(postId)
-                .vote(vote)
-                .comment(comment)
-                .createTime(new Timestamp(System.currentTimeMillis()))
-                .build();
+        if (reputationVote != null) {
+            reputationVote.setVote(vote);
+            reputationVote.setComment(comment);
+        } else {
+            reputationVote = ReputationVote.builder()
+                    .voterEnigmaUserId(voterEnigmaUserId)
+                    .votedEnigmaUserId(votedEnigmaUserId)
+                    .vote(vote)
+                    .comment(comment)
+                    .createTime(new Timestamp(System.currentTimeMillis()))
+                    .build();
+        }
 
         try {
             reputationVoteRepository.save(reputationVote);
@@ -116,7 +94,19 @@ public class ReputationServiceImpl implements ReputationService {
     @Override
     public ReputationVoteDto getReputationVotesOfUser(Long enigmaUserId) {
 
-        List<ReputationVote> reputationVotes = getReputationVotes(enigmaUserId);
+        List<ReputationVote> reputationVotes;
+        try {
+            reputationVotes = reputationVoteRepository.findAllByVotedEnigmaUserId(enigmaUserId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Could not fetch total votes for user.");
+        }
+
+        if (reputationVotes == null)
+            throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND,
+                    "Reputation votes for user with id " + enigmaUserId + " do not exist.");
+
         if (reputationVotes.isEmpty())
             return null;
 
@@ -129,39 +119,37 @@ public class ReputationServiceImpl implements ReputationService {
                 .voteCount(voteCount)
                 .voteAverage((double) voteSum / voteCount)
                 .votes(reputationVotes.stream()
-                        .map(reputationVote -> {
-                            ReputationVoteDto.Vote voteDto = new ReputationVoteDto.Vote();
-                            voteDto.setVoterEnigmaUserId(reputationVote.getVoterEnigmaUserId());
-
-                            if (reputationVote.getVotedEnigmaUserId() != null) {
-                                voteDto.setVoteType("user");
-                                voteDto.setVotedEnigmaUserId(reputationVote.getVotedEnigmaUserId());
-                            }
-
-                            if (reputationVote.getPostId() != null) {
-                                voteDto.setVoteType("post");
-                                voteDto.setPostId(reputationVote.getPostId());
-                            }
-
-                            voteDto.setVote(reputationVote.getVote());
-                            voteDto.setComment(reputationVote.getComment() == null ? "" : reputationVote.getComment());
-                            voteDto.setCreateTime(reputationVote.getCreateTime());
-
-                            return voteDto;
-                        }).toList()
-                ).build();
+                        .map(reputationVote -> ReputationVoteDto.Vote.builder()
+                                .voterEnigmaUserId(reputationVote.getVoterEnigmaUserId())
+                                .vote(reputationVote.getVote())
+                                .comment(reputationVote.getComment() == null ? "" : reputationVote.getComment())
+                                .createTime(reputationVote.getCreateTime())
+                                .build())
+                        .toList())
+                .build();
     }
 
     /**
      * Gets the badges of a user
      *
-     * @param enigmaUserId  EnigmaUser.Id
-     * @return              UserBadgesDto
+     * @param enigmaUserId EnigmaUser.Id
+     * @return UserBadgesDto
      */
     @Override
     public UserBadgesDto getBadgesForUser(Long enigmaUserId) {
 
-        List<ReputationVote> reputationVotes = getReputationVotes(enigmaUserId);
+        List<ReputationVote> reputationVotes;
+        try {
+            reputationVotes = reputationVoteRepository.findAllByVoterEnigmaUserId(enigmaUserId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Could not fetch total votes for user.");
+        }
+
+        if (reputationVotes == null)
+            throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND,
+                    "Reputation votes for user with id " + enigmaUserId + " do not exist.");
 
         UserBadgesDto userBadgesDto = new UserBadgesDto();
         userBadgesDto.setEnigmaUserId(enigmaUserId);
@@ -172,12 +160,17 @@ public class ReputationServiceImpl implements ReputationService {
         int voteSum = reputationVotes.stream().mapToInt(ReputationVote::getVote).sum();
         userBadgesDto.setVoteSum(voteSum);
 
-        double ratio = (double) (voteSum / postCount);
+        double ratio;
+        try {
+            ratio = (double) (voteSum / postCount);
+        } catch (Exception e) {
+            ratio = voteSum;
+        }
         userBadgesDto.setReputationRatio(ratio);
 
-        List<UserBadgesDto.Badge> badges = userBadgesDto.getBadges();
 
         /* Posts */
+        List<UserBadgesDto.Badge> badges = new ArrayList<>();
         if (postCount >= 1)
             badges.add(new UserBadgesDto.Badge("First Post", "You posted your first post."));
 
@@ -209,6 +202,8 @@ public class ReputationServiceImpl implements ReputationService {
         if (voteSum >= 1000000)
             badges.add(new UserBadgesDto.Badge("1000000 Positive Votes", "You have a net total of 1000000 positive votes."));
 
+        userBadgesDto.setBadges(badges);
+
         /* Reputation Ratio */
         userBadgesDto.setReputation("Terrifying");
 
@@ -237,23 +232,5 @@ public class ReputationServiceImpl implements ReputationService {
             userBadgesDto.setReputation("Godlike");
 
         return userBadgesDto;
-    }
-
-    private List<ReputationVote> getReputationVotes(Long enigmaUserId) {
-
-        List<ReputationVote> reputationVotes;
-        try {
-            reputationVotes = reputationVoteRepository.findAllByVoterEnigmaUserId(enigmaUserId);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
-                    "Could not fetch total votes for user.");
-        }
-
-        if (reputationVotes == null)
-            throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND,
-                    "Reputation votes for user with id " + enigmaUserId + " do not exist.");
-
-        return reputationVotes;
     }
 }

@@ -11,4 +11,13 @@ public enum EntityType {
     EntityType(String name) {
         this.name = name;
     }
+
+    public static EntityType fromValue(String value) {
+        for (EntityType e : EntityType.values()) {
+            if (e.name.equals(value)) {
+                return e;
+            }
+        }
+        throw new IllegalArgumentException(value);
+    }
 }

@@ -1,6 +1,7 @@
 package com.wia.enigma.core.data.request;
 
 
+import com.wia.enigma.dal.enums.EntityType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,11 +13,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ReportRequest {
 
-    Long userId;
+    Long entityId;
 
-    Long postId;
-
-    Long interestAreaId;
+    String entityType;
 
     String reason;
 }

@@ -47,4 +47,6 @@ public interface PostService {
     void deletePost(Long postId);
 
     Long getInterestAreaIdOfPost(Long postId);
+
+    Long getUserIdOfPost(Long postId);
 }

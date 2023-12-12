@@ -5,6 +5,7 @@ import com.wia.enigma.core.data.dto.ModerationDto;
 import com.wia.enigma.core.data.request.ModerationRequest;
 import com.wia.enigma.core.data.request.ReportRequest;
 import com.wia.enigma.core.service.ModerationService;
+import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.enums.ModerationType;
 import com.wia.enigma.utilities.AuthUtils;
 import jakarta.validation.Valid;
@@ -32,7 +33,7 @@ public class ModerationController {
      */
     @DeleteMapping("/post")
     public ResponseEntity<?> deletePost(EnigmaAuthenticationToken token,
-                                        @Valid @NotNull @RequestParam Long postId) {
+                                        @RequestParam Long postId) {
 
         moderationService.removePost(
                 AuthUtils.getInstance().buildEnigmaAuthorities(token),
@@ -47,7 +48,7 @@ public class ModerationController {
      */
     @DeleteMapping("/interest-area")
     public ResponseEntity<?> deleteInterestArea(EnigmaAuthenticationToken token,
-                                                @Valid @NotNull @RequestParam Long interestAreaId) {
+                                                @RequestParam Long interestAreaId) {
 
         moderationService.removeInterestArea(
                 AuthUtils.getInstance().buildEnigmaAuthorities(token),
@@ -117,9 +118,8 @@ public class ModerationController {
 
         moderationService.reportIssue(
                 AuthUtils.getInstance().buildEnigmaAuthorities(token),
-                inDto.getUserId(),
-                inDto.getPostId(),
-                inDto.getInterestAreaId(),
+                EntityType.fromValue(inDto.getEntityType()),
+                inDto.getEntityId(),
                 inDto.getReason()
         );
 
@@ -131,7 +131,7 @@ public class ModerationController {
      */
     @GetMapping
     public ResponseEntity<?> getModerations(EnigmaAuthenticationToken token,
-                                            @RequestParam(required = false) String type,
+                                            @RequestParam String type,
                                             @RequestParam(required = false) Long interestAreaId,
                                             @RequestParam(required = false) Long postId,
                                             @RequestParam(required = false) Long toUserId,

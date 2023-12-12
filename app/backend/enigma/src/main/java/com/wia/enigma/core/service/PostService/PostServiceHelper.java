@@ -34,13 +34,10 @@ class PostServiceHelper {
     final UserFollowsService userFollowsService;
     final InterestAreaService interestAreaService;
     final InterestAreaServiceHelper interestAreaServiceHelper;
-    final EnigmaUserService enigmaUserService;
-    private final EnigmaUserRepository enigmaUserRepository;
-    private final WikiTagRepository wikiTagRepository;
-    private final PostVoteRepository postVoteRepository;
-    private final PostCommentRepository postCommentRepository;
     final EnigmaUserRepository enigmaUserRepository;
     final WikiTagRepository wikiTagRepository;
+    final PostVoteRepository postVoteRepository;
+    final PostCommentRepository postCommentRepository;
 
 
     Post fetchPost(Long postId) {

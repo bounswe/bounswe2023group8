@@ -12,9 +12,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class VoteRequest {
 
+    @NotNull
     Long votedEnigmaUserId;
-
-    Long postId;
 
     @NotNull
     Integer vote;
