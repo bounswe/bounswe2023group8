@@ -28,7 +28,7 @@ public class ModerationController {
     final ModerationService moderationService;
 
     /*
-        WA-xx: Remove the post from the interest area.
+        WA-48: Remove the post from the interest area.
      */
     @DeleteMapping("/post")
     public ResponseEntity<?> deletePost(EnigmaAuthenticationToken token,
@@ -43,7 +43,7 @@ public class ModerationController {
     }
 
     /*
-        WA-xx: Remove the interest area.
+        WA-49: Remove the interest area.
      */
     @DeleteMapping("/interest-area")
     public ResponseEntity<?> deleteInterestArea(EnigmaAuthenticationToken token,
@@ -58,7 +58,7 @@ public class ModerationController {
     }
 
     /*
-        WA-xx: Warn the user.
+        WA-50: Warn the user.
      */
     @PostMapping("/warn")
     public ResponseEntity<?> warnUser(EnigmaAuthenticationToken token,
@@ -75,7 +75,7 @@ public class ModerationController {
     }
 
     /*
-        WA-xx: Ban the user.
+        WA-51: Ban the user.
      */
     @PostMapping("/ban")
     public ResponseEntity<?> banUser(EnigmaAuthenticationToken token,
@@ -92,7 +92,7 @@ public class ModerationController {
     }
 
     /*
-        WA-xx: Unban the user.
+        WA-52: Unban the user.
      */
     @DeleteMapping("/unban")
     public ResponseEntity<?> unbanUser(EnigmaAuthenticationToken token,
@@ -109,7 +109,7 @@ public class ModerationController {
     }
 
     /*
-        WA-xx: Report an issue.
+        WA-53: Report an issue.
      */
     @PostMapping("/report")
     public ResponseEntity<?> reportIssue(EnigmaAuthenticationToken token,
@@ -127,7 +127,7 @@ public class ModerationController {
     }
 
     /*
-        WA-xx: Get moderations.
+        WA-54: Get moderations.
      */
     @GetMapping
     public ResponseEntity<?> getModerations(EnigmaAuthenticationToken token,

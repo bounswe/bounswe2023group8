@@ -200,6 +200,9 @@ public class ModerationServiceImpl implements ModerationService {
         if (reason == null)
             throw new IllegalArgumentException("reason cannot be null");
 
+        if (userId == null && postId == null && interestAreaId == null)
+            throw new IllegalArgumentException("At least one of userId, postId, interestAreaId must be non-null");
+
         Moderation moderation = Moderation.builder()
                 .moderationType(ModerationType.REPORT.getType())
                 .reason(reason)
