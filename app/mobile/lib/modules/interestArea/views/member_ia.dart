@@ -43,24 +43,20 @@ class InterestAreaView extends GetView<InterestAreaController> {
               : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16.0),
-                        child: Container(
+           
+                        Container(
                           padding: const EdgeInsets.only(right: 20, left: 0, top: 6),
                           decoration: BoxDecoration(
+                            
                             color: BackgroundPalette.dark, // Arka plan rengi
                             borderRadius: BorderRadius.circular(30), // Köşe yuvarlaklık derecesi
                           ),
                           child: Column(
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Expanded(
-                                    child: Text(
+                                  const SizedBox(width: 10,),
+                                  Text(
                                       controller.interestArea.name,
                                       style: const TextStyle(
                                         color: Colors.white,
@@ -68,12 +64,10 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                         fontSize: 18,
                                       ),
                                     ),
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
+                                  
+                                    const SizedBox(width: 20,),
                                       Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                                         margin: const EdgeInsets.only(left: 5),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
@@ -83,7 +77,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                           'Join',
                                           style: TextStyle(
                                             color: const Color(0xff0B68B1),
-                                            fontWeight: FontWeight.bold,
+                                            fontWeight: FontWeight.normal,
                                           ),
                                         ),
                                       ),
@@ -92,17 +86,18 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                         padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          shape: BoxShape.circle,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius: BorderRadius.circular(20.0),
                                         ),
                                         child: SvgPicture.asset(
                                           'assets/icons/notification.svg', // SVG dosyasının yolu
                                           color: const Color(0xff0B68B1),// İkon rengi
-                                          width: 30,
-                                          height: 30,
+                                          width: 20,
+                                          height: 20,
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    
+                                  
                                 ],
                               ),
                               Row(
@@ -112,13 +107,13 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                                     decoration: BoxDecoration(
                                       color: BackgroundPalette.regular,
-                                      borderRadius: BorderRadius.circular(20),
+                                      borderRadius: BorderRadius.only(topRight: Radius.circular(10), bottomLeft: Radius.circular(30)),
                                     ),
                                     child: const Text(
                                       'Spots',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 22,
+                                        fontSize: 10,
                                         color: const Color(0xff434343),
                                       ),
                                     ),
@@ -134,7 +129,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                       'About',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 22,
+                                        fontSize: 10,
                                         color: const Color(0xff434343),
                                       ),
                                     ),
@@ -144,11 +139,9 @@ class InterestAreaView extends GetView<InterestAreaController> {
                             ],
                           ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                  ],
-                ),
+                      
+                  
+               
                 const SizedBox(
                   height: 5,
                 ),
