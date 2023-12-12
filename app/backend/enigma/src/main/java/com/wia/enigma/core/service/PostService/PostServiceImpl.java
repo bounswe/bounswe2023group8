@@ -269,4 +269,44 @@ public class PostServiceImpl implements PostService {
                     "Could not delete posts.");
         }
     }
+
+    /**
+     * Validates the existence of a post
+     *
+     * @param postId   Post.Id
+     */
+    @Override
+    public void validateExistence(Long postId) {
+
+        Post post;
+        try {
+            post = postRepository.findById(postId).orElse(null);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Could not fetch post.");
+        }
+
+        if (post == null)
+            throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND,
+                    "Post with id " + postId + " does not exist.");
+    }
+
+    /**
+     * Gets the number of posts of a user
+     *
+     * @param enigmaUserId  EnigmaUser.Id
+     * @return              Integer
+     */
+    @Override
+    public Integer getPostCount(Long enigmaUserId) {
+
+        try {
+            return postRepository.countAllByEnigmaUserId(enigmaUserId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Could not fetch post count.");
+        }
+    }
 }

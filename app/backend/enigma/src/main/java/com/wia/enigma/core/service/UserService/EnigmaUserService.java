@@ -43,7 +43,9 @@ public interface EnigmaUserService {
 
     EnigmaUserDto getVerifiedUser(Long id);
 
-    List<EnigmaUserDto> search(Long userId, String searchKey); 
+    List<EnigmaUserDto> search(Long userId, String searchKey);
 
     void deleteUser(Long userId);
+
+    void validateExistence(Long userId);
 }
