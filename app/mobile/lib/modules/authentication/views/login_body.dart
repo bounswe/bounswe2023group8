@@ -27,9 +27,9 @@ class LoginBody extends GetView<LoginController> {
             const Spacer(flex: 1),
             Text('Log in',
                 style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 30,
                     fontWeight: FontWeight.bold,
-                    color: Palette.primaryColor)),
+                    color: ThemePalette.main)),
             const Spacer(flex: 4),
             CustomTextField(
               hintText: 'E-mail or Username',
@@ -48,59 +48,62 @@ class LoginBody extends GetView<LoginController> {
                 onChanged: (value) => controller.onChangePassword(value),
                 circularBorder: true,
                 onSuffixTap: () => controller.togglePasswordVisibility()),
-            const Spacer(flex: 2),
+            const Spacer(flex: 1),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 26.0,
-                      width: 26.0,
-                      child: Checkbox(
-                        value: controller.rememberMe.value,
-                        onChanged: (value) {
-                          controller.toggleRememberMe();
-                        },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        activeColor: Colors.green,
-                        side: const BorderSide(color: Colors.grey),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    const Text('Remember me',
-                        style: TextStyle(
-                          fontSize: 16,
-                        )),
-                  ],
-                ),
                 InkWell(
                   onTap: () {
                     controller.navigateToForgotPassword();
                   },
                   child: Text('Forgot password?',
                       style: TextStyle(
-                        color: Palette.primaryColor,
-                        fontSize: 16,
+                        color: ThemePalette.main,
+                        fontSize: 18,
                       )),
                 ),
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 26.0,
+                  width: 26.0,
+                  child: Checkbox(
+                    value: controller.rememberMe.value,
+                    onChanged: (value) {
+                      controller.toggleRememberMe();
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    activeColor: ThemePalette.main,
+                    side: BorderSide(color: ThemePalette.dark),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                const Text('Remember me',
+                    style: TextStyle(
+                      fontSize: 18,
+                    )),
               ],
             ),
             const Spacer(flex: 5),
             CustomButton(
                 onPressed: controller.onSignIn,
-                width: Get.width * 0.3,
+                width: 152,
+                height: 50,
                 shadow: true,
                 text: 'Log in',
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
                 inProgress: controller.loginInProgress.value,
                 active: controller.loginUsernameValid.value &&
                     controller.loginPasswordValid.value),
             const Spacer(flex: 5),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 const Text('Don\'t have an account?',
                     style: TextStyle(
@@ -110,7 +113,7 @@ class LoginBody extends GetView<LoginController> {
                   onTap: controller.navigateToSignUp,
                   child: Text(' Sign up',
                       style: TextStyle(
-                          color: Palette.primaryColor,
+                          color: ThemePalette.main,
                           fontSize: 20,
                           fontWeight: FontWeight.bold)),
                 ),

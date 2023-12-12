@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:mobile/data/widgets/custom_app_bar.dart';
+import 'package:mobile/data/widgets/custom_button.dart';
 
 import '../controllers/settings_controller.dart';
 
@@ -10,15 +12,11 @@ class SettingsView extends GetView<SettingsController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('SettingsView'),
-        centerTitle: true,
+      appBar: CustomAppBar(
+        leadingAppIcon: true,
       ),
-      body: const Center(
-        child: Text(
-          'SettingsView is working',
-          style: TextStyle(fontSize: 20),
-        ),
+      body: Center(
+          child: CustomButton(text: 'Logout', onPressed: controller.onLogout)
       ),
     );
   }

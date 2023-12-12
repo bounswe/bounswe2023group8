@@ -27,7 +27,7 @@ public class UserFollowsServiceImpl implements UserFollowsService {
     @Override
     public void follow(Long userId, Long followId, EntityType entityType, Boolean isAccepted) {
 
-        if(isUserFollowsEntity(userId, followId, entityType)) {
+        if(isUserFollowsOrSentRequest(userId, followId, entityType)) {
 
             throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION,
                     String.format("You are already following or sent follow request to %s.", entityType));
@@ -53,15 +53,27 @@ public class UserFollowsServiceImpl implements UserFollowsService {
         userFollowsRepository.deleteByFollowedEntityIdAndFollowedEntityType(entityId, entityType);
     }
 
+    @Override
+    public void acceptFollowRequest(UserFollows userFollows){
 
-    public List<UserFollows> findAcceptedFollowers(Long entityId, EntityType entityType){
-
-        return userFollowsRepository.findByFollowedEntityIdAndFollowedEntityTypeAndIsAccepted(entityId, entityType, true);
+        userFollows.setIsAccepted(true);
+        userFollowsRepository.save(userFollows);
     }
 
-    public List<UserFollows> findAcceptedFollowings(Long entityId, EntityType entityType){
+    @Override
+    public void rejectFollowRequest(UserFollows userFollows){
 
-        return userFollowsRepository.findByFollowerEnigmaUserIdAndFollowedEntityTypeAndIsAccepted(entityId, entityType, true);
+        userFollowsRepository.deleteById(userFollows.getId());
+    }
+
+    public List<UserFollows> findFollowers(Long entityId, EntityType entityType, Boolean isAccepted){
+
+        return userFollowsRepository.findByFollowedEntityIdAndFollowedEntityTypeAndIsAccepted(entityId, entityType, isAccepted);
+    }
+
+    public List<UserFollows> findFollowings(Long entityId, EntityType entityType, Boolean isAccepted){
+
+        return userFollowsRepository.findByFollowerEnigmaUserIdAndFollowedEntityTypeAndIsAccepted(entityId, entityType, isAccepted);
     }
 
     public Long countAcceptedFollowers(Long followedId, EntityType entityType){
@@ -72,6 +84,11 @@ public class UserFollowsServiceImpl implements UserFollowsService {
     public Boolean isUserFollowsEntity(Long userId, Long followId, EntityType entityType) {
 
         return userFollowsRepository.existsByFollowerEnigmaUserIdAndFollowedEntityIdAndFollowedEntityTypeAndIsAccepted(userId, followId, entityType, true);
+    }
+
+    public Boolean isUserFollowsOrSentRequest(Long userId, Long followId, EntityType entityType) {
+
+        return userFollowsRepository.existsByFollowerEnigmaUserIdAndFollowedEntityIdAndFollowedEntityType(userId, followId, entityType);
     }
 
     public void checkInterestAreaAccess(InterestArea interestArea, Long enigmaUserId) {

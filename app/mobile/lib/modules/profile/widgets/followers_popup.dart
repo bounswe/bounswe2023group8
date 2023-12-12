@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile/data/constants/assets.dart';
 
 import '../controllers/profile_controller.dart';
 
@@ -39,9 +40,8 @@ class FollowersPopup extends GetView<ProfileController> {
                       final follower = controller.followers[index];
                       return ListTile(
                         leading: CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(follower.userProfileImage),
-                        ),
+                            backgroundImage:
+                                AssetImage(Assets.profilePlaceholder)),
                         title: Text(follower.name),
                         subtitle: Text(follower.username),
                         trailing: TextButton(

@@ -1,3 +1,3 @@
 class Config {
-  static const String baseUrl = 'http://www.bunchup.com.tr/api/';
+  static const String baseUrl = 'http://3.76.215.112:80/api/';
 }

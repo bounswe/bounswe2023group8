@@ -16,11 +16,15 @@ public interface UserFollowsService {
 
     void unfollowAll(Long userId, EntityType entityType);
 
-    List<UserFollows> findAcceptedFollowers(Long followedId, EntityType entityType);
+    void acceptFollowRequest(UserFollows userFollows);
+
+    void rejectFollowRequest(UserFollows userFollows);
+
+    List<UserFollows> findFollowers(Long followedId, EntityType entityType, Boolean isAccepted);
 
     Long countAcceptedFollowers(Long followedId, EntityType entityType);
 
-    List<UserFollows> findAcceptedFollowings(Long followerId, EntityType entityType);
+    List<UserFollows> findFollowings(Long followerId, EntityType entityType, Boolean isAccepted);
 
     Boolean isUserFollowsEntity(Long userId, Long followId, EntityType entityType);
 

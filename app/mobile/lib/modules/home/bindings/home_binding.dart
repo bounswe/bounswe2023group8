@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:mobile/modules/home/providers/home_provider.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -8,5 +9,6 @@ class HomeBinding extends Bindings {
     Get.lazyPut<HomeController>(
       () => HomeController(),
     );
+    Get.lazyPut(() => HomeProvider());
   }
 }

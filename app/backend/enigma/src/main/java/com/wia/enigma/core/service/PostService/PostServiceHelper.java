@@ -34,6 +34,11 @@ class PostServiceHelper {
     final UserFollowsService userFollowsService;
     final InterestAreaService interestAreaService;
     final InterestAreaServiceHelper interestAreaServiceHelper;
+    final EnigmaUserService enigmaUserService;
+    private final EnigmaUserRepository enigmaUserRepository;
+    private final WikiTagRepository wikiTagRepository;
+    private final PostVoteRepository postVoteRepository;
+    private final PostCommentRepository postCommentRepository;
     final EnigmaUserRepository enigmaUserRepository;
     final WikiTagRepository wikiTagRepository;
 
@@ -179,9 +184,17 @@ class PostServiceHelper {
 
         Stream<PostDto> interestAreaPosts =  posts.stream().map(post -> {
               EnigmaUser enigmaUser = enigmaUsers.stream().filter(enigmaUser1 -> enigmaUser1.getId().equals(post.getEnigmaUserId())).findFirst().get();
-              return post.mapToPostDto(wikiTags.stream().filter(wikiTag ->
-                      entityTags.stream().filter(entityTag -> entityTag.getEntityId().equals(post.getId())).map(EntityTag::getWikiDataTagId).collect(Collectors.toList()).contains(wikiTag.getId())).collect(Collectors.toList()
-                      ), enigmaUser.mapToEnigmaUserDto(), interestArea.mapToInterestAreaModel());
+              return post.mapToPostDto(
+                      wikiTags.stream().filter(wikiTag ->
+                          entityTags.stream().filter(entityTag -> entityTag.getEntityId().equals(post.getId()))
+                                  .map(EntityTag::getWikiDataTagId).collect(Collectors.toList()).contains(wikiTag.getId()))
+                          .collect(Collectors.toList()),
+                        enigmaUser.mapToEnigmaUserDto(),
+                        interestArea.mapToInterestAreaModel(),
+                        postVoteRepository.countByPostIdAndVote(post.getId(), true),
+                        postVoteRepository.countByPostIdAndVote(post.getId(), false),
+                        postCommentRepository.countByPostId(post.getId())
+                      );
          });
 
         return Stream.concat(interestAreaPosts, nestedInterestAreaPosts)
@@ -212,8 +225,14 @@ class PostServiceHelper {
 
         return filteredPosts.stream().map(post1 -> {
             EnigmaUser enigmaUser = enigmaUsers.stream().filter(enigmaUser1 -> enigmaUser1.getId().equals(post1.getEnigmaUserId())).findFirst().get();
-            return post1.mapToPostDto(wikiTags, enigmaUser.mapToEnigmaUserDto(), interestAreaServiceHelper.getInterestArea(post1.getInterestAreaId()).mapToInterestAreaModel());
+            return post1.mapToPostDto(
+                    wikiTags,
+                    enigmaUser.mapToEnigmaUserDto(),
+                    interestAreaServiceHelper.getInterestArea(post1.getInterestAreaId()).mapToInterestAreaModel(),
+                    postVoteRepository.countByPostIdAndVote(post1.getId(), true),
+                    postVoteRepository.countByPostIdAndVote(post1.getId(), false),
+                    postCommentRepository.countByPostId(post1.getId())
+            );
         }).toList();
-
     }
 }

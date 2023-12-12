@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile/data/helpers/error_handling_utils.dart';
+import 'package:mobile/data/models/enigma_user.dart';
+import 'package:mobile/data/models/interest_area.dart';
+import 'package:mobile/modules/bottom_navigation/providers/bottom_nav_provider.dart';
 import 'package:mobile/modules/newIa/bindings/new_ia_binding.dart';
 import 'package:mobile/modules/newIa/views/new_ia_view.dart';
 import 'package:mobile/modules/newPost/bindings/new_post_binding.dart';
@@ -9,29 +13,44 @@ import 'package:mobile/modules/profile/views/profile_view.dart';
 import 'package:mobile/modules/settings/bindings/settings_binding.dart';
 import 'package:mobile/modules/settings/views/settings_view.dart';
 
-import '../../../data/models/user_model.dart';
 import '../../../routes/app_pages.dart';
 import '../../home/bindings/home_binding.dart';
 import '../../home/views/home_view.dart';
 
 class BottomNavigationController extends GetxController {
-  var currentIndex = 1.obs;
+  var currentIndex = 0.obs;
 
   final String token = Get.arguments['token'];
+  final int userId = Get.arguments['userId'];
 
+  List<EnigmaUser> followingUsers = <EnigmaUser>[];
+  List<InterestArea> followingIas = <InterestArea>[];
 
-  final UserModel signedInUser = const UserModel(
-    id: 1001,
-    name: 'Meriç Keskin',
-    username: 'marcolphin',
-    userProfileImage:
-        'https://avatars.githubusercontent.com/u/88164767?s=400&u=09da0dbc9d0ee0246d7492d938a20dbc4b2be7f1&v=4',
-    iaIds: [1, 2, 3, 4, 5],
-    followerCount: 3,
-    followingCount: 3,
-    allTimeLikes: 20,
-    allTimeDislikes: 5,
-  );
+  final bottomNavProvider = Get.find<BottomNavProvider>();
+
+  bool isIaFollowing(int id) {
+    return followingIas.any((element) => element.id == id);
+  }
+
+  bool isUserFollowing(int id) {
+    return followingUsers.any((element) => element.id == id);
+  }
+
+  void followIa(InterestArea ia) async {
+    followingIas.add(ia);
+  }
+
+  void unfollowIa(InterestArea ia) async {
+    followingIas.removeWhere((element) => element.id == ia.id);
+  }
+
+  void followUser() async {
+    fetchData();
+  }
+
+  void unfollowUser(int id) async {
+    followingUsers.removeWhere((element) => element.id == id);
+  }
 
   final pages = <String>[
     Routes.home,
@@ -99,8 +118,21 @@ class BottomNavigationController extends GetxController {
     return null;
   }
 
+  void fetchData() async {
+    try {
+      followingUsers =
+          await bottomNavProvider.getFollowings(id: userId, token: token) ??
+              followingUsers;
+      followingIas = await bottomNavProvider.getIas(id: userId, token: token) ??
+          followingIas;
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
   @override
   void onInit() async {
+    fetchData();
     super.onInit();
   }
 }
