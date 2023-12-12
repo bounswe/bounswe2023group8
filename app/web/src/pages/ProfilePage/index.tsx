@@ -39,9 +39,11 @@ const ProfilePage = () => {
 
 
     return <>
-        <Row>
-            {isSuccessProfile && <ProfileHeader user={profileData} style={{}} className="col-5 border-0"/>}
-        </Row>
+        <div style={{height: "25%", background: "#EEF0EB", display: "flex", alignItems: "center", margin: "0px", padding: "0px"}}>
+        
+            {isSuccessProfile && <ProfileHeader style={{ background: "#EEF0EB", marginLeft: "60px" }} user={profileData} className="col-5 border-0"/>}
+        
+        </div>
         <hr className="mx-3"/>
         <Row>
             <Col className="col-4">

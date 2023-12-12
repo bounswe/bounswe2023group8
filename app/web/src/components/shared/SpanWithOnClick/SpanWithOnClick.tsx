@@ -8,7 +8,7 @@ type SpanWithOnClickProps = {
 const SpanWithOnClick = (props: SpanWithOnClickProps) => {
     return <span
         className={props.className}
-        style={{cursor:"pointer"}}
+        style={{cursor:"pointer", color: "#0B68B1"}}
         onClick={props.onClick}
     >
         {props.text}

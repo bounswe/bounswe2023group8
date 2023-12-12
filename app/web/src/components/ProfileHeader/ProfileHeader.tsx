@@ -53,15 +53,16 @@ const ProfileHeader = ({
             <Col className="col-8">
                 <Row className="card-body">
                     <Col className="col-10 m-auto">
-                        <h5 className="card-title">{name}</h5>
-                        <p className="card-text text-body-secondary">@{username}</p>
+                    <h5 className="card-title" style={{ fontSize: '2rem' }}>{name}</h5>
+                    <p className="card-text text-body-secondary" style={{ fontSize: '1.5rem' }}>@{username}</p>
+
                         <Row className="justify-content-between">
-                            <Col className="card-text">
+                            <Col className="card-text" style={{ fontSize: '1.2rem' }}>
                                 <SpanWithOnClick className={""} text={`${followers} followers`}
                                                  onClick={handleFollowerModal}/>
                             </Col>
-                            <Col className="card-text">
-                                <SpanWithOnClick className={"link-primary link-body-emphasis"} text={`${following} following`}
+                            <Col className="card-text" style={{ fontSize: '1.2rem'}}>
+                                <SpanWithOnClick className={""} text={`${following} following`}
                                                  onClick={handleFollowingModal}/>
                             </Col>
                         </Row>

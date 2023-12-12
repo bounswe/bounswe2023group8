@@ -14,14 +14,15 @@ const InterestAreaCard: React.FC<InterestAreaCardProps> = ({interestArea}) => {
         <a href={`/interest-area/${interestArea.id}`}>
             <div className="card"
                  style={{
-                     backgroundColor: "#F1F1F1",
+                     backgroundColor: "#CDCFCF",
                      border: "none",
                      paddingTop: "2px",
                      margin: "20px",
-                     height: "60px"
+                     height: "60px",
+                     borderRadius: "20px"
                  }}>
                 <div className="card-body">
-                    <h5 className="card-title">{interestArea.title}</h5>
+                    <h5 className="card-title"> {interestArea.title}</h5>
                 </div>
             </div>
         </a>
