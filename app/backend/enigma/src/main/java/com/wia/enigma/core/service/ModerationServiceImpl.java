@@ -7,6 +7,7 @@ import com.wia.enigma.core.service.InterestAreaService.InterestAreaService;
 import com.wia.enigma.core.service.PostService.PostService;
 import com.wia.enigma.dal.entity.Moderation;
 import com.wia.enigma.dal.enums.AudienceType;
+import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.enums.ModerationType;
 import com.wia.enigma.dal.repository.ModerationRepository;
@@ -45,14 +46,14 @@ public class ModerationServiceImpl implements ModerationService {
     public void removePost(EnigmaAuthorities authorities, Long postId) {
 
         if (authorities == null)
-            throw new IllegalArgumentException("authorities cannot be null");
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "authorities cannot be null");
 
         if (postId == null)
-            throw new IllegalArgumentException("postId cannot be null");
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "postId cannot be null");
 
         if (authorities.getAudienceType() == AudienceType.USER)
-            if (authorities.canModerate(postService.getInterestAreaIdOfPost(postId)))
-                throw new IllegalArgumentException("Only moderators can remove posts");
+            if (!authorities.canModerate(postService.getInterestAreaIdOfPost(postId)))
+                throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "Only moderators can remove posts");
 
         postService.deletePost(postId);
     }
@@ -67,13 +68,13 @@ public class ModerationServiceImpl implements ModerationService {
     public void removeInterestArea(EnigmaAuthorities authorities, Long interestAreaId) {
 
         if (authorities == null)
-            throw new IllegalArgumentException("authorities cannot be null");
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "authorities cannot be null");
 
         if (interestAreaId == null)
-            throw new IllegalArgumentException("interestAreaId cannot be null");
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "interestAreaId cannot be null");
 
         if (authorities.getAudienceType() == AudienceType.USER)
-            throw new IllegalArgumentException("Only admins can remove interest areas");
+            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "Only admins can remove interest areas");
 
         interestAreaService.deleteInterestAreaById(interestAreaId);
     }
@@ -81,14 +82,16 @@ public class ModerationServiceImpl implements ModerationService {
     /**
      * Warn a user using the moderation service
      *
-     * @param authorities   EnigmaAuthorities of the user
-     * @param userId        id of the user to be warned
-     * @param postId        id of the post to be warned
-     * @param reason        comment to be added to the warning
-     * @return              id of the moderation
+     * @param authorities EnigmaAuthorities of the user
+     * @param userId      id of the user to be warned
+     * @param postId      id of the post to be warned
+     * @param reason      comment to be added to the warning
      */
     @Override
-    public Long warnUser(EnigmaAuthorities authorities, Long userId, Long postId, String reason) {
+    public void warnUser(EnigmaAuthorities authorities, Long userId, Long postId, String reason) {
+
+        if (authorities.getEnigmaUserId().equals(userId))
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "You cannot warn yourself");
 
         Long interestAreaId = initialCheck(authorities, userId, postId, reason);
 
@@ -109,20 +112,21 @@ public class ModerationServiceImpl implements ModerationService {
                     "Could not save moderation.");
         }
 
-        return moderation.getId();
     }
 
     /**
      * Ban a user using the moderation service
      *
-     * @param authorities   EnigmaAuthorities of the user
-     * @param userId        id of the user to be banned
-     * @param postId        id of the post to be banned
-     * @param reason        comment to be added to the ban
-     * @return              id of the moderation
+     * @param authorities EnigmaAuthorities of the user
+     * @param userId      id of the user to be banned
+     * @param postId      id of the post to be banned
+     * @param reason      comment to be added to the ban
      */
     @Override
-    public Long banUser(EnigmaAuthorities authorities, Long userId, Long postId, String reason) {
+    public void banUser(EnigmaAuthorities authorities, Long userId, Long postId, String reason) {
+
+        if (authorities.getEnigmaUserId().equals(userId))
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "You cannot ban yourself");
 
         Long interestAreaId = initialCheck(authorities, userId, postId, reason);
 
@@ -143,7 +147,6 @@ public class ModerationServiceImpl implements ModerationService {
                     "Could not save moderation.");
         }
 
-        return moderation.getId();
     }
 
     /**
@@ -157,18 +160,21 @@ public class ModerationServiceImpl implements ModerationService {
     @Transactional
     public void unbanUser(EnigmaAuthorities authorities, Long userId, Long interestAreaId) {
 
+        if (authorities.getEnigmaUserId().equals(userId))
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "You cannot unban yourself");
+
         if (authorities == null)
-            throw new IllegalArgumentException("authorities cannot be null");
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "authorities cannot be null");
 
         if (userId == null)
-            throw new IllegalArgumentException("postId cannot be null");
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "postId cannot be null");
 
         if (interestAreaId == null)
-            throw new IllegalArgumentException("postId cannot be null");
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "postId cannot be null");
 
         if (authorities.getAudienceType() == AudienceType.USER)
-            if (authorities.canModerate(interestAreaId))
-                throw new IllegalArgumentException("Only moderators can unban users");
+            if (!authorities.canModerate(interestAreaId))
+                throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "Only moderators can unban users");
 
         interestAreaService.validateExistence(interestAreaId);
 
@@ -184,43 +190,113 @@ public class ModerationServiceImpl implements ModerationService {
     /**
      * Report an issue using the moderation service
      *
-     * @param authorities       EnigmaAuthorities of the user
-     * @param userId            id of the user to be reported
-     * @param postId            id of the post to be reported
-     * @param interestAreaId    id of the interest area
-     * @param reason            comment to be added to the report
-     * @return                  id of the moderation
+     * @param authorities    EnigmaAuthorities of the user
+     * @param entityType     type of the entity to be reported
+     * @param entityId       id of the entity to be reported
+     * @param reason         comment to be added to the report
      */
     @Override
-    public Long reportIssue(EnigmaAuthorities authorities, Long userId, Long postId, Long interestAreaId, String reason) {
+    public void reportIssue(EnigmaAuthorities authorities, EntityType entityType, Long entityId, String reason) {
 
         if (authorities == null)
-            throw new IllegalArgumentException("authorities cannot be null");
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "authorities cannot be null");
 
-        if (reason == null)
-            throw new IllegalArgumentException("reason cannot be null");
-
-        if (userId == null && postId == null && interestAreaId == null)
-            throw new IllegalArgumentException("At least one of userId, postId, interestAreaId must be non-null");
-
-        Moderation moderation = Moderation.builder()
-                .moderationType(ModerationType.REPORT.getType())
-                .reason(reason)
-                .fromEnigmaUserId(authorities.getEnigmaUserId())
-                .toEnigmaUserId(userId)
-                .interestAreaId(interestAreaId)
-                .postId(postId)
-                .build();
+        Moderation moderation;
+        if (entityType.equals(EntityType.USER))
+            moderation = reportUser(authorities, entityId, reason);
+        else if (entityType.equals(EntityType.POST))
+            moderation = reportPost(authorities, entityId, reason);
+        else if (entityType.equals(EntityType.INTEREST_AREA))
+            moderation = reportInterestArea(authorities, entityId, reason);
+        else
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "entityType must be one of USER, POST, INTEREST_AREA");
 
         try {
+            assert moderation != null;
             moderationRepository.save(moderation);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new EnigmaException(ExceptionCodes.DB_SAVE_ERROR,
                     "Could not save moderation.");
         }
+    }
 
-        return moderation.getId();
+    /**
+     * Report a user using the moderation service
+     *
+     * @param authorities   EnigmaAuthorities of the user
+     * @param userId        id of the user to be reported
+     * @param reason        comment to be added to the report
+     * @return              Moderation
+     */
+    private Moderation reportUser(EnigmaAuthorities authorities, Long userId, String reason) {
+
+        if (authorities.getEnigmaUserId().equals(userId))
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "You cannot report yourself");
+
+        if (userId == null)
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "userId cannot be null");
+
+        if (reason == null)
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "reason cannot be null");
+
+        return Moderation.builder()
+                .moderationType(ModerationType.REPORT.getType())
+                .reason(reason)
+                .fromEnigmaUserId(authorities.getEnigmaUserId())
+                .toEnigmaUserId(userId)
+                .build();
+    }
+
+    /**
+     * Report a post using the moderation service
+     *
+     * @param authorities   EnigmaAuthorities of the user
+     * @param postId        id of the post to be reported
+     * @param reason        comment to be added to the report
+     * @return              Moderation
+     */
+    private Moderation reportPost(EnigmaAuthorities authorities, Long postId, String reason) {
+
+        if (postId == null)
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "postId cannot be null");
+
+        if (reason == null)
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "reason cannot be null");
+
+        if (postService.getUserIdOfPost(postId).equals(authorities.getEnigmaUserId()))
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "You cannot report your own post");
+
+        return Moderation.builder()
+                .moderationType(ModerationType.REPORT.getType())
+                .reason(reason)
+                .fromEnigmaUserId(authorities.getEnigmaUserId())
+                .postId(postId)
+                .build();
+    }
+
+    /**
+     * Report an interest area using the moderation service
+     *
+     * @param authorities       EnigmaAuthorities of the user
+     * @param interestAreaId    id of the interest area to be reported
+     * @param reason            comment to be added to the report
+     * @return                  Moderation
+     */
+    private Moderation reportInterestArea(EnigmaAuthorities authorities, Long interestAreaId, String reason) {
+
+        if (interestAreaId == null)
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "interestAreaId cannot be null");
+
+        if (reason == null)
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "reason cannot be null");
+
+        return Moderation.builder()
+                .moderationType(ModerationType.REPORT.getType())
+                .reason(reason)
+                .fromEnigmaUserId(authorities.getEnigmaUserId())
+                .interestAreaId(interestAreaId)
+                .build();
     }
 
     /**
@@ -239,10 +315,10 @@ public class ModerationServiceImpl implements ModerationService {
                                        Long postId, Long toUserId, Long fromUserId) {
 
         if (authorities == null)
-            throw new IllegalArgumentException("authorities cannot be null");
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "authorities cannot be null");
 
         if (type == null)
-            throw new IllegalArgumentException("type cannot be null");
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "type cannot be null");
 
         List<Specification<Moderation>> specificationList = new ArrayList<>();
         specificationList.add(ModerationSpecification.isModerationType(type.getType()));
@@ -295,21 +371,21 @@ public class ModerationServiceImpl implements ModerationService {
     private Long initialCheck(EnigmaAuthorities authorities, Long userId, Long postId, String reason) {
 
         if (authorities == null)
-            throw new IllegalArgumentException("authorities cannot be null");
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "authorities cannot be null");
 
         if (postId == null)
-            throw new IllegalArgumentException("postId cannot be null");
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "postId cannot be null");
 
         if (userId == null)
-            throw new IllegalArgumentException("postId cannot be null");
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "postId cannot be null");
 
         if (reason == null)
-            throw new IllegalArgumentException("reason cannot be null");
+            throw new EnigmaException(ExceptionCodes.INVALID_REQUEST, "reason cannot be null");
 
         Long interestAreaId = postService.getInterestAreaIdOfPost(postId);
         if (authorities.getAudienceType() == AudienceType.USER)
-            if (authorities.canModerate(interestAreaId))
-                throw new IllegalArgumentException("Only moderators can unban users");
+            if (!authorities.canModerate(interestAreaId))
+                throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "Only moderators can ban or warn users");
 
         return interestAreaId;
     }

@@ -1,5 +1,6 @@
 package com.wia.enigma.core.data.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,18 +37,13 @@ public class ReputationVoteDto {
 
         Long voterEnigmaUserId;
 
-        String voteType;
-
-        @JsonInclude(JsonInclude.Include.NON_NULL)
         Long votedEnigmaUserId;
-
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        Long postId;
 
         Integer vote;
 
         String comment;
 
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         Timestamp createTime;
     }
 }

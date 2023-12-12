@@ -358,4 +358,22 @@ public class PostServiceImpl implements PostService {
                     "Could not fetch interest area id of post.");
         }
     }
+
+    /**
+     * Gets the user id of a post
+     *
+     * @param postId   Post.Id
+     * @return         Integer
+     */
+    @Override
+    public Long getUserIdOfPost(Long postId) {
+
+        try {
+            return postRepository.findEnigmaUserIdByPostId(postId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Could not fetch user id of post.");
+        }
+    }
 }

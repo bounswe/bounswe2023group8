@@ -67,8 +67,6 @@ public class InterestAreaServiceHelper {
         );
     }
 
-
-
     List<WikiTag> getWikiTags(Long id) {
         return wikiTagRepository.findAllById(entityTagsRepository.findAllByEntityIdAndEntityType(id, EntityType.INTEREST_AREA).stream()
                 .map(EntityTag::getWikiDataTagId)

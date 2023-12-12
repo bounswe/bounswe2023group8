@@ -8,4 +8,8 @@ import java.util.List;
 public interface ReputationVoteRepository extends JpaRepository<ReputationVote, Long> {
 
     List<ReputationVote> findAllByVoterEnigmaUserId(Long voterEnigmaUserId);
+
+    ReputationVote findByVoterEnigmaUserIdAndVotedEnigmaUserId(Long voterEnigmaUserId, Long votedEnigmaUserId);
+
+    List<ReputationVote> findAllByVotedEnigmaUserId(Long enigmaUserId);
 }
