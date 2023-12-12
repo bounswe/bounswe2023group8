@@ -206,6 +206,15 @@ public class InterestAreaServiceImpl implements InterestAreaService {
                 .map(InterestArea::getId)
                 .collect(Collectors.toSet());
 
+        deleteInterestAreasByIdIn(interestAreasToDelete);
+    }
+
+    /**
+     * Deletes interest areas and interest area related data
+     *
+     * @param interestAreasToDelete    interest area id list
+     */
+    private void deleteInterestAreasByIdIn(Set<Long> interestAreasToDelete) {
         try {
             interestAreaRepository.deleteAllByIdInBatch(interestAreasToDelete);
         } catch (Exception e) {
@@ -229,5 +238,40 @@ public class InterestAreaServiceImpl implements InterestAreaService {
             throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
                     "Could not delete EntityTag list.");
         }
+    }
+
+    /**
+     * Deletes interest area and interest area related data
+     *
+     * @param interestAreaId    interest area id
+     */
+    @Override
+    @Transactional
+    public void deleteInterestAreaById(Long interestAreaId) {
+
+        validateExistence(interestAreaId);
+        deleteInterestAreasByIdIn(Set.of(interestAreaId));
+    }
+
+    /**
+     * Validates the existence of an interest area
+     *
+     * @param interestAreaId   InterestArea.Id
+     */
+    @Override
+    public void validateExistence(Long interestAreaId) {
+
+        InterestArea interestArea;
+        try {
+            interestArea = interestAreaRepository.findById(interestAreaId).orElse(null);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Could not fetch interest area.");
+        }
+
+        if (interestArea == null)
+            throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND,
+                    "Interest area with id " + interestAreaId + " does not exist.");
     }
 }

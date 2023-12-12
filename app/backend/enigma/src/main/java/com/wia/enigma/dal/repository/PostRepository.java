@@ -20,4 +20,9 @@ public interface PostRepository  extends JpaRepository<Post, Long> {
     void deleteAllByEnigmaUserId(Long enigmaUserId);
 
     Integer countAllByEnigmaUserId(Long enigmaUserId);
+
+    @Query("SELECT P.interestAreaId " +
+           "FROM Post P " +
+           "WHERE P.id = :postId")
+    Long findInterestAreaIdByPostId(Long postId);
 }
