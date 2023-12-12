@@ -37,28 +37,41 @@ class HomeView extends GetView<HomeController> {
           ],
         ),
         body: Container(
-            color: Colors.white,
+            color: ThemePalette.white,
             child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                 child: controller.searchQuery.value.isNotEmpty
                     ? _searchBody()
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(
-                            height: 5,
-                          ),
+                          Container(
+                              height: 44,
+                              margin: const EdgeInsets.only(right: 16),
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                  bottomRight: Radius.circular(10),
+                                ),
+                                color: BackgroundPalette.regular,
+                              ),
+                              child: Row()),
                           ListView.builder(
                               shrinkWrap: true,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: controller.posts.length,
                               itemBuilder: (context, index) {
-                                return PostTileWidget(
-                                  onTap: () => controller.navigateToPostDetails(
-                                      controller.posts[index]),
-                                  post: controller.posts[index],
-                                  hideTags: false,
+                                return Column(
+                                  children: [
+                                    const SizedBox(height: 8),
+                                    PostTileWidget(
+                                      onTap: () =>
+                                          controller.navigateToPostDetails(
+                                              controller.posts[index]),
+                                      post: controller.posts[index],
+                                      hideTags: false,
+                                    )
+                                  ],
                                 );
                               })
                         ],
