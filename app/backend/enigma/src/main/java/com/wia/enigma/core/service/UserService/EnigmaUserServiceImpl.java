@@ -42,11 +42,15 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EnigmaUserServiceImpl implements EnigmaUserService {
 
+    final PasswordEncoder passwordEncoder;
+
     final EnigmaUserRepository enigmaUserRepository;
     final EntityTagsRepository entityTagsRepository;
-    final InterestAreaRepository interestAreaRepository;
-    final PostRepository postRepository;
     final WikiTagRepository wikiTagRepository;
+    final PostCommentRepository postCommentRepository;
+    final PostVoteRepository postVoteRepository;
+    final PostRepository postRepository;
+    final InterestAreaRepository interestAreaRepository;
 
     final EmailService emailService;
     final EnigmaJwtService enigmaJwtService;
@@ -54,8 +58,6 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
     final PostService postService;
     final UserFollowsService userFollowsService;
     final VerificationTokenService verificationTokenService;
-
-    final PasswordEncoder passwordEncoder;
 
     @Override
     public EnigmaUserDto getUser(Long id){
@@ -435,7 +437,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
                     "User does not exist or unverified!");
 
-        return userFollowsService.findAcceptedFollowers(followedId, EntityType.USER)
+        return userFollowsService.findFollowers( followedId, EntityType.USER, true)
                 .stream()
                 .map(userFollows -> enigmaUserRepository.findEnigmaUserById(userFollows.getFollowerEnigmaUserId()))
                 .map(enigmaUser -> EnigmaUserDto.builder()
@@ -464,7 +466,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                     "User does not exist or unverified!");
         }
 
-        return userFollowsService.findAcceptedFollowings(followerId, EntityType.USER)
+        return userFollowsService.findFollowings(followerId, EntityType.USER, true)
                 .stream()
                 .map(userFollows -> enigmaUserRepository.findEnigmaUserById(userFollows.getFollowedEntityId()))
                 .map(enigmaUser -> EnigmaUserDto.builder()
@@ -510,12 +512,20 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                         return false;
                     }
                 }
-        ).map(post -> post.mapToPostDto(getWikiTags(post.getId()), enigmaUser,  interestAreas.stream().filter(interestArea -> interestArea.getId().equals(post.getInterestAreaId())).toList().get(0).mapToInterestAreaModel())).toList();
+        ).map(post -> post.mapToPostDto(
+                getWikiTags(post.getId()),
+                enigmaUser,
+                interestAreas.stream().filter(interestArea -> interestArea.getId().equals(post.getInterestAreaId()))
+                        .toList().get(0).mapToInterestAreaModel(),
+                postVoteRepository.countByPostIdAndVote(post.getId(), true),
+                postVoteRepository.countByPostIdAndVote(post.getId(), false),
+                postCommentRepository.countByPostId(post.getId())
+        )).toList();
     }
 
     @Override
     public List<InterestAreaDto> getFollowingInterestAreas(Long userId, Long followerId ) {
-        List<Long> followedEntityIds = userFollowsService.findAcceptedFollowings(followerId, EntityType.INTEREST_AREA)
+        List<Long> followedEntityIds = userFollowsService.findFollowings(followerId, EntityType.INTEREST_AREA, true)
                 .stream()
                 .map(UserFollows::getFollowedEntityId)
                 .collect(Collectors.toList());

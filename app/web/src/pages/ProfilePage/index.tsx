@@ -1,36 +1,46 @@
-import React from 'react';
-import PostPreviewCard from "../../components/Post/PostPreviewCard";
+import React, {useEffect} from 'react';
+import PostPreviewCard from "../../components/Post/PostSmallPreview/PostPreviewCard";
 import InterestAreaCard from '../../components/InterestArea/InterestAreaCard';
-import mockPosts from "../../mockData/milestone1/451_posts.json";
-import mockUsers from "../../mockData/milestone1/451_users.json";
-import mockInterestAreas from "../../mockData/milestone1/451_interest_areas.json";
 import {Col, Row} from "react-bootstrap";
 import ProfileHeader from "../../components/ProfileHeader/ProfileHeader";
+import {useAuth} from "../../contexts/AuthContext";
+import {useGetUserFollowingInterestAreas, useGetUserPosts, useGetUserProfile} from "../../hooks/useProfile";
+import {useParams} from "react-router-dom";
+import {Post} from "../InterestAreaViewPage";
 
 const ProfilePage = () => {
 
-    const createInterestAreaListFromMockData = (postIAs: number[]) => {
-        return mockInterestAreas.filter((interestArea) => {
-            return postIAs.find((postIA) => postIA === interestArea.id);
-        })
-    };
+    const {userId} = useParams();
 
-    type postTypes = {
-        id: number,
-        user_id: number,
-        ia_ids: number[],
-        source_link: string,
-        content: string,
-        created_at: string
-    };
-    const getUserName = (post: postTypes): string | undefined => {
-        return mockUsers.find(
-            (user) => user.id === post.user_id)?.name;
-    }
+    const {axiosInstance} = useAuth();
+    const {mutate: getUserProfile, data: profileData, isSuccess: isSuccessProfile} = useGetUserProfile({});
+    const {
+        mutate: getUserFollowingInterestAreas,
+        data: interestAreas,
+        isSuccess: isSuccessInterestAreas
+    } = useGetUserFollowingInterestAreas({});
+    const {mutate: getUserPosts, data: posts, isSuccess: isSuccessPosts} = useGetUserPosts({});
+
+    useEffect(() => {
+        getUserProfile({
+            axiosInstance: axiosInstance,
+            userId: userId || "-1",
+        })
+        console.log(profileData);
+        getUserFollowingInterestAreas({
+            axiosInstance: axiosInstance,
+            userId: userId || "-1",
+        })
+        getUserPosts({
+            axiosInstance: axiosInstance,
+            userId: userId || "-1",
+        })
+    }, [])
+
 
     return <>
         <Row>
-            <ProfileHeader user={mockUsers[0]} style={{}} className="col-5 border-0"/>
+            {isSuccessProfile && <ProfileHeader user={profileData} style={{}} className="col-5 border-0"/>}
         </Row>
         <hr className="mx-3"/>
         <Row>
@@ -38,11 +48,11 @@ const ProfilePage = () => {
                 <h5 className="mt-2 mx-3">Interest Areas</h5>
                 <div className="card border-0" style={{maxHeight: '70vh'}}>
                     <hr className="m-0 mx-2"/>
-                    <div className="card-body overflow-y-auto">
-                        {mockInterestAreas.map((interestArea) => (
+                    {isSuccessInterestAreas && <div className="card-body overflow-y-auto">
+                        {interestAreas.map((interestArea: any) => (
                             <InterestAreaCard key={interestArea.id} interestArea={interestArea}/>
                         ))}
-                    </div>
+                    </div>}
                 </div>
             </Col>
 
@@ -50,21 +60,22 @@ const ProfilePage = () => {
                 <h5 className="mt-2 mx-3">Posts</h5>
                 <div className="card border-0" style={{maxHeight: '70vh'}}>
                     <hr className="m-0 mx-2"/>
-                    <div className="card-body overflow-y-auto">
-                        {mockPosts.map((mockPost) => {
+                    {isSuccessPosts && <div className="card-body overflow-y-auto">
+                        {posts.map((post: Post) => {
                             return <PostPreviewCard
-                                key={mockPost.id}
-                                post={mockPost}
-                                userName={getUserName(mockPost)}
-                                interestAreas={createInterestAreaListFromMockData(mockPost.ia_ids)}/>
+                                key={post.id} content={post.content}
+                                createTime={post.createTime} enigmaUser={post.enigmaUser}
+                                geolocation={post.geolocation} id={post.id} interestArea={post.interestArea}
+                                wikiTags={post.wikiTags} label={post.label} title={post.title}
+                                sourceLink={post.sourceLink}/>
                         })
                         }
-                    </div>
+                    </div>}
                 </div>
             </Col>
         </Row>
     </>
-}
+        ;
+};
 
-export default ProfilePage
-;
+export default ProfilePage;

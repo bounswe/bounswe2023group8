@@ -10,6 +10,7 @@ import 'authentication_controller.dart';
 
 class SignUpController extends GetxController {
   var signUpEmail = ''.obs;
+  var signUpName = ''.obs;
   var signUpUsername = ''.obs;
   var signUpPassword = ''.obs;
   var confirmPassword = ''.obs;
@@ -20,6 +21,7 @@ class SignUpController extends GetxController {
   var hideConfirmPassword = true.obs;
   var signUpUsernameValid = false.obs;
   var signUpEmailValid = false.obs;
+  var signUpNameValid = false.obs;
   var signupInProgress = false.obs;
   var acceptTerms = false.obs;
   var birthday = ''.obs;
@@ -44,6 +46,11 @@ class SignUpController extends GetxController {
   void onChangeEmail(String value) {
     signUpEmail.value = value;
     signUpEmailValid.value = Validator.isEmailValid(signUpEmail.value);
+  }
+
+  void onChangeName(String value) {
+    signUpName.value = value;
+    signUpNameValid.value = value.length >= 3;
   }
 
   void onChangeUsername(String value) {
@@ -83,6 +90,7 @@ class SignUpController extends GetxController {
 
     try {
       final res = await authProvider.signUp(
+          name: signUpName.value,
           username: signUpUsername.value,
           email: signUpEmail.value,
           password: signUpPassword.value,

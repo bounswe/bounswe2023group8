@@ -1,5 +1,6 @@
 package com.wia.enigma.core.service.PageService;
 
+import ch.qos.logback.core.joran.sanity.Pair;
 import com.wia.enigma.core.data.dto.*;
 import com.wia.enigma.core.data.model.InterestAreaModel;
 import com.wia.enigma.core.service.InterestAreaService.InterestAreaService;
@@ -9,13 +10,13 @@ import com.wia.enigma.dal.entity.*;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.repository.*;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.parser.Entity;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,6 +26,8 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PageServiceImpl implements PageService{
+    private final PostCommentRepository postCommentRepository;
+    private final PostVoteRepository postVoteRepository;
     private final NestedInterestAreaRepository nestedInterestAreaRepository;
     final EnigmaUserRepository enigmaUserRepository;
     final InterestAreaRepository interestAreaRepository;
@@ -75,11 +78,8 @@ public class PageServiceImpl implements PageService{
                 .stream()
                 .map(nestedInterestArea -> nestedInterestArea.getChildInterestAreaId());
 
-        // Now, create a new stream from the list for concatenation
-        Stream<Long> followedInterestAreaIdsStream = followedInterestAreaIdList.stream();
-
         // Concatenate and collect
-        List<Long> allRelatedInterestAreaIds =  Stream.concat(followedInterestAreaIdsStream, nestedFollowedInterestAreaIds)
+        List<Long> allRelatedInterestAreaIds =  Stream.concat(followedInterestAreaIdList.stream(), nestedFollowedInterestAreaIds)
                 .collect(Collectors.toList());
 
         List<Long> followedEnigmaUserIds = enigmaUserService.getFollowings(userId, userId).stream( )
@@ -114,12 +114,10 @@ public class PageServiceImpl implements PageService{
                                 entityTag -> wikiTags.stream().filter(wikiTag -> wikiTag.getId().equals(entityTag.getWikiDataTagId())).findFirst().orElse(null)
                         ).collect(Collectors.toList()),
                         enigmaUserDtos.stream().filter(enigmaUserDto -> enigmaUserDto.getId().equals(post.getEnigmaUserId())).findFirst().orElse(null),
-                        interestAreaModels.stream().filter(interestAreaModel -> interestAreaModel.getId().equals(post.getInterestAreaId())).findFirst().orElse(null)
+                        interestAreaModels.stream().filter(interestAreaModel -> interestAreaModel.getId().equals(post.getInterestAreaId())).findFirst().orElse(null),
+                        postVoteRepository.countByPostIdAndVote(post.getId(), true),
+                        postVoteRepository.countByPostIdAndVote(post.getId(), false),
+                        postCommentRepository.countByPostId(post.getId())
                 )).toList();
-
-
-
-
-
     }
 }

@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface UserFollowsRepository extends JpaRepository<UserFollows, Long> {
+    UserFollows findByIdAndIsAcceptedFalse(Long id);
+
+    long countByFollowerEnigmaUserIdAndFollowedEntityTypeAndIsAccepted(Long followerEnigmaUserId, EntityType followedEntityType, Boolean isAccepted);
 
     long countByFollowedEntityIdAndFollowedEntityTypeAndIsAccepted(Long followedEntityId, EntityType followedEntityType, Boolean isAccepted);
 
@@ -23,4 +26,6 @@ public interface UserFollowsRepository extends JpaRepository<UserFollows, Long> 
     List<UserFollows> findAllByFollowerEnigmaUserId(Long enigmaUserId);
 
     List<UserFollows> findAllByFollowedEntityIdAndFollowedEntityType(Long followedEntityId, EntityType followedEntityType);
+
+    Boolean existsByFollowerEnigmaUserIdAndFollowedEntityIdAndFollowedEntityType(Long userId, Long followId, EntityType entityType);
 }

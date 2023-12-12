@@ -6,6 +6,7 @@ import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;
 import com.wia.enigma.core.data.request.CreateInterestAreaRequest;
 import com.wia.enigma.core.service.InterestAreaService.InterestAreaService;
 import com.wia.enigma.core.service.PostService.PostService;
+import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -28,6 +29,7 @@ public class InterestAreaController {
 
     final InterestAreaService interestAreaService;
     final PostService postService;
+    final UserFollowsService userFollowsService;
 
     /*
         WA-8: Gets interest areas.
@@ -158,6 +160,34 @@ public class InterestAreaController {
         return ResponseEntity.ok(search);
     }
 
+    /*
+        WA-38: Get follow requests
+     */
+    @GetMapping("/{id}/follow-requests")
+    public ResponseEntity<?> getFollowRequests(@Valid @NotNull @PathVariable(value = "id") Long id, EnigmaAuthenticationToken token) {
 
+        return ResponseEntity.ok(interestAreaService.getFollowRequests(token.getEnigmaUserId(), id));
+    }
 
+    /*
+        WA-39: Accept follow request
+     */
+    @GetMapping("/accept-follow-request")
+    public ResponseEntity<?> acceptFollowRequest(@Valid @NotNull @RequestParam(name = "requestId") Long id, EnigmaAuthenticationToken token) {
+
+        interestAreaService.acceptFollowRequest(id, token.getEnigmaUserId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+        WA-40: Reject follow request
+     */
+    @GetMapping("/reject-follow-request")
+    public ResponseEntity<?> rejectFollowRequest(@Valid @NotNull @RequestParam(name = "requestId") Long id, EnigmaAuthenticationToken token) {
+
+        interestAreaService.rejectFollowRequest(id, token.getEnigmaUserId());
+
+        return ResponseEntity.ok().build();
+    }
 }
