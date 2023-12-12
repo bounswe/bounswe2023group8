@@ -8,6 +8,7 @@ import com.wia.enigma.core.data.request.CreateInterestAreaRequest;
 import com.wia.enigma.core.data.response.FollowRequestsResponse;
 import com.wia.enigma.dal.entity.InterestArea;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,4 +40,9 @@ public interface InterestAreaService {
     void acceptFollowRequest(Long requestId, Long userId);
 
     void rejectFollowRequest(Long requestId, Long userId);
+
+    @Transactional
+    void deleteInterestAreaById(Long interestAreaId);
+
+    void validateExistence(Long interestAreaId);
 }

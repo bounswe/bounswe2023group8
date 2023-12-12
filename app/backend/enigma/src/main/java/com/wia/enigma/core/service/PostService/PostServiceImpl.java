@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -306,6 +307,55 @@ public class PostServiceImpl implements PostService {
             log.error(e.getMessage(), e);
             throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
                     "Could not fetch post count.");
+        }
+    }
+
+    /**
+     * Deletes an existing post
+     *
+     * @param postId    Post.Id
+     */
+    @Override
+    @Transactional
+    public void deletePost(Long postId) {
+
+        Post post;
+        try {
+            post = postRepository.findById(postId).orElse(null);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Could not fetch post.");
+        }
+
+        if (post == null)
+            throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND,
+                    "Post with id " + postId + " does not exist.");
+
+        try {
+            postRepository.delete(post);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
+                    "Could not delete post.");
+        }
+    }
+
+    /**
+     * Gets the interest area id of a post
+     *
+     * @param postId   Post.Id
+     * @return         Integer
+     */
+    @Override
+    public Long getInterestAreaIdOfPost(Long postId) {
+
+        try {
+            return postRepository.findInterestAreaIdByPostId(postId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Could not fetch interest area id of post.");
         }
     }
 }

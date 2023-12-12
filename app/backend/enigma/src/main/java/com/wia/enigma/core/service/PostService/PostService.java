@@ -7,6 +7,7 @@ import com.wia.enigma.core.data.dto.PostVoteDto;
 import com.wia.enigma.core.data.model.GeoLocation;
 import com.wia.enigma.dal.entity.PostVote;
 import com.wia.enigma.dal.enums.PostLabel;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -41,4 +42,9 @@ public interface PostService {
     void validateExistence(Long postId);
 
     Integer getPostCount(Long enigmaUserId);
+
+    @Transactional
+    void deletePost(Long postId);
+
+    Long getInterestAreaIdOfPost(Long postId);
 }

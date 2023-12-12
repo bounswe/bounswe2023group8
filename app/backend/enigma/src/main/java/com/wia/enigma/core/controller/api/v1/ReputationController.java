@@ -24,11 +24,11 @@ public class ReputationController {
     final ReputationService reputationService;
 
     /*
-        WA-xx: Vote on a user or a post
+        WA-45: Vote on a user or a post
      */
     @PostMapping("/vote")
     public ResponseEntity<?> vote(EnigmaAuthenticationToken token,
-                               @RequestBody @Valid VoteRequest voteRequest) {
+                                  @RequestBody @Valid VoteRequest voteRequest) {
 
         if (voteRequest.getVotedEnigmaUserId() != null && voteRequest.getPostId() != null)
             throw new IllegalArgumentException("Only one of votedEnigmaUserId and postId must be provided");
@@ -47,7 +47,7 @@ public class ReputationController {
     }
 
     /*
-        WA-xx: Get reputation votes of a user
+        WA-46: Get reputation votes of a user
      */
     @GetMapping
     public ResponseEntity<?> getReputation(EnigmaAuthenticationToken token,
@@ -62,7 +62,7 @@ public class ReputationController {
     }
 
     /*
-        WA-xx: Get badges of a user
+        WA-47: Get badges of a user
      */
     @GetMapping("/badges")
     public ResponseEntity<?> getBadges(EnigmaAuthenticationToken token,
