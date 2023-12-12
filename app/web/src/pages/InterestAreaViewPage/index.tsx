@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PostPreviewCard from "../../components/Post/PostSmallPreview/PostPreviewCard";
-import {Link, useNavigate, useParams} from "react-router-dom";
-import Tag from "../../components/Tag/Tag";
+import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import {
   useGetInterestArea,
@@ -9,7 +8,6 @@ import {
   useGetSubInterestAreasOfInterestArea,
 } from "../../hooks/useInterestArea";
 import { AccessLevel, accessLevelMapping } from "../InterestAreaUpdatePage";
-import {Button} from "react-bootstrap";
 
 export interface EnigmaUser {
   id: number;
@@ -55,13 +53,11 @@ export interface Post {
 }
 
 const ViewInterestArea = () => {
-  const { axiosInstance, userData } = useAuth();
+  const { axiosInstance } = useAuth();
   const { iaId } = useParams();
   const [interestAreaData, setInterestAreaData] = useState<any>(null);
   const [subInterestAreasData, setSubInterestAreasData] = useState<any>(null);
   const [postsData, setPostsData] = useState<Post[] | null>(null);
-
-
 
   const { isSuccess } = useGetInterestArea({
     axiosInstance,
@@ -99,6 +95,7 @@ const ViewInterestArea = () => {
       },
     });
   const [showContent, setShowContent] = useState(false);
+  const [showPosts, setShowPosts] = useState(true);
 
   useEffect(() => {
     // Set a timeout to update the state after 2 seconds
@@ -135,127 +132,216 @@ const ViewInterestArea = () => {
   return (
     <>
       {isSuccess && isPostsSuccess && isNestedInterestAreasSuccess ? (
-        <div style={{ display: "flex" }}>
-          <div
-            className="container mt-4"
-            style={{
-              width: "75%",
-              height: "100%",
-              borderRight: "solid #C2C2C2",
-              padding: "50px",
-            }}
-          >
-            <h1
-              className="fw-bold"
+        <div className="d-flex">
+          <div className="container mt-4 p-4">
+            <div
+              className="WA-theme-bg-dark rounded-4"
               style={{
-                marginBottom: "50px",
-                display: "inline-block",
-                padding: "10px 20px 10px 20px",
-                textTransform: "uppercase",
-                background: "#E0E0E0",
-                borderRadius: "20px",
+                position: "relative",
+                zIndex: 2,
+                boxShadow: "-5px 5px #000000",
               }}
             >
-              {interestAreaData?.title}
-            </h1>
-            <p className="d-flex  justify-content-between">
-              <span>{interestAreaData?.description}</span>
-              <span className="">
-                <span>
-                  <Link className="btn btn-primary mx-2"
-                        to={"/create_post"}
-                        state={{ interestAreaId: iaId, interestAreaTitle: interestAreaData?.title}}
-                  >
-                    Create New Spot
-                  </Link>
-                  <a href={`/update_interest_area/${iaId}`}>
-                      <div className="btn btn-primary mx-2">
-                        Edit Bunch
-                      </div>
-                    </a>
-                </span>
-              </span></p>
-            <hr></hr>
-            {postsData &&
+              <div className="d-flex ">
+                <div className="m-3 WA-theme-light">
+                  <h1>{interestAreaData?.title}</h1>
+                </div>
+                <div className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
+                  <span className="mx-2">Join</span>
+                </div>
+                <div className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
+                  <img
+                    className="mx-2"
+                    src="/assets/theme/icons/NoNotificationNotSelected.png"
+                    style={{ width: "20px" }}
+                  />
+                </div>
+              </div>
+              <button
+                style={{
+                  borderRadius: "0px !important",
+                  borderTopRightRadius: "25px",
+                }}
+                className="btn WA-theme-bg-regular"
+                onClick={() => setShowPosts(true)}
+              >
+                <span className="m-3 text-dark">Spots</span>
+              </button>
+              <button
+                className="btn mx-3 WA-theme-bg-solid rounded-3"
+                onClick={() => setShowPosts(false)}
+              >
+                <span className="m-3 text-dark">About</span>
+              </button>
+            </div>
+            <div
+              className="WA-theme-bg-regular pt-3 position-relative rounded-4 "
+              style={{
+                marginTop: "-42px",
+                marginLeft: "-21px",
+                padding: "52px",
+                zIndex: 1,
+              }}
+            >
+              <div className="d-flex mt-5">
+                <div className="">Sort By:</div>
+                <div className="ms-3 WA-theme-bg-soft rounded-4 d-flex">
+                  <div>
+                    <img
+                      src="/assets/theme/icons/NewFilter.png"
+                      style={{ width: "40px" }}
+                    />
+                  </div>
+                  <div className="mx-2 d-flex justify-content-center align-items-center">
+                    <span>New</span>
+                  </div>
+                </div>
+                <div className="ms-3 WA-theme-bg-soft rounded-4 d-flex">
+                  <div>
+                    <img
+                      src="/assets/theme/icons/TopIcon.png"
+                      style={{ width: "40px" }}
+                    />
+                  </div>
+                  <div className="mx-2 d-flex justify-content-center align-items-center">
+                    <span>Top</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {!showPosts && (
+              <div className="WA-theme-bg-light p-5 rounded-4">
+                <p className="d-flex justify-content-between">
+                  <span>{interestAreaData?.description}</span>
+                </p>
+              </div>
+            )}
+            {showPosts &&
+              postsData &&
               postsData.length > 0 &&
               postsData.map((post) => (
-                <div key={post.id} style={{ marginBottom: "35px" }}>
+                <div key={post.id} className="my-3">
                   <PostPreviewCard {...post} />
                 </div>
               ))}
           </div>
 
-          <div style={{ width: "25%", margin: "50px" }}>
-            <div style={{ marginBottom: "70px" }}>
-              <h2 style={{ marginLeft: "20px" }}>IA Tags</h2>
+          <div style={{ width: "30%", margin: "50px" }}>
+            <div className="mb-5 d-flex flex-column">
+              <Link
+                style={{ textDecoration: "none", color: "black" }}
+                to={"/create_post"}
+                state={{
+                  interestAreaId: iaId,
+                  interestAreaTitle: interestAreaData?.title,
+                }}
+              >
+                <div className="m-2 py-3 px-1 WA-theme-bg-soft rounded-4 d-flex w-50">
+                  <div className="mx-2 d-flex justify-content-center align-items-center">
+                    <span style={{ whiteSpace: "nowrap" }}>Create Spot</span>
+                  </div>
+                  <img
+                    className="ms-2"
+                    src="/assets/theme/icons/Type=Add.png"
+                    style={{ width: "20px", height: "20px" }}
+                  />
+                </div>
+              </Link>
+              <a
+                style={{ textDecoration: "none", color: "black" }}
+                href={`/update_interest_area/${iaId}`}
+              >
+                <div className="m-2 py-3 px-1 WA-theme-bg-soft rounded-4 d-flex w-50">
+                  <div className="mx-2 d-flex justify-content-center align-items-center">
+                    <span style={{ whiteSpace: "nowrap" }} className="me-3">
+                      Edit Bunch
+                    </span>
+                  </div>
+                  <img
+                    className="ms-2"
+                    src="/assets/theme/icons/EditIcon.png"
+                    style={{ width: "20px", height: "20px" }}
+                  />
+                </div>
+              </a>
+            </div>
+            <div className="mb-3">
+              <h2 style={{ marginLeft: "20px" }}>Tags</h2>
               <hr
                 className="solid"
                 style={{ borderTop: "3px solid black" }}
               ></hr>
-              {interestAreaData?.wikiTags.map((tag: any) => (
+              <div className="WA-theme-bg-dark p-3 rounded-4">
+                {interestAreaData?.wikiTags.map((tag: any) => (
+                  <div
+                    key={tag.id}
+                    className="m-2 h-2 WA-theme-bg-light d-flex align-items-center justify-content-center rounded-5"
+                    style={{
+                      height: "45px",
+                    }}
+                  >
+                    #{tag.name}
+                  </div>
+                ))}
                 <div
-                  key={tag.id}
+                  className="m-2 h-2 WA-theme-light WA-theme-separator-light WA-theme-bg-solid d-flex align-items-center justify-content-center rounded-5"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: "#C2C2C2",
-                    borderRadius: "10px",
-                    width: "224px",
-                    fontSize: "20px",
                     height: "45px",
-                    margin: "15px",
                   }}
                 >
-                  #{tag.name}
+                  <img
+                    className="mx-2"
+                    src="/assets/theme/icons/Type=Add.png"
+                    style={{ width: "20px" }}
+                  />
+                  Suggest
                 </div>
-              ))}
+              </div>
             </div>
             <div>
-              <h2>Related IA&apos;s</h2>
+              <h2>Sub-Bunches</h2>
               <hr
                 className="solid"
                 style={{ borderTop: "3px solid black" }}
               ></hr>
-              {subInterestAreasData?.map((subIA: any, index: number) => (
-                <div
-                  key={index}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: "#C2C2C2",
-                    borderRadius: "10px",
-                    width: "224px",
-                    fontSize: "20px",
-                    height: "45px",
-                    margin: "15px",
-                  }}
-                >
-                  {subIA.title} <br></br>
-                </div>
-              ))}
+              <div className="WA-theme-bg-dark p-3 rounded-4">
+                {subInterestAreasData?.map((subIA: any, index: number) => (
+                  <div
+                    key={index}
+                    className="m-2 h-2 WA-theme-light WA-theme-separator-light WA-theme-bg-solid d-flex align-items-center justify-content-center rounded-5"
+                    style={{
+                      height: "45px",
+                    }}
+                  >
+                    {subIA.title} <br></br>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       ) : (
-         showContent && <div style={{
-            backgroundColor: "#f0f0f0",
-            padding: "10px",
-            border: "1px solid #ccc",
-            borderRadius: "5px",
-            textAlign: "center",
-            fontFamily: "Arial, sans-serif",
-            color: "#333",
-          }}>
-          <h2>Private Interest Area</h2>
-          <p>
-            This section contains private and confidential information. Access is restricted to authorized individuals only.
-          </p>
-          <p>
-            If you have the necessary permissions, please proceed responsibly.
-          </p>
-        </div>
+        showContent && (
+          <div
+            style={{
+              padding: "10px",
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+              textAlign: "center",
+              fontFamily: "Arial, sans-serif",
+              color: "#333",
+            }}
+          >
+            <h2>Private Bunch</h2>
+            <p>
+              This section contains private and confidential information. Access
+              is restricted to authorized individuals only.
+            </p>
+            <p>
+              If you have the necessary permissions, please proceed responsibly.
+            </p>
+          </div>
+        )
       )}
     </>
   );
