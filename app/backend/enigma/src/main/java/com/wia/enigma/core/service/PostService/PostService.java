@@ -37,4 +37,8 @@ public interface PostService {
     List<PostCommentDto> getPostComments(Long postId, Long userId);
 
     void deleteAllForUser(Long enigmaUserId);
+
+    void validateExistence(Long postId);
+
+    Integer getPostCount(Long enigmaUserId);
 }

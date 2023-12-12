@@ -18,4 +18,6 @@ public interface PostRepository  extends JpaRepository<Post, Long> {
     List<Post> findByEnigmaUserIdInOrPostIdIn(Collection<Long> enigmaUserIds, Collection<Long> postIds);
 
     void deleteAllByEnigmaUserId(Long enigmaUserId);
+
+    Integer countAllByEnigmaUserId(Long enigmaUserId);
 }
