@@ -6,7 +6,9 @@ import com.wia.enigma.core.data.response.RegisterResponse;
 import com.wia.enigma.core.data.response.SecurityDetailsResponse;
 import com.wia.enigma.core.data.response.VerificationResponse;
 import com.wia.enigma.core.service.EmailService.EmailService;
+import com.wia.enigma.core.service.InterestAreaService.InterestAreaService;
 import com.wia.enigma.core.service.JwtService.EnigmaJwtService;
+import com.wia.enigma.core.service.PostService.PostService;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.VerificationTokenService.VerificationTokenService;
 import com.wia.enigma.dal.entity.*;
@@ -39,33 +41,28 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EnigmaUserServiceImpl implements EnigmaUserService {
-    private final PostCommentRepository postCommentRepository;
-    private final PostVoteRepository postVoteRepository;
-    private final PostRepository postRepository;
-
-    private final InterestAreaRepository interestAreaRepository;
 
     final PasswordEncoder passwordEncoder;
 
     final EnigmaUserRepository enigmaUserRepository;
-
-    final EnigmaJwtService enigmaJwtService;
-
-    final VerificationTokenService verificationTokenService;
+    final EntityTagsRepository entityTagsRepository;
+    final WikiTagRepository wikiTagRepository;
+    final PostCommentRepository postCommentRepository;
+    final PostVoteRepository postVoteRepository;
+    final PostRepository postRepository;
+    final InterestAreaRepository interestAreaRepository;
 
     final EmailService emailService;
-
+    final EnigmaJwtService enigmaJwtService;
+    final InterestAreaService interestAreaService;
+    final PostService postService;
     final UserFollowsService userFollowsService;
-
-    final WikiTagRepository wikiTagRepository;
-
-
-    final EntityTagsRepository entityTagsRepository;
+    final VerificationTokenService verificationTokenService;
 
     @Override
     public EnigmaUserDto getUser(Long id){
 
-        EnigmaUser enigmaUser = null;
+        EnigmaUser enigmaUser;
         try {
             enigmaUser = enigmaUserRepository.findEnigmaUserById(id);
         } catch (Exception e) {
@@ -127,7 +124,6 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                 .password(passwordEncoder.encode(password))
                 .birthday(birthdayDate)
                 .audienceType(AudienceType.USER.getName())
-                .isDeleted(false)
                 .isVerified(false)
                 .createTime(new Timestamp(System.currentTimeMillis()))
                 .build();
@@ -437,10 +433,9 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
         EnigmaUserDto followedEnigmaUser = getVerifiedUser(followedId);
 
-        if(followedEnigmaUser == null) {
+        if (followedEnigmaUser == null)
             throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
                     "User does not exist or unverified!");
-        }
 
         return userFollowsService.findFollowers( followedId, EntityType.USER, true)
                 .stream()
@@ -592,6 +587,42 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                         .createTime(enigmaUser.getCreateTime())
                         .build())
                 .toList();
+    }
+
+    /**
+     * Deletes the EnigmaUser.
+     *
+     * @param userId  enigma user id
+     */
+    @Override
+    @Transactional
+    public void deleteUser(Long userId) {
+
+        EnigmaUser enigmaUser;
+        try {
+            enigmaUser = enigmaUserRepository.findEnigmaUserById(userId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot get EnigmaUser by id.");
+        }
+
+        if (enigmaUser == null)
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                    "EnigmaUser not found for id: " + userId);
+
+        try {
+            enigmaUserRepository.delete(enigmaUser);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
+                    "Cannot delete EnigmaUser.");
+        }
+
+        enigmaJwtService.revokeAllTokens(userId);
+        interestAreaService.deleteInterestAreasForUser(userId);
+        userFollowsService.deleteAllForUser(userId);
+        postService.deleteAllForUser(userId);
     }
 
     private List<WikiTag> getWikiTags(Long id) {

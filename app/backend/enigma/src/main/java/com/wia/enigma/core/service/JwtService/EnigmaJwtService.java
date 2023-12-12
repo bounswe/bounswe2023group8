@@ -25,4 +25,6 @@ public interface EnigmaJwtService {
                                                             String audienceValue);
 
     void revokeToken(Long enigmaJwtId);
+
+    void revokeAllTokens(Long enigmaUserId);
 }

@@ -2,7 +2,6 @@ package com.wia.enigma.core.service.UserService;
 
 import com.wia.enigma.core.data.dto.EnigmaUserDto;
 import com.wia.enigma.core.data.dto.InterestAreaDto;
-import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;
 import com.wia.enigma.core.data.dto.PostDto;
 import com.wia.enigma.core.data.response.LoginResponse;
 import com.wia.enigma.core.data.response.RegisterResponse;
@@ -31,8 +30,11 @@ public interface EnigmaUserService {
     void unfollowUser(Long userId, Long followId);
 
     List<EnigmaUserDto> getFollowers(Long userId, Long followedId);
+
     Long getFollowerCount(Long userId);
+
     List<EnigmaUserDto>  getFollowings(Long userId, Long followerId);
+
     Long getFollowingCount(Long userId);
 
     List<PostDto> getPosts(Long requesterId, Long userId);
@@ -41,5 +43,7 @@ public interface EnigmaUserService {
 
     EnigmaUserDto getVerifiedUser(Long id);
 
-    List<EnigmaUserDto> search(Long userId, String searchKey);
+    List<EnigmaUserDto> search(Long userId, String searchKey); 
+
+    void deleteUser(Long userId);
 }

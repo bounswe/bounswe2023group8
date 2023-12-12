@@ -122,6 +122,40 @@ public class EnigmaJwtServiceImpl implements EnigmaJwtService {
     }
 
     /**
+     * Revokes all tokens of the user.
+     *
+     * @param enigmaUserId  EnigmaUser.Id
+     */
+    @Override
+    public void revokeAllTokens(Long enigmaUserId) {
+
+        List<EnigmaJwt> enigmaJwtList;
+        try {
+            enigmaJwtList = enigmaJwtRepository.findAllByEnigmaUserId(enigmaUserId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Could not get EnigmaJwt list.");
+        }
+
+        if (enigmaJwtList == null)
+            throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND,
+                    "EnigmaJwt list not found for user id: " + enigmaUserId);
+
+        enigmaJwtList.stream()
+                .filter(enigmaJwt -> enigmaJwt.getRevokedAt() == null)
+                .forEach(enigmaJwt -> enigmaJwt.setRevokedAt(new Timestamp(System.currentTimeMillis())));
+
+        try {
+            enigmaJwtRepository.saveAll(enigmaJwtList);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_SAVE_ERROR,
+                    "Could not save EnigmaJwt list.");
+        }
+    }
+
+    /**
      * Generates a new access token or refresh token.
      *
      * @param enigmaUserId      EnigmaUser.Id

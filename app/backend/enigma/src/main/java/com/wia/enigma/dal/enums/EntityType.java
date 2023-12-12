@@ -4,7 +4,6 @@ public enum EntityType {
 
     INTEREST_AREA("interest_area"),
     POST("post"),
-
     USER("user");
 
     private final String name;

@@ -23,12 +23,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PostServiceImpl implements PostService{
-    private final PostCommentRepository postCommentRepository;
-    private final PostVoteRepository postVoteRepository;
-    private final InterestAreaRepository interestAreaRepository;
-    private final WikiTagRepository wikiTagRepository;
-    private final EnigmaUserRepository enigmaUserRepository;
+public class PostServiceImpl implements PostService {
+
+    final PostCommentRepository postCommentRepository;
+    final PostVoteRepository postVoteRepository;
+    final InterestAreaRepository interestAreaRepository;
+    final WikiTagRepository wikiTagRepository;
+    final EnigmaUserRepository enigmaUserRepository;
 
     final PostRepository postRepository;
     final PostServiceHelper postServiceHelper;
@@ -45,9 +46,9 @@ public class PostServiceImpl implements PostService{
 
         InterestArea interestArea = interestAreaRepository.findInterestAreaById(post.getInterestAreaId());
 
-        if(enigmaUser == null){
+        if(enigmaUser == null)
             throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("Enigma user %d not found", post.getEnigmaUserId()));
-        }
+
 
         return post.mapToPostDto(
                 wikiTags,
@@ -225,7 +226,7 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<PostCommentDto> getPostComments(Long postId, Long userId){
+    public List<PostCommentDto> getPostComments(Long postId, Long userId) {
 
         Post post = postServiceHelper.fetchPost(postId);
         postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
@@ -249,5 +250,23 @@ public class PostServiceImpl implements PostService{
                             .build();
                 }
         ).collect(Collectors.toList());
+    }
+
+    /**
+     * Deletes all posts of the user
+     *
+     * @param enigmaUserId EnigmaUser.Id
+     */
+    @Override
+    @Transactional
+    public void deleteAllForUser(Long enigmaUserId) {
+
+        try {
+            postRepository.deleteAllByEnigmaUserId(enigmaUserId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
+                    "Could not delete posts.");
+        }
     }
 }

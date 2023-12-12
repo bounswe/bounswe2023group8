@@ -1,13 +1,11 @@
 package com.wia.enigma.core.service.PostService;
 
 import com.wia.enigma.core.data.dto.PostDto;
-import com.wia.enigma.core.data.dto.WikiTagDto;
 import com.wia.enigma.core.data.model.GeoLocation;
 import com.wia.enigma.core.service.InterestAreaPostService.InterestAreaPostService;
 import com.wia.enigma.core.service.InterestAreaService.InterestAreaService;
 import com.wia.enigma.core.service.InterestAreaService.InterestAreaServiceHelper;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
-import com.wia.enigma.core.service.UserService.EnigmaUserService;
 import com.wia.enigma.core.service.WikiService.WikiService;
 import com.wia.enigma.dal.entity.*;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
@@ -20,10 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,6 +39,8 @@ class PostServiceHelper {
     private final WikiTagRepository wikiTagRepository;
     private final PostVoteRepository postVoteRepository;
     private final PostCommentRepository postCommentRepository;
+    final EnigmaUserRepository enigmaUserRepository;
+    final WikiTagRepository wikiTagRepository;
 
 
     Post fetchPost(Long postId) {
@@ -118,23 +115,26 @@ class PostServiceHelper {
     }
 
     void validatePostOwnership(Long userId, Post post) {
-        if (!post.getEnigmaUserId().equals(userId)) {
-            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "User " + userId + " is not the owner of post " + post.getId());
-        }
+        if (!post.getEnigmaUserId().equals(userId))
+            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION,
+                    "User " + userId + " is not the owner of post " + post.getId());
     }
 
-    void updatePostDetails(Post post, String sourceLink, String title,
-                                   PostLabel label, String content, GeoLocation geolocation) {
+    void updatePostDetails(Post post, String sourceLink, String title, PostLabel label, String content,
+                           GeoLocation geolocation) {
+
         post.setSourceLink(sourceLink);
         post.setTitle(title);
         post.setLabel(label);
         post.setContent(content);
         post.setGeolocation(geolocation);
         post.setCreateTime(new Timestamp(System.currentTimeMillis()));
+
         postRepository.save(post);
     }
 
     void updateWikiTagsForPost(Post post, List<String> wikiTags) {
+
         entityTagsRepository.deleteAllByEntityIdAndEntityType(post.getId(), EntityType.POST);
 
         List<EntityTag> entityTags = wikiTags.stream().map(wikiTag ->
@@ -143,8 +143,8 @@ class PostServiceHelper {
                         .entityType(EntityType.POST)
                         .wikiDataTagId(wikiTag)
                         .createTime(new Timestamp(System.currentTimeMillis()))
-                        .build()
-        ).collect(Collectors.toList());
+                        .build())
+                .collect(Collectors.toList());
 
         entityTagsRepository.saveAll(entityTags);
     }
@@ -159,15 +159,14 @@ class PostServiceHelper {
         List<Long> postIds =  interestAreaPostService.getPostsByInterestAreaId(interestAreaId).stream()
                 .map(InterestAreaPost::getPostId).toList();
 
-
         List<EntityTag> entityTags =  entityTagsRepository.findByEntityIdInAndEntityType( postIds, EntityType.POST );
-
 
         List<WikiTag> wikiTags = wikiTagRepository.findAllById(
                 entityTags.stream()
                         .map(EntityTag::getWikiDataTagId)
                         .collect(Collectors.toList())
               );
+
         List<Post> posts = postRepository.findAllById(postIds);
 
         List<Long> userIds = posts.stream().map(Post::getEnigmaUserId).toList();

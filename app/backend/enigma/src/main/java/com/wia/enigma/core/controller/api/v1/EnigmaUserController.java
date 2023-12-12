@@ -32,9 +32,11 @@ public class EnigmaUserController {
         WA-24: Gets user.
      */
     @GetMapping()
-    public ResponseEntity<?> getUser(@Valid @NotNull @RequestParam(name = "id") Long id, EnigmaAuthenticationToken token) {
+    public ResponseEntity<?> getUser(EnigmaAuthenticationToken token,
+                                     @Valid @NotNull @RequestParam(name = "id") Long id) {
 
         EnigmaUserDto enigmaUserDto =  enigmaUserService.getUser(id);
+
         return ResponseEntity.ok(enigmaUserDto);
     }
 
@@ -43,7 +45,8 @@ public class EnigmaUserController {
         WA-12: Follows user.
      */
     @GetMapping("follow")
-    public ResponseEntity<?> followUser(@Valid @NotNull @RequestParam(name = "id") Long id, EnigmaAuthenticationToken token) {
+    public ResponseEntity<?> followUser(EnigmaAuthenticationToken token,
+                                        @Valid @NotNull @RequestParam(name = "id") Long id) {
 
         enigmaUserService.followUser(token.getEnigmaUserId(), id);
 
@@ -54,7 +57,8 @@ public class EnigmaUserController {
         WA-13: Unfollows user.
      */
     @GetMapping("unfollow")
-    public ResponseEntity<?> unfollowUser(@Valid @NotNull @RequestParam(name = "id") Long id, EnigmaAuthenticationToken token) {
+    public ResponseEntity<?> unfollowUser(EnigmaAuthenticationToken token,
+                                          @Valid @NotNull @RequestParam(name = "id") Long id) {
 
         enigmaUserService.unfollowUser(token.getEnigmaUserId(), id);
 
@@ -65,7 +69,8 @@ public class EnigmaUserController {
         WA-25: Gets followers.
      */
     @GetMapping("/{id}/followers")
-    public ResponseEntity<?> getFollowers(@Valid @NotNull @PathVariable(value = "id") Long id, EnigmaAuthenticationToken token) {
+    public ResponseEntity<?> getFollowers(EnigmaAuthenticationToken token,
+                                          @Valid @NotNull @PathVariable(value = "id") Long id) {
 
         return ResponseEntity.ok(enigmaUserService.getFollowers(token.getEnigmaUserId(), id));
     }
@@ -74,7 +79,8 @@ public class EnigmaUserController {
         WA-26: Gets followings.
      */
     @GetMapping("/{id}/followings")
-    public ResponseEntity<?> getFollowings(@Valid @NotNull @PathVariable(value = "id") Long id, EnigmaAuthenticationToken token) {
+    public ResponseEntity<?> getFollowings(EnigmaAuthenticationToken token,
+                                           @Valid @NotNull @PathVariable(value = "id") Long id) {
 
         return ResponseEntity.ok(enigmaUserService.getFollowings(token.getEnigmaUserId(), id));
     }
@@ -83,7 +89,8 @@ public class EnigmaUserController {
         WA-29: Gets following interest areas.
      */
     @GetMapping("/{id}/interest-areas")
-    public ResponseEntity<?> getFollowingInterestAreas(@Valid @NotNull @PathVariable(value = "id") Long id, EnigmaAuthenticationToken token) {
+    public ResponseEntity<?> getFollowingInterestAreas(EnigmaAuthenticationToken token,
+                                                       @Valid @NotNull @PathVariable(value = "id") Long id) {
 
         return ResponseEntity.ok(enigmaUserService.getFollowingInterestAreas(token.getEnigmaUserId(), id));
     }
@@ -92,8 +99,21 @@ public class EnigmaUserController {
         WA-31: Gets posts.
      */
     @GetMapping("/{id}/posts")
-    public ResponseEntity<?> getPosts(@Valid @NotNull @PathVariable(value = "id") Long id, EnigmaAuthenticationToken token) {
+    public ResponseEntity<?> getPosts(EnigmaAuthenticationToken token,
+                                      @Valid @NotNull @PathVariable(value = "id") Long id) {
 
         return ResponseEntity.ok(enigmaUserService.getPosts(token.getEnigmaUserId(), id));
+    }
+
+    /*
+        WA-33: Deletes user
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(EnigmaAuthenticationToken token,
+                                        @Valid @NotNull @PathVariable Long id) {
+
+        enigmaUserService.deleteUser(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

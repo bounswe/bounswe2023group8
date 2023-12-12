@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -98,6 +99,36 @@ public class UserFollowsServiceImpl implements UserFollowsService {
         if (interestArea.getAccessLevel() == EnigmaAccessLevel.PRIVATE && !interestArea.getEnigmaUserId().equals(enigmaUserId)
                 && !isUserFollowsEntity(enigmaUserId, interestArea.getId(), EntityType.INTEREST_AREA)) {
             throw new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "You don't have access to this interest area:: " + interestArea.getId());
+        }
+    }
+
+    /**
+     * Deletes all UserFollows data for the user.
+     *
+     * @param enigmaUserId EnigmaUser.Id
+     */
+    @Override
+    @Transactional
+    public void deleteAllForUser(Long enigmaUserId) {
+
+        try {
+            userFollowsRepository.deleteAll(
+                    userFollowsRepository.findAllByFollowerEnigmaUserId(enigmaUserId)
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
+                    "Could not delete UserFollows data for user id: " + enigmaUserId);
+        }
+
+        try {
+            userFollowsRepository.deleteAll(
+                    userFollowsRepository.findAllByFollowedEntityIdAndFollowedEntityType(enigmaUserId, EntityType.USER)
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
+                    "Could not delete UserFollows data for user id: " + enigmaUserId);
         }
     }
 }
