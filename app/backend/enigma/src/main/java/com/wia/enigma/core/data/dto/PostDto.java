@@ -27,6 +27,9 @@ public class PostDto {
     List<WikiTag> wikiTags;
     PostLabel label;
     String content;
+    Long upvoteCount;
+    Long downvoteCount;
+    Long commentCount;
     GeoLocation geolocation;
     Timestamp createTime;
 }

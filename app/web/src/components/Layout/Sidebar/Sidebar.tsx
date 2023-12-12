@@ -4,14 +4,14 @@ import Nav from "react-bootstrap/Nav";
 import {useAuth} from "../../../contexts/AuthContext";
 
 const Sidebar = () => {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, userData } = useAuth();
     return <Navbar className="d-flex flex-column h-100">
         {isAuthenticated
             ? <Nav className="container flex-column h-100 align-items-start px-3">
                 <Nav.Link href="/home">
                     <span className="fs-5 bi bi-house-door-fill"> Home</span>
                 </Nav.Link>
-                <Nav.Link href="/profile">
+                <Nav.Link href={`/profile/${userData.id}`}>
                     <span className="fs-5 bi bi-person-circle"> Profile</span>
                 </Nav.Link>
                 <Nav.Link href="#explore">

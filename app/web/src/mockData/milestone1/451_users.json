@@ -8,6 +8,78 @@
     "following_count": 7,
     "all_time_likes": 7,
     "all_time_dislikes": 7,
-    "user_profile_image": "https://m.media-amazon.com/images/M/MV5BNDY3Y2E1NWYtMTFkZS00MzlmLTk2ZTItMTAyY2QxZDU1NjZhXkEyXkFqcGdeQXVyMTA0MTM5NjI2._V1_FMjpg_UX1000_.jpg"
+    "user_profile_image": "https://user-images.githubusercontent.com/45850661/223866754-84ca7f79-90ac-41a3-8195-b4ec415d6f6b.jpg"
+  },
+
+  {
+    "id": 1002,
+    "name": "Bahadır Gezer",
+    "nickname": "yelkenadam",
+    "ia_ids": [1,2,3,4,5],
+    "follower_count": 7,
+    "following_count": 7,
+    "all_time_likes": 7,
+    "all_time_dislikes": 7,
+    "user_profile_image": "https://avatars.githubusercontent.com/u/70794329?v=4"
+  },
+
+  {
+    "id": 1003,
+    "name": "Sude Konyalıoğlu",
+    "nickname": "barbunya",
+    "ia_ids": [1,2,3,4,5],
+    "follower_count": 7,
+    "following_count": 7,
+    "all_time_likes": 7,
+    "all_time_dislikes": 7,
+    "user_profile_image": "https://user-images.githubusercontent.com/61244299/224683972-b39f998e-5b11-46d1-9bde-46a5be8befc7.jpeg"
+  },
+
+  {
+    "id": 1004,
+    "name": "Begüm Yivli",
+    "nickname": "datacikiz",
+    "ia_ids": [1,2,3,4,5],
+    "follower_count": 7,
+    "following_count": 7,
+    "all_time_likes": 7,
+    "all_time_dislikes": 7,
+    "user_profile_image": "https://avatars.githubusercontent.com/u/88006241?s=400&u=8b9d942b3974ff2c5441dae95cc7bda4eb2b46be&v=4"
+  },
+
+  {
+    "id": 1005,
+    "name": "Baki Küçükçakıroğlu",
+    "nickname": "hasanlikbakikalir",
+    "ia_ids": [1,2,3,4,5],
+    "follower_count": 7,
+    "following_count": 7,
+    "all_time_likes": 7,
+    "all_time_dislikes": 7,
+    "user_profile_image": "https://camo.githubusercontent.com/cfa748056f5bcfbac110fb8f5f5c31da8bdd180ecfe45943e33957ef8bd0b8c3/68747470733a2f2f692e6962622e636f2f7470786876644c2f37382d44302d4544302d452d3036312d452d342d45312d442d414535302d38343134302d42343934352d44312e6a7067"
+  },
+
+  {
+    "id": 1006,
+    "name": "Meriç Keskin",
+    "nickname": "marcolphin",
+    "ia_ids": [1,2,3,4,5],
+    "follower_count": 7,
+    "following_count": 7,
+    "all_time_likes": 7,
+    "all_time_dislikes": 7,
+    "user_profile_image": "https://avatars.githubusercontent.com/u/88164767?s=400&u=09da0dbc9d0ee0246d7492d938a20dbc4b2be7f1&v=4"
+  },
+
+  {
+    "id": 1007,
+    "name": "Miraç Öztürk",
+    "nickname": "magarasemenderi",
+    "ia_ids": [1,2,3,4,5],
+    "follower_count": 7,
+    "following_count": 7,
+    "all_time_likes": 7,
+    "all_time_dislikes": 7,
+    "user_profile_image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZgBrSLtJsBu5H8Dfv4JXLvoZBNP4u3KiC2w&usqp=CAU"
   }
 ]

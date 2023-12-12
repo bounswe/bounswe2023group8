@@ -3,6 +3,7 @@ package com.wia.enigma.core.service.InterestAreaService;
 import com.wia.enigma.core.data.dto.EnigmaUserDto;
 import com.wia.enigma.core.data.dto.PostDto;
 import com.wia.enigma.core.data.dto.WikiTagDto;
+import com.wia.enigma.core.data.response.FollowRequestsResponse;
 import com.wia.enigma.core.service.InterestAreaPostService.InterestAreaPostService;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.WikiService.WikiService;
@@ -76,10 +77,6 @@ public class InterestAreaServiceHelper {
 
     void validateNestedInterestAreas(List<Long> nestedInterestAreas, InterestArea interestArea) {
 
-
-        // public private personal
-        // public private personal
-
         List<InterestArea> nestedInterestAreaList = interestAreaRepository.findAllById(nestedInterestAreas);
 
         if (nestedInterestAreaList.size() != nestedInterestAreas.size()) {
@@ -141,7 +138,7 @@ public class InterestAreaServiceHelper {
     }
 
     List<EnigmaUserDto> getFollowers(Long userId, Long followedId) {
-        return userFollowsService.findAcceptedFollowers(followedId, EntityType.INTEREST_AREA)
+        return userFollowsService.findFollowers(followedId, EntityType.INTEREST_AREA, true)
                 .stream()
                 .map(userFollows -> enigmaUserRepository.findEnigmaUserById(userFollows.getFollowerEnigmaUserId()))
                 .map(enigmaUser -> EnigmaUserDto.builder()
@@ -228,5 +225,26 @@ public class InterestAreaServiceHelper {
         ).collect(Collectors.toList());
 
         nestedInterestAreaRepository.saveAll(nestedInterestAreaList);
+    }
+
+    public List<FollowRequestsResponse> getFollowRequests(Long interestAreaId){
+
+        List<UserFollows> userFollows = userFollowsService.findFollowers(interestAreaId, EntityType.INTEREST_AREA, false);
+
+        List<Long> userIds = userFollows.stream().map(UserFollows::getFollowerEnigmaUserId).toList();
+
+        List<EnigmaUserDto> users = enigmaUserRepository.findByIdIn(userIds).stream().map(enigmaUser -> EnigmaUserDto.builder()
+                .id(enigmaUser.getId())
+                .username(enigmaUser.getUsername())
+                .name(enigmaUser.getName())
+                .email(enigmaUser.getEmail())
+                .birthday(enigmaUser.getBirthday())
+                .createTime(enigmaUser.getCreateTime())
+                .build()).toList();
+
+        return userFollows.stream().map(userFollow -> FollowRequestsResponse.builder()
+                .follower(users.stream().filter(user -> user.getId().equals(userFollow.getFollowerEnigmaUserId())).findFirst().get())
+                .requestId(userFollow.getId())
+                .build()).toList();
     }
 }

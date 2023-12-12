@@ -14,7 +14,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Palette.scaffoldBackgroundColor,
+      backgroundColor: ThemePalette.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Obx(() {
@@ -32,7 +32,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                   style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Palette.primaryColor)),
+                      color: ThemePalette.main)),
               const Spacer(flex: 4),
               CustomTextField(
                 hintText: 'E-mail',
@@ -44,14 +44,14 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
               ),
               const Spacer(flex: 1),
               controller.verificationFailed.value
-                  ? const Row(
+                  ? Row(
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         Text(
                           "Couldn't verify your email!",
-                          style: TextStyle(color: Colors.red),
+                          style: TextStyle(color: ThemePalette.negative),
                         ),
                       ],
                     )
