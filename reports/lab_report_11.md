@@ -96,9 +96,9 @@ On the mobile, we planned to finalize our designs other than settings and annota
 | Description | Issue | Assignee | Due | Estimated Duration |
 | --- | --- | --- | --- | --- |
 | Mobile - Settings Page | [Issue #561](https://github.com/bounswe/bounswe2023group8/issues/561) | Begüm | 18.12.2023 | 4 hr |
-| Backend - Upload/Delete profile picture API | [Issue #562](https://github.com/bounswe/bounswe2023group8/issues/562) | Baki | 18.12.2023 |  |
-| Backend - Restrict Posts by Age | [Issue #564](https://github.com/bounswe/bounswe2023group8/issues/564) | Baki | 18.12.2023 |  |
-| Backend - Upload/Delete interest area picture API | [Issue #573](https://github.com/bounswe/bounswe2023group8/issues/573) | Baki | 18.12.2023 |  |
+| Backend - Upload/Delete profile picture API | [Issue #562](https://github.com/bounswe/bounswe2023group8/issues/562) | Baki | 18.12.2023 | 3hr |
+| Backend - Restrict Posts by Age | [Issue #564](https://github.com/bounswe/bounswe2023group8/issues/564) | Baki | 18.12.2023 | 3hr  |
+| Backend - Upload/Delete interest area picture API | [Issue #573](https://github.com/bounswe/bounswe2023group8/issues/573) | Baki | 18.12.2023 | 3hr |
 | Backend - Annotations | [Issue #566](https://github.com/bounswe/bounswe2023group8/issues/566) | Bahadır | 18.12.2023 |  |
 | Backend - Add *And Implement* Role Management for Access Levels (Postponed to next week's report)  | [Issue #373](https://github.com/bounswe/bounswe2023group8/issues/373) | Bahadır | 15.12.2023 | 6h |
 | Backend - Change Password API | [Issue #560](https://github.com/bounswe/bounswe2023group8/issues/560) | Bahadır | 18.12.2023 |  |
