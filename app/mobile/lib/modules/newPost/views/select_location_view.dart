@@ -4,7 +4,7 @@ import 'package:map_location_picker/map_location_picker.dart';
 import 'package:mobile/data/constants/config.dart';
 import 'package:mobile/modules/newPost/controllers/new_post_controller.dart';
 
-/*class SelectLocationView extends GetView<NewPostController> {
+class SelectLocationView extends GetView<NewPostController> {
   const SelectLocationView({super.key});
 
   @override
@@ -15,4 +15,4 @@ import 'package:mobile/modules/newPost/controllers/new_post_controller.dart';
       onNext: controller.onSelectAddress,
     );
   }
-}*/
+}
