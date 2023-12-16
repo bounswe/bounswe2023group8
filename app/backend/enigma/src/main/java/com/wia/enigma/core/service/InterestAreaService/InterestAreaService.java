@@ -49,4 +49,6 @@ public interface InterestAreaService {
     void validateExistence(Long interestAreaId);
 
     void uploadInterestAreaPicture(MultipartFile file, Long id, Long userId);
+
+    void deleteInterestAreaPicture(Long id, Long userId);
 }
