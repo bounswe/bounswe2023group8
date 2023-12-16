@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -115,5 +116,28 @@ public class EnigmaUserController {
         enigmaUserService.deleteUser(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    /*
+        WA-57: Upload profile picture
+     */
+    @PostMapping("/upload-picture")
+    public ResponseEntity<?> uploadProfilePicture(EnigmaAuthenticationToken token,
+                                           @Valid @NotNull @RequestParam(name = "image") MultipartFile file) {
+
+        enigmaUserService.uploadProfilePicture(token.getEnigmaUserId(), file);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+        WA-58: Delete profile picture
+     */
+    @DeleteMapping("/delete-picture")
+    public ResponseEntity<?> deleteProfilePicture(EnigmaAuthenticationToken token) {
+
+        enigmaUserService.deleteProfilePicture(token.getEnigmaUserId());
+
+        return ResponseEntity.ok().build();
     }
 }
