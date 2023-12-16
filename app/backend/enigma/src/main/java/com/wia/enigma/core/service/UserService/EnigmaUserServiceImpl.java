@@ -440,14 +440,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
         return userFollowsService.findFollowers( followedId, EntityType.USER, true)
                 .stream()
                 .map(userFollows -> enigmaUserRepository.findEnigmaUserById(userFollows.getFollowerEnigmaUserId()))
-                .map(enigmaUser -> EnigmaUserDto.builder()
-                        .id(enigmaUser.getId())
-                        .username(enigmaUser.getUsername())
-                        .name(enigmaUser.getName())
-                        .email(enigmaUser.getEmail())
-                        .birthday(enigmaUser.getBirthday())
-                        .createTime(enigmaUser.getCreateTime())
-                        .build())
+                .map(EnigmaUser::mapToEnigmaUserDto)
                 .toList();
     }
 
@@ -469,14 +462,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
         return userFollowsService.findFollowings(followerId, EntityType.USER, true)
                 .stream()
                 .map(userFollows -> enigmaUserRepository.findEnigmaUserById(userFollows.getFollowedEntityId()))
-                .map(enigmaUser -> EnigmaUserDto.builder()
-                        .id(enigmaUser.getId())
-                        .username(enigmaUser.getUsername())
-                        .name(enigmaUser.getName())
-                        .email(enigmaUser.getEmail())
-                        .birthday(enigmaUser.getBirthday())
-                        .createTime(enigmaUser.getCreateTime())
-                        .build())
+                .map(EnigmaUser::mapToEnigmaUserDto)
                 .toList();
     }
 
@@ -513,7 +499,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                     }
                 }
         ).map(post -> post.mapToPostDto(
-                getWikiTags(post.getId()),
+                getWikiTags(post.getId(), EntityType.POST),
                 enigmaUser,
                 interestAreas.stream().filter(interestArea -> interestArea.getId().equals(post.getInterestAreaId()))
                         .toList().get(0).mapToInterestAreaModel(),
@@ -538,14 +524,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
         return interestAreas.stream()
                 .filter(interestArea -> Objects.equals(userId, followerId) || interestArea.getAccessLevel().equals(EnigmaAccessLevel.PUBLIC))
-                .map(interestArea -> InterestAreaDto.builder()
-                        .id(interestArea.getId())
-                        .title(interestArea.getTitle())
-                        .description(interestArea.getDescription())
-                        .accessLevel(interestArea.getAccessLevel())
-                        .createTime(interestArea.getCreateTime())
-                        .wikiTags(getWikiTags(interestArea.getId()))
-                        .build()).toList();
+                .map(interestArea -> interestArea.mapToInterestAreaDto(getWikiTags(interestArea.getId(), EntityType.INTEREST_AREA) )).toList();
     }
 
     @Override
@@ -564,13 +543,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
                     "EnigmaUser not found for id: " + userId);
 
-        return EnigmaUserDto.builder()
-                .id(enigmaUser.getId())
-                .username(enigmaUser.getUsername())
-                .name(enigmaUser.getName())
-                .email(enigmaUser.getEmail())
-                .birthday(enigmaUser.getBirthday())
-                .build();
+        return enigmaUser.mapToEnigmaUserDto();
     }
 
     @Override
@@ -578,14 +551,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
         return enigmaUserRepository.findByIsVerifiedTrueAndUsernameContainsOrNameContains(searchKey, searchKey)
                 .stream()
-                .map(enigmaUser -> EnigmaUserDto.builder()
-                        .id(enigmaUser.getId())
-                        .username(enigmaUser.getUsername())
-                        .name(enigmaUser.getName())
-                        .email(enigmaUser.getEmail())
-                        .birthday(enigmaUser.getBirthday())
-                        .createTime(enigmaUser.getCreateTime())
-                        .build())
+                .map(EnigmaUser::mapToEnigmaUserDto)
                 .toList();
     }
 
@@ -647,8 +613,8 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                         "EnigmaUser not found for id: " + userId);
     }
 
-    private List<WikiTag> getWikiTags(Long id) {
-        return wikiTagRepository.findAllById(entityTagsRepository.findAllByEntityIdAndEntityType(id, EntityType.POST).stream()
+    private List<WikiTag> getWikiTags(Long id, EntityType entityType) {
+        return wikiTagRepository.findAllById(entityTagsRepository.findAllByEntityIdAndEntityType(id, entityType).stream()
                 .map(EntityTag::getWikiDataTagId)
                 .collect(Collectors.toList()));
     }
