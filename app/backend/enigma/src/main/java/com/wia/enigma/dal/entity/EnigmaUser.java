@@ -44,6 +44,9 @@ public class EnigmaUser {
     @Column(name = "is_verified")
     Boolean isVerified = false;
 
+    @Column(name = "picture_url")
+    String pictureUrl;
+
     @Column(name = "create_time")
     Timestamp createTime;
 
@@ -54,6 +57,7 @@ public class EnigmaUser {
                 .name(this.getName())
                 .email(this.getEmail())
                 .birthday(this.getBirthday())
+                .pictureUrl(this.getPictureUrl())
                 .createTime(this.getCreateTime())
                 .build();
     }
