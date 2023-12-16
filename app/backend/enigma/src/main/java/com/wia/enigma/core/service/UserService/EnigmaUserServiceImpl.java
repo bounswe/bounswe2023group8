@@ -9,6 +9,7 @@ import com.wia.enigma.core.service.EmailService.EmailService;
 import com.wia.enigma.core.service.InterestAreaService.InterestAreaService;
 import com.wia.enigma.core.service.JwtService.EnigmaJwtService;
 import com.wia.enigma.core.service.PostService.PostService;
+import com.wia.enigma.core.service.StorageService.StorageService;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.VerificationTokenService.VerificationTokenService;
 import com.wia.enigma.dal.entity.*;
@@ -27,13 +28,11 @@ import org.springframework.data.util.Pair;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -58,6 +57,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
     final PostService postService;
     final UserFollowsService userFollowsService;
     final VerificationTokenService verificationTokenService;
+    final StorageService storageService;
 
     @Override
     public EnigmaUserDto getUser(Long id){
@@ -75,14 +75,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
                     "EnigmaUser not found for id: " + id);
 
-        return EnigmaUserDto.builder()
-                .id(enigmaUser.getId())
-                .username(enigmaUser.getUsername())
-                .name(enigmaUser.getName())
-                .email(enigmaUser.getEmail())
-                .birthday(enigmaUser.getBirthday())
-                .createTime(enigmaUser.getCreateTime())
-                .build();
+        return enigmaUser.mapToEnigmaUserDto();
     }
 
     /**
@@ -617,5 +610,50 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
         return wikiTagRepository.findAllById(entityTagsRepository.findAllByEntityIdAndEntityType(id, entityType).stream()
                 .map(EntityTag::getWikiDataTagId)
                 .collect(Collectors.toList()));
+    }
+
+    @Override
+    public void uploadProfilePicture(Long userId, MultipartFile file) {
+
+        EnigmaUser enigmaUser;
+        try {
+            enigmaUser = enigmaUserRepository.findEnigmaUserById(userId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot get EnigmaUser by id.");
+        }
+
+        if (enigmaUser == null)
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                    "EnigmaUser not found for id: " + userId);
+
+
+        String uploadedFileUrl  = storageService.uploadFile(file, "enigma-profile", UUID.randomUUID().toString());
+
+        enigmaUser.setPictureUrl(uploadedFileUrl);
+
+        enigmaUserRepository.save(enigmaUser);
+    }
+
+    @Override
+    public void deleteProfilePicture(Long userId) {
+
+        EnigmaUser enigmaUser;
+        try {
+            enigmaUser = enigmaUserRepository.findEnigmaUserById(userId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot get EnigmaUser by id.");
+        }
+
+        if (enigmaUser == null)
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                    "EnigmaUser not found for id: " + userId);
+
+        enigmaUser.setPictureUrl(null);
+
+        enigmaUserRepository.save(enigmaUser);
     }
 }
