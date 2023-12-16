@@ -15,6 +15,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
@@ -187,6 +188,31 @@ public class InterestAreaController {
     public ResponseEntity<?> rejectFollowRequest(@Valid @NotNull @RequestParam(name = "requestId") Long id, EnigmaAuthenticationToken token) {
 
         interestAreaService.rejectFollowRequest(id, token.getEnigmaUserId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+        WA-55: Upload interest area picture
+     */
+    @PostMapping("/{id}/upload-picture")
+    public ResponseEntity<?> uploadInterestAreaPicture(@Valid @NotNull @PathVariable(name = "id") Long id,
+                                                       @RequestParam("image") MultipartFile image,
+                                                       EnigmaAuthenticationToken token) {
+
+        interestAreaService.uploadInterestAreaPicture(image, id, token.getEnigmaUserId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+        WA-56: Delete interest area picture
+     */
+    @DeleteMapping("/{id}/delete-picture")
+    public ResponseEntity<?> deleteInterestAreaPicture(@Valid @NotNull @PathVariable(name = "id") Long id,
+                                                       EnigmaAuthenticationToken token) {
+
+        interestAreaService.deleteInterestAreaPicture(id, token.getEnigmaUserId());
 
         return ResponseEntity.ok().build();
     }

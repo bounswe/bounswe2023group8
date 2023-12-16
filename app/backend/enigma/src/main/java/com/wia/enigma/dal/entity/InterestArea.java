@@ -42,6 +42,9 @@ public class InterestArea {
     @Column(name = "create_time")
     Timestamp createTime;
 
+    @Column(name = "picture_url")
+    String pictureUrl;
+
     public InterestAreaSimpleDto mapToInterestAreaSimpleDto( List<Long> nestedInterestAreas, List<String> wikiTags) {
         return InterestAreaSimpleDto.builder()
                 .id(this.getId())
@@ -62,6 +65,7 @@ public class InterestArea {
                 .description(this.getDescription())
                 .accessLevel(this.getAccessLevel())
                 .wikiTags(wikiTags)
+                .pictureUrl(this.getPictureUrl())
                 .createTime(this.getCreateTime())
                 .build();
     }
