@@ -2,6 +2,7 @@ package com.wia.enigma.core.service.InterestAreaService;
 
 import com.wia.enigma.core.data.dto.*;
 import com.wia.enigma.core.data.response.FollowRequestsResponse;
+import com.wia.enigma.core.service.StorageService.StorageService;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.WikiService.WikiService;
 import com.wia.enigma.dal.entity.InterestArea;
@@ -18,9 +19,11 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,6 +40,7 @@ public class InterestAreaServiceImpl implements InterestAreaService {
 
     final UserFollowsService userFollowsService;
     final WikiService wikiTagService;
+    final StorageService storageService;
 
     final InterestAreaServiceHelper interestAreaServiceHelper;
 
@@ -326,5 +330,20 @@ public class InterestAreaServiceImpl implements InterestAreaService {
         if (interestArea == null)
             throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND,
                     "Interest area with id " + interestAreaId + " does not exist.");
+    }
+
+    @Override
+    public void uploadInterestAreaPicture(MultipartFile file,  Long id, Long userId) {
+        InterestArea interestArea = interestAreaRepository.findById(id)
+                .orElseThrow(() -> new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + id));
+
+        if(!interestArea.getEnigmaUserId().equals(userId)){
+            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "You cannot upload picture of this interest area:" + id);
+        }
+
+        String uploadedFileUrl =  storageService.uploadFile(file, "interest-area" , UUID.randomUUID().toString());
+
+        interestArea.setPictureUrl(uploadedFileUrl);
+        interestAreaRepository.save(interestArea);
     }
 }

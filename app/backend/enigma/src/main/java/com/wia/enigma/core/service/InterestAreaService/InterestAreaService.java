@@ -9,6 +9,7 @@ import com.wia.enigma.core.data.response.FollowRequestsResponse;
 import com.wia.enigma.dal.entity.InterestArea;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -46,4 +47,6 @@ public interface InterestAreaService {
     void deleteInterestAreaById(Long interestAreaId);
 
     void validateExistence(Long interestAreaId);
+
+    void uploadInterestAreaPicture(MultipartFile file, Long id, Long userId);
 }
