@@ -204,4 +204,16 @@ public class InterestAreaController {
 
         return ResponseEntity.ok().build();
     }
+
+    /*
+        WA-56: Delete interest area picture
+     */
+    @DeleteMapping("/{id}/delete-picture")
+    public ResponseEntity<?> deleteInterestAreaPicture(@Valid @NotNull @PathVariable(name = "id") Long id,
+                                                       EnigmaAuthenticationToken token) {
+
+        interestAreaService.deleteInterestAreaPicture(id, token.getEnigmaUserId());
+
+        return ResponseEntity.ok().build();
+    }
 }
