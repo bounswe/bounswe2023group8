@@ -31,5 +31,6 @@ public class PostDto {
     Long downvoteCount;
     Long commentCount;
     GeoLocation geolocation;
+    Boolean isAgeRestricted;
     Timestamp createTime;
 }
