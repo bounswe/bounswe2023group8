@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "area_name": "bread"
+  },
+  {
+    "id": 2,
+    "area_name": "cooking"
+  },
+  {
+    "id": 3,
+    "area_name": "football"
+  },
+  {
+    "id": 4,
+    "area_name": "adoption"
+  },
+  {
+    "id": 5,
+    "area_name": "migration"
+  },
+  {
+    "id": 6,
+    "area_name": "sweden"
+  },
+  {
+    "id": 7,
+    "area_name": "onomatopoeia"
+  }
+]

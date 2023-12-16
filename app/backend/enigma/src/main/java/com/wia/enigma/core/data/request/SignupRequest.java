@@ -19,6 +19,9 @@ public class SignupRequest {
     String username;
 
     @NotNull
+    String name;
+
+    @NotNull
     String email;
 
     @NotNull

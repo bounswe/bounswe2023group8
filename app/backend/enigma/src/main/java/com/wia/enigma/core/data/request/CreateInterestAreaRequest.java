@@ -21,7 +21,10 @@ public class CreateInterestAreaRequest {
     EnigmaAccessLevel accessLevel;
 
     @NotNull
-    String name;
+    String title;
+
+    @NotNull
+    String description;
 
     @NotNull
     List<Long> nestedInterestAreas;

@@ -1,10 +1,7 @@
 package com.wia.enigma.core.data.dto;
 
 import com.wia.enigma.dal.entity.EnigmaUser;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.sql.Timestamp;
@@ -12,6 +9,8 @@ import java.util.Date;
 
 @Data
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
@@ -27,5 +26,5 @@ public class EnigmaUserDto {
 
     Date birthday;
 
-    Timestamp createdTime;
+    Timestamp createTime;
 }

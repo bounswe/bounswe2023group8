@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/assets.dart';
+import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/bunch_widget.dart';
 import 'package:mobile/data/widgets/custom_search_bar.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
@@ -111,9 +112,7 @@ class HomeView extends GetView<HomeController> {
             width: Get.width,
             padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
-                color: Color(
-                  0xff486376,
-                ),
+                color: BackgroundPalette.dark,
                 borderRadius: BorderRadius.circular(16)),
             child: ListView.separated(
                 shrinkWrap: true,

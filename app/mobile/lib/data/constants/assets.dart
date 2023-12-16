@@ -14,6 +14,7 @@ class Assets {
   static const String spot = 'assets/images/spot.png';
   static const String profilePlaceholder =
       'assets/images/profile-placeholder.png';
+  static const String bunch = 'assets/images/bunch.png';
 
   // Icons
 
@@ -29,12 +30,14 @@ class Assets {
   static const String downvote = 'assets/icons/downvote.png';
   static const String sortNew = 'assets/icons/sort_new.svg';
   static const String sortTop = 'assets/icons/sort_top.svg';
-  static const String public = 'assets/icons/public.svg';
-  static const String private = 'assets/icons/private.svg';
-  static const String personal = 'assets/icons/personal.svg';
+  static const String public = 'assets/icons/public.png';
+  static const String private = 'assets/icons/private.png';
+  static const String personal = 'assets/icons/personal.png';
   static const String add = 'assets/icons/add.svg';
   static const String cancel = 'assets/icons/cancel.svg';
   static const String check = 'assets/icons/check.svg';
+  static const String edit = 'assets/icons/edit.png';
+  static const String geolocation = 'assets/icons/geolocation.png';
 
   // Radios
 
