@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,18 +38,19 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto getPost(Long postId, Long userId) {
+
+        EnigmaUser enigmaUser = enigmaUserRepository.findEnigmaUserById(userId);
         Post post = postServiceHelper.fetchPost(postId);
+
         postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
+        postServiceHelper.checkAgeRestriction(post, enigmaUser);
 
         List<WikiTag> wikiTags = postServiceHelper.getWikiTags(postId);
-
-        EnigmaUser enigmaUser= enigmaUserRepository.findEnigmaUserById(post.getEnigmaUserId());
 
         InterestArea interestArea = interestAreaRepository.findInterestAreaById(post.getInterestAreaId());
 
         if(enigmaUser == null)
             throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("Enigma user %d not found", post.getEnigmaUserId()));
-
 
         return post.mapToPostDto(
                 wikiTags,
@@ -64,13 +66,13 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostDtoSimple createPost(Long userId, Long interestAreaId, String sourceLink,
                                     String title, List<String> wikiTags, PostLabel label, String content,
-                                    GeoLocation geolocation) {
+                                    Boolean isAgeRestricted, GeoLocation geolocation) {
 
         postServiceHelper.validateInterestAreaAndUserFollowing(interestAreaId, userId);
 
         InterestArea interestArea = interestAreaRepository.findInterestAreaById(interestAreaId);
 
-        Post post = postServiceHelper.createAndSavePost(userId,interestArea.getAccessLevel(), interestAreaId,  sourceLink, title, label, content, geolocation);
+        Post post = postServiceHelper.createAndSavePost(userId,interestArea.getAccessLevel(), interestAreaId,  sourceLink, title, label, content, isAgeRestricted, geolocation);
 
         wikiTagRepository.saveAll(wikiTagService.getWikiTags(wikiTags));
 
@@ -105,7 +107,7 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("Post %d not found", postId)));
 
-        if(post.getEnigmaUserId() != userId){
+        if(!Objects.equals(post.getEnigmaUserId(), userId)){
             throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, String.format("User %d is not the owner of post %d", userId, post.getId()));
         }
 
@@ -119,6 +121,8 @@ public class PostServiceImpl implements PostService {
         Post post = postServiceHelper.fetchPost(postId);
 
         postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
+
+        checkAgeRestriction(post, enigmaUserRepository.findEnigmaUserById(userId));
 
         PostVote postVote = postVoteRepository.findByEnigmaUserIdAndPostId(userId, postId);
 
@@ -151,7 +155,7 @@ public class PostServiceImpl implements PostService {
 
         postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
 
-
+        checkAgeRestriction(post, enigmaUserRepository.findEnigmaUserById(userId));
 
         return postVoteRepository.findByPostId(postId).stream().map(
 
@@ -183,6 +187,7 @@ public class PostServiceImpl implements PostService {
     public void commentOnPost(Long postId, Long userId, String content) {
         Post post = postServiceHelper.fetchPost(postId);
         postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
+        checkAgeRestriction(post, enigmaUserRepository.findEnigmaUserById(userId));
 
         PostComment postComment = PostComment.builder()
                 .enigmaUserId(userId)
@@ -199,6 +204,8 @@ public class PostServiceImpl implements PostService {
         Post post = postServiceHelper.fetchPost(postId);
         postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
 
+        checkAgeRestriction(post, enigmaUserRepository.findEnigmaUserById(userId));
+
         PostComment postComment = postCommentRepository.findById(commentId)
                 .orElseThrow(() -> new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("Post comment %d not found", commentId)));
 
@@ -214,6 +221,7 @@ public class PostServiceImpl implements PostService {
     public void deletePostComment(Long postId, Long userId, Long commentId) {
         Post post = postServiceHelper.fetchPost(postId);
         postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
+        checkAgeRestriction(post, enigmaUserRepository.findEnigmaUserById(userId));
 
         PostComment postComment = postCommentRepository.findById(commentId)
                 .orElseThrow(() -> new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("Post comment %d not found", commentId)));
@@ -230,6 +238,8 @@ public class PostServiceImpl implements PostService {
 
         Post post = postServiceHelper.fetchPost(postId);
         postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
+
+        checkAgeRestriction(post, enigmaUserRepository.findEnigmaUserById(userId));
 
         List<PostComment> postComments = postCommentRepository.findByPostId(postId);
 
@@ -270,27 +280,6 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    /**
-     * Validates the existence of a post
-     *
-     * @param postId   Post.Id
-     */
-    @Override
-    public void validateExistence(Long postId) {
-
-        Post post;
-        try {
-            post = postRepository.findById(postId).orElse(null);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
-                    "Could not fetch post.");
-        }
-
-        if (post == null)
-            throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND,
-                    "Post with id " + postId + " does not exist.");
-    }
 
     /**
      * Gets the number of posts of a user
@@ -375,5 +364,10 @@ public class PostServiceImpl implements PostService {
             throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
                     "Could not fetch user id of post.");
         }
+    }
+
+    @Override
+    public void checkAgeRestriction(Post post, EnigmaUser user) {
+        postServiceHelper.checkAgeRestriction(post, user);
     }
 }

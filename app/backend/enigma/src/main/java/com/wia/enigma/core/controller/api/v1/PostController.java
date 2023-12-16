@@ -56,6 +56,7 @@ public class PostController {
                 createPostRequest.getWikiTags(),
                 createPostRequest.getLabel(),
                 createPostRequest.getContent(),
+                createPostRequest.getIsAgeRestricted(),
                 createPostRequest.getGeoLocation()
         );
 
