@@ -346,4 +346,17 @@ public class InterestAreaServiceImpl implements InterestAreaService {
         interestArea.setPictureUrl(uploadedFileUrl);
         interestAreaRepository.save(interestArea);
     }
+
+    @Override
+    public void deleteInterestAreaPicture(Long id, Long userId) {
+        InterestArea interestArea = interestAreaRepository.findById(id)
+                .orElseThrow(() -> new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + id));
+
+        if(!interestArea.getEnigmaUserId().equals(userId)){
+            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "You cannot delete picture of this interest area:" + id);
+        }
+
+        interestArea.setPictureUrl(null);
+        interestAreaRepository.save(interestArea);
+    }
 }
