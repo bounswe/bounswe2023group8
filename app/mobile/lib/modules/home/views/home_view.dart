@@ -47,13 +47,89 @@ class HomeView extends GetView<HomeController> {
                           Container(
                               height: 44,
                               margin: const EdgeInsets.only(right: 16),
+                              padding: const EdgeInsets.only(left: 16),
                               decoration: BoxDecoration(
                                 borderRadius: const BorderRadius.only(
-                                  bottomRight: Radius.circular(10),
-                                ),
+                                    bottomRight: Radius.circular(10)),
                                 color: BackgroundPalette.regular,
                               ),
-                              child: Row()),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Sort By:',
+                                    style: TextStyle(
+                                      color: ThemePalette.dark,
+                                      fontSize: 16,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  InkWell(
+                                    onTap: () {},
+                                    child: Container(
+                                      height: 28,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: BackgroundPalette.soft,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Image.asset(
+                                            Assets.sortNew,
+                                            width: 24,
+                                            height: 24,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            "New",
+                                            style: TextStyle(
+                                              color: ThemePalette.dark,
+                                              fontSize: 12,
+                                              fontFamily: 'Inter',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  InkWell(
+                                    onTap: () {},
+                                    child: Container(
+                                      height: 28,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: BackgroundPalette.soft,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Image.asset(
+                                            Assets.sortTop,
+                                            width: 24,
+                                            height: 24,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            "New",
+                                            style: TextStyle(
+                                              color: ThemePalette.dark,
+                                              fontSize: 12,
+                                              fontFamily: 'Inter',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )),
                           ListView.builder(
                               shrinkWrap: true,
                               padding:
