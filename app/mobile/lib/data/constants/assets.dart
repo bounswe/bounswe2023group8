@@ -28,8 +28,8 @@ class Assets {
   static const String notification = 'assets/icons/notification.svg';
   static const String upvote = 'assets/icons/upvote.png';
   static const String downvote = 'assets/icons/downvote.png';
-  static const String sortNew = 'assets/icons/sort_new.svg';
-  static const String sortTop = 'assets/icons/sort_top.svg';
+  static const String sortNew = 'assets/icons/sort_new.png';
+  static const String sortTop = 'assets/icons/sort_top.png';
   static const String public = 'assets/icons/public.png';
   static const String private = 'assets/icons/private.png';
   static const String personal = 'assets/icons/personal.png';

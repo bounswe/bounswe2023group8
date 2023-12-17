@@ -37,28 +37,120 @@ class HomeView extends GetView<HomeController> {
           ],
         ),
         body: Container(
-            color: Colors.white,
+            color: ThemePalette.white,
             child: SingleChildScrollView(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                 child: controller.searchQuery.value.isNotEmpty
                     ? _searchBody()
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(
-                            height: 5,
-                          ),
+                          Container(
+                              height: 44,
+                              margin: const EdgeInsets.only(right: 16),
+                              padding: const EdgeInsets.only(left: 16),
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                    bottomRight: Radius.circular(10)),
+                                color: BackgroundPalette.regular,
+                              ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Sort By:',
+                                    style: TextStyle(
+                                      color: ThemePalette.dark,
+                                      fontSize: 16,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: -0.2,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  InkWell(
+                                    onTap: () {},
+                                    child: Container(
+                                      height: 28,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: BackgroundPalette.soft,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Image.asset(
+                                            Assets.sortNew,
+                                            width: 24,
+                                            height: 24,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            "New",
+                                            style: TextStyle(
+                                              color: ThemePalette.dark,
+                                              fontSize: 12,
+                                              fontFamily: 'Inter',
+                                              fontWeight: FontWeight.w400,
+                                              letterSpacing: -0.15,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  InkWell(
+                                    onTap: () {},
+                                    child: Container(
+                                      height: 28,
+                                      padding: const EdgeInsets.only(
+                                          left: 2, right: 4, top: 2, bottom: 2),
+                                      decoration: BoxDecoration(
+                                        color: BackgroundPalette.soft,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Image.asset(
+                                            Assets.sortTop,
+                                            width: 24,
+                                            height: 24,
+                                          ),
+                                          const SizedBox(width: 2),
+                                          Text(
+                                            "Top",
+                                            style: TextStyle(
+                                              color: ThemePalette.dark,
+                                              fontSize: 12,
+                                              fontFamily: 'Inter',
+                                              fontWeight: FontWeight.w400,
+                                              letterSpacing: -0.15,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )),
                           ListView.builder(
                               shrinkWrap: true,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: controller.posts.length,
                               itemBuilder: (context, index) {
-                                return PostTileWidget(
-                                  onTap: () => controller.navigateToPostDetails(
-                                      controller.posts[index]),
-                                  post: controller.posts[index],
-                                  hideTags: false,
+                                return Column(
+                                  children: [
+                                    const SizedBox(height: 8),
+                                    PostTileWidget(
+                                      onTap: () =>
+                                          controller.navigateToPostDetails(
+                                              controller.posts[index]),
+                                      post: controller.posts[index],
+                                      hideTags: false,
+                                    )
+                                  ],
                                 );
                               })
                         ],
