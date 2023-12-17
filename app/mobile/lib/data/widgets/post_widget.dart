@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
-import 'package:mobile/data/constants/icons.dart';
 import 'package:mobile/data/models/spot.dart';
 
 class PostTileWidget extends StatelessWidget {
@@ -25,9 +24,6 @@ class PostTileWidget extends StatelessWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
             Text(
               post.interestArea.name,
               style: TextStyle(
@@ -39,6 +35,53 @@ class PostTileWidget extends StatelessWidget {
               ),
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'Spotted by',
+                      style: TextStyle(
+                          color: ThemePalette.dark,
+                          fontSize: 10,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: -0.15),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '@${post.enigmaUser.username}',
+                      style: TextStyle(
+                        color: ThemePalette.main,
+                        fontSize: 10,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: -0.15,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '•',
+                      style: TextStyle(
+                        color: ThemePalette.dark,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      post.createTime,
+                      style: TextStyle(
+                        color: ThemePalette.dark,
+                        fontSize: 10,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: -0.15,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     InkWell(
@@ -46,65 +89,34 @@ class PostTileWidget extends StatelessWidget {
                         // TODO: handle upvote
                       },
                       child: Image.asset(
-                        'assets/icons/upvote.png', 
-                        width: 20, 
+                        Assets.upvote,
+                        width: 12,
                       ),
                     ),
-                    SizedBox(width: 8), // Space between the buttons
+                    const SizedBox(width: 2),
+                    Text(
+                      '127',
+                      style: TextStyle(
+                        color: ThemePalette.positive,
+                        fontSize: 8,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w500,
+                        height: 0,
+                        letterSpacing: -0.15,
+                      ),
+                    ),
+                    const SizedBox(width: 2),
                     InkWell(
                       onTap: () {
                         // TODO: handle downvote
                       },
                       child: Image.asset(
-                        'assets/icons/downvote.png', 
-                        width: 20,
+                        Assets.downvote,
+                        width: 12,
                       ),
                     ),
+                    const SizedBox(width: 12),
                   ],
-                ),
-            ]
-            ),
-            Row(
-              children: [
-                Text(
-                  'Spotted by',
-                  style: TextStyle(
-                      color: ThemePalette.dark,
-                      fontSize: 10,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: -0.15),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  '@${post.enigmaUser.username}',
-                  style: TextStyle(
-                    color: ThemePalette.main,
-                    fontSize: 10,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: -0.15,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  '•',
-                  style: TextStyle(
-                    color: ThemePalette.dark,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  post.createTime,
-                  style: TextStyle(
-                    color: ThemePalette.dark,
-                    fontSize: 10,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: -0.15,
-                  ),
                 ),
               ],
             ),
@@ -222,8 +234,7 @@ class PostTileWidget extends StatelessWidget {
                 child: Image.asset(
                   Assets.spot,
                   width: 32,
-                )
-            ),
+                )),
           ],
         ),
       ),
