@@ -17,19 +17,18 @@ class EditIaProvider extends GetConnect {
 
   Future<bool> updateIa(
       {required String name,
-      required List<String> nestedIas,
+      required List<int> nestedIas,
       required List<String> wikiTags,
       required int accessLevel,
       required String description,
       required int id,
       required String token}) async {
     final response = await put('v1/interest-area', {
-      'name': name,
+      'title': name,
       'nestedInterestAreas': nestedIas,
       'wikiTags': wikiTags,
       'accessLevel': accessLevel,
-      // TODO: Add description to the request
-      //'description': description
+      'description': description
     }, headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',

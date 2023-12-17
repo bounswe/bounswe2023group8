@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:map_location_picker/map_location_picker.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/models/wiki_tag.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
 import 'package:mobile/modules/newPost/providers/new_post_provider.dart';
+import 'package:mobile/modules/newPost/views/select_location_view.dart';
 
 class NewPostController extends GetxController {
   var label = 0.obs;
@@ -32,6 +34,10 @@ class NewPostController extends GetxController {
 
   final bottomNavController = Get.find<BottomNavigationController>();
   final newPostProvider = Get.find<NewPostProvider>();
+
+  var address = ''.obs;
+  var latitude = 0.0.obs;
+  var longitude = 0.0.obs;
 
   @override
   void onInit() {
@@ -195,11 +201,11 @@ class NewPostController extends GetxController {
                     ),
                     ListTile(
                       title: const Text('Research'),
-                        onTap: () {
+                      onTap: () {
                         label.value = 3;
                         Navigator.pop(context);
-                          // Handle the tap event on a suggestion
-                        },
+                        // Handle the tap event on a suggestion
+                      },
                     ),
                     ListTile(
                       title: const Text('Discussion'),
@@ -211,7 +217,6 @@ class NewPostController extends GetxController {
                     ),
                   ],
                 ),
-                
               ),
             ],
           ),
@@ -220,13 +225,42 @@ class NewPostController extends GetxController {
     );
   }
 
+  void navigateToSelectAddress() {
+    //TO AVOID GOOGLE MAP API BILLING, DONT NAVIGATE TO SELECT LOCATION VIEW AND SET DEFAULT LOCATION
+    //EXEPT FOR PRESENTATION
+
+    address.value =
+        'Bebek, Güney Kampüs, Boğaziçi Universites, 34342 Beşiktaş/İstanbul, Türkiye';
+    latitude.value = 41.0834112;
+    longitude.value = 29.0501748;
+    //Get.to(SelectLocationView());
+  }
+
+  void onSelectAddress(GeocodingResult? result) {
+    if (result != null) {
+      address.value = result.formattedAddress ?? '';
+      latitude.value = result.geometry.location.lat;
+      longitude.value = result.geometry.location.lng;
+    }
+
+    Get.back();
+  }
+
   void onCreatePost() async {
     try {
+
+      if (address.value == '') {
+        address.value =
+            'Bebek, Güney Kampüs, Boğaziçi Universites, 34342 Beşiktaş/İstanbul, Türkiye';
+        latitude.value = 41.0834112;
+        longitude.value = 29.0501748;
+      }
+
       final res = await newPostProvider.createNewPost(
         title: title.value,
-        latitude: 1.2421,
-        longitude: 3.4523,
-        address: 'Atlanta',
+        latitude: latitude.value,
+        longitude: longitude.value,
+        address: address.value,
         content: content.value,
         tags: selectedTags.map((e) => e.id).toList(),
         token: bottomNavController.token,
