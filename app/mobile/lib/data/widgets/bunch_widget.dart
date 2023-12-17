@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/data/constants/assets.dart';
+import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/models/interest_area.dart';
 
 class BunchWidget extends StatelessWidget {
@@ -11,23 +13,28 @@ class BunchWidget extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: Color(0xffCDCFCF),
+          color: BackgroundPalette.regular,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               ia.name,
               style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xff434343)),
+                color: ThemePalette.dark,
+                fontSize: 14,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.25,
+              ),
             ),
-            Icon(
-              ia.accessLevel == 'PUBLIC' ? Icons.public : Icons.lock,
+            const SizedBox(width: 8),
+            Image.asset(
+              ia.accessLevel == 'PUBLIC' ? Assets.public : Assets.private,
+              width: 16,
+              height: 16,
             )
           ],
         ),

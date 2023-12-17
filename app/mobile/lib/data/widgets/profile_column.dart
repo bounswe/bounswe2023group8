@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/data/constants/assets.dart';
+import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/models/enigma_user.dart';
 
 class ProfileColumn extends StatelessWidget {
@@ -9,32 +10,37 @@ class ProfileColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        InkWell(
-          onTap: onTap,
-          child: CircleAvatar(
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        children: [
+          const CircleAvatar(
             radius: 40,
-                backgroundImage: AssetImage(Assets.profilePlaceholder))
-        ),
-        const SizedBox(height: 4),
-        Text(
-          user.name,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 12,
-            color: Colors.white,
+            backgroundImage: AssetImage(Assets.profilePlaceholder),
           ),
-        ),
-        Text(
-          '@${user.username}',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 10,
-            fontWeight: FontWeight.w400,
+          const SizedBox(height: 4),
+          Text(
+            user.name,
+            style: TextStyle(
+              color: ThemePalette.light,
+              fontSize: 10,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.15,
+            ),
           ),
-        ),
-      ],
+          Text(
+            '@${user.username}',
+            style: TextStyle(
+              color: ThemePalette.light,
+              fontSize: 8,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w400,
+              letterSpacing: -0.15,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

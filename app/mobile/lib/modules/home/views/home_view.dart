@@ -160,103 +160,127 @@ class HomeView extends GetView<HomeController> {
   }
 
   Widget _searchBody() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (controller.searchIas.isNotEmpty) ...[
-          const Text('Bunches',
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (controller.searchIas.isNotEmpty) ...[
+            Text(
+              "Bunches",
               style: TextStyle(
+                color: ThemePalette.dark,
                 fontSize: 16,
-              )),
-          const Divider(),
-          const SizedBox(
-            height: 5,
-          ),
-          ListView.separated(
+                fontFamily: 'Work Sans',
+                fontWeight: FontWeight.w400,
+                letterSpacing: -0.25,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Divider(
+              color: SeparatorPalette.dark,
+              height: 1,
+              thickness: 1,
+            ),
+            const SizedBox(height: 8),
+            ListView.separated(
               shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
               itemCount: controller.searchIas.length,
               itemBuilder: (context, index) {
                 final ia = controller.searchIas[index];
                 return BunchWidget(
-                    ia: ia, onTap: () => controller.navigateToIa(ia));
+                  ia: ia,
+                  onTap: () => controller.navigateToIa(ia),
+                );
               },
               separatorBuilder: (context, index) {
-                return const SizedBox(
-                  height: 10,
-                );
-              }),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
-        if (controller.searchUsers.isNotEmpty) ...[
-          const Text('Profiles',
+                return const SizedBox(height: 8);
+              },
+            ),
+            const SizedBox(height: 16),
+          ],
+          if (controller.searchUsers.isNotEmpty) ...[
+            Text(
+              "Profiles",
               style: TextStyle(
+                color: ThemePalette.dark,
                 fontSize: 16,
-              )),
-          const Divider(),
-          const SizedBox(
-            height: 5,
-          ),
-          Container(
-            height: 140,
-            width: Get.width,
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
+                fontFamily: 'Work Sans',
+                fontWeight: FontWeight.w400,
+                letterSpacing: -0.25,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Divider(
+              color: SeparatorPalette.dark,
+              height: 1,
+              thickness: 1,
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: Get.width,
+              padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+              decoration: BoxDecoration(
                 color: BackgroundPalette.dark,
-                borderRadius: BorderRadius.circular(16)),
-            child: ListView.separated(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: SizedBox(
+                height: 106,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: controller.searchUsers.length,
+                  itemBuilder: (context, index) {
+                    final user = controller.searchUsers[index];
+                    return ProfileColumn(
+                        user: user,
+                        onTap: () => controller.navigateToProfile(user.id));
+                  },
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(width: 16);
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+          if (controller.searchPosts.isNotEmpty) ...[
+            Text(
+              "Spots",
+              style: TextStyle(
+                color: ThemePalette.dark,
+                fontSize: 16,
+                fontFamily: 'Work Sans',
+                fontWeight: FontWeight.w400,
+                letterSpacing: -0.25,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Divider(
+              color: SeparatorPalette.dark,
+              height: 1,
+              thickness: 1,
+            ),
+            const SizedBox(height: 8),
+            ListView.separated(
                 shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: controller.searchUsers.length,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: controller.searchPosts.length,
                 itemBuilder: (context, index) {
-                  final user = controller.searchUsers[index];
-                  return ProfileColumn(
-                      user: user,
-                      onTap: () => controller.navigateToProfile(user.id));
+                  return PostTileWidget(
+                    onTap: () => controller
+                        .navigateToPostDetails(controller.searchPosts[index]),
+                    post: controller.searchPosts[index],
+                    hideTags: false,
+                  );
                 },
                 separatorBuilder: (context, index) {
-                  return const SizedBox(
-                    width: 10,
-                  );
+                  return const SizedBox(height: 8);
                 }),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
+          ],
+          const SizedBox(height: 32), //TODO: Make bottom bar clip
         ],
-        if (controller.searchPosts.isNotEmpty) ...[
-          const Text('Spots',
-              style: TextStyle(
-                fontSize: 16,
-              )),
-          const Divider(),
-          const SizedBox(
-            height: 5,
-          ),
-          ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: controller.searchPosts.length,
-              itemBuilder: (context, index) {
-                return PostTileWidget(
-                  onTap: () => controller
-                      .navigateToPostDetails(controller.searchPosts[index]),
-                  post: controller.searchPosts[index],
-                  hideTags: false,
-                );
-              },
-              separatorBuilder: (context, index) {
-                return const SizedBox(
-                  height: 10,
-                );
-              }),
-        ],
-        const SizedBox(
-          height: 50,
-        ),
-      ],
+      ),
     );
   }
 }
