@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
+import 'package:mobile/data/constants/icons.dart';
 import 'package:mobile/data/models/spot.dart';
 
 class PostTileWidget extends StatelessWidget {
@@ -24,6 +25,9 @@ class PostTileWidget extends StatelessWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
             Text(
               post.interestArea.name,
               style: TextStyle(
@@ -33,6 +37,32 @@ class PostTileWidget extends StatelessWidget {
                 fontWeight: FontWeight.w600,
                 letterSpacing: -0.2,
               ),
+            ),
+            Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        // TODO: handle upvote
+                      },
+                      child: Image.asset(
+                        'assets/icons/upvote.png', 
+                        width: 20, 
+                      ),
+                    ),
+                    SizedBox(width: 8), // Space between the buttons
+                    InkWell(
+                      onTap: () {
+                        // TODO: handle downvote
+                      },
+                      child: Image.asset(
+                        'assets/icons/downvote.png', 
+                        width: 20,
+                      ),
+                    ),
+                  ],
+                ),
+            ]
             ),
             Row(
               children: [
@@ -192,7 +222,8 @@ class PostTileWidget extends StatelessWidget {
                 child: Image.asset(
                   Assets.spot,
                   width: 32,
-                ))
+                )
+            ),
           ],
         ),
       ),
