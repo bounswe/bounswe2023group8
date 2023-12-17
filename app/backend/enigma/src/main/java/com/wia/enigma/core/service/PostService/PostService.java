@@ -5,6 +5,8 @@ import com.wia.enigma.core.data.dto.PostDto;
 import com.wia.enigma.core.data.dto.PostDtoSimple;
 import com.wia.enigma.core.data.dto.PostVoteDto;
 import com.wia.enigma.core.data.model.GeoLocation;
+import com.wia.enigma.dal.entity.EnigmaUser;
+import com.wia.enigma.dal.entity.Post;
 import com.wia.enigma.dal.entity.PostVote;
 import com.wia.enigma.dal.enums.PostLabel;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +17,8 @@ public interface PostService {
 
     PostDto getPost(Long postId, Long userId);
 
-    PostDtoSimple createPost(Long userId, Long interestAreaId, String sourceLink, String title, List<String> wikiTags, PostLabel label, String content, GeoLocation geolocation);
+    PostDtoSimple createPost(Long userId, Long interestAreaId, String sourceLink, String title, List<String> wikiTags,
+                             PostLabel label, String content, Boolean isAgeRestricted, GeoLocation geolocation);
 
     PostDtoSimple updatePost(Long userId, Long postId, String sourceLink, String title, List<String> wikiTags, PostLabel label, String content, GeoLocation geolocation);
 
@@ -39,8 +42,6 @@ public interface PostService {
 
     void deleteAllForUser(Long enigmaUserId);
 
-    void validateExistence(Long postId);
-
     Integer getPostCount(Long enigmaUserId);
 
     @Transactional
@@ -49,4 +50,6 @@ public interface PostService {
     Long getInterestAreaIdOfPost(Long postId);
 
     Long getUserIdOfPost(Long postId);
+
+    void checkAgeRestriction(Post post, EnigmaUser user);
 }

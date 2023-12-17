@@ -18,7 +18,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,12 +55,16 @@ class PostServiceHelper {
         userFollowsService.checkInterestAreaAccess(interestAreaServiceHelper.getInterestArea(interestAreaId), userId);
     }
 
-    List<WikiTag> fetchWikiTagsForPost(Post post) {
-        return wikiTagService.getWikiTags(
-                entityTagsRepository.findAllByEntityIdAndEntityType(post.getId(), EntityType.POST).stream()
-                        .map(EntityTag::getWikiDataTagId)
-                        .collect(Collectors.toList())
-        );
+    void checkAgeRestriction(Post post, EnigmaUser user) {
+
+        if (post.getIsAgeRestricted() != null && post.getIsAgeRestricted() ){
+
+            if (Period.between(new Date(user.getBirthday().getTime()).toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate(), LocalDate.now()).getYears() < 18)
+                throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "User is not 18 years old");
+
+        }
     }
 
     void validateInterestAreaAndUserFollowing(Long interestAreaId, Long userId) {
@@ -66,7 +76,7 @@ class PostServiceHelper {
     }
 
     Post createAndSavePost(Long userId, EnigmaAccessLevel accessLevel, Long interestAreaId, String sourceLink,
-                           String title, PostLabel label, String content, GeoLocation geolocation) {
+                           String title, PostLabel label, String content, Boolean isAgeRestricted, GeoLocation geolocation) {
         Post post = Post.builder()
                 .enigmaUserId(userId)
                 .accessLevel(accessLevel)
@@ -76,6 +86,7 @@ class PostServiceHelper {
                 .label(label)
                 .content(content)
                 .geolocation(geolocation)
+                .isAgeRestricted(isAgeRestricted)
                 .createTime(new Timestamp(System.currentTimeMillis()))
                 .build();
 
@@ -149,6 +160,12 @@ class PostServiceHelper {
 
     List<PostDto> getInterestAreaPosts(Long interestAreaId, Long userId) {
 
+        Optional<EnigmaUser> user = enigmaUserRepository.findById(userId);
+
+        if(user.isEmpty())
+            throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("User %d not found", userId));
+
+
         InterestArea interestArea = interestAreaServiceHelper.getInterestArea(interestAreaId);
 
         userFollowsService.checkInterestAreaAccess(interestArea, userId); ;
@@ -173,7 +190,7 @@ class PostServiceHelper {
 
         List<InterestArea> nestedInterestAreas = interestAreaService.getNestedInterestAreas(interestAreaId, userId);
 
-        List<Long> nestedInterestAreaIds = nestedInterestAreas.stream().map( interestArea1 -> interestArea1.getId() ).toList();
+        List<Long> nestedInterestAreaIds = nestedInterestAreas.stream().map(InterestArea::getId).toList();
 
 
         Stream<PostDto> nestedInterestAreaPosts = nestedInterestAreaIds.stream()
@@ -181,24 +198,36 @@ class PostServiceHelper {
 
         Stream<PostDto> interestAreaPosts =  posts.stream().map(post -> {
               EnigmaUser enigmaUser = enigmaUsers.stream().filter(enigmaUser1 -> enigmaUser1.getId().equals(post.getEnigmaUserId())).findFirst().get();
-              return post.mapToPostDto(
-                      wikiTags.stream().filter(wikiTag ->
-                          entityTags.stream().filter(entityTag -> entityTag.getEntityId().equals(post.getId()))
-                                  .map(EntityTag::getWikiDataTagId).collect(Collectors.toList()).contains(wikiTag.getId()))
-                          .collect(Collectors.toList()),
-                        enigmaUser.mapToEnigmaUserDto(),
-                        interestArea.mapToInterestAreaModel(),
-                        postVoteRepository.countByPostIdAndVote(post.getId(), true),
-                        postVoteRepository.countByPostIdAndVote(post.getId(), false),
-                        postCommentRepository.countByPostId(post.getId())
+
+
+                  try{
+                      checkAgeRestriction(post, user.get());
+
+                      return post.mapToPostDto(
+                              wikiTags.stream().filter(wikiTag ->
+                                              entityTags.stream().filter(entityTag -> entityTag.getEntityId().equals(post.getId()))
+                                                      .map(EntityTag::getWikiDataTagId).toList().contains(wikiTag.getId()))
+                                      .collect(Collectors.toList()),
+                              enigmaUser.mapToEnigmaUserDto(),
+                              interestArea.mapToInterestAreaModel(),
+                              postVoteRepository.countByPostIdAndVote(post.getId(), true),
+                              postVoteRepository.countByPostIdAndVote(post.getId(), false),
+                              postCommentRepository.countByPostId(post.getId())
                       );
-         });
+                  }catch (EnigmaException e){
+
+                      return null;
+                  }
+              }
+         ).filter(Objects::nonNull);
 
         return Stream.concat(interestAreaPosts, nestedInterestAreaPosts)
                 .collect(Collectors.toList());
     }
 
     List<PostDto> search(Long userId, String searchKey){
+
+        EnigmaUser user = enigmaUserRepository.findById(userId).orElseThrow(() -> new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("User %d not found", userId)));
 
 
         List<Post> post = postRepository.findByTitleContainsOrContentContainsOrSourceLinkContains(searchKey, searchKey, searchKey);
@@ -217,11 +246,17 @@ class PostServiceHelper {
 
         List<Long> userIds = filteredPosts.stream().map(Post::getEnigmaUserId).toList();
 
-
         List<EnigmaUser> enigmaUsers = enigmaUserRepository.findAllById(userIds);
 
         return filteredPosts.stream().map(post1 -> {
             EnigmaUser enigmaUser = enigmaUsers.stream().filter(enigmaUser1 -> enigmaUser1.getId().equals(post1.getEnigmaUserId())).findFirst().get();
+
+            try{
+                checkAgeRestriction(post1, user);
+            }catch (EnigmaException e){
+                return null;
+            }
+
             return post1.mapToPostDto(
                     wikiTags,
                     enigmaUser.mapToEnigmaUserDto(),
@@ -230,6 +265,6 @@ class PostServiceHelper {
                     postVoteRepository.countByPostIdAndVote(post1.getId(), false),
                     postCommentRepository.countByPostId(post1.getId())
             );
-        }).toList();
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 }
