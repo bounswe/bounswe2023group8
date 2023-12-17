@@ -25,7 +25,7 @@ class Assets {
   static const String profile = 'assets/icons/profile.svg';
   static const String createBunch = 'assets/icons/create_bunch.svg';
   static const String explore = 'assets/icons/explore.svg';
-  static const String notification = 'assets/icons/notification.svg';
+  static const String notification = 'assets/icons/notifications.svg';
   static const String upvote = 'assets/icons/upvote.png';
   static const String downvote = 'assets/icons/downvote.png';
   static const String sortNew = 'assets/icons/sort_new.png';
