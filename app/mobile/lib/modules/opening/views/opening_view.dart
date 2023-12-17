@@ -18,60 +18,63 @@ class OpeningView extends GetView<OpeningController> {
             alignment: Alignment.center,
             children: [
               const OpeningGallery(),
-              Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Image.asset(
-                  Assets.logo,
-                  height: Get.height * 0.2,
-                  fit: BoxFit.contain,
-                ),
-                const SizedBox(height: 40),
-                if (!controller.splash.value)
-                  Column(
-                    children: [
-                      CustomButton(
-                        width: 152,
-                        height: 52,
-                        text: 'Log in',
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        onPressed: () {
-                          controller.navigateToAuthentication(toLogin: true);
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      CustomButton(
-                        width: 152,
-                        height: 50,
-                        text: 'Sign up',
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        secondaryColor: true,
-                        onPressed: () {
-                          controller.navigateToAuthentication(toLogin: false);
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'or',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                      const SizedBox(height: 10),
-                      InkWell(
-                        onTap: controller.navigateoToVisitorExplore,
-                        child: Text(
-                          'Continue as Visitor',
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    Assets.logo,
+                    height: Get.height * 0.2,
+                    fit: BoxFit.contain,
+                  ),
+                  const SizedBox(height: 64),
+                  if (!controller.splash.value)
+                    Column(
+                      children: [
+                        CustomButton(
+                          width: 152,
+                          height: 52,
+                          text: 'Log in',
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          onPressed: () {
+                            controller.navigateToAuthentication(toLogin: true);
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        CustomButton(
+                          width: 152,
+                          height: 50,
+                          text: 'Sign up',
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          secondaryColor: true,
+                          onPressed: () {
+                            controller.navigateToAuthentication(toLogin: false);
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          'or',
                           style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            color: ThemePalette.main,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                        const SizedBox(height: 10),
+                        InkWell(
+                          onTap: controller.navigateoToVisitorExplore,
+                          child: Text(
+                            'Continue as Visitor',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              color: ThemePalette.main,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-              ])
+                      ],
+                    ),
+                ],
+              )
             ],
           );
         }),
