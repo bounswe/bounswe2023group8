@@ -27,43 +27,53 @@ class PostTileWidget extends StatelessWidget {
             Text(
               post.interestArea.name,
               style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                  color: ThemePalette.dark),
+                color: ThemePalette.dark,
+                fontSize: 14,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.2,
+              ),
             ),
             Row(
               children: [
                 Text(
                   'Spotted by',
                   style: TextStyle(
-                    color: ThemePalette.dark,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 10,
-                  ),
+                      color: ThemePalette.dark,
+                      fontSize: 10,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: -0.15),
                 ),
                 const SizedBox(width: 4),
                 Text(
                   '@${post.enigmaUser.username}',
                   style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 10,
-                      color: ThemePalette.main),
+                    color: ThemePalette.main,
+                    fontSize: 10,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: -0.15,
+                  ),
                 ),
                 const SizedBox(width: 4),
-                Text('•',
-                    style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 10,
-                        color: ThemePalette.dark)),
-                const SizedBox(
-                  width: 5,
+                Text(
+                  '•',
+                  style: TextStyle(
+                    color: ThemePalette.dark,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
+                const SizedBox(width: 4),
                 Text(
                   post.createTime,
                   style: TextStyle(
                     color: ThemePalette.dark,
-                    fontWeight: FontWeight.normal,
                     fontSize: 10,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: -0.15,
                   ),
                 ),
               ],
@@ -84,35 +94,64 @@ class PostTileWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 4),
                   Text(
                     post.title,
                     style: TextStyle(
                       color: ThemePalette.dark,
-                      fontWeight: FontWeight.w700,
                       fontSize: 12,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: -0.2,
                     ),
                   ),
+                  const SizedBox(height: 1),
+                  Container(
+                    height: 12,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                    decoration: BoxDecoration(
+                      color: BackgroundPalette.solid,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      post.label,
+                      style: TextStyle(
+                        color: BackgroundPalette.light,
+                        fontSize: 8,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: -0.15,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
                   Text(
                     post.sourceLink,
                     style: TextStyle(
-                        fontSize: 10,
                         color: ThemePalette.main,
-                        decoration: TextDecoration.underline),
+                        fontSize: 10,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.2,
+                        decoration: TextDecoration.underline,
+                        overflow: TextOverflow.ellipsis),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     post.content,
                     style: TextStyle(
-                        color: ThemePalette.dark,
-                        fontSize: 12,
-                        fontWeight: FontWeight.normal),
+                      color: ThemePalette.dark,
+                      fontSize: 10,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: -0.15,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   hideTags == true
                       ? const SizedBox()
                       : SizedBox(
-                          height: 30,
+                          height: 12,
                           child: ListView.separated(
                             itemCount: post.wikiTags.length,
                             shrinkWrap: true,
@@ -123,26 +162,24 @@ class PostTileWidget extends StatelessWidget {
                             },
                             itemBuilder: (BuildContext context, int index) {
                               final wikitag = post.wikiTags[index];
-                              return ClipRRect(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                  child: Container(
-                                    color: SeparatorPalette
-                                        .light, // Set the grey background color
-                                    margin: const EdgeInsets.all(
-                                        1.0), // Add margin between rows
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(
-                                          4.0), // Adjust padding as needed
-                                      child: Text(
-                                        "#${wikitag.label}",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: SeparatorPalette
-                                              .dark, // Text color inside the grey background
-                                        ),
-                                      ),
-                                    ),
-                                  ));
+                              return Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 6, vertical: 1),
+                                decoration: BoxDecoration(
+                                  color: BackgroundPalette.soft,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  "#${wikitag.label}",
+                                  style: TextStyle(
+                                    color: SeparatorPalette.dark,
+                                    fontSize: 8,
+                                    fontFamily: "Inter",
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: -0.15,
+                                  ),
+                                ),
+                              );
                             },
                           ),
                         ),

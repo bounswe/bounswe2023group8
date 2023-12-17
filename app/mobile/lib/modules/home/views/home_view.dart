@@ -62,6 +62,7 @@ class HomeView extends GetView<HomeController> {
                                       fontSize: 16,
                                       fontFamily: 'Inter',
                                       fontWeight: FontWeight.w600,
+                                      letterSpacing: -0.2,
                                     ),
                                   ),
                                   const SizedBox(width: 12),
@@ -90,6 +91,7 @@ class HomeView extends GetView<HomeController> {
                                               fontSize: 12,
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.w400,
+                                              letterSpacing: -0.15,
                                             ),
                                           )
                                         ],
@@ -101,8 +103,8 @@ class HomeView extends GetView<HomeController> {
                                     onTap: () {},
                                     child: Container(
                                       height: 28,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 4, vertical: 2),
+                                      padding: const EdgeInsets.only(
+                                          left: 2, right: 4, top: 2, bottom: 2),
                                       decoration: BoxDecoration(
                                         color: BackgroundPalette.soft,
                                         borderRadius: BorderRadius.circular(20),
@@ -114,14 +116,15 @@ class HomeView extends GetView<HomeController> {
                                             width: 24,
                                             height: 24,
                                           ),
-                                          const SizedBox(width: 4),
+                                          const SizedBox(width: 2),
                                           Text(
-                                            "New",
+                                            "Top",
                                             style: TextStyle(
                                               color: ThemePalette.dark,
                                               fontSize: 12,
                                               fontFamily: 'Inter',
                                               fontWeight: FontWeight.w400,
+                                              letterSpacing: -0.15,
                                             ),
                                           )
                                         ],
