@@ -17,7 +17,7 @@ class NewIaProvider extends GetConnect {
 
   Future<bool> createNewIa(
       {required String name,
-      required List<int> nestedIas,
+      required List<String> nestedIas,
       required List<String> wikiTags,
       required int accessLevel,
       required String description,
