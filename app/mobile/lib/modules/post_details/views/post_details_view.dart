@@ -31,10 +31,7 @@ class PostDetailsView extends GetView<PostDetailsController> {
                     controller.bottomNavController!.userId)
               IconButton(
                   onPressed: controller.navigateToEditPost,
-                  icon: Image.asset(
-                    Assets.edit,
-                    height: 32,
-                  ))
+                  icon: const Icon(Icons.edit))
           ],
         ),
         body: Obx(() {
@@ -48,25 +45,40 @@ class PostDetailsView extends GetView<PostDetailsController> {
                 PostDetailWidget(
                   visitor: controller.visitor,
                   post: controller.post,
-                  showLocation: controller.showLocation,
-                  showFollow: controller.showFollowButton(),
-                  showUnfollow: controller.showUnfollowButton(),
-                  onFollowPressed: controller.followUser,
-                  onUnfollowPressed: controller.unfollowUser,
                 ),
                 const SizedBox(height: 20),
-                
-                Padding(
-                  padding: const EdgeInsets.only(left: 40),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: BackgroundPalette.regular,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: ThemePalette.light,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Column(children: [
+                    const Row(
                       children: [
-                        const CircleAvatar(
+                        Text(
+                          'Comments',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          '140',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            color: Color(0xff4936BF),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        CircleAvatar(
                           radius: 20,
                           backgroundImage:
                               AssetImage(Assets.profilePlaceholder),
@@ -112,12 +124,24 @@ class PostDetailsView extends GetView<PostDetailsController> {
                             ],
                           ),
                         ),
+                        const Icon(Icons.keyboard_arrow_down_sharp)
                       ],
-                    ),
-                  ),
-                )
-              
-                
+                    )
+                  ]),
+                ),
+                const SizedBox(height: 20),
+                ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: controller.posts.length,
+                    itemBuilder: (context, index) {
+                      return PostTileWidget(
+                        onTap: () =>
+                            controller.changePost(controller.posts[index]),
+                        post: controller.posts[index],
+                        hideTags: false,
+                      );
+                    })
               ],
             ),
           );

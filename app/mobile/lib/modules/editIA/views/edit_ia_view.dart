@@ -142,7 +142,6 @@ class EditIaView extends GetView<EditIaController> {
                 const SizedBox(height: 10),
                 TextField(
                   maxLines: 5,
-                  controller: controller.descriptionController,
                   decoration: InputDecoration(
                     hintText: "Enter description here...",
                     contentPadding:

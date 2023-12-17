@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/data/widgets/custom_button.dart';
@@ -28,307 +27,174 @@ class NewIaView extends GetView<NewIaController> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  decoration: BoxDecoration(
-                      color: BackgroundPalette.dark,
-                      borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(20))),
-                  child: const Center(
-                    child: Text("Create a new Bunch!",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 22,
-                            color: Colors.white)),
-                  ),
-                ),
+                const Text("Create a new Bunch!",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 22,
+                    )),
                 const SizedBox(height: 20),
-
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: BackgroundPalette.regular,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Bunch Name: ",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                            color: ThemePalette.dark),
+                Row(
+                  children: [
+                    const Text(
+                      "Title: ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
                       ),
-                      Container(
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: BackgroundPalette.light,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8),
-                            child: TextField(
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                              ),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  color: ThemePalette.dark),
-                              onChanged: controller.onChangeTitle,
-                            ),
-                          )),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(
-                  height: 16,
-                ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: BackgroundPalette.regular,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Description: ",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                            color: ThemePalette.dark),
-                      ),
-                      Container(
-                          decoration: BoxDecoration(
-                            color: BackgroundPalette.light,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8),
-                            child: TextField(
-                              maxLines: 5,
-                              decoration: const InputDecoration(
-                                hintText: "Enter description here...",
-                                contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
-                                border: InputBorder.none,
-                              ),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  color: ThemePalette.dark),
-                              onChanged: controller.onChangeDescription,
-                            ),
-                          )),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-                Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: BackgroundPalette.regular,
-                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Access Level: ",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                                color: ThemePalette.dark),
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              SelectCircle(
-                                  value: controller.accesLevel.value == 0,
-                                  onTap: (val) {
-                                    controller.onChangeAccessLevel(0);
-                                  }),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Image.asset(
-                                Assets.public,
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Text('Public',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: ThemePalette.main,
-                                  )),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              SelectCircle(
-                                  value: controller.accesLevel.value == 1,
-                                  onTap: (val) {
-                                    controller.onChangeAccessLevel(1);
-                                  }),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Image.asset(
-                                Assets.private,
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Text('Private',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14,
-                                      color: ThemePalette.main)),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              SelectCircle(
-                                  value: controller.accesLevel.value == 2,
-                                  onTap: (val) {
-                                    controller.onChangeAccessLevel(2);
-                                  }),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Image.asset(
-                                Assets.personal,
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Text('Personal',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: ThemePalette.main,
-                                      fontWeight: FontWeight.w500)),
-                            ],
-                          ),
-                        ])),
-                const SizedBox(height: 10),
-                Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: BackgroundPalette.regular,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Tags:",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                                color: ThemePalette.dark),
-                          ),
-                          const SizedBox(height: 4),
-                          if (controller.selectedTags.isNotEmpty)
-                            selectedTags(),
-                          const SizedBox(height: 6),
-                          Container(
-                            height: 24,
+                    Expanded(
+                        child: Container(
+                            height: 36,
                             decoration: BoxDecoration(
-                              color: BackgroundPalette.light,
+                              color: const Color(0xFFF1F1F1),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: TextField(
-                              onChanged: controller.onChangeTagQuery,
-                              onSubmitted: controller.submitTagQuery,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 12,
-                                  color: ThemePalette.dark),
-                              decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.zero,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  prefixIcon: const Icon(
-                                    Icons.search,
-                                    size: 20,
-                                  )),
-                            ),
-                          ),
-                        ])),
-                if (controller.searchTagResults.isNotEmpty) _searchTagResults(),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: TextField(
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                ),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                                ),
+                                onChanged: controller.onChangeTitle,
+                              ),
+                            )))
+                  ],
+                ),
                 const SizedBox(height: 10),
-                Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: BackgroundPalette.regular,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Sub-Bunches:",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                                color: ThemePalette.dark),
-                          ),
-                          const SizedBox(height: 4),
-                          if (controller.selectedSubIas.isNotEmpty)
-                            selectedIas(),
-                          const SizedBox(height: 6),
-                          Container(
-                            height: 24,
-                            decoration: BoxDecoration(
-                              color: BackgroundPalette.light,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: TextField(
-                              onChanged: controller.onChangeSubIaQuery,
-                              onSubmitted: controller.submitSubIaQuery,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 12,
-                                  color: ThemePalette.dark),
-                              decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.zero,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  prefixIcon: const Icon(
-                                    Icons.search,
-                                    size: 20,
-                                  )),
-                            ),
-                          ),
-                        ])),
+                const Text(
+                  "Sub-Bunchs:",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                // Sub-IA list
+                const SizedBox(height: 8),
+
+                TextField(
+                  onChanged: controller.onChangeSubIaQuery,
+                  onSubmitted: controller.submitSubIaQuery,
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.zero,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      prefixIcon: const Icon(Icons.search)),
+                ),
+
                 if (controller.searchSubIaResults.isNotEmpty)
                   _searchIaResults(),
-           
-        
+                if (controller.selectedSubIas.isNotEmpty) selectedIas(),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text(
+                  "Tags:",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  onChanged: controller.onChangeTagQuery,
+                  onSubmitted: controller.submitTagQuery,
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.zero,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      prefixIcon: const Icon(Icons.search)),
+                ),
+                if (controller.searchTagResults.isNotEmpty) _searchTagResults(),
+                if (controller.selectedTags.isNotEmpty) selectedTags(),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text(
+                  "Description:",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                    hintText: "Enter description here...",
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onChanged: controller.onChangeDescription,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const Text(
+                  "Access Level:",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(
+                  height: 4,
+                ),
+                Row(
+                  children: [
+                    SelectCircle(
+                        value: controller.accesLevel.value == 0,
+                        onTap: (val) {
+                          controller.onChangeAccessLevel(0);
+                        }),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    const Text('Public',
+                        style: TextStyle(
+                          fontSize: 14,
+                        )),
+                    const Spacer(),
+                    SelectCircle(
+                        value: controller.accesLevel.value == 1,
+                        onTap: (val) {
+                          controller.onChangeAccessLevel(1);
+                        }),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    const Text('Private',
+                        style: TextStyle(
+                          fontSize: 14,
+                        )),
+                    const Spacer(),
+                    SelectCircle(
+                        value: controller.accesLevel.value == 2,
+                        onTap: (val) {
+                          controller.onChangeAccessLevel(2);
+                        }),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    const Text('Personal',
+                        style: TextStyle(
+                          fontSize: 14,
+                        )),
+                    const SizedBox(
+                      width: 20,
+                    )
+                  ],
+                ),
+
                 const SizedBox(
                   height: 20,
                 ),
@@ -353,12 +219,7 @@ class NewIaView extends GetView<NewIaController> {
   Widget _searchTagResults() {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        decoration: BoxDecoration(
-          color: ThemePalette.dark,
-          borderRadius: BorderRadius.circular(10),
-        ),
+      child: SizedBox(
         height: 40,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
@@ -371,18 +232,22 @@ class NewIaView extends GetView<NewIaController> {
               },
               child: Container(
                 margin: const EdgeInsets.only(right: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: SeparatorPalette.light,
-                  borderRadius: BorderRadius.circular(14),
+                  color: const Color(0xFFF1F1F1),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: Center(
-                  child: Text('#${tag.label}',
-                      style: TextStyle(
-                          color: SeparatorPalette.dark,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500)),
-                ),      
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(tag.label),
+                    const SizedBox(width: 4),
+                    const Icon(
+                      Icons.add,
+                      size: 16,
+                    )
+                  ],
+                ),
               ),
             );
           },
@@ -395,34 +260,38 @@ class NewIaView extends GetView<NewIaController> {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: Container(
-        height: 90,
+        height: 100,
         width: Get.width,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ThemePalette.light,
+          border: Border.all(color: ThemePalette.main, width: 1),
           borderRadius: BorderRadius.circular(10),
         ),
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         child: Wrap(
           children: [
             for (var tag in controller.selectedTags)
-              InkWell(
-                onTap: () {
-                  controller.removeTag(tag);
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(right: 8, bottom: 4),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: SeparatorPalette.light,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text('#${tag.label}',
-                      style: TextStyle(
-                          color: SeparatorPalette.dark,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500)),
-                     
+              Container(
+                margin: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(tag.label),
+                    const SizedBox(width: 4),
+                    InkWell(
+                      onTap: () {
+                        controller.removeTag(tag);
+                      },
+                      child: const Icon(
+                        Icons.close,
+                        size: 16,
+                      ),
+                    )
+                  ],
                 ),
               )
           ],
@@ -434,12 +303,7 @@ class NewIaView extends GetView<NewIaController> {
   Widget _searchIaResults() {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        decoration: BoxDecoration(
-          color: ThemePalette.dark,
-          borderRadius: BorderRadius.circular(10),
-        ),
+      child: SizedBox(
         height: 40,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
@@ -452,16 +316,22 @@ class NewIaView extends GetView<NewIaController> {
               },
               child: Container(
                 margin: const EdgeInsets.only(right: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: BackgroundPalette.solid,
-                  borderRadius: BorderRadius.circular(14),
+                  color: const Color(0xFFF1F1F1),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: Center(
-                  child: Text(ia.name,
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 12)),
-                ),      
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(ia.name),
+                    const SizedBox(width: 4),
+                    const Icon(
+                      Icons.add,
+                      size: 16,
+                    )
+                  ],
+                ),
               ),
             );
           },
@@ -474,32 +344,38 @@ class NewIaView extends GetView<NewIaController> {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: Container(
-        height: 90,
+        height: 100,
         width: Get.width,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ThemePalette.light,
+          border: Border.all(color: ThemePalette.main, width: 1),
           borderRadius: BorderRadius.circular(10),
         ),
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         child: Wrap(
           children: [
             for (var ia in controller.selectedSubIas)
-              InkWell(
-                onTap: () {
-                  controller.removeSubIa(ia);
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(right: 8, bottom: 4),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: BackgroundPalette.solid,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(ia.name,
-                      style:
-                          const TextStyle(color: Colors.white, fontSize: 12)),
-                     
+              Container(
+                margin: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(ia.name),
+                    const SizedBox(width: 4),
+                    InkWell(
+                      onTap: () {
+                        controller.removeSubIa(ia);
+                      },
+                      child: const Icon(
+                        Icons.close,
+                        size: 16,
+                      ),
+                    )
+                  ],
                 ),
               )
           ],

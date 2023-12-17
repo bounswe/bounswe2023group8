@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/data/widgets/custom_button.dart';
+import 'package:mobile/data/widgets/select_circle.dart';
 
 import '../controllers/new_post_controller.dart';
 
 class NewPostView extends GetView<NewPostController> {
-  const NewPostView({super.key});
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -207,6 +209,9 @@ class NewPostView extends GetView<NewPostController> {
                 ),
                 InkWell(
                     onTap: () => controller.pickDate(),
+                    child: Obx(
+                      () => InkWell(
+                          onTap: () => controller.pickDate(),
                           child: Row(
                             children: [
                               Text("Publication Date: "),
@@ -222,28 +227,8 @@ class NewPostView extends GetView<NewPostController> {
                                   // keyboardType: TextInputType.multiline,
                                   ),
                             ],
-                        
+                          )),
                     )),
-                const SizedBox(
-                  height: 10,
-                ),
-                InkWell(
-                    onTap: controller.navigateToSelectAddress,
-                    child: Row(
-                      children: [
-                        Text("Location: "),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          controller.address.value == ''
-                              ? 'Select Location'
-                              : '${controller.address.value.substring(0, 30)}...',
-                        ),
-                      ],
-                    )),
-
-
                 const SizedBox(
                   height: 20,
                 ),

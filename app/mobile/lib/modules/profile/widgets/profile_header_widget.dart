@@ -32,70 +32,64 @@ class ProfileHeaderWidget extends StatelessWidget {
               backgroundImage: AssetImage(Assets.profilePlaceholder),
             ),
             const SizedBox(width: 10),
-            Expanded(
-              flex: 8,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      user.name,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      '@${user.username}',
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: onFollowersPressed,
-                          child: Text(
-                            '$followerCount Followers',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        InkWell(
-                          onTap: onFollowingPressed,
-                          child: Text(
-                            '$followingCount Following',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  ]),
-            ),
-            Expanded(
-              flex: 1,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset(
-                    Assets.upvote,
-                    width: 25,
+                  Text(
+                    user.name,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                  const SizedBox(height: 5),
-                  Image.asset(
-                    Assets.downvote,
-                    width: 25,
+                  Text(
+                    '@${user.username}',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w300,
+                    ),
                   ),
-                ],
-              ),
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: onFollowersPressed,
+                        child: Text(
+                          '$followerCount Followers',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      InkWell(
+                        onTap: onFollowingPressed,
+                        child: Text(
+                          '$followingCount Following',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ]),
+            const Spacer(),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Image.asset(
+                  Assets.upvote,
+                  width: 25,
+                ),
+                const SizedBox(height: 5),
+                Image.asset(
+                  Assets.downvote,
+                  width: 25,
+                ),
+              ],
             ),
             const SizedBox(width: 5),
             Column(

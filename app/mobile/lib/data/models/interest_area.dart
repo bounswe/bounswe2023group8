@@ -8,7 +8,6 @@ class InterestArea {
   final List<String> nestedInterestAreas;
   final List<WikiTag> wikiTags;
   final DateTime createTime;
-  final String description;
 
   InterestArea({
     required this.id,
@@ -18,7 +17,6 @@ class InterestArea {
     required this.nestedInterestAreas,
     required this.wikiTags,
     required this.createTime,
-    required this.description,
   });
 
   factory InterestArea.fromJson(Map<String, dynamic> json) {
@@ -34,7 +32,6 @@ class InterestArea {
       nestedInterestAreas: List<String>.from(json['nestedInterestAreas'] ?? []),
       wikiTags: parsedWikiTags,
       createTime: DateTime.parse(json['createTime'] ?? ''),
-      description: json['description'] ?? '',
     );
   }
 
