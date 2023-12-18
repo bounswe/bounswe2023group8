@@ -33,6 +33,12 @@ const PostPreviewCard = ({
 
     const likes =  Math.floor(Math.random() * (5 - (-5) + 1)) - 5;
 
+    function extractDomain(url: string): string | null {
+        const regex = /https?:\/\/(www\.)?(.+?)\./;
+        const match = url.match(regex);
+        return match ? (match[2].charAt(0).toUpperCase() + match[2].slice(1)) : url;
+    }
+
     return (
         <div className="card WA-theme-bg-regular rounded-4 mb-3">
             <div className="justify-content-between d-flex d-inline-flex">
@@ -79,7 +85,7 @@ const PostPreviewCard = ({
                                   className="card-title truncate-text-2 WA-theme-dark fs-5 fw-bold">{title}</Link>
                             <Label className="" label={label}/>
                             <Link to={sourceLink} className="truncate-text-2 WA-theme-main fw-bold mt-1">
-                                {sourceLink}
+                                {extractDomain(sourceLink)}
                             </Link>
                             <div className="card-title truncate-text-4 WA-theme-dark">{content}</div>
                         </div>
