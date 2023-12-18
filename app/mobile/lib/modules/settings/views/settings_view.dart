@@ -81,12 +81,24 @@ class SettingsView extends GetView<SettingsController> {
                       Container(
                         width: 280,
                         height: 20,
+                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
                         decoration: ShapeDecoration(
                           color: Color(0xffFFFAF6),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                           ),
+                          child: const Text(
+                            'email',
+                            style: TextStyle(
+                                color: Color(0xFF434343),
+                                fontSize: 10,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                                height: 0,
+                                letterSpacing: -0.17,
+                            ),
+                          )
                         ),
                         SizedBox(height: 8), 
                         const Text(
@@ -103,12 +115,24 @@ class SettingsView extends GetView<SettingsController> {
                       Container(
                         width: 280,
                         height: 20,
+                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
                         decoration: ShapeDecoration(
                           color: Color(0xffFFFAF6),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                           ),
+                          child: const Text(
+                            'username',
+                            style: TextStyle(
+                                color: Color(0xFF434343),
+                                fontSize: 10,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                                height: 0,
+                                letterSpacing: -0.17,
+                            ),
+                          )
                         ),
                         SizedBox(height: 8), 
                         const Text(
@@ -159,12 +183,24 @@ class SettingsView extends GetView<SettingsController> {
                       Container(
                         width: 280,
                         height: 20,
+                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
                         decoration: ShapeDecoration(
                           color: Color(0xffFFFAF6),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                           ),
+                          child: const Text(
+                            'dd/mm/yyyy',
+                            style: TextStyle(
+                                color: Color(0xFF434343),
+                                fontSize: 10,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                                height: 0,
+                                letterSpacing: -0.17,
+                            ),
+                          )
                         ),
                         SizedBox(height: 12), 
                         Container(
