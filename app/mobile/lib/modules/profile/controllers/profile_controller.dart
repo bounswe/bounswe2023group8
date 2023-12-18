@@ -4,6 +4,7 @@ import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/models/spot.dart';
 import 'package:mobile/data/models/user_profile.dart';
+import 'package:mobile/data/widgets/user_list_dialog.dart';
 import 'package:mobile/modules/profile/providers/profile_provider.dart';
 
 import '../../../routes/app_pages.dart';
@@ -111,6 +112,90 @@ class ProfileController extends GetxController {
           followings.removeWhere((element) => element.id == targetId);
           bottomNavController.unfollowUser(targetId);
         }
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void upvotePost(int postId) async {
+    try {
+      final hasUpvoted = await profileProvider.hasUpVoted(
+          token: bottomNavController.token,
+          postId: postId,
+          userId: bottomNavController.userId);
+
+      bool res = false;
+
+      if (hasUpvoted) {
+        res = await profileProvider.unvotePost(
+            token: bottomNavController.token, postId: postId);
+      } else {
+        res = await profileProvider.upvotePost(
+            token: bottomNavController.token, postId: postId);
+      }
+
+      if (res) {
+        posts.value = await profileProvider.getPosts(
+                id: userId, token: bottomNavController.token) ??
+            posts;
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void downvotePost(int postId) async {
+    try {
+      final hasDownvoted = await profileProvider.hasDownVoted(
+          token: bottomNavController.token,
+          postId: postId,
+          userId: bottomNavController.userId);
+
+      bool res = false;
+
+      if (hasDownvoted) {
+        res = await profileProvider.unvotePost(
+            token: bottomNavController.token, postId: postId);
+      } else {
+        res = await profileProvider.downvotePost(
+            token: bottomNavController.token, postId: postId);
+      }
+
+      if (res) {
+        posts.value = await profileProvider.getPosts(
+                id: userId, token: bottomNavController.token) ??
+            posts;
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void showUpVotes(int postId) async {
+    try {
+      final users = await profileProvider.getUpvotedUsers(
+          token: bottomNavController.token, postId: postId);
+      if (users.isNotEmpty) {
+        Get.dialog(UserListDialog(
+          title: 'Upvoters',
+          users: users,
+        ));
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void showDownVotes(int postId) async {
+    try {
+      final users = await profileProvider.getDownvotedUsers(
+          token: bottomNavController.token, postId: postId);
+      if (users.isNotEmpty) {
+        Get.dialog(UserListDialog(
+          title: 'Downvoters',
+          users: users,
+        ));
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);

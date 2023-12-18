@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:get/get.dart';
 import 'package:mobile/data/models/interest_area.dart';

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/assets.dart';
+import 'package:mobile/data/models/enigma_user.dart';
 
-import '../controllers/profile_controller.dart';
-
-class FollowersPopup extends GetView<ProfileController> {
-  const FollowersPopup({super.key});
+class UserListDialog extends StatelessWidget {
+  final String title;
+  final List<EnigmaUser> users;
+  const UserListDialog({super.key, required this.title, required this.users});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class FollowersPopup extends GetView<ProfileController> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Followers'),
+                Text(title),
                 IconButton(
                   icon: const Icon(Icons.close), // Close icon
                   onPressed: () {
@@ -30,24 +31,21 @@ class FollowersPopup extends GetView<ProfileController> {
             children: [
               const Divider(),
               SizedBox(
-                width: Get.width - 40,
                 height: Get.height - 200,
-                child: 
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: controller.followers.length,
-                    itemBuilder: (context, index) {
-                      final follower = controller.followers[index];
-                      return ListTile(
+                width: Get.width - 40,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: users.length,
+                  itemBuilder: (context, index) {
+                    final user = users[index];
+                    return ListTile(
                       leading: const CircleAvatar(
-                            backgroundImage:
-                                AssetImage(Assets.profilePlaceholder)),
-                        title: Text(follower.name),
-                      subtitle: Text('@${follower.username}'),
-                        
-                      );
-                    },
-                  
+                          backgroundImage:
+                              AssetImage(Assets.profilePlaceholder)),
+                      title: Text(user.name),
+                      subtitle: Text('@${user.username}'),
+                    );
+                  },
                 ),
               ),
             ]));

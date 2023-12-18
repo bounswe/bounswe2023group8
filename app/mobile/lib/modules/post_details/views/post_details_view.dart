@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
-import 'package:mobile/data/widgets/post_detail_widget.dart';
+import 'package:mobile/modules/post_details/views/post_detail_widget.dart';
 
 import '../../../data/constants/assets.dart';
-import '../../../data/widgets/post_widget.dart';
 import '../../../data/widgets/visitor_bottom_bar.dart';
 import '../../opening/controllers/opening_controller.dart';
 import '../controllers/post_details_controller.dart';
@@ -27,8 +26,8 @@ class PostDetailsView extends GetView<PostDetailsController> {
           leadingAppIcon: true,
           actions: [
             if (!controller.visitor &&
-                controller.post.enigmaUser.id ==
-                    controller.bottomNavController!.userId)
+                controller.post.value.enigmaUser.id ==
+                    controller.bottomNavController.userId)
               IconButton(
                   onPressed: controller.navigateToEditPost,
                   icon: Image.asset(
@@ -45,14 +44,8 @@ class PostDetailsView extends GetView<PostDetailsController> {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             child: Column(
               children: [
-                PostDetailWidget(
-                  visitor: controller.visitor,
-                  post: controller.post,
-                  showLocation: controller.showLocation,
-                  showFollow: controller.showFollowButton(),
-                  showUnfollow: controller.showUnfollowButton(),
-                  onFollowPressed: controller.followUser,
-                  onUnfollowPressed: controller.unfollowUser,
+                const PostDetailWidget(
+                 
                 ),
                 const SizedBox(height: 20),
                 

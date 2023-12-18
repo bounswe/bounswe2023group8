@@ -29,7 +29,7 @@ class EditPostView extends GetView<EditPostController> {
                       cancelText: 'No',
                       actionText: 'Yes');
                 },
-                icon: Icon(Icons.delete))
+                icon: const Icon(Icons.delete))
           ],
         ),
         body: Obx(() {
@@ -229,8 +229,8 @@ class EditPostView extends GetView<EditPostController> {
                           onTap: () => controller.pickDate(),
                           child: Row(
                             children: [
-                              Text("Publication Date: "),
-                              SizedBox(
+                              const Text("Publication Date: "),
+                              const SizedBox(
                                 width: 10,
                               ),
                               Text(
