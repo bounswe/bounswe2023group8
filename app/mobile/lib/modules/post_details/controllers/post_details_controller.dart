@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:map_location_picker/map_location_picker.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/spot.dart';
+import 'package:mobile/data/widgets/report_dialog.dart';
 import 'package:mobile/data/widgets/user_list_dialog.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
 import 'package:mobile/modules/post_details/providers/post_details_provider.dart';
@@ -158,6 +159,29 @@ class PostDetailsController extends GetxController {
       ErrorHandlingUtils.handleApiError(e);
     }
   }
+
+
+  void showReportSpot() {
+    Get.dialog(ReportDialog(
+        title: 'Report Spot',
+        onReport: (reason) => onReport(post.value.id, reason, 'POST')));
+  }
+
+  void onReport(int postId, String reason, String entityType) async {
+    try {
+      final res = await postDetailsProvider.report(
+          token: bottomNavController.token,
+          entityId: postId,
+          entityType: entityType,
+          reason: reason);
+      if (res) {
+        Get.snackbar('Success', 'Reported successfully');
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
 
   @override
   void onInit() {

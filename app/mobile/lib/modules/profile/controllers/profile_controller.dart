@@ -4,6 +4,7 @@ import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/models/spot.dart';
 import 'package:mobile/data/models/user_profile.dart';
+import 'package:mobile/data/widgets/report_dialog.dart';
 import 'package:mobile/data/widgets/user_list_dialog.dart';
 import 'package:mobile/modules/profile/providers/profile_provider.dart';
 
@@ -196,6 +197,27 @@ class ProfileController extends GetxController {
           title: 'Downvoters',
           users: users,
         ));
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void showReportUser() {
+    Get.dialog(ReportDialog(
+        title: 'Report User',
+        onReport: (reason) => onReport(userId, reason, 'USER')));
+  }
+
+  void onReport(int postId, String reason, String entityType) async {
+    try {
+      final res = await profileProvider.report(
+          token: bottomNavController.token,
+          entityId: postId,
+          entityType: entityType,
+          reason: reason);
+      if (res) {
+        Get.snackbar('Success', 'Reported successfully');
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);

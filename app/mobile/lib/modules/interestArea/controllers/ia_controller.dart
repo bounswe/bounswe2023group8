@@ -4,6 +4,7 @@ import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/models/spot.dart';
+import 'package:mobile/data/widgets/report_dialog.dart';
 import 'package:mobile/data/widgets/user_list_dialog.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
 import 'package:mobile/modules/interestArea/providers/ia_provider.dart';
@@ -193,6 +194,28 @@ class InterestAreaController extends GetxController {
       if (res) {
         isFollower.value = false;
         bottomNavigationController.unfollowIa(interestArea);
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void showReportBunch() {
+    Get.dialog(ReportDialog(
+        title: 'Report Bunch',
+        onReport: (reason) =>
+            onReport(interestArea.id, reason, 'INTEREST_AREA')));
+  }
+
+  void onReport(int postId, String reason, String entityType) async {
+    try {
+      final res = await iaProvider.report(
+          token: bottomNavigationController.token,
+          entityId: postId,
+          entityType: entityType,
+          reason: reason);
+      if (res) {
+        Get.snackbar('Success', 'Reported successfully');
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);

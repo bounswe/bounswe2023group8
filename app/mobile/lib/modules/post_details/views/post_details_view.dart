@@ -28,12 +28,31 @@ class PostDetailsView extends GetView<PostDetailsController> {
             if (!controller.visitor &&
                 controller.post.value.enigmaUser.id ==
                     controller.bottomNavController.userId)
-              IconButton(
-                  onPressed: controller.navigateToEditPost,
-                  icon: Image.asset(
-                    Assets.edit,
-                    height: 32,
-                  ))
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: InkWell(
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onTap: controller.navigateToEditPost,
+                    child: Image.asset(
+                      Assets.edit,
+                      height: 30,
+                    )),
+              ),
+            if (!controller.visitor &&
+                controller.post.value.enigmaUser.id !=
+                    controller.bottomNavController.userId)
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: InkWell(
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onTap: () => controller.showReportSpot(),
+                    child: Icon(
+                      Icons.report_gmailerrorred,
+                      size: 30,
+                    )),
+              )
           ],
         ),
         body: Obx(() {

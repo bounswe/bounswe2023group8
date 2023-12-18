@@ -25,7 +25,19 @@ class InterestAreaView extends GetView<InterestAreaController> {
           if (controller.isOwner)
             IconButton(
                 onPressed: controller.navigateToEdit,
-                icon: const Icon(Icons.edit))
+                icon: const Icon(Icons.edit)),
+          if (!controller.isOwner)
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: () => controller.showReportBunch(),
+                  child: Icon(
+                    Icons.report_gmailerrorred,
+                    size: 30,
+                  )),
+            )
         ],
       ),
       body: Obx(() {

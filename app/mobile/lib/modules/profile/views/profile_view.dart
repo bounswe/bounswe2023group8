@@ -17,9 +17,22 @@ class ProfileView extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         leadingAppIcon: true,
-       
+        actions: [
+          if (controller.userId != controller.bottomNavController.userId)
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: () => controller.showReportUser(),
+                  child: Icon(
+                    Icons.report_gmailerrorred,
+                    size: 30,
+                  )),
+            )
+        ],
       ),
       body: SingleChildScrollView(
         padding:

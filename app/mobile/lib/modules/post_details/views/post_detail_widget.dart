@@ -265,21 +265,7 @@ class PostDetailWidget extends GetView<PostDetailsController> {
                       ),
                     ),
                     const Spacer(),
-                    if (!controller.visitor)
-                      InkWell(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: const Color(0XFFBA1F1F),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Text(
-                            "Report Spot",
-                            style: TextStyle(color: Colors.white, fontSize: 12),
-                          ),
-                        ),
-                      ),
+                    
                   ],
                 ),
               ],
