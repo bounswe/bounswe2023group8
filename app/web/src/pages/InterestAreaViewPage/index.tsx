@@ -50,6 +50,8 @@ export interface Post {
   content: string;
   geolocation: Geolocation;
   createTime: string;
+  upvoteCount: number;
+  downvoteCount: number;
 }
 
 const ViewInterestArea = () => {
@@ -123,6 +125,8 @@ const ViewInterestArea = () => {
           content: result.content,
           geolocation: result.geolocation,
           createTime: result.createTime,
+          upvoteCount: result.upvoteCount,
+          downvoteCount: result.downvoteCount,
         }));
         setPostsData(newDetails);
       },

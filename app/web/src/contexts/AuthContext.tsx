@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
   });
   const [userData, setUserData] = useState<userData>({
     id: parseInt(sessionStorage.getItem('id') || "-1"),
-    username: "",
+    username: sessionStorage.getItem("username") || "",
     name: sessionStorage.getItem("name") || "",
     email: "",
     birthday: "",
@@ -122,6 +122,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
             setUserData(data);
             sessionStorage.setItem('id', data.id.toString());
             sessionStorage.setItem('name', data.name);
+            sessionStorage.setItem('username', data.username);
           },
         }
       );

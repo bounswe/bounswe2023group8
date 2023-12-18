@@ -1,12 +1,5 @@
 import React, {useEffect} from 'react';
 import { useParams } from 'react-router-dom';
-import PostPreviewCard from "../../components/Post/PostSmallPreview/PostPreviewCard";
-import mockPosts from "../../mockData/milestone1/451_posts.json";
-import mockUsers from "../../mockData/milestone1/451_users.json";
-import mockInterestAreas from "../../mockData/milestone1/451_interest_areas.json";
-import mockDetailedPosts from "../../mockData/milestone1/451_detailed_post.json"
-import { Col, Row } from "react-bootstrap";
-import ProfileHeader from "../../components/ProfileHeader/ProfileHeader";
 import DetailedPostCard from '../../components/Post/DetailedPostCard';
 import {useGetPost} from "../../hooks/usePost";
 import {useAuth} from "../../contexts/AuthContext";
@@ -15,7 +8,7 @@ const PostViewPage = () => {
   const { postId } = useParams();
 
   const { axiosInstance} = useAuth();
-  const {mutate, data, isSuccess} = useGetPost({});
+  const {mutate, data} = useGetPost({});
 
   useEffect(() => {
     mutate({
@@ -27,7 +20,7 @@ const PostViewPage = () => {
 
   return (
     <>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex' }} className="col-8">
         <div className="card-body overflow-y-auto">
           {data && <DetailedPostCard
             post={data}

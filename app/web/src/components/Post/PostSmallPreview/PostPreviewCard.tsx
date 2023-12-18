@@ -16,8 +16,7 @@ const PostPreviewCard = ({
                              wikiTags,
                              label,
                              content,
-                             geolocation,
-                             createTime,
+                             createTime, upvoteCount, downvoteCount
                          }: PostPreviewCardProps) => {
     let createdAtString;
     const createdDate = new Date(createTime);
@@ -31,7 +30,7 @@ const PostPreviewCard = ({
         createdAtString = format(new Date(createTime), "dd.MM.yyyy");
     }
 
-    const likes =  Math.floor(Math.random() * (5 - (-5) + 1)) - 5;
+    const likes =  upvoteCount - downvoteCount;
 
     return (
         <div className="card WA-theme-bg-regular rounded-4 mb-3">

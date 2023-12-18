@@ -69,7 +69,7 @@ const ProfilePage = () => {
                                 createTime={post.createTime} enigmaUser={post.enigmaUser}
                                 geolocation={post.geolocation} id={post.id} interestArea={post.interestArea}
                                 wikiTags={post.wikiTags} label={post.label} title={post.title}
-                                sourceLink={post.sourceLink}/>
+                                sourceLink={post.sourceLink} upvoteCount={post.upvoteCount} downvoteCount={post.downvoteCount}/>
                         })
                         }
                     </div>}
