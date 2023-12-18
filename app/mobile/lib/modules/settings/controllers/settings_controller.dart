@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
+import 'package:mobile/data/models/enigma_user.dart';
+import 'package:mobile/data/models/user_profile.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
 import 'package:mobile/modules/settings/providers/settings_provider.dart';
 import 'package:mobile/routes/app_pages.dart';
@@ -11,6 +13,16 @@ class SettingsController extends GetxController {
   final settingsProvider = Get.find<SettingsProvider>();
 
   final _box = GetStorage();
+
+  int userId = Get.arguments['userId'];
+
+  var routeLoading = true.obs;
+  late final UserProfile userProfile;
+
+  var username= <EnigmaUser>[].obs;
+  var email= <EnigmaUser>[].obs;
+  var birthday= <EnigmaUser>[].obs;
+  
 
   void onLogout() async {
     try {
