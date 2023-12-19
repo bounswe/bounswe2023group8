@@ -4,13 +4,10 @@ import 'package:get/get.dart';
 import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/models/enigma_user.dart';
-import 'package:mobile/data/models/post_model.dart';
-import 'package:mobile/data/models/spot.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
 import 'package:mobile/data/widgets/visitor_bottom_bar.dart';
 
-import '../../../data/models/user_model.dart';
 import '../../../data/widgets/custom_search_bar.dart';
 import '../../opening/controllers/opening_controller.dart';
 import '../controllers/visitor_explore_controller.dart';
@@ -31,6 +28,7 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8),
+        physics: const ClampingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -122,6 +120,10 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                           },
                           post: controller.dummySpots[index],
                           hideTags: false,
+                          onUpvote: () {},
+                          onDownvote: () {},
+                          showDownvoters: () {},
+                          showUpvoters: () {},
                         );
                       },
                     ),

@@ -48,7 +48,7 @@ class HomeView extends GetView<HomeController> {
                         Container(
                           margin: const EdgeInsets.only(right: 16),
                           padding: const EdgeInsets.only(
-                                left: 16, top: 8, bottom: 8),
+                              left: 16, top: 8, bottom: 8),
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.only(
                                 bottomRight: Radius.circular(10)),
@@ -150,16 +150,14 @@ class HomeView extends GetView<HomeController> {
                                   controller.posts[index]),
                               post: controller.posts[index],
                               hideTags: false,
-								onUpvote: () => controller.upvotePost(
-                                          controller.posts[index].id),
-                                      onDownvote: () => controller.downvotePost(
-                                          controller.posts[index].id),
-                                      showDownvoters: () =>
-                                          controller.showDownVotes(
-                                              controller.posts[index].id),
-                                      showUpvoters: () =>
-                                          controller.showUpVotes(
-                                              controller.posts[index].id),
+                              onUpvote: () => controller
+                                  .upvotePost(controller.posts[index].id),
+                              onDownvote: () => controller
+                                  .downvotePost(controller.posts[index].id),
+                              showDownvoters: () => controller
+                                  .showDownVotes(controller.posts[index].id),
+                              showUpvoters: () => controller
+                                  .showUpVotes(controller.posts[index].id),
                             );
                           },
                         ),
@@ -264,7 +262,6 @@ class HomeView extends GetView<HomeController> {
                       controller.upvotePost(controller.searchPosts[index].id),
                   showDownvoters: () {},
                   showUpvoters: () {},
-                      
                 );
               },
               separatorBuilder: (context, index) {
