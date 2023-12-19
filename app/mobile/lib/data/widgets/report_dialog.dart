@@ -37,7 +37,7 @@ class ReportDialog extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
                           controller: controller,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: 'Reason for reporting',
                             border: OutlineInputBorder(),
                           ),

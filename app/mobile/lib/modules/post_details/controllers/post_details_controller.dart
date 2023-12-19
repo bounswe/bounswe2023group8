@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:map_location_picker/map_location_picker.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
@@ -5,8 +6,10 @@ import 'package:mobile/data/models/spot.dart';
 import 'package:mobile/data/widgets/report_dialog.dart';
 import 'package:mobile/data/widgets/user_list_dialog.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
+import 'package:mobile/modules/post_details/models/comment.dart';
 import 'package:mobile/modules/post_details/providers/post_details_provider.dart';
 import 'package:mobile/modules/post_details/views/location_view.dart';
+import 'package:mobile/routes/app_pages.dart';
 
 class PostDetailsController extends GetxController {
   Spot postArg = Get.arguments['post'];
@@ -15,6 +18,8 @@ class PostDetailsController extends GetxController {
 
   var isFollowing = false.obs;
 
+  RxList<CommentModel> comments = <CommentModel>[].obs;
+
   BottomNavigationController bottomNavController =
       Get.find<BottomNavigationController>();
 
@@ -22,6 +27,8 @@ class PostDetailsController extends GetxController {
 
   final postDetailsProvider = Get.find<PostDetailsProvider>();
   var routeLoading = true.obs;
+
+  final commentController = TextEditingController();
 
   bool showFollowButton() {
     return !visitor &&
@@ -72,8 +79,7 @@ class PostDetailsController extends GetxController {
   }
 
   void navigateToEditPost() {
-    showLocation();
-    //Get.toNamed(Routes.editPost, arguments: {'spot': post});
+    Get.toNamed(Routes.editPost, arguments: {'spot': post.value});
   }
 
   void upvotePost() async {
@@ -160,7 +166,6 @@ class PostDetailsController extends GetxController {
     }
   }
 
-
   void showReportSpot() {
     Get.dialog(ReportDialog(
         title: 'Report Spot',
@@ -182,15 +187,56 @@ class PostDetailsController extends GetxController {
     }
   }
 
+  void fetchComments() async {
+    try {
+      comments.value = await postDetailsProvider.getPostComments(
+              token: bottomNavController.token, postId: postArg.id) ??
+          comments;
+      routeLoading.value = false;
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void makeComment() async {
+    try {
+      final res = await postDetailsProvider.comment(
+          token: bottomNavController.token,
+          postId: post.value.id,
+          content: commentController.text);
+      if (res) {
+        commentController.clear();
+        fetchComments();
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void deleteComment(int commentId) async {
+    try {
+      final res = await postDetailsProvider.deleteComment(
+          token: bottomNavController.token,
+          postId: post.value.id,
+          commentId: commentId);
+      if (res) {
+        fetchComments();
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void startEditingComment(int commentId) {}
+
+
 
   @override
   void onInit() {
     super.onInit();
-
     isFollowing.value =
         bottomNavController.isUserFollowing(postArg.enigmaUser.id);
-
     post = postArg.obs;
-    routeLoading.value = false;
+    fetchComments();
   }
 }
