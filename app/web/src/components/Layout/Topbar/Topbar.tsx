@@ -27,6 +27,13 @@ const Topbar = () => {
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const handleKeyPress = (event: any) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      navigate(`search_results/${searchTerm}`);
+    }
+  };
+
   const navigate = useNavigate();
   const handleRegisterShow = () => {
     setShowRegisterModal(!showRegisterModal);
@@ -62,10 +69,10 @@ const Topbar = () => {
               width="38px"
               height="43px"
             />{" "}
-            <span className="fs-3">Web Info Aggregator</span>
+            {/* <span className="fs-3">Web Info Aggregator</span> */}
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
+          {/* <Navbar.Toggle aria-controls="basic-navbar-nav" /> */}
+          <Navbar.Collapse id="basic-navbar-nav" style={{marginLeft: "200px"}}>
             <div className="d-flex me-auto">
               <input
                 type="search"
@@ -73,9 +80,11 @@ const Topbar = () => {
                 className="me-2"
                 aria-label="Search"
                 value={searchTerm}
+                style={{ width: '500px', borderRadius: '25px', borderWidth: '2px', borderColor: '#88898a', padding: '5px 10px', outline: 'none'}}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyPress}
               />
-              <Button
+              {/* <Button
                 variant="outline-success"
                 onClick={(event: any) => {
                   event.preventDefault();
@@ -83,7 +92,7 @@ const Topbar = () => {
                 }}
               >
                 Search
-              </Button>
+              </Button> */}
             </div>
             {isAuthenticated ? (
               <Nav className="container justify-content-end m-3 ">
@@ -101,7 +110,7 @@ const Topbar = () => {
                     </NavDropdown.Item>
                   ))}
                 </NavDropdown>
-                <NavDropdown
+                {/* <NavDropdown
                   title={
                     <span>
                       <span className="fs-5 bi bi-person"></span>
@@ -123,7 +132,7 @@ const Topbar = () => {
                       text={"Log Out"}
                     />
                   </NavDropdown.Item>
-                </NavDropdown>
+                </NavDropdown> */}
               </Nav>
             ) : (
               <Nav className="container justify-content-end m-3 ">
