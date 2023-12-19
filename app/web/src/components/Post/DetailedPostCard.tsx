@@ -176,6 +176,8 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
     const [selectedTextAnnotation, setSelectedTextAnnotation] = useState('');
     const [selectedTextRanges, setSelectedTextRanges] = useState({start: 0, end: 0});
 
+    const [annotators, setAnnotators] = useState<string[]>([]);
+
     const handleSelection = () => {
       const selection = window.getSelection();
       if (selection && selection.toString().length > 0) {
@@ -227,7 +229,7 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
         startIndex: 15,
         endIndex: 20,
         content: "Ankara",
-        source: "Furkan",
+        source: "Ahmet",
       }
       const ann4 : Annotation = {
         startIndex: 15,
@@ -267,12 +269,32 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
     //   }
       setAnnotations([ann1, ann2, ann4]);
       setDisplayAnnotations([ann1, ann2, ann4]);
+      
     //   setAnnotations([ann1, ann2, ann4, ann5, ann6, ann7, ann8, ann9, ann10]);
     //   setDisplayAnnotations([ann1, ann2, ann4, ann5, ann6, ann7, ann8, ann9, ann10]);
     }, []);
+
+    const [selectedOption, setSelectedOption] = useState<string>('');
+    const [uniqueSources, setUniqueSources] = useState<string[]>([]);
+  
+    // Function to handle dropdown option change
+    const handleDropdownChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+            
+        const filterAnnotationsBySource = (sourceToFilter: string) => {
+            const filteredAnnotations = annotations.filter(annotation => annotation.source === sourceToFilter);
+            setDisplayAnnotations(filteredAnnotations);
+        };
+
+        filterAnnotationsBySource(event.target.value);
+        setSelectedOption(event.target.value);
+    };
+  
   
     useEffect(() => {
-      if (annotations.length == 0) return;
+        const uniqueSources = Array.from(new Set(annotations.map(annotation => annotation.source)));
+        setUniqueSources(uniqueSources)
+
+        if (annotations.length == 0) return;
         setMergedRanges(mergeOverlappingRanges(annotations))
     }, [annotations])
 
@@ -508,6 +530,15 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                                 locationData={geolocation}></LocationViewer>
             </div>
             <div className="card WA-theme-bg-regular rounded-4 mb-3 mt-4 col-4 h-100">
+                <div className="mb-3">
+                    <label htmlFor="dropdown" className="form-label">Select an option:</label>
+                    <select id="dropdown" className="form-select" value={selectedOption} onChange={handleDropdownChange}>
+                        <option value="" disabled>Select an option</option>
+                        {uniqueSources.map(option => (
+                        <option key={option} value={option}>{option}</option>
+                        ))}
+                    </select>
+                </div>
                 <div className="d-flex flex-column" style={{ maxHeight: '300px', overflowY: 'auto' }}>
                     <table className="table">
                         <thead>
