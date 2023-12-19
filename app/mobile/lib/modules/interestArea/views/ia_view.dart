@@ -110,7 +110,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                         if (!controller.isOwner)
                                           controller.isFollower.value
                                               ? InkWell(
-                                                  onTap: () =>
+                                                  onTap: 
                                                       controller.unfollowIa,
                                                   child: Container(
                                                     padding: const EdgeInsets
@@ -139,7 +139,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                                   ),
                                                 )
                                               : InkWell(
-                                                  onTap: () =>
+                                                  onTap: 
                                                       controller.followIa,
                                                   child: Container(
                                                     padding: const EdgeInsets

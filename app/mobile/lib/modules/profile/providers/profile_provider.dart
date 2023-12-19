@@ -79,7 +79,7 @@ class ProfileProvider extends GetConnect {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!);
         return (body as List)
-            .map((e) => InterestArea.fromJsonWithId(e, id))
+            .map((e) => InterestArea.fromJson(e))
             .toList();
       }
     } else {
