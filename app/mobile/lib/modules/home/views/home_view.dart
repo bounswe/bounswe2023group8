@@ -94,7 +94,7 @@ class HomeView extends GetView<HomeController> {
                                           fontWeight: FontWeight.w400,
                                           letterSpacing: -0.15,
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -127,7 +127,7 @@ class HomeView extends GetView<HomeController> {
                                           fontWeight: FontWeight.w400,
                                           letterSpacing: -0.15,
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
