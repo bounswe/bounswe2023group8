@@ -8,7 +8,6 @@ import 'package:mobile/data/models/wiki_tag.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
 import 'package:mobile/modules/editPost/providers/edit_post_provider.dart';
 import 'package:mobile/modules/home/controllers/home_controller.dart';
-import 'package:mobile/modules/newPost/providers/new_post_provider.dart';
 import 'package:mobile/routes/app_pages.dart';
 
 class EditPostController extends GetxController {

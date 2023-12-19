@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/palette.dart';
@@ -7,7 +6,6 @@ import 'package:mobile/data/widgets/bunch_widget.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
 import 'package:mobile/modules/profile/widgets/profile_header_widget.dart';
 
-import '../../../data/constants/assets.dart';
 import '../../../data/widgets/custom_app_bar.dart';
 import '../controllers/profile_controller.dart';
 import '../widgets/followers_popup.dart';
@@ -22,13 +20,18 @@ class ProfileView extends GetView<ProfileController> {
       appBar: CustomAppBar(
         leadingAppIcon: true,
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(18),
-            child: InkWell(
-              child: SvgPicture.asset(Assets.notification),
-              onTap: () {},
-            ),
-          )
+          if (controller.userId != controller.bottomNavController.userId)
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: () => controller.showReportUser(),
+                  child: Icon(
+                    Icons.report_gmailerrorred,
+                    size: 30,
+                  )),
+            )
         ],
       ),
       body: SingleChildScrollView(
@@ -49,10 +52,10 @@ class ProfileView extends GetView<ProfileController> {
                 followingCount: controller.followings.length,
                 user: controller.userProfile,
                 onFollowersPressed: () {
-                  Get.dialog(FollowersPopup());
+                  Get.dialog(const FollowersPopup());
                 },
                 onFollowingPressed: () {
-                  Get.dialog(FollowingsPopup());
+                  Get.dialog(const FollowingsPopup());
                 },
               ),
               const SizedBox(
@@ -109,7 +112,7 @@ class ProfileView extends GetView<ProfileController> {
                 thickness: 1,
                 color: Colors.grey,
               ),
-              ListView.builder(
+              ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: controller.posts.length,
@@ -118,9 +121,19 @@ class ProfileView extends GetView<ProfileController> {
                       onTap: () => controller
                           .navigateToPostDetails(controller.posts[index]),
                       post: controller.posts[index],
+                      showDownvoters: () =>
+                          controller.showDownVotes(controller.posts[index].id),
+                      showUpvoters: () =>
+                          controller.showUpVotes(controller.posts[index].id),
                       hideTags: false,
+                      onDownvote: () =>
+                          controller.downvotePost(controller.posts[index].id),
+                      onUpvote: () =>
+                          controller.upvotePost(controller.posts[index].id),
                     );
-                  })
+                  },
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 8))
             ],
           );
         }),

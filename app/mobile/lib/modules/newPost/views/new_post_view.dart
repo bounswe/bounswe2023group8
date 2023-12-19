@@ -209,8 +209,8 @@ class NewPostView extends GetView<NewPostController> {
                     onTap: () => controller.pickDate(),
                           child: Row(
                             children: [
-                              Text("Publication Date: "),
-                              SizedBox(
+                        const Text("Publication Date: "),
+                        const SizedBox(
                                 width: 10,
                               ),
                               Text(
@@ -231,8 +231,8 @@ class NewPostView extends GetView<NewPostController> {
                     onTap: controller.navigateToSelectAddress,
                     child: Row(
                       children: [
-                        Text("Location: "),
-                        SizedBox(
+                        const Text("Location: "),
+                        const SizedBox(
                           width: 10,
                         ),
                         Text(

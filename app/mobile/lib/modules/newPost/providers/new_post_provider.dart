@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:get/get.dart';
 import 'package:mobile/data/models/interest_area.dart';
@@ -97,7 +96,9 @@ class NewPostProvider extends GetConnect {
     } else if (response.statusCode == 200 || response.statusCode == 201) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!);
-        return (body as List).map((e) => InterestArea.fromJson(e)).toList();
+        return (body as List)
+            .map((e) => InterestArea.fromJson(e))
+            .toList();
       }
     } else {
       if (response.bodyString != null) {

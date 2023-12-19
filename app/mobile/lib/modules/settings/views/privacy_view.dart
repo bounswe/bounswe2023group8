@@ -32,9 +32,9 @@ class PrivacyAndSafetyView extends GetView<SettingsController> {
               Container(
               width: 420,
               height: 44,
-              decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                 color: Color(0xFF486375),
-                borderRadius: BorderRadius.only(
+                    borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(8),
                   bottomRight: Radius.circular(8),
                 ),
@@ -57,7 +57,7 @@ class PrivacyAndSafetyView extends GetView<SettingsController> {
                 width: 360,
                 height: 497,
                 decoration: BoxDecoration(
-                  color: Color(0xFFCDCFCF),
+                      color: const Color(0xFFCDCFCF),
                   borderRadius: BorderRadius.circular(8),),
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: const Text(

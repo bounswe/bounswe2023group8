@@ -150,6 +150,16 @@ class HomeView extends GetView<HomeController> {
                                               controller.posts[index]),
                                       post: controller.posts[index],
                                       hideTags: false,
+                                      onUpvote: () => controller.upvotePost(
+                                          controller.posts[index].id),
+                                      onDownvote: () => controller.downvotePost(
+                                          controller.posts[index].id),
+                                      showDownvoters: () =>
+                                          controller.showDownVotes(
+                                              controller.posts[index].id),
+                                      showUpvoters: () =>
+                                          controller.showUpVotes(
+                                              controller.posts[index].id),
                                     )
                                   ],
                                 );
@@ -246,6 +256,13 @@ class HomeView extends GetView<HomeController> {
                       .navigateToPostDetails(controller.searchPosts[index]),
                   post: controller.searchPosts[index],
                   hideTags: false,
+                  onDownvote: () =>
+                      controller.downvotePost(controller.searchPosts[index].id),
+                  onUpvote: () =>
+                      controller.upvotePost(controller.searchPosts[index].id),
+                  showDownvoters: () {},
+                  showUpvoters: () {},
+                      
                 );
               },
               separatorBuilder: (context, index) {
