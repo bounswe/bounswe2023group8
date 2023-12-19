@@ -8,6 +8,7 @@ import {
   useGetSubInterestAreasOfInterestArea,
 } from "../../hooks/useInterestArea";
 import { AccessLevel, accessLevelMapping } from "../InterestAreaUpdatePage";
+import { useReportAnIssue } from "../../hooks/useModeration";
 
 export interface EnigmaUser {
   id: number;
@@ -96,6 +97,8 @@ const ViewInterestArea = () => {
     });
   const [showContent, setShowContent] = useState(false);
   const [showPosts, setShowPosts] = useState(true);
+  const [reportReason, setReportReason] = useState("");
+  const [showReport, setShowReport] = useState(false);
 
   useEffect(() => {
     // Set a timeout to update the state after 2 seconds
@@ -129,6 +132,26 @@ const ViewInterestArea = () => {
     },
   });
 
+  const { mutate: reportAnIssue } = useReportAnIssue({
+    axiosInstance,
+    issue: {
+      entityId: parseInt(iaId as string),
+      entityType: "INTEREST_AREA",
+      reason: reportReason,
+    },
+  });
+
+  const reportBunch = () => {
+    reportAnIssue({
+      axiosInstance,
+      issue: {
+        entityId: parseInt(iaId as string),
+        entityType: "INTEREST_AREA",
+        reason: reportReason,
+      },
+    });
+  };
+
   return (
     <>
       {isSuccess && isPostsSuccess && isNestedInterestAreasSuccess ? (
@@ -155,6 +178,38 @@ const ViewInterestArea = () => {
                     src="/assets/theme/icons/NoNotificationNotSelected.png"
                     style={{ width: "20px" }}
                   />
+                </div>
+                <div className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
+                  {showReport ? (
+                    <>
+                      <input
+                        type="text"
+                        className="form-control mx-4"
+                        placeholder="Please write a reason"
+                        onChange={(e) => setReportReason(e.target.value)}
+                      ></input>
+                      <div className="d-flex mx-3">
+                        <button onClick={() => reportBunch()} className="btn">
+                          Submit
+                        </button>
+                        <button
+                          onClick={() => setShowReport(!showReport)}
+                          className="btn"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => setShowReport(!showReport)}
+                        className="btn mx-3 rounded-5"
+                      >
+                        Report
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
               <button
