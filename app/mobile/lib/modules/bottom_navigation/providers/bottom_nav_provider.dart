@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/models/interest_area.dart';
-import 'package:mobile/data/models/spot.dart';
-import 'package:mobile/data/models/user_profile.dart';
 
 import '../../../data/constants/config.dart';
 import '../../../data/models/custom_exception.dart';
@@ -29,7 +27,9 @@ class BottomNavProvider extends GetConnect {
     } else if (response.statusCode == 200 || response.statusCode == 201) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!);
-        return (body as List).map((e) => InterestArea.fromJson(e)).toList();
+        return (body as List)
+            .map((e) => InterestArea.fromJson(e))
+            .toList();
       }
     } else {
       if (response.bodyString != null) {

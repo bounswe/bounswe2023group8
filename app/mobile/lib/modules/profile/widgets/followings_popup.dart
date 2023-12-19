@@ -5,6 +5,8 @@ import 'package:mobile/data/constants/assets.dart';
 import '../controllers/profile_controller.dart';
 
 class FollowingsPopup extends GetView<ProfileController> {
+  const FollowingsPopup({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -29,13 +31,9 @@ class FollowingsPopup extends GetView<ProfileController> {
           children: [
             const Divider(),
             SizedBox(
-              width: 200, // necessary don't know why
-              height: 300,
-              child: SingleChildScrollView(
-                  // Wrap your content with SingleChildScrollView
-                  child: Column(
-                // Wrap with a Column
-                children: [
+              width: Get.width - 40,
+              height: Get.height - 200,
+              child: 
                   ListView.builder(
                     shrinkWrap: true,
                     itemCount: controller.followings.length,
@@ -47,7 +45,7 @@ class FollowingsPopup extends GetView<ProfileController> {
                               AssetImage(Assets.profilePlaceholder),
                         ),
                         title: Text(following.name),
-                        subtitle: Text(following.username),
+                    subtitle: Text('@${following.username}'),
                         trailing: TextButton(
                           onPressed: () {
                             controller.unfollowUser(following.id);
@@ -60,9 +58,7 @@ class FollowingsPopup extends GetView<ProfileController> {
                         ),
                       );
                     },
-                  ),
-                ],
-              )),
+              ),
             ),
           ],
         );

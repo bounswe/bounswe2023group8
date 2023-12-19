@@ -3,6 +3,7 @@ import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/models/spot.dart';
+import 'package:mobile/data/widgets/user_list_dialog.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
 import 'package:mobile/modules/home/providers/home_provider.dart';
 import '../../../routes/app_pages.dart';
@@ -66,6 +67,86 @@ class HomeController extends GetxController {
               token: bottomNavigationController.token) ??
           [];
       routeLoading.value = false;
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void upvotePost(int postId) async {
+    try {
+      final hasUpvoted = await homeProvider.hasUpVoted(
+          token: bottomNavigationController.token,
+          postId: postId,
+          userId: bottomNavigationController.userId);
+
+      bool res = false;
+
+      if (hasUpvoted) {
+        res = await homeProvider.unvotePost(
+            token: bottomNavigationController.token, postId: postId);
+      } else {
+        res = await homeProvider.upvotePost(
+            token: bottomNavigationController.token, postId: postId);
+      }
+
+      if (res) {
+        fetchData();
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void downvotePost(int postId) async {
+    try {
+      final hasDownvoted = await homeProvider.hasDownVoted(
+          token: bottomNavigationController.token,
+          postId: postId,
+          userId: bottomNavigationController.userId);
+
+      bool res = false;
+
+      if (hasDownvoted) {
+        res = await homeProvider.unvotePost(
+            token: bottomNavigationController.token, postId: postId);
+      } else {
+        res = await homeProvider.downvotePost(
+            token: bottomNavigationController.token, postId: postId);
+      }
+
+      if (res) {
+        fetchData();
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void showUpVotes(int postId) async {
+    try {
+      final users = await homeProvider.getUpvotedUsers(
+          token: bottomNavigationController.token, postId: postId);
+      if (users.isNotEmpty) {
+        Get.dialog(UserListDialog(
+          title: 'Upvoters',
+          users: users,
+        ));
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void showDownVotes(int postId) async {
+    try {
+      final users = await homeProvider.getDownvotedUsers(
+          token: bottomNavigationController.token, postId: postId);
+      if (users.isNotEmpty) {
+        Get.dialog(UserListDialog(
+          title: 'Downvoters',
+          users: users,
+        ));
+      }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }

@@ -8,8 +8,19 @@ class PostTileWidget extends StatelessWidget {
   final Spot post;
   final void Function()? onTap;
   final bool hideTags;
+  final void Function() onUpvote;
+  final void Function() onDownvote;
+  final void Function() showUpvoters;
+  final void Function() showDownvoters;
   const PostTileWidget(
-      {super.key, required this.post, this.onTap, required this.hideTags});
+      {super.key,
+      required this.post,
+      this.onTap,
+      required this.hideTags,
+      required this.onUpvote,
+      required this.onDownvote,
+      required this.showUpvoters,
+      required this.showDownvoters});
 
   @override
   Widget build(BuildContext context) {
@@ -85,37 +96,50 @@ class PostTileWidget extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     InkWell(
-                      onTap: () {
-                        // TODO: handle upvote
-                      },
+                      onTap: onUpvote,
                       child: Image.asset(
                         Assets.upvote,
-                        width: 12,
-                      ),
-                    ),
-                    const SizedBox(width: 2),
-                    Text(
-                      '127',
-                      style: TextStyle(
-                        color: ThemePalette.positive,
-                        fontSize: 8,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w500,
-                        height: 0,
-                        letterSpacing: -0.15,
+                        width: 14,
                       ),
                     ),
                     const SizedBox(width: 2),
                     InkWell(
-                      onTap: () {
-                        // TODO: handle downvote
-                      },
-                      child: Image.asset(
-                        Assets.downvote,
-                        width: 12,
+                      onTap: showUpvoters,
+                      child: Text(
+                        post.upvoteCount.toString(),
+                        style: TextStyle(
+                          color: ThemePalette.positive,
+                          fontSize: 12,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                          height: 0,
+                          letterSpacing: -0.15,
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 2),
+                    InkWell(
+                      onTap: onDownvote,
+                      child: Image.asset(
+                        Assets.downvote,
+                        width: 14,
+                      ),
+                    ),
+                    const SizedBox(width: 2),
+                    InkWell(
+                      onTap: showDownvoters,
+                      child: Text(
+                        post.downvoteCount.toString(),
+                        style: TextStyle(
+                          color: ThemePalette.negative,
+                          fontSize: 12,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                          height: 0,
+                          letterSpacing: -0.15,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ],
