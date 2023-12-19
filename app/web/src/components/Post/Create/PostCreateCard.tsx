@@ -236,7 +236,11 @@ const PostCreateCard = ({
               value={postDetails.label}
               onChange={handleInputChange}
             >
+              <option value="Discussion">Discussion</option>
+              <option value="Documentation">Documentation</option>
+              <option value="Learning">Learning</option>
               <option value="News">News</option>
+              <option value="Research">Research</option>
             </select>
           </div>
           {/*<div className="mb-3">*/}

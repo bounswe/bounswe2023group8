@@ -1,262 +1,276 @@
 import React, {useEffect, useState} from "react";
-import { format } from "date-fns";
+import {format} from "date-fns";
 import Tag from "../Tag/Tag";
-import mockUsers from "../../mockData/milestone1/451_users.json";
-import { Col, Row } from "react-bootstrap";
-import { Post, EnigmaUser, Geolocation, InterestArea, WikiTag} from "../../pages/InterestAreaViewPage";
+import {Post} from "../../pages/InterestAreaViewPage";
 import LocationViewer from "../Geolocation/LocationViewer";
 import {useAuth} from "../../contexts/AuthContext";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
+import Label from "../Label/Label";
+import {useDownvoteSpot, useGetSpotVotes, useUnvoteSpot, useUpvoteSpot} from "../../hooks/useSpotVotes";
 
 export type DetailedPostCardProps = {
-  post: Post
+    post: Post
 }
 
-type Annotation = {
-  startIndex: number,
-  endIndex: number,
-  content: string,
-}
-
-const  DetailedPostCard = (props: DetailedPostCardProps) => {
-  const { userData} = useAuth();
-  const [locationModalShow, setLocationModalShow] = useState(false);
-  const handleLocationModalShow = () => {
-    setLocationModalShow(!locationModalShow);
-  }
-  
-  const [annotations, setAnnotations] = useState<Annotation[]>([]);
-  const [mergedRanges, setMergedRanges] = useState<{start: number, end: number}[]>([]);
-
-  useEffect(() => {
-    // set annotations by api
-    // mock data for now
-    const ann1 : Annotation = {
-      startIndex: 0,
-      endIndex: 10,
-      content: "Ankara",
+const DetailedPostCard = (props: DetailedPostCardProps) => {
+    const [locationModalShow, setLocationModalShow] = useState(false);
+    const handleLocationModalShow = () => {
+        setLocationModalShow(!locationModalShow);
     }
-    const ann2 : Annotation = {
-      startIndex: 45,
-      endIndex: 50,
-      content: "Ankara",
-    }
-    const ann4 : Annotation = {
-      startIndex: 40,
-      endIndex: 50,
-      content: "Ankara",
-    }
-    const ann5 : Annotation = {
-      startIndex: 45,
-      endIndex: 70,
-      content: "Ankara",
-    }
-    const ann6 : Annotation = {
-      startIndex: 5,
-      endIndex: 20,
-      content: "Ankara",
-    }
-    setAnnotations([ann1, ann2, ann4, ann5, ann6]);
-  }, []);
+    const {
+        post: {
+            content,
+            createTime,
+            enigmaUser,
+            geolocation,
+            id,
+            interestArea,
+            label,
+            sourceLink,
+            title,
+            wikiTags,
+            upvoteCount,
+            downvoteCount,
+        }
+    } = props;
 
-  useEffect(() => {
-    if (annotations.length == 0) return;
-      setMergedRanges(mergeOverlappingRanges(annotations))
-  }, [annotations])
+    const {userData, axiosInstance} = useAuth();
+    const { postId } = useParams();
+    const [upvotes, setUpvotes] = useState(upvoteCount);
+    const [downvotes, setDownvotes] = useState(downvoteCount);
 
-  function mergeOverlappingRanges(annotations: Annotation[]) {
-    annotations.sort((a, b) => a.startIndex - b.startIndex);
-  
-    const mergedRanges = [];
-  
-    let currentStartIndex = annotations[0].startIndex;
-    let currentEndIndex = annotations[0].endIndex;
-  
-    for (let i = 1; i < annotations.length; i++) {
-      const nextStartIndex = annotations[i].startIndex;
-      const nextEndIndex = annotations[i].endIndex;
-  
-      if (currentEndIndex >= nextStartIndex) {
-        // Merge overlapping ranges
-        currentEndIndex = Math.max(currentEndIndex, nextEndIndex);
-      } else {
-        // Add the merged range
-        mergedRanges.push({ start: currentStartIndex, end: currentEndIndex });
-  
-        // Update currentStartIndex and currentEndIndex
-        currentStartIndex = nextStartIndex;
-        currentEndIndex = nextEndIndex;
-      }
-    }
-  
-    // Add the last merged range
-    mergedRanges.push({ start: currentStartIndex, end: currentEndIndex });
-  
-    return mergedRanges;
-  }
+    const {mutate: getSpotVotes, data: votesOnSpot} = useGetSpotVotes({});
+    const {mutate: upvoteSpot} = useUpvoteSpot({
+        config: {
+            onSuccess: (data: any) => {
+                const vote = votesOnSpot.filter((datum: { enigmaUser: { id: number; }; }) => {
+                    return datum.enigmaUser.id == userData.id;
+                })[0];
+                if( vote && !vote.isUpvote){
+                    setDownvotes(downvotes - 1);
+                    setUpvotes(upvotes + 1);
+                }else {
+                    setUpvotes(upvotes + 1);
+                }
 
-  const renderHighlightedText = () => {
-    let currentPosition = 0;
-    const result = [];
+                getSpotVotes({
+                    axiosInstance: axiosInstance,
+                    id: postId || "1",
+                })
+            }
+        }
+    });
+    const {mutate: downvoteSpot} = useDownvoteSpot({
+        config: {
+            onSuccess: (data: any) => {
+                const vote = votesOnSpot.filter((datum: { enigmaUser: { id: number; }; }) => {
+                    return datum.enigmaUser.id == userData.id;
+                })[0];
 
-    mergedRanges.forEach((range, index) => {
-      const { start, end } = range;
+                if( vote && vote.isUpvote){
+                    console.log("upvoted before. Can downvote");
+                    setUpvotes(upvotes - 1);
+                    setDownvotes(downvotes + 1);
+                }else {
+                    console.log("not voted before. Can downvote");
+                    setDownvotes(downvotes + 1);
+                }
 
-      // Get the text between the current position and the start index
-      const beforeHighlight = post.content.slice(currentPosition, start);
+                getSpotVotes({
+                    axiosInstance: axiosInstance,
+                    id: postId || "1",
+                })
+            }
+        }
+    });
+    const {mutate: unvoteSpot} = useUnvoteSpot({
+        config: {
+            onSuccess: (data: any) => {
+                const vote = votesOnSpot.filter((datum: { enigmaUser: { id: number; }; }) => {
+                    return datum.enigmaUser.id == userData.id;
+                })[0];
 
-      // Get the highlighted text
-      const highlightedText = post.content.slice(start, end);
+                if( vote.isUpvote){
+                    console.log("upvoted before. Can downvote");
+                    setUpvotes(upvotes - 1);
+                }else {
+                    console.log("not voted before. Can downvote");
+                    setDownvotes(downvotes - 1);
+                }
 
-      // Update the current position to the end index for the next iteration
-      currentPosition = end;
-
-      // Add the non-highlighted part to the result
-      if (beforeHighlight) {
-        result.push(<span key={`non-highlighted-${index}`}>{beforeHighlight}</span>);
-      }
-
-      // Add the highlighted part to the result
-      result.push(<span onMouseEnter={() => {hoverAnnotation(start, end)}} key={`highlighted-${index}`} className="highlighted-text" style={{backgroundColor: "red"}}>{highlightedText}</span>);
+                getSpotVotes({
+                    axiosInstance: axiosInstance,
+                    id: postId || "1",
+                })
+            }
+        }
     });
 
-    // Add any remaining non-highlighted text after the last annotation
-    if (currentPosition < post.content.length) {
-      result.push(<span key={`non-highlighted-last`}>{post.content.slice(currentPosition)}</span>);
+
+    useEffect(() => {
+        getSpotVotes({
+            axiosInstance: axiosInstance,
+            id: postId || "1",
+        })
+    }, [])
+
+    const handleUpvote = () => {
+        const vote = votesOnSpot.filter((datum: { enigmaUser: { id: number; }; }) => {
+            return datum.enigmaUser.id == userData.id;
+        })[0];
+        if(vote && vote.isUpvote){
+            unvoteSpot({
+                axiosInstance: axiosInstance,
+                id: postId || "1",
+            })
+        }else if( vote && !vote.isUpvote){
+            upvoteSpot({
+                axiosInstance: axiosInstance,
+                id: postId || "1",
+            })
+
+        }else {
+            upvoteSpot({
+                axiosInstance: axiosInstance,
+                id: postId || "1",
+            })
+        }
     }
 
-    return result;
-  };
+    const handleDownvote = () => {
+        const vote = votesOnSpot.filter((datum: { enigmaUser: { id: number; }; }) => {
+            return datum.enigmaUser.id == userData.id;
+        })[0];
+        if(vote && !vote.isUpvote){
+            unvoteSpot({
+                axiosInstance: axiosInstance,
+                id: postId || "1",
+            })
+        }else if( vote && vote.isUpvote){
+            downvoteSpot({
+                axiosInstance: axiosInstance,
+                id: postId || "1",
+            })
+        }else {
+            downvoteSpot({
+                axiosInstance: axiosInstance,
+                id: postId || "1",
+            })
+        }
+    }
 
-  const hoverAnnotation = (startIndex: number, endIndex: number) => {
-    const annotationsInRange : Annotation[] = [];
-    annotations.forEach((annotation) => {
-      if (annotation.startIndex >= startIndex && annotation.endIndex <= endIndex) {
-        annotationsInRange.push(annotation);
-      }
-    });
-    console.log(annotationsInRange)
-  }
+    const createdAtString = format(new Date(createTime), "PPpp");
 
-  const { post } = props;
     return (
-      <div
-        style={{
-          backgroundColor: "#CDCFCF",
-          padding: "40px",
-          margin: "50px",
-          borderRadius: "10px",
-        }}
-      >
-        <h3>{post.interestArea.title}</h3>
-        <div
-          className={`card mt-3 mb-1`}
-          style={{ backgroundColor: "#FFFAF6" }}
-        >
-          <Row className="g-0">
-            <Col
-              className=" justify-content-center my-4"
-              style={{
-                maxHeight: "80px",
-                maxWidth: "80px",
-                marginLeft: "20px",
-              }}
-            >
-              <img
-                src={mockUsers[0].user_profile_image}
-                className="rounded-circle img-fluid object-fit-cover h-100 w-100"
-                style={{ borderRadius: "50%" }}
-                alt="Furkan PP"
-              />
-            </Col>
-            <Col className="col-8">
-              <Row className="card-body">
-                <Col className="col-10">
-                  <h5 className="card-title">{post.enigmaUser.name}</h5>
-                  <div className="card-text" style={{ marginBottom: "10px" }}>
-                    @{post.enigmaUser.username}
-                  </div>
-
-                  {/* Follow button */}
-                  <div className="d-flex justify-content-between">
-                    <button className="btn btn-primary">Follow</button>
-                    <button className="btn btn-primary" onClick={handleLocationModalShow}>View Location</button>
-                  </div>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-
-
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <div className="col-12" style={{ width: "80%" }}>
-            
-              <div className="card-body">
-              <p className="text-body-secondary" style={{textAlign:"right"}}>
-                {format(new Date(post.createTime), "dd/MM/yyyy")}</p>
-                <h4 className="card-title">{post.title}</h4>
-                
-                <a href={""} className="link-primary">
-                  {post.sourceLink}
-                </a>
-
-                <p className="card-text">{renderHighlightedText()}</p>
-
-                <p className="card-text">{post.content}</p>
-                <p className="card-text justify-content-between d-flex">
-                  <small className="text-body-secondary">
-                    Spotted by {post.enigmaUser.name}
-                  </small>
-                </p>
-
-                <Row className="justify-content-between">
-                  <Col className="d-flex">
-                    <p
-                      className="fs-5 bi-hand-thumbs-up-fill"
-                      style={{
-                        color: "green",
-                        marginLeft: "2px",
-                        marginRight: "15px",
-                      }}
-                    >
-                      51
-                    </p>
-                    <p className="fs-5 bi-hand-thumbs-down-fill text-danger">
-                      2
-                    </p>
-                    {userData.id == post.enigmaUser.id
-                    ? <Link to={`/update_post/${post.id}`} state={{post: post}}
-                            className="btn btn-primary ms-4 ms-auto">Update Post</Link>
-                    : <button className="btn btn-danger ms-4 ms-auto">Report Post</button>
-                    }
-
-                  </Col>
-                </Row>
-              </div>
+        <div className="card WA-theme-bg-regular rounded-4 mb-3 mt-4">
+            <div className="d-flex justify-content-between align-items-center">
+                <span className="d-flex">
+                    <span style={{position: "relative", top: '-0.5em'}}>
+                        <img alt="Bunch Icon" src="/assets/theme/images/Bunch.png"></img>
+                    </span>
+                    <span className="flex-column">
+                        <div>
+                            <Link to={`/interest-area/${interestArea.id}`}
+                                  style={{textDecoration: 'none'}}
+                                  className="fs-4 fw-bold WA-theme-dark">
+                                    {interestArea.title}
+                            </Link>
+                        </div>
+                        <div className="d-inline-flex">
+                            <img alt="Profile picture" src="/assets/PlaceholderProfile.png" width="64" height="64"/>
+                            <div className="">
+                                <div className="fw-bold fs-6 WA-theme-dark">{enigmaUser.name}</div>
+                                <div className="d-flex justify-content-between">
+                                    <div className="d-flex">
+                                        <Link to={`/profile/${enigmaUser.id}`}
+                                              style={{textDecoration: 'none'}}
+                                              className="WA-theme-main">
+                                            {` @${enigmaUser.username}`}
+                                        </Link>
+                                    </div>
+                                    {/*<div className="d-flex">*/}
+                                    {/*    <button className="btn btn-outline-primary">Follow</button>*/}
+                                    {/*</div>*/}
+                                </div>
+                            </div>
+                        </div>
+                    </span>
+                </span>
             </div>
-            <div
-              className="col-3 container d-flex p-1 m-0 align-self-start"
-              style={{ width: "20%" }}
-            >
-              <div className="vr my-3 col-1"></div>
-              <div
-                className="mx-auto align-self-center overflow-y-auto"
-                style={{ maxHeight: "200px" }}
-              >
-                {post.wikiTags.map((tag) => (
-                  <Tag
-                    className={""}
-                    key={`${tag.id}`}
-                    label={tag.label}
-                  />
-                ))}
-              </div>
+            <div className="card WA-theme-bg-light rounded-4 ms-4 m-1 ">
+                <img alt="Bookmark Icon" src="/assets/theme/images/FactCheck=False.png"
+                     width="64" height="64"
+                     style={{position: "absolute", top: '-0.66em', left: '-0.60em'}}
+                />
+                <div className="row g-0 ms-4">
+                    <div className="col-9">
+                        <div className="card-body">
+                            <div className="d-flex justify-content-between">
+                                <Link to={`/posts/${id}`}
+                                      style={{textDecoration: 'none'}}
+                                      className="card-title truncate-text-2 WA-theme-dark fs-5 fw-bold">{title}</Link>
+                                <img alt="Geolocation Button" src="/assets/theme/icons/GeolocationIcon.png" width="32"
+                                     height="32"
+                                     onClick={handleLocationModalShow}
+                                />
+                            </div>
+                            <Label className="" label={label}/>
+                            <Link to={sourceLink} className="truncate-text-2 WA-theme-main fw-bold mt-1">
+                                {sourceLink}
+                            </Link>
+                            <div className="card-title truncate-text-4 WA-theme-dark">{content}</div>
+                            <div className="mb-2">{`Date: ${createdAtString}`}</div>
+                            <span className="m-3 d-flex justify-content-between">
+                                <span className="d-flex">
+                                    <img alt="upvote icon" src="/assets/theme/icons/Upvote.png" width="32" height="32"
+                                         style={{cursor: 'pointer'}} onClick={handleUpvote}/>
+                                    <span className="WA-theme-positive fw-bold fs-6 me-5"> {upvotes} </span>
+                                    <img alt="downvote icon" src="/assets/theme/icons/Downvote.png" width="32" height="32"
+                                         style={{cursor: 'pointer'}} onClick={handleDownvote}/>
+                                    <span className="WA-theme-negative fw-bold fs-6"> {downvotes} </span>
+                                </span>
+                                {enigmaUser.id == userData.id ?
+                                    <span className="d-flex">
+                                        <Link to={`/update_post/${postId}`}
+                                              state={{post: {
+                                                      content: content,
+                                                      createTime: createTime,
+                                                      enigmaUser: enigmaUser,
+                                                      geolocation: geolocation,
+                                                      id: id,
+                                                      interestArea: interestArea,
+                                                      label: label,
+                                                      sourceLink: sourceLink,
+                                                      title: title,
+                                                      wikiTags: wikiTags,
+                                                      upvoteCount: upvoteCount,
+                                                      downvoteCount: downvotes,
+                                                  }}}
+                                              style={{textDecoration: 'none'}}
+                                              className="btn-primary btn WA-theme-bg-main">Edit Spot</Link>
+                                    </span>
+                                : <></>}
+                            </span>
+                        </div>
+
+                    </div>
+                    <div className="col-3 container d-flex justify-content-start p-1 m-0 ">
+                        <div className="vr my-3 col-1"></div>
+                        <div
+                            className="mx-auto flex-fill align-self-center overflow-y-auto px-3 my-1"
+                            style={{maxHeight: "200px"}}
+                        >
+                            {wikiTags.map((tag: any) => (
+                                <Tag className="" key={`${id}-${tag.id}`} label={tag.label}/>
+                            ))}
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+            <LocationViewer showLocationViewerModal={locationModalShow}
+                            setShowLocationViewerModal={handleLocationModalShow}
+                            locationData={geolocation}></LocationViewer>
         </div>
-        <LocationViewer showLocationViewerModal={locationModalShow}
-                        setShowLocationViewerModal={handleLocationModalShow} locationData={post.geolocation}></LocationViewer>
-      </div>
     );
 }
 
