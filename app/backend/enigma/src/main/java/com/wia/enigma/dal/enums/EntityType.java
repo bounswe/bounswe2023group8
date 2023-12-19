@@ -14,7 +14,7 @@ public enum EntityType {
 
     public static EntityType fromValue(String value) {
         for (EntityType e : EntityType.values()) {
-            if (e.name.equals(value)) {
+            if (e.name.equalsIgnoreCase(value)) {
                 return e;
             }
         }

@@ -606,6 +606,48 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                         "EnigmaUser not found for id: " + userId);
     }
 
+    /**
+     * Change the password of an existing user
+     *
+     * @param enigmaUserId  EnigmaUser.id
+     * @param oldPassword   Old password
+     * @param newPassword1  new password
+     * @param newPassword2  new password
+     */
+    @Override
+    public void changePassword(Long enigmaUserId, String oldPassword, String newPassword1, String newPassword2) {
+
+        EnigmaUser enigmaUser;
+        try {
+            enigmaUser = enigmaUserRepository.findEnigmaUserById(enigmaUserId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot get EnigmaUser by id.");
+        }
+
+        if (enigmaUser == null)
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                    "EnigmaUser not found for id: " + enigmaUserId);
+
+        if (!passwordEncoder.matches(oldPassword, enigmaUser.getPassword()))
+            throw new EnigmaException(ExceptionCodes.INVALID_PASSWORD,
+                    "Current password is not valid.");
+
+        if (!newPassword1.equals(newPassword2))
+            throw new EnigmaException(ExceptionCodes.PASSWORDS_DO_NOT_MATCH,
+                    "Passwords do not match.");
+
+        enigmaUser.setPassword(passwordEncoder.encode(newPassword1));
+        try {
+            enigmaUserRepository.save(enigmaUser);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_SAVE_ERROR,
+                    "Cannot save EnigmaUser.");
+        }
+    }
+
     private List<WikiTag> getWikiTags(Long id, EntityType entityType) {
         return wikiTagRepository.findAllById(entityTagsRepository.findAllByEntityIdAndEntityType(id, entityType).stream()
                 .map(EntityTag::getWikiDataTagId)
