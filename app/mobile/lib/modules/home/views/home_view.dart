@@ -40,6 +40,7 @@ class HomeView extends GetView<HomeController> {
           body: Container(
             color: ThemePalette.white,
             child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
               child: controller.searchQuery.value.isNotEmpty
                   ? _searchBody()
                   : Column(
@@ -70,7 +71,6 @@ class HomeView extends GetView<HomeController> {
                               InkWell(
                                 onTap: () {},
                                 child: Container(
-                                  height: 28,
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 4, vertical: 2),
                                   decoration: BoxDecoration(
@@ -135,15 +135,12 @@ class HomeView extends GetView<HomeController> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 8),
                         ListView.separated(
                           shrinkWrap: true,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: controller.posts.length,
-                          separatorBuilder: (context, index) {
-                            return const SizedBox(height: 8);
-                          },
                           itemBuilder: (context, index) {
                             return PostTileWidget(
                               onTap: () => controller.navigateToPostDetails(
@@ -160,7 +157,9 @@ class HomeView extends GetView<HomeController> {
                                   .showUpVotes(controller.posts[index].id),
                             );
                           },
-                        ),
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 8),
+                        )
                       ],
                     ),
             ),
@@ -171,109 +170,145 @@ class HomeView extends GetView<HomeController> {
   }
 
   Widget _searchBody() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (controller.searchIas.isNotEmpty) ...[
-          const Text('Bunches',
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (controller.searchIas.isNotEmpty) ...[
+            Text(
+              "Bunches",
               style: TextStyle(
+                color: ThemePalette.dark,
                 fontSize: 16,
-              )),
-          const Divider(),
-          const SizedBox(
-            height: 5,
-          ),
-          ListView.separated(
+                fontFamily: 'Work Sans',
+                fontWeight: FontWeight.w400,
+                letterSpacing: -0.25,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Divider(
+              color: SeparatorPalette.dark,
+              height: 1,
+              thickness: 1,
+            ),
+            const SizedBox(height: 8),
+            ListView.separated(
+              padding: EdgeInsets.zero,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: controller.searchIas.length,
               itemBuilder: (context, index) {
                 final ia = controller.searchIas[index];
                 return BunchWidget(
-                    ia: ia, onTap: () => controller.navigateToIa(ia));
+                  ia: ia,
+                  onTap: () => controller.navigateToIa(ia),
+                );
               },
               separatorBuilder: (context, index) {
-                return const SizedBox(
-                  height: 10,
-                );
-              }),
-          const SizedBox(
-            height: 10,
-          ),
-        ],
-        if (controller.searchUsers.isNotEmpty) ...[
-          const Text('Profiles',
+                return const SizedBox(height: 8);
+              },
+            ),
+            const SizedBox(height: 16),
+          ],
+          if (controller.searchUsers.isNotEmpty) ...[
+            Text(
+              "Profiles",
               style: TextStyle(
+                color: ThemePalette.dark,
                 fontSize: 16,
-              )),
-          const Divider(),
-          const SizedBox(
-            height: 5,
-          ),
-          Container(
-            height: 140,
-            width: Get.width,
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
+                fontFamily: 'Work Sans',
+                fontWeight: FontWeight.w400,
+                letterSpacing: -0.25,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Divider(
+              color: SeparatorPalette.dark,
+              height: 1,
+              thickness: 1,
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: Get.width,
+              padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+              decoration: BoxDecoration(
                 color: BackgroundPalette.dark,
-                borderRadius: BorderRadius.circular(16)),
-            child: ListView.separated(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: SizedBox(
+                height: 106,
+                child: ListView.separated(
+                  padding: EdgeInsets.zero,
+                  scrollDirection: Axis.horizontal,
+                  physics: const ClampingScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: controller.searchUsers.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == controller.searchUsers.length) {
+                      return const SizedBox(width: 8);
+                    }
+                    final user = controller.searchUsers[index];
+                    return ProfileColumn(
+                        user: user,
+                        onTap: () => controller.navigateToProfile(user.id));
+                  },
+                  separatorBuilder: (context, index) {
+                    if (index == controller.searchUsers.length - 1) {
+                      return const SizedBox(width: 0);
+                    }
+                    return const SizedBox(width: 16);
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+          if (controller.searchPosts.isNotEmpty) ...[
+            Text(
+              "Spots",
+              style: TextStyle(
+                color: ThemePalette.dark,
+                fontSize: 16,
+                fontFamily: 'Work Sans',
+                fontWeight: FontWeight.w400,
+                letterSpacing: -0.25,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Divider(
+              color: SeparatorPalette.dark,
+              height: 1,
+              thickness: 1,
+            ),
+            const SizedBox(height: 8),
+            ListView.separated(
+                padding: EdgeInsets.zero,
                 shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: controller.searchUsers.length,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: controller.searchPosts.length,
                 itemBuilder: (context, index) {
-                  final user = controller.searchUsers[index];
-                  return ProfileColumn(
-                      user: user,
-                      onTap: () => controller.navigateToProfile(user.id));
+                  return PostTileWidget(
+                    onTap: () => controller
+                        .navigateToPostDetails(controller.searchPosts[index]),
+                    post: controller.searchPosts[index],
+                    hideTags: false,
+                    onDownvote: () => controller
+                        .downvotePost(controller.searchPosts[index].id),
+                    onUpvote: () =>
+                        controller.upvotePost(controller.searchPosts[index].id),
+                    showDownvoters: () {},
+                    showUpvoters: () {},
+                  );
                 },
                 separatorBuilder: (context, index) {
-                  return const SizedBox(
-                    width: 10,
-                  );
+                  return const SizedBox(height: 8);
                 }),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
+          ],
+          //TODO: Make bottom bar clip
         ],
-        if (controller.searchPosts.isNotEmpty) ...[
-          const Text('Spots',
-              style: TextStyle(
-                fontSize: 16,
-              )),
-          const Divider(),
-          const SizedBox(
-            height: 5,
-          ),
-          ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: controller.searchPosts.length,
-              itemBuilder: (context, index) {
-                return PostTileWidget(
-                  onTap: () => controller
-                      .navigateToPostDetails(controller.searchPosts[index]),
-                  post: controller.searchPosts[index],
-                  hideTags: false,
-                  onDownvote: () =>
-                      controller.downvotePost(controller.searchPosts[index].id),
-                  onUpvote: () =>
-                      controller.upvotePost(controller.searchPosts[index].id),
-                  showDownvoters: () {},
-                  showUpvoters: () {},
-                );
-              },
-              separatorBuilder: (context, index) {
-                return const SizedBox(
-                  height: 10,
-                );
-              }),
-        ],
-        const SizedBox(
-          height: 50,
-        ),
-      ],
+      ),
     );
   }
 }

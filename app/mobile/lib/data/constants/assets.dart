@@ -13,7 +13,7 @@ class Assets {
   static const String factCheck = 'assets/images/fact_check.png';
   static const String spot = 'assets/images/spot.png';
   static const String profilePlaceholder =
-      'assets/images/profile-placeholder.png';
+      'assets/images/profile_placeholder.png';
   static const String bunch = 'assets/images/bunch.png';
 
   // Icons
