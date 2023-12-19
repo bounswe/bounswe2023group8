@@ -20,7 +20,7 @@ const PostViewPage = () => {
 
   return (
     <>
-      <div style={{ display: 'flex' }} className="col-8">
+      <div style={{ display: 'flex' }} className="col-12">
         <div className="card-body overflow-y-auto">
           {data && <DetailedPostCard
             post={data}
