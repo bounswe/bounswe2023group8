@@ -12,20 +12,20 @@ services:
 
     # Add any additional configuration for the server service
 
-  client:
-    build: ./web/
-    env_file:
-      - ./web/.env.development
-    expose:
-      - "3000"
-    restart: always
-  #    # Add any additional configuration for the client service
+#  client:
+#    build: ./web/
+#    env_file:
+#      - ./web/.env.development
+#    expose:
+#      - "3000"
+#    restart: always
+#  #    # Add any additional configuration for the client service
 
   front:
     image: nginx
     depends_on:
       - server
-      - client
+#      - client
     ports:
       - "80:80"
       - "443:443"

@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . ./
 
 # Build the server application (assuming Maven)
-RUN mvn clean install -DskipTests -X
+RUN mvn clean install -Dmaven.test.skip=true
 
 # Stage 3: Create the final image
 FROM openjdk:17-slim
