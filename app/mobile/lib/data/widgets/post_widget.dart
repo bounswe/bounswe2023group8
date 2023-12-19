@@ -219,9 +219,9 @@ class PostTileWidget extends StatelessWidget {
                       : SizedBox(
                           height: 12,
                           child: ListView.separated(
-                            itemCount: post.wikiTags.length,
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
+                            itemCount: post.wikiTags.length,
                             separatorBuilder:
                                 (BuildContext context, int index) {
                               return const SizedBox(width: 4);
@@ -240,7 +240,7 @@ class PostTileWidget extends StatelessWidget {
                                   style: TextStyle(
                                     color: SeparatorPalette.dark,
                                     fontSize: 8,
-                                    fontFamily: "Inter",
+                                    fontFamily: 'Inter',
                                     fontWeight: FontWeight.w400,
                                     letterSpacing: -0.15,
                                   ),
