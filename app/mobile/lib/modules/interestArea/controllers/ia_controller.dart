@@ -9,6 +9,8 @@ import 'package:mobile/modules/interestArea/providers/ia_provider.dart';
 
 import '../../../routes/app_pages.dart';
 
+enum BunchViewState { main, about, requests }
+
 class InterestAreaController extends GetxController {
   final bottomNavigationController = Get.find<BottomNavigationController>();
   final iaProvider = Get.find<IaProvider>();
@@ -28,6 +30,12 @@ class InterestAreaController extends GetxController {
   var isFollower = false.obs;
 
   var searchQuery = ''.obs;
+
+  var viewState = BunchViewState.main.obs;
+
+  void onChangeState(BunchViewState state) {
+    viewState.value = state;
+  }
 
   void onSearchQueryChanged(String value) {
     searchQuery.value = value;
@@ -86,6 +94,9 @@ class InterestAreaController extends GetxController {
     searchIas.clear();
     searchController.clear();
     interestArea = ia;
+    if (interestArea.accessLevel != 'PUBLIC') {
+      viewState.value = BunchViewState.about;
+    }
     fetchData();
   }
 
