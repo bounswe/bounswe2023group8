@@ -107,75 +107,95 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                           ),
                                         ),
                                         const SizedBox(width: 16),
-										if (!controller.isOwner)
-										controller.isFollower.value ?
-                                        InkWell(
-                                          onPressed: controller.unfollowIa,
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 12, vertical: 3),
-                                            decoration: BoxDecoration(
-                                              color: BackgroundPalette.light,
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                            child: Text(
-                                              "Leave",
-                                              style: TextStyle(
-                                                color: ThemePalette.main,
-                                                fontSize: 10,
-                                                fontFamily: 'Inter',
-                                                fontWeight: FontWeight.w500,
-                                                letterSpacing: -0.15,
+                                        if (!controller.isOwner)
+                                          controller.isFollower.value
+                                              ? InkWell(
+                                                  onTap: () =>
+                                                      controller.unfollowIa,
+                                                  child: Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 3),
+                                                    decoration: BoxDecoration(
+                                                      color: BackgroundPalette
+                                                          .light,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20),
+                                                    ),
+                                                    child: Text(
+                                                      "Leave",
+                                                      style: TextStyle(
+                                                        color:
+                                                            ThemePalette.main,
+                                                        fontSize: 10,
+                                                        fontFamily: 'Inter',
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        letterSpacing: -0.15,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : InkWell(
+                                                  onTap: () =>
+                                                      controller.followIa,
+                                                  child: Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 3),
+                                                    decoration: BoxDecoration(
+                                                      color: BackgroundPalette
+                                                          .light,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20),
+                                                    ),
+                                                    child: Text(
+                                                      controller
+                                                              .requestSent.value
+                                                          ? 'Sent'
+                                                          : 'Join',
+                                                      style: TextStyle(
+                                                        color:
+                                                            ThemePalette.main,
+                                                        fontSize: 10,
+                                                        fontFamily: 'Inter',
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        letterSpacing: -0.15,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                        const SizedBox(width: 8),
+                                        if (controller.isOwner &&
+                                            controller
+                                                    .interestArea.accessLevel ==
+                                                'PRIVATE')
+                                          InkWell(
+                                            onTap: () =>
+                                                controller.onChangeState(
+                                                    BunchViewState.requests),
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 6,
+                                                      vertical: 3),
+                                              decoration: BoxDecoration(
+                                                color: BackgroundPalette.light,
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              child: SvgPicture.asset(
+                                                Assets.notification,
+                                                width: 10,
+                                                height: 12,
                                               ),
                                             ),
                                           ),
-                                        ) : InkWell(
-                                          onPressed: controller.followIa,
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 12, vertical: 3),
-                                            decoration: BoxDecoration(
-                                              color: BackgroundPalette.light,
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                            child: Text(
-                                              controller.requestSent.value
-                                                ? 'Sent'
-                                                : 'Join',
-                                              style: TextStyle(
-                                                color: ThemePalette.main,
-                                                fontSize: 10,
-                                                fontFamily: 'Inter',
-                                                fontWeight: FontWeight.w500,
-                                                letterSpacing: -0.15,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-										const SizedBox(width: 8),
-										if (controller.isOwner &&
-                                  controller.interestArea.accessLevel ==
-                                      'PRIVATE')
-										InkWell(
-										onTap: () => controller
-                                      .onChangeState(BunchViewState.requests),
-                                  child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 6, vertical: 3),
-                                          decoration: BoxDecoration(
-                                            color: BackgroundPalette.light,
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          ),
-                                          child: SvgPicture.asset(
-                                            Assets.notification,
-                                            width: 10,
-                                            height: 12,
-                                          ),
-                                        ),
-										),
                                       ],
                                     ),
                                     controller.viewState.value ==
@@ -438,6 +458,13 @@ class InterestAreaView extends GetView<InterestAreaController> {
                 controller.navigateToPostDetails(controller.posts[index]),
             post: controller.posts[index],
             hideTags: true,
+            onUpvote: () => controller.upvotePost(controller.posts[index].id),
+            onDownvote: () =>
+                controller.downvotePost(controller.posts[index].id),
+            showDownvoters: () =>
+                controller.showDownVotes(controller.posts[index].id),
+            showUpvoters: () =>
+                controller.showUpVotes(controller.posts[index].id),
           );
         },
         separatorBuilder: (context, index) => const SizedBox(height: 8),
