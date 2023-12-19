@@ -50,6 +50,7 @@ public interface EnigmaUserService {
 
     void validateExistence(Long userId);
 
+    void changePassword(Long enigmaUserId, String oldPassword, String newPassword1, String newPassword2);
     void uploadProfilePicture(Long userId, MultipartFile file);
 
     void deleteProfilePicture(Long userId);
