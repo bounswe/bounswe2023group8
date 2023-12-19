@@ -40,6 +40,7 @@ class HomeView extends GetView<HomeController> {
           body: Container(
             color: ThemePalette.white,
             child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
               child: controller.searchQuery.value.isNotEmpty
                   ? _searchBody()
                   : Column(
@@ -70,7 +71,6 @@ class HomeView extends GetView<HomeController> {
                               InkWell(
                                 onTap: () {},
                                 child: Container(
-                                  height: 28,
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 4, vertical: 2),
                                   decoration: BoxDecoration(
@@ -135,33 +135,30 @@ class HomeView extends GetView<HomeController> {
                             ],
                           ),
                         ),
-                        ListView.builder(
+                        ListView.separated(
                           shrinkWrap: true,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: controller.posts.length,
                           itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                const SizedBox(height: 8),
-                                PostTileWidget(
-                                  onTap: () => controller.navigateToPostDetails(
-                                      controller.posts[index]),
-                                  post: controller.posts[index],
-                                  hideTags: false,
-                                  onUpvote: () => controller
-                                      .upvotePost(controller.posts[index].id),
-                                  onDownvote: () => controller
-                                      .downvotePost(controller.posts[index].id),
-                                  showDownvoters: () =>
-                                      controller.showDownVotes(
-                                          controller.posts[index].id),
-                                  showUpvoters: () => controller
-                                      .showUpVotes(controller.posts[index].id),
-                                )
-                              ],
+                            return PostTileWidget(
+                              onTap: () => controller.navigateToPostDetails(
+                                  controller.posts[index]),
+                              post: controller.posts[index],
+                              hideTags: false,
+                              onUpvote: () => controller
+                                  .upvotePost(controller.posts[index].id),
+                              onDownvote: () => controller
+                                  .downvotePost(controller.posts[index].id),
+                              showDownvoters: () => controller
+                                  .showDownVotes(controller.posts[index].id),
+                              showUpvoters: () => controller
+                                  .showUpVotes(controller.posts[index].id),
                             );
                           },
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 8),
                         )
                       ],
                     ),
@@ -198,6 +195,7 @@ class HomeView extends GetView<HomeController> {
             ),
             const SizedBox(height: 8),
             ListView.separated(
+              padding: EdgeInsets.zero,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: controller.searchIas.length,
@@ -242,16 +240,24 @@ class HomeView extends GetView<HomeController> {
               child: SizedBox(
                 height: 106,
                 child: ListView.separated(
+                  padding: EdgeInsets.zero,
                   scrollDirection: Axis.horizontal,
+                  physics: const ClampingScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: controller.searchUsers.length,
+                  itemCount: controller.searchUsers.length + 1,
                   itemBuilder: (context, index) {
+                    if (index == controller.searchUsers.length) {
+                      return const SizedBox(width: 8);
+                    }
                     final user = controller.searchUsers[index];
                     return ProfileColumn(
                         user: user,
                         onTap: () => controller.navigateToProfile(user.id));
                   },
                   separatorBuilder: (context, index) {
+                    if (index == controller.searchUsers.length - 1) {
+                      return const SizedBox(width: 0);
+                    }
                     return const SizedBox(width: 16);
                   },
                 ),
@@ -278,6 +284,7 @@ class HomeView extends GetView<HomeController> {
             ),
             const SizedBox(height: 8),
             ListView.separated(
+                padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: controller.searchPosts.length,
@@ -299,7 +306,7 @@ class HomeView extends GetView<HomeController> {
                   return const SizedBox(height: 8);
                 }),
           ],
-          const SizedBox(height: 32), //TODO: Make bottom bar clip
+          //TODO: Make bottom bar clip
         ],
       ),
     );
