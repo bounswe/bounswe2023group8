@@ -7,7 +7,6 @@ import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/models/wiki_tag.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
 import 'package:mobile/modules/newPost/providers/new_post_provider.dart';
-import 'package:mobile/modules/newPost/views/select_location_view.dart';
 
 class NewPostController extends GetxController {
   var label = 0.obs;

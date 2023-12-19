@@ -94,6 +94,10 @@ class VisitorInterestAreaView extends GetView<InterestAreaController> {
                             .navigateToPostDetails(controller.posts[index]),
                         post: controller.posts[index],
                         hideTags: true,
+                        onUpvote: () {},
+                        onDownvote: () {},
+                        showUpvoters: () {},
+                        showDownvoters: () {},
                       );
                     })
               ],
