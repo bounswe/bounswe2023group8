@@ -38,23 +38,6 @@ class InterestArea {
     );
   }
 
-  factory InterestArea.fromJsonWithId(Map<String, dynamic> json, int id) {
-    List<dynamic> wikiTagsJson = json['wikiTags'] ?? [];
-    List<WikiTag> parsedWikiTags =
-        wikiTagsJson.map((tag) => WikiTag.fromJson(tag)).toList();
-
-    return InterestArea(
-      id: json['id'] ?? 0,
-      enigmaUserId: json['enigmaUserId'] ?? id,
-      accessLevel: json['accessLevel'] ?? '',
-      name: json['title'] ?? '',
-      nestedInterestAreas: List<String>.from(json['nestedInterestAreas'] ?? []),
-      wikiTags: parsedWikiTags,
-      createTime: DateTime.parse(json['createTime'] ?? ''),
-      description: json['description'] ?? '',
-    );
-  }
-
   get accessInt {
     switch (accessLevel) {
       case 'PUBLIC':

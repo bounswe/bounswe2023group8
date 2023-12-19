@@ -141,6 +141,9 @@ class InterestAreaController extends GetxController {
     searchIas.clear();
     searchController.clear();
     interestArea = ia;
+    if (interestArea.accessLevel != 'PUBLIC') {
+      viewState.value = BunchViewState.about;
+    }
     fetchData();
   }
 
