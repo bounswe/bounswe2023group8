@@ -56,7 +56,6 @@ class ProfileController extends GetxController {
   void navigateToIa(InterestArea ia) {
     Get.toNamed(Routes.interestArea, arguments: {
       'interestArea': ia,
-      'isOwner': userId == bottomNavController.userId
     });
   }
 

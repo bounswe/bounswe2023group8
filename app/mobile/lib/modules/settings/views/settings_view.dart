@@ -250,9 +250,7 @@ class SettingsView extends GetView<SettingsController> {
               ),
               const SizedBox(height: 12),
               InkWell(
-                onTap: () {
-                  Get.offAllNamed(Routes.opening);
-                },
+                onTap: controller.onLogout,
                 child:
                 Container(
                 width: 328,

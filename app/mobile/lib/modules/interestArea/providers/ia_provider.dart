@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/models/spot.dart';
+import 'package:mobile/modules/interestArea/models/ia_request.dart';
 
 import '../../../data/constants/config.dart';
 import '../../../data/models/custom_exception.dart';
@@ -176,7 +177,6 @@ class IaProvider extends GetConnect {
     }
     return false;
   }
-
 
   Future<bool> downvotePost(
       {required String token, required int postId}) async {
@@ -358,7 +358,6 @@ class IaProvider extends GetConnect {
     return [];
   }
 
-
   Future<bool> report(
       {required int entityId,
       required String entityType,
@@ -379,6 +378,77 @@ class IaProvider extends GetConnect {
       return true;
     } else {
       if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
+  Future<List<IaRequest>?> getIaRequests(
+      {required int id, required String token}) async {
+    final response =
+        await get('v1/interest-area/$id/follow-requests', headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    } else if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!) as List;
+        return body.map((e) => IaRequest.fromJson(e)).toList();
+      }
+    } else {
+      if (response.bodyString != null && response.bodyString!.isNotEmpty) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return null;
+  }
+
+  Future<bool> acceptIaRequest(
+      {required int requestId, required String token}) async {
+    final response =
+        await get('v1/interest-area/accept-follow-request', headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    }, query: {
+      'requestId': requestId.toString(),
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    } else if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      if (response.bodyString != null && response.bodyString!.isNotEmpty) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
+  Future<bool> rejectIaRequest(
+      {required int requestId, required String token}) async {
+    final response =
+        await get('v1/interest-area/reject-follow-request', headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    }, query: {
+      'requestId': requestId.toString(),
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    }
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      if (response.bodyString != null && response.bodyString!.isNotEmpty) {
         final body = json.decode(response.bodyString!);
         throw CustomException.fromJson(body);
       }
