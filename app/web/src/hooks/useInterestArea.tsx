@@ -203,3 +203,29 @@ export const useGetPostsOfInterestArea = (
     config
   );
 };
+
+//
+//  FOLLOW INTEREST AREA
+//
+
+export type FollowInterestAreaProps = {
+  axiosInstance: AxiosInstance;
+  interestAreaId: number;
+};
+
+const followInterestArea = async ({
+  axiosInstance,
+  interestAreaId,
+}: FollowInterestAreaProps) => {
+  const response = await axiosInstance.post(
+    `${process.env.REACT_APP_BACKEND_API_URL}/v1/interest-area/follow?id=${interestAreaId}`
+  );
+
+  if (response.status >= 200 && response.status < 300) {
+    return response.data;
+  }
+};
+
+export const useFollowInterestArea = (props: {}) => {
+  return useMutation(followInterestArea, props);
+};

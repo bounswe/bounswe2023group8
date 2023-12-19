@@ -3,6 +3,7 @@ import PostPreviewCard from "../../components/Post/PostSmallPreview/PostPreviewC
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import {
+  useFollowInterestArea,
   useGetInterestArea,
   useGetPostsOfInterestArea,
   useGetSubInterestAreasOfInterestArea,
@@ -61,6 +62,18 @@ const ViewInterestArea = () => {
   const [interestAreaData, setInterestAreaData] = useState<any>(null);
   const [subInterestAreasData, setSubInterestAreasData] = useState<any>(null);
   const [postsData, setPostsData] = useState<Post[] | null>(null);
+
+  const { mutate: followInterestArea } = useFollowInterestArea({
+    axiosInstance,
+    interestAreaId: parseInt(iaId as string),
+  });
+
+  const followBunch = () => {
+    followInterestArea({
+      axiosInstance,
+      interestAreaId: parseInt(iaId as string),
+    });
+  };
 
   const { isSuccess } = useGetInterestArea({
     axiosInstance,
@@ -174,7 +187,9 @@ const ViewInterestArea = () => {
                   <h1>{interestAreaData?.title}</h1>
                 </div>
                 <div className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
-                  <span className="mx-2">Join</span>
+                  <span onClick={() => followBunch()} className="mx-2">
+                    Join
+                  </span>
                 </div>
                 <div className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
                   <img
