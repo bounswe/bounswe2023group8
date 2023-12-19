@@ -110,7 +110,9 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                             style: TextStyle(
                                               color: ThemePalette.main,
                                             ))),
-                              if (controller.isOwner)
+                              if (controller.isOwner &&
+                                  controller.interestArea.accessLevel ==
+                                      'PRIVATE')
                                 InkWell(
                                   onTap: () => controller
                                       .onChangeState(BunchViewState.requests),

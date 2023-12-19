@@ -27,7 +27,9 @@ class BottomNavProvider extends GetConnect {
     } else if (response.statusCode == 200 || response.statusCode == 201) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!);
-        return (body as List).map((e) => InterestArea.fromJson(e)).toList();
+        return (body as List)
+            .map((e) => InterestArea.fromJsonWithId(e, id))
+            .toList();
       }
     } else {
       if (response.bodyString != null) {
