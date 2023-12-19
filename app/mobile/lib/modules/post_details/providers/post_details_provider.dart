@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/models/spot.dart';
+import 'package:mobile/modules/post_details/models/comment.dart';
 
 import '../../../data/constants/config.dart';
 import '../../../data/models/custom_exception.dart';
@@ -289,4 +290,78 @@ class PostDetailsProvider extends GetConnect {
     }
     return false;
   }
+
+
+  Future<List<CommentModel>?> getPostComments(
+      {required int postId, required String token}) async {
+    final response = await get('v1/post/$postId/comments', headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    } else if (response.statusCode == 201 || response.statusCode == 200) {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!) as List;
+        return body.map((e) => CommentModel.fromJson(e)).toList();
+      }
+    } else {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return null;
+  }
+
+  Future<bool> comment(
+      {required int postId,
+      required String content,
+      required String token}) async {
+    final response = await post('v1/post/$postId/comment', {
+      'content': content,
+    }, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    } else if (response.statusCode == 201 || response.statusCode == 200) {
+      return true;
+    } else {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
+  Future<bool> deleteComment(
+      {required int commentId,
+      required String token,
+      required int postId}) async {
+    final response =
+        await delete('v1/post/$postId/comment/$commentId', headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    }
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
+
 }
