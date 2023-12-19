@@ -136,7 +136,7 @@ const ViewInterestArea = () => {
     axiosInstance,
     issue: {
       entityId: parseInt(iaId as string),
-      entityType: "INTEREST_AREA",
+      entityType: "interest_area",
       reason: reportReason,
     },
   });
@@ -146,7 +146,7 @@ const ViewInterestArea = () => {
       axiosInstance,
       issue: {
         entityId: parseInt(iaId as string),
-        entityType: "INTEREST_AREA",
+        entityType: "interest_area",
         reason: reportReason,
       },
     });
