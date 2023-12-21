@@ -1,8 +1,6 @@
 package com.wia.enigma.core.service.InterestAreaService;
 
 import com.wia.enigma.core.data.dto.EnigmaUserDto;
-import com.wia.enigma.core.data.dto.PostDto;
-import com.wia.enigma.core.data.dto.WikiTagDto;
 import com.wia.enigma.core.data.response.FollowRequestsResponse;
 import com.wia.enigma.core.service.InterestAreaPostService.InterestAreaPostService;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
