@@ -20,6 +20,7 @@ class EditPostProvider extends GetConnect {
       required int postId,
       required String sourceLink,
       required int interestAreaId,
+      required bool isAgeRestricted,
       required int label,
       required String content,
       required List<String> tags,
@@ -34,6 +35,7 @@ class EditPostProvider extends GetConnect {
       "wikiTags": tags,
       "label": label,
       "content": content,
+      "isAgeRestricted": isAgeRestricted,
       "geoLocation": {
         "latitude": latitude,
         "longitude": longitude,

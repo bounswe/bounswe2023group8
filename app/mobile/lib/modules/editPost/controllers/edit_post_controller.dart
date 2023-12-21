@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:map_location_picker/map_location_picker.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/models/spot.dart';
@@ -20,11 +21,17 @@ class EditPostController extends GetxController {
   var tagQuery = ''.obs;
   var sourceLink = ''.obs;
 
+  var isAgeRestricted = false.obs;
+
   final titleController = TextEditingController();
   final contentController = TextEditingController();
   final sourceLinkController = TextEditingController();
 
   var createInProgress = false.obs;
+
+  var address = ''.obs;
+  var latitude = 0.0.obs;
+  var longitude = 0.0.obs;
 
   Rx<InterestArea?> selectedIa = Rx<InterestArea?>(null);
 
@@ -66,6 +73,10 @@ class EditPostController extends GetxController {
 
   void onChangeTitle(String value) {
     title.value = value;
+  }
+
+  void onChangeIsAgeRestricted() {
+    isAgeRestricted.value = !isAgeRestricted.value;
   }
 
   void onChangeContent(String value) {
@@ -244,20 +255,42 @@ class EditPostController extends GetxController {
     }
   }
 
+  void navigateToSelectAddress() {
+    //TO AVOID GOOGLE MAP API BILLING, DONT NAVIGATE TO SELECT LOCATION VIEW AND SET DEFAULT LOCATION
+    //EXEPT FOR PRESENTATION
+
+    address.value =
+        'Bebek, Güney Kampüs, Boğaziçi Universites, 34342 Beşiktaş/İstanbul, Türkiye';
+    latitude.value = 41.0834112;
+    longitude.value = 29.0501748;
+    //Get.to(SelectLocationView());
+  }
+
+  void onSelectAddress(GeocodingResult? result) {
+    if (result != null) {
+      address.value = result.formattedAddress ?? '';
+      latitude.value = result.geometry.location.lat;
+      longitude.value = result.geometry.location.lng;
+    }
+
+    Get.back();
+  }
+
   void onUpdatePost() async {
     try {
       final res = await editPostProvider.updatePost(
         title: title.value,
         postId: spot.id,
-        latitude: 1.2421,
-        longitude: 3.4523,
-        address: 'Atlanta',
+          address: address.value,
+          latitude: latitude.value,
+          longitude: longitude.value,
         content: content.value,
         tags: selectedTags.map((e) => e.id).toList(),
         token: bottomNavController.token,
         sourceLink: sourceLink.value,
         interestAreaId: selectedIa.value!.id,
         label: label.value,
+          isAgeRestricted: isAgeRestricted.value
       );
       if (res) {
         Get.back();
@@ -277,6 +310,10 @@ class EditPostController extends GetxController {
     selectedTags.value = spot.wikiTags;
     sourceLink.value = spot.sourceLink;
     sourceLinkController.text = spot.sourceLink;
+    isAgeRestricted.value = spot.isAgeRestricted;
+    address.value = spot.geolocation.address;
+    latitude.value = spot.geolocation.latitude;
+    longitude.value = spot.geolocation.longitude;
     label.value = spot.label == "Documentation"
         ? 0
         : spot.label == "Learning"
