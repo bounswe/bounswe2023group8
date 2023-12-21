@@ -97,6 +97,15 @@ public class EnigmaUserController {
     }
 
     /*
+        WA-60: Gets interest area follow requests.
+     */
+    @GetMapping("/interest-area-follow-requests")
+    public ResponseEntity<?> getInterestAreaFollowRequests(EnigmaAuthenticationToken token) {
+
+        return ResponseEntity.ok(enigmaUserService.getInterestAreaFollowRequests(token.getEnigmaUserId()));
+    }
+
+    /*
         WA-31: Gets posts.
      */
     @GetMapping("/{id}/posts")
@@ -140,4 +149,5 @@ public class EnigmaUserController {
 
         return ResponseEntity.ok().build();
     }
+
 }
