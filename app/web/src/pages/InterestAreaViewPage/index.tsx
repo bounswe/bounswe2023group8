@@ -99,6 +99,8 @@ const ViewInterestArea = () => {
       axiosInstance,
       interestAreaId: parseInt(iaId as string),
       config: {
+        retry: isSuccess,
+        enabled: isSuccess,
         onSuccess: (data: any) => {
           const newDetails = data.map((result: any) => ({
             title: result.title,
@@ -129,6 +131,8 @@ const ViewInterestArea = () => {
     axiosInstance,
     interestAreaId: parseInt(iaId as string),
     config: {
+      retry: isSuccess,
+      enabled: isSuccess,
       onSuccess: (data: Post[]) => {
         const newDetails = data.map((result: Post) => ({
           id: result.id,
@@ -396,24 +400,21 @@ const ViewInterestArea = () => {
         </div>
       ) : (
         showContent && (
-          <div
-            style={{
-              padding: "10px",
-              border: "1px solid #ccc",
-              borderRadius: "5px",
-              textAlign: "center",
-              fontFamily: "Arial, sans-serif",
-              color: "#333",
-            }}
-          >
+          <div className="m-3 p-3" style={{ backgroundColor: "#fffaf6" }}>
             <h2>Private Bunch</h2>
             <p>
               This section contains private and confidential information. Access
-              is restricted to authorized individuals only.
+              is restricted to authorized individuals only. You can send a
+              request to join this bunch.
             </p>
-            <p>
-              If you have the necessary permissions, please proceed responsibly.
-            </p>
+            <div className="m-3 d-flex justify-content-center align-items-center rounded-5">
+              <button
+                onClick={() => followBunch()}
+                className="btn mx-2 WA-theme-bg-dark WA-theme-light"
+              >
+                Join
+              </button>
+            </div>
           </div>
         )
       )}
