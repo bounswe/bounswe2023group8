@@ -102,6 +102,14 @@ public class UserFollowsServiceImpl implements UserFollowsService {
         }
     }
 
+    public void checkInterestAreaBasicDataAccess(InterestArea interestArea, Long enigmaUserId) {
+        if (interestArea.getAccessLevel() == EnigmaAccessLevel.PERSONAL && !interestArea.getEnigmaUserId().equals(enigmaUserId)) {
+            throw new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "You don't have access to this personal interest area:: " + interestArea.getId());
+        }
+    }
+
+
+
     /**
      * Deletes all UserFollows data for the user.
      *

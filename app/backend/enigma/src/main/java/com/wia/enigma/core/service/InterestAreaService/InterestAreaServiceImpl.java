@@ -52,7 +52,7 @@ public class InterestAreaServiceImpl implements InterestAreaService {
         InterestArea interestArea = interestAreaRepository.findById(id)
                 .orElseThrow(() -> new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + id));
 
-        interestAreaServiceHelper.checkInterestAreaAccess(interestArea, enigmaUserId);
+        interestAreaServiceHelper.checkInterestAreaBasicDataAccess(interestArea, enigmaUserId);
 
         List<WikiTag> wikiTags = interestAreaServiceHelper.getWikiTags(id);
 

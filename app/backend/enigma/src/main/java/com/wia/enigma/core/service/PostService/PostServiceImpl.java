@@ -49,12 +49,15 @@ public class PostServiceImpl implements PostService {
 
         InterestArea interestArea = interestAreaRepository.findInterestAreaById(post.getInterestAreaId());
 
+
+        EnigmaUser user = enigmaUserRepository.findEnigmaUserById(post.getEnigmaUserId());
+
         if(enigmaUser == null)
             throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("Enigma user %d not found", post.getEnigmaUserId()));
 
         return post.mapToPostDto(
                 wikiTags,
-                enigmaUser.mapToEnigmaUserDto(),
+                user.mapToEnigmaUserDto(),
                 interestArea.mapToInterestAreaModel(),
                 postVoteRepository.countByPostIdAndVote(postId, true),
                 postVoteRepository.countByPostIdAndVote(postId, false),
