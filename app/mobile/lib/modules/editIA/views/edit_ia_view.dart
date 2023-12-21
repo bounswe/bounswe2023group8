@@ -17,6 +17,9 @@ class EditIaView extends GetView<EditIaController> {
     return Scaffold(
         appBar: CustomAppBar(
           leadingAppIcon: true,
+          leadingBackIcon: true,
+          search: false,
+          notification: false,
           actions: [
             IconButton(
                 onPressed: () {

@@ -6,7 +6,6 @@ import 'package:mobile/data/widgets/custom_button.dart';
 import 'package:mobile/data/widgets/custom_dialogs.dart';
 import 'package:mobile/modules/editPost/controllers/edit_post_controller.dart';
 
-
 class EditPostView extends GetView<EditPostController> {
   const EditPostView({Key? key}) : super(key: key);
 
@@ -15,6 +14,9 @@ class EditPostView extends GetView<EditPostController> {
     return Scaffold(
         appBar: CustomAppBar(
           leadingAppIcon: true,
+          leadingBackIcon: true,
+          search: false,
+          notification: false,
           actions: [
             IconButton(
                 onPressed: () {
@@ -217,8 +219,6 @@ class EditPostView extends GetView<EditPostController> {
                     ))
                   ],
                 ),
-                
-                
                 const SizedBox(
                   height: 20,
                 ),
@@ -349,4 +349,3 @@ class EditPostView extends GetView<EditPostController> {
     );
   }
 }
-

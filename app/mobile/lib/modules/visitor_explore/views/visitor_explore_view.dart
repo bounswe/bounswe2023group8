@@ -7,8 +7,6 @@ import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
 import 'package:mobile/data/widgets/visitor_bottom_bar.dart';
-
-import '../../../data/widgets/custom_search_bar.dart';
 import '../../opening/controllers/opening_controller.dart';
 import '../controllers/visitor_explore_controller.dart';
 
@@ -24,7 +22,10 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
               Get.find<OpeningController>().backToAuth(false)),
       appBar: const CustomAppBar(
         leadingAppIcon: true,
-        titleWidget: CustomSearchBar(),
+        search: true,
+        // onSearchQueryChanged: controller.onSearchQueryChanged,
+        notification: false,
+        actions: [],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8),

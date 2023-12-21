@@ -25,6 +25,9 @@ class PostDetailsView extends GetView<PostDetailsController> {
             : null,
         appBar: CustomAppBar(
           leadingAppIcon: true,
+          leadingBackIcon: true,
+          search: false,
+          notification: true,
           actions: [
             if (!controller.visitor &&
                 controller.post.value.enigmaUser.id ==
@@ -188,7 +191,6 @@ class PostDetailsView extends GetView<PostDetailsController> {
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                  
                       const SizedBox(height: 2),
                       InkWell(
                           onTap: () => controller.deleteComment(comment.id),

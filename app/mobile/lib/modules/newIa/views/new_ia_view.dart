@@ -17,6 +17,9 @@ class NewIaView extends GetView<NewIaController> {
     return Scaffold(
         appBar: const CustomAppBar(
           leadingAppIcon: true,
+          search: false,
+          notification: false,
+          actions: [],
         ),
         body: Obx(() {
           if (controller.routeLoading.value) {
@@ -44,7 +47,6 @@ class NewIaView extends GetView<NewIaController> {
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
@@ -83,7 +85,6 @@ class NewIaView extends GetView<NewIaController> {
                     ],
                   ),
                 ),
-
                 const SizedBox(
                   height: 16,
                 ),
@@ -128,7 +129,6 @@ class NewIaView extends GetView<NewIaController> {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 16),
                 Container(
                     padding: const EdgeInsets.all(8),
@@ -327,8 +327,6 @@ class NewIaView extends GetView<NewIaController> {
                         ])),
                 if (controller.searchSubIaResults.isNotEmpty)
                   _searchIaResults(),
-           
-        
                 const SizedBox(
                   height: 20,
                 ),
@@ -382,7 +380,7 @@ class NewIaView extends GetView<NewIaController> {
                           color: SeparatorPalette.dark,
                           fontSize: 12,
                           fontWeight: FontWeight.w500)),
-                ),      
+                ),
               ),
             );
           },
@@ -422,7 +420,6 @@ class NewIaView extends GetView<NewIaController> {
                           color: SeparatorPalette.dark,
                           fontSize: 12,
                           fontWeight: FontWeight.w500)),
-                     
                 ),
               )
           ],
@@ -461,7 +458,7 @@ class NewIaView extends GetView<NewIaController> {
                   child: Text(ia.name,
                       style:
                           const TextStyle(color: Colors.white, fontSize: 12)),
-                ),      
+                ),
               ),
             );
           },
@@ -499,7 +496,6 @@ class NewIaView extends GetView<NewIaController> {
                   child: Text(ia.name,
                       style:
                           const TextStyle(color: Colors.white, fontSize: 12)),
-                     
                 ),
               )
           ],

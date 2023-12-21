@@ -19,6 +19,12 @@ class ProfileView extends GetView<ProfileController> {
     return Scaffold(
       appBar: CustomAppBar(
         leadingAppIcon: true,
+        leadingBackIcon:
+            controller.userId == controller.bottomNavController.userId
+                ? false
+                : true,
+        search: false,
+        notification: true,
         actions: [
           if (controller.userId != controller.bottomNavController.userId)
             Padding(

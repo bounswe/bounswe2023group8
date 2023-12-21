@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile/data/widgets/custom_search_bar.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
 import '../../../data/widgets/visitor_bottom_bar.dart';
 import '../../opening/controllers/opening_controller.dart';
@@ -19,7 +18,10 @@ class VisitorInterestAreaView extends GetView<InterestAreaController> {
               Get.find<OpeningController>().backToAuth(false)),
       appBar: const CustomAppBar(
         leadingAppIcon: true,
-        titleWidget: CustomSearchBar(),
+        search: true,
+        // onSearchQueryChanged: controller.onSearchQueryChanged,
+        notification: false,
+        actions: [],
       ),
       body: Container(
           color: Colors.white,

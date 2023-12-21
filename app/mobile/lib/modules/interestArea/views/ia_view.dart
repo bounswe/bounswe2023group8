@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/bunch_widget.dart';
-import 'package:mobile/data/widgets/custom_search_bar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
 import '../controllers/ia_controller.dart';
@@ -24,10 +23,10 @@ class InterestAreaView extends GetView<InterestAreaController> {
         return Scaffold(
           appBar: CustomAppBar(
             leadingAppIcon: true,
-            titleWidget: CustomSearchBar(
-              controller: controller.searchController,
-              onChanged: controller.onSearchQueryChanged,
-            ),
+            leadingBackIcon: true,
+            search: true,
+            onSearchQueryChanged: controller.onSearchQueryChanged,
+            notification: true,
             actions: [
               if (controller.isOwner)
                 IconButton(
@@ -110,8 +109,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                         if (!controller.isOwner)
                                           controller.isFollower.value
                                               ? InkWell(
-                                                  onTap: 
-                                                      controller.unfollowIa,
+                                                  onTap: controller.unfollowIa,
                                                   child: Container(
                                                     padding: const EdgeInsets
                                                         .symmetric(
@@ -139,8 +137,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                                   ),
                                                 )
                                               : InkWell(
-                                                  onTap: 
-                                                      controller.followIa,
+                                                  onTap: controller.followIa,
                                                   child: Container(
                                                     padding: const EdgeInsets
                                                         .symmetric(
