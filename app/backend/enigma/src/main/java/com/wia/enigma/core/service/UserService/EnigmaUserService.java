@@ -42,6 +42,8 @@ public interface EnigmaUserService {
 
     List<InterestAreaDto> getFollowingInterestAreas(Long userId, Long followerId);
 
+    List<InterestAreaDto> getInterestAreaFollowRequests(Long userId);
+
     EnigmaUserDto getVerifiedUser(Long id);
 
     List<EnigmaUserDto> search(Long userId, String searchKey);
