@@ -27,4 +27,6 @@ public class ProfilePageDto {
         Long followers;
 
         Long following;
+
+        String profilePictureUrl;
 }
