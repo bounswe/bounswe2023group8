@@ -47,6 +47,7 @@ public class PageServiceImpl implements PageService{
                 .birthday(enigmaUserDto.getBirthday())
                 .followers(enigmaUserService.getFollowerCount(profileId))
                 .following(enigmaUserService.getFollowingCount(profileId))
+                .profilePictureUrl(enigmaUserDto.getPictureUrl())
                 .build();
 
         return profilePageDto;
