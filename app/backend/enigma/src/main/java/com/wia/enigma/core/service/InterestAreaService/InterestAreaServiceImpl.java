@@ -65,6 +65,8 @@ public class InterestAreaServiceImpl implements InterestAreaService {
                                                     EnigmaAccessLevel accessLevel, List<Long> nestedInterestAreas,
                                                     List<String> wikiTags) {
 
+        wikiTags = wikiTags.stream().distinct().toList();
+
         interestAreaServiceHelper.validateWikiTags(wikiTags);
 
         InterestArea interestArea = interestAreaServiceHelper.createAndSaveInterestArea(enigmaUserId, title, description, accessLevel);
@@ -88,6 +90,8 @@ public class InterestAreaServiceImpl implements InterestAreaService {
                                                     EnigmaAccessLevel accessLevel,
                                                     List<Long> nestedInterestAreas,
                                                     List<String> wikiTags) {
+
+        wikiTags = wikiTags.stream().distinct().toList();
 
         InterestArea interestArea = interestAreaServiceHelper.updateInterestAreaDetails(id, title, description, accessLevel);
 

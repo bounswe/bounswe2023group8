@@ -34,6 +34,7 @@ public class InterestAreaServiceHelper {
     final UserFollowsRepository userFollowsRepository;
     private final PostRepository postRepository;
     private final WikiTagRepository wikiTagRepository;
+    private final TagSuggestionRepository tagSuggestionRepository;
 
 
     boolean isValidWikidataId(String id) {
@@ -182,6 +183,7 @@ public class InterestAreaServiceHelper {
 
     void updateWikiTags(InterestArea interestArea, List<String> wikiTags) {
         entityTagsRepository.deleteAllByEntityIdAndEntityType(interestArea.getId(), EntityType.INTEREST_AREA);
+        tagSuggestionRepository.deleteByEntityIdAndEntityTypeAndWikiDataTagIdIn(interestArea.getId(), EntityType.INTEREST_AREA, wikiTags);
 
         List<EntityTag> entityTags = wikiTags.stream().map(wikiTag ->
                 EntityTag.builder()

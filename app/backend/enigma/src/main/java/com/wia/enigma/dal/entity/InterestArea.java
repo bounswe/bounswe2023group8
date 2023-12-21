@@ -3,7 +3,6 @@ package com.wia.enigma.dal.entity;
 
 import com.wia.enigma.core.data.dto.InterestAreaDto;
 import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;
-import com.wia.enigma.core.data.dto.WikiTagDto;
 import com.wia.enigma.core.data.model.InterestAreaModel;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import jakarta.persistence.*;

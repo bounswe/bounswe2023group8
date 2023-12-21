@@ -44,6 +44,7 @@ class PostServiceHelper {
     final WikiTagRepository wikiTagRepository;
     final PostVoteRepository postVoteRepository;
     final PostCommentRepository postCommentRepository;
+    private final TagSuggestionRepository tagSuggestionRepository;
 
 
     Post fetchPost(Long postId) {
@@ -144,6 +145,7 @@ class PostServiceHelper {
     void updateWikiTagsForPost(Post post, List<String> wikiTags) {
 
         entityTagsRepository.deleteAllByEntityIdAndEntityType(post.getId(), EntityType.POST);
+        tagSuggestionRepository.deleteByEntityIdAndEntityTypeAndWikiDataTagIdIn(post.getId(), EntityType.POST, wikiTags);
 
         List<EntityTag> entityTags = wikiTags.stream().map(wikiTag ->
                 EntityTag.builder()
