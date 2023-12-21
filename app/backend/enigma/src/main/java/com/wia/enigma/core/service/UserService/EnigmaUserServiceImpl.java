@@ -521,6 +521,23 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
     }
 
     @Override
+    public List<InterestAreaDto> getInterestAreaFollowRequests(Long userId){
+
+        List<Long> followedEntityIds = userFollowsService.findFollowings(userId, EntityType.INTEREST_AREA, false)
+                .stream()
+                .map(UserFollows::getFollowedEntityId)
+                .toList();
+
+        if (followedEntityIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<InterestArea> interestAreas = interestAreaRepository.findAllById(followedEntityIds);
+
+        return interestAreas.stream().map(interestArea -> interestArea.mapToInterestAreaDto(getWikiTags(interestArea.getId(), EntityType.INTEREST_AREA))).toList();
+    }
+
+    @Override
     public EnigmaUserDto getVerifiedUser(Long userId ){
 
         EnigmaUser enigmaUser;
