@@ -56,6 +56,12 @@ public class InterestAreaServiceHelper {
         userFollowsService.checkInterestAreaAccess(interestArea, enigmaUserId);
     }
 
+
+    void checkInterestAreaBasicDataAccess(InterestArea interestArea, Long enigmaUserId) {
+
+        userFollowsService.checkInterestAreaBasicDataAccess(interestArea, enigmaUserId);
+    }
+
     List<InterestArea> getNestedInterestAreas(Long id, Long enigmaUserId) {
 
         checkInterestAreaAccess(getInterestArea(id), enigmaUserId);
