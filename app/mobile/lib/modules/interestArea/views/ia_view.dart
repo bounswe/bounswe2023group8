@@ -29,9 +29,15 @@ class InterestAreaView extends GetView<InterestAreaController> {
             notification: true,
             actions: [
               if (controller.isOwner)
-                IconButton(
-                    onPressed: controller.navigateToEdit,
-                    icon: const Icon(Icons.edit))
+                InkWell(
+                  onTap: controller.navigateToEdit,
+                  child: Image.asset(
+                    Assets.edit,
+                    width: 20,
+                    height: 20,
+                  ),
+                ),
+              const SizedBox(width: 16),
             ],
           ),
           body: Container(

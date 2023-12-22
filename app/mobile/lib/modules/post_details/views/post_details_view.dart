@@ -16,13 +16,6 @@ class PostDetailsView extends GetView<PostDetailsController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: controller.visitor
-            ? VisitorBottomBar(
-                onLoginPressed: () =>
-                    Get.find<OpeningController>().backToAuth(true),
-                onSignUpPressed: () =>
-                    Get.find<OpeningController>().backToAuth(false))
-            : null,
         appBar: CustomAppBar(
           leadingAppIcon: true,
           leadingBackIcon: true,
@@ -32,33 +25,37 @@ class PostDetailsView extends GetView<PostDetailsController> {
             if (!controller.visitor &&
                 controller.post.value.enigmaUser.id ==
                     controller.bottomNavController.userId)
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: InkWell(
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    onTap: controller.navigateToEditPost,
-                    child: Image.asset(
-                      Assets.edit,
-                      height: 30,
-                    )),
+              InkWell(
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                onTap: controller.navigateToEditPost,
+                child: Image.asset(
+                  Assets.edit,
+                  width: 20,
+                  height: 20,
+                ),
               ),
             if (!controller.visitor &&
                 controller.post.value.enigmaUser.id !=
                     controller.bottomNavController.userId)
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: InkWell(
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    onTap: () => controller.showReportSpot(),
-                    child: Icon(
-                      Icons.report_gmailerrorred,
-                      size: 30,
-                    )),
-              )
+              InkWell(
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                onTap: () => controller.showReportSpot(),
+                child: Icon(
+                  Icons.report_gmailerrorred,
+                  size: 30,
+                ),
+              ),
           ],
         ),
+        bottomNavigationBar: controller.visitor
+            ? VisitorBottomBar(
+                onLoginPressed: () =>
+                    Get.find<OpeningController>().backToAuth(true),
+                onSignUpPressed: () =>
+                    Get.find<OpeningController>().backToAuth(false))
+            : null,
         body: Obx(() {
           if (controller.routeLoading.value) {
             return const Center(child: CircularProgressIndicator());

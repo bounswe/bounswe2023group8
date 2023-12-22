@@ -14,18 +14,19 @@ class NewIaView extends GetView<NewIaController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: const CustomAppBar(
-          leadingAppIcon: true,
-          search: false,
-          notification: false,
-          actions: [],
-        ),
-        body: Obx(() {
-          if (controller.routeLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return SingleChildScrollView(
+    return Obx(
+      () {
+        if (controller.routeLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return Scaffold(
+          appBar: const CustomAppBar(
+            leadingAppIcon: true,
+            search: false,
+            notification: false,
+            actions: [],
+          ),
+          body: SingleChildScrollView(
             padding: const EdgeInsets.only(right: 10, left: 10, bottom: 60),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -344,8 +345,10 @@ class NewIaView extends GetView<NewIaController> {
                 ),
               ],
             ),
-          );
-        }));
+          ),
+        );
+      },
+    );
   }
 
   Widget _searchTagResults() {

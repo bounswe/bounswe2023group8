@@ -26,6 +26,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: ThemePalette.white,
+      leadingWidth: leadingAppIcon
+          ? leadingBackIcon
+              ? 77
+              : 51
+          : leadingBackIcon
+              ? 34
+              : 16,
       titleSpacing: 32,
       elevation: 0.5,
       shadowColor: SeparatorPalette.dark,
@@ -34,16 +41,22 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Row(
           children: [
             if (leadingBackIcon) ...[
-              IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
-                onPressed: () => Navigator.of(context).pop(),
-              )
+              InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                child: Image.asset(
+                  Assets.back,
+                  width: 18,
+                  height: 18,
+                ),
+              ),
+              const SizedBox(width: 8),
             ],
             if (leadingAppIcon) ...[
               Image.asset(
                 Assets.logo,
                 width: 35,
                 height: 40,
+                fit: BoxFit.contain,
               )
             ],
           ],

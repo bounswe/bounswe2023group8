@@ -9,6 +9,7 @@ import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_c
 import 'package:mobile/modules/newPost/providers/new_post_provider.dart';
 
 class NewPostController extends GetxController {
+  var routeLoading = false.obs;
   var label = 0.obs;
 
   var title = ''.obs;
@@ -247,7 +248,6 @@ class NewPostController extends GetxController {
 
   void onCreatePost() async {
     try {
-
       if (address.value == '') {
         address.value =
             'Bebek, Güney Kampüs, Boğaziçi Universites, 34342 Beşiktaş/İstanbul, Türkiye';

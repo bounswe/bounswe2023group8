@@ -11,15 +11,19 @@ class NewPostView extends GetView<NewPostController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: const CustomAppBar(
-          leadingAppIcon: true,
-          search: false,
-          notification: false,
-          actions: [],
-        ),
-        body: Obx(() {
-          return SingleChildScrollView(
+    return Obx(
+      () {
+        if (controller.routeLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return Scaffold(
+          appBar: const CustomAppBar(
+            leadingAppIcon: true,
+            search: false,
+            notification: false,
+            actions: [],
+          ),
+          body: SingleChildScrollView(
             padding: const EdgeInsets.only(right: 10, left: 10, bottom: 60),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -259,8 +263,10 @@ class NewPostView extends GetView<NewPostController> {
                 ),
               ],
             ),
-          );
-        }));
+          ),
+        );
+      },
+    );
   }
 
   Widget _searchTagResults() {

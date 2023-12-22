@@ -40,6 +40,8 @@ class Assets {
   static const String geolocation = 'assets/icons/geolocation.png';
   static const String search = 'assets/icons/search.svg';
   static const String searchPassive = 'assets/icons/search_passive.svg';
+  static const String back = 'assets/icons/back.png';
+  static const String delete = 'assets/icons/delete.png';
 
   // Radios
 

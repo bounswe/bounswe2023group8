@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/data/widgets/custom_button.dart';
@@ -18,20 +19,26 @@ class EditPostView extends GetView<EditPostController> {
           search: false,
           notification: false,
           actions: [
-            IconButton(
-                onPressed: () {
-                  Dialogs.showCustomDialog(
-                      onAction: () {
-                        controller.onDeletePost();
-                        Get.back();
-                      },
-                      title: 'Delete Spot',
-                      content: Text(
-                          'Are you sure you want to delete the ${controller.spot.title} spot?'),
-                      cancelText: 'No',
-                      actionText: 'Yes');
-                },
-                icon: const Icon(Icons.delete))
+            InkWell(
+              onTap: () {
+                Dialogs.showCustomDialog(
+                    onAction: () {
+                      controller.onDeletePost();
+                      Get.back();
+                    },
+                    title: 'Delete Spot',
+                    content: Text(
+                        'Are you sure you want to delete the ${controller.spot.title} spot?'),
+                    cancelText: 'No',
+                    actionText: 'Yes');
+              },
+              child: Image.asset(
+                Assets.delete,
+                width: 20,
+                height: 20,
+              ),
+            ),
+            const SizedBox(width: 16),
           ],
         ),
         body: Obx(() {
