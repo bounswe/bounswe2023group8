@@ -4,6 +4,7 @@ import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/data/widgets/custom_button.dart';
 import 'package:mobile/data/widgets/custom_dialogs.dart';
+import 'package:mobile/data/widgets/select_circle.dart';
 import 'package:mobile/modules/editPost/controllers/edit_post_controller.dart';
 
 
@@ -217,8 +218,23 @@ class EditPostView extends GetView<EditPostController> {
                     ))
                   ],
                 ),
-                
-                
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    SelectCircle(
+                        value: controller.isAgeRestricted.value,
+                        onTap: (val) {
+                          controller.onChangeIsAgeRestricted();
+                        }),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    const Text("Age Restricted Content"),
+                  ],
+                ),
+              
                 const SizedBox(
                   height: 20,
                 ),
@@ -243,6 +259,24 @@ class EditPostView extends GetView<EditPostController> {
                                   ),
                             ],
                           )),
+                    )),
+                const SizedBox(
+                  height: 10,
+                ),
+                InkWell(
+                    onTap: controller.navigateToSelectAddress,
+                    child: Row(
+                      children: [
+                        const Text("Location: "),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          controller.address.value == ''
+                              ? 'Select Location'
+                              : '${controller.address.value.substring(0, 30)}...',
+                        ),
+                      ],
                     )),
                 const SizedBox(
                   height: 20,

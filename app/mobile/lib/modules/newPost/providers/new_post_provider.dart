@@ -24,6 +24,7 @@ class NewPostProvider extends GetConnect {
       required List<String> tags,
       required double latitude,
       required double longitude,
+      required bool isAgeRestricted,
       required String address,
       required String token}) async {
     final response = await post('v1/post', {
@@ -31,6 +32,7 @@ class NewPostProvider extends GetConnect {
       "sourceLink": sourceLink,
       "title": title,
       "wikiTags": tags,
+      "isAgeRestricted": isAgeRestricted,
       "label": label,
       "content": content,
       "geoLocation": {
