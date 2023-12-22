@@ -23,12 +23,14 @@ class ProfileHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        height: 75,
+    return Container(
+        color: Color(0xFFEEF0EB),
+        child: SizedBox(
+        height: 85,
         child: Row(
           children: [
             const CircleAvatar(
-              radius: 30,
+              radius: 40,
               backgroundImage: AssetImage(Assets.profilePlaceholder),
             ),
             const SizedBox(width: 10),
@@ -53,6 +55,9 @@ class ProfileHeaderWidget extends StatelessWidget {
                         fontWeight: FontWeight.w300,
                       ),
                     ),
+                    const SizedBox(
+                      height: 15,
+                    ),
                     Row(
                       children: [
                         InkWell(
@@ -62,6 +67,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
+                              color: Colors.blue,
                             ),
                           ),
                         ),
@@ -73,6 +79,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
+                              color: Colors.blue,
                             ),
                           ),
                         ),
@@ -89,7 +96,6 @@ class ProfileHeaderWidget extends StatelessWidget {
                     Assets.upvote,
                     width: 25,
                   ),
-                  const SizedBox(height: 5),
                   Image.asset(
                     Assets.downvote,
                     width: 25,
@@ -117,6 +123,7 @@ class ProfileHeaderWidget extends StatelessWidget {
               ],
             )
           ],
-        ));
+        )),
+    );
   }
 }

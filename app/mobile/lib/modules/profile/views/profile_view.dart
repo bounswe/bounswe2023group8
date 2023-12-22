@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:get/get_navigation/src/routes/default_transitions.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/bunch_widget.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
@@ -11,11 +12,13 @@ import '../controllers/profile_controller.dart';
 import '../widgets/followers_popup.dart';
 import '../widgets/followings_popup.dart';
 
+
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    bool isExpanded = false;
     return Scaffold(
       appBar: CustomAppBar(
         leadingAppIcon: true,
@@ -47,7 +50,6 @@ class ProfileView extends GetView<ProfileController> {
                 height: Get.height - 200,
                 child: const Center(child: CircularProgressIndicator()));
           }
-
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -86,9 +88,19 @@ class ProfileView extends GetView<ProfileController> {
                 ),
                 subtitle: const Divider(
                   thickness: 1,
-                  color: Colors.grey,
+                  color: Color(0xFF203376),
                 ),
                 initiallyExpanded: true,
+                onExpansionChanged: (value) {
+                  isExpanded = !isExpanded;
+                },
+                trailing: Icon(
+                  isExpanded
+                      ? Icons.arrow_drop_up
+                      : Icons.arrow_drop_down,
+                  size: 40,
+                  color: Color(0xFF203376), // Set the color as needed
+                ),
                 children: [
                   ListView.separated(
                       shrinkWrap: true,
@@ -101,7 +113,7 @@ class ProfileView extends GetView<ProfileController> {
                                 controller.navigateToIa(controller.ias[index]));
                       },
                       separatorBuilder: (context, index) => const SizedBox(
-                            height: 14,
+                            height: 10,
                           )),
                 ],
               ),
