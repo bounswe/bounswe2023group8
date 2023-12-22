@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/enigma_user.dart';
@@ -205,7 +206,7 @@ class ProfileController extends GetxController {
   void showReportUser() {
     Get.dialog(ReportDialog(
         title: 'Report User',
-        onReport: (reason) => onReport(userId, reason, 'USER')));
+        onReport: (reason) => onReport(userId, reason, 'user')));
   }
 
   void onReport(int postId, String reason, String entityType) async {
@@ -216,7 +217,15 @@ class ProfileController extends GetxController {
           entityType: entityType,
           reason: reason);
       if (res) {
-        Get.snackbar('Success', 'Reported successfully');
+        Get.snackbar(
+          'Success',
+          'Reported successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.brown,
+          borderRadius: 0,
+          colorText: Colors.white,
+          margin: EdgeInsets.zero,
+        );
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);

@@ -26,7 +26,7 @@ class PostDetailsProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       return true;
     } else {
       if (response.bodyString != null) {
@@ -47,7 +47,7 @@ class PostDetailsProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       return true;
     } else {
       if (response.bodyString != null) {
@@ -70,7 +70,7 @@ class PostDetailsProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       return true;
     } else {
       if (response.bodyString != null) {
@@ -91,7 +91,7 @@ class PostDetailsProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       return true;
     } else {
       if (response.bodyString != null) {
@@ -112,7 +112,7 @@ class PostDetailsProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       return true;
     } else {
       if (response.bodyString != null) {
@@ -134,7 +134,7 @@ class PostDetailsProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       final body = json.decode(response.bodyString!) as List;
       for (final vote in body) {
         if (vote['enigmaUser']['id'] == userId) {
@@ -162,7 +162,7 @@ class PostDetailsProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       final body = json.decode(response.bodyString!) as List;
       for (final vote in body) {
         if (vote['enigmaUser']['id'] == userId) {
@@ -187,7 +187,7 @@ class PostDetailsProvider extends GetConnect {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',
     });
-    if (response.statusCode == 200 || response.statusCode == 201) {
+    if (response.statusCode! >= 200 && response.statusCode! < 300) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!) as List;
         final downvotedUsers = <EnigmaUser>[];
@@ -217,7 +217,7 @@ class PostDetailsProvider extends GetConnect {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',
     });
-    if (response.statusCode == 200 || response.statusCode == 201) {
+    if (response.statusCode! >= 200 && response.statusCode! < 300) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!) as List;
         final upvotedUsers = <EnigmaUser>[];
@@ -249,7 +249,7 @@ class PostDetailsProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!);
         return Spot.fromJson(body);
@@ -280,7 +280,7 @@ class PostDetailsProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       return true;
     } else {
       if (response.bodyString != null) {
@@ -352,7 +352,7 @@ class PostDetailsProvider extends GetConnect {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
     }
-    if (response.statusCode == 200 || response.statusCode == 201) {
+    if (response.statusCode! >= 200 && response.statusCode! < 300) {
       return true;
     } else {
       if (response.bodyString != null) {
