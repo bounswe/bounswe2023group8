@@ -464,10 +464,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
             onUpvote: () => controller.upvotePost(controller.posts[index].id),
             onDownvote: () =>
                 controller.downvotePost(controller.posts[index].id),
-            showDownvoters: () =>
-                controller.showDownVotes(controller.posts[index].id),
-            showUpvoters: () =>
-                controller.showUpVotes(controller.posts[index].id),
+            showVoters: () => controller.showVotes(controller.posts[index].id),
           );
         },
         separatorBuilder: (context, index) => const SizedBox(height: 8),

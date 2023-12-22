@@ -24,7 +24,7 @@ class PostDetailsView extends GetView<PostDetailsController> {
           actions: [
             if (!controller.visitor &&
                 controller.post.value.enigmaUser.id ==
-                    controller.bottomNavController.userId)
+                    controller.bottomNavigationController.userId)
               InkWell(
                 highlightColor: Colors.transparent,
                 splashColor: Colors.transparent,
@@ -37,7 +37,7 @@ class PostDetailsView extends GetView<PostDetailsController> {
               ),
             if (!controller.visitor &&
                 controller.post.value.enigmaUser.id !=
-                    controller.bottomNavController.userId)
+                    controller.bottomNavigationController.userId)
               InkWell(
                 highlightColor: Colors.transparent,
                 splashColor: Colors.transparent,
@@ -183,22 +183,22 @@ class PostDetailsView extends GetView<PostDetailsController> {
             )
           ],
         ),
-        trailing:
-            (comment.enigmaUser.id == controller.bottomNavController.userId)
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 2),
-                      InkWell(
-                          onTap: () => controller.deleteComment(comment.id),
-                          child: Icon(
-                            Icons.delete,
-                            color: ThemePalette.main,
-                            size: 20,
-                          )),
-                    ],
-                  )
-                : null,
+        trailing: (comment.enigmaUser.id ==
+                controller.bottomNavigationController.userId)
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 2),
+                  InkWell(
+                      onTap: () => controller.deleteComment(comment.id),
+                      child: Icon(
+                        Icons.delete,
+                        color: ThemePalette.main,
+                        size: 20,
+                      )),
+                ],
+              )
+            : null,
       ),
     );
   }

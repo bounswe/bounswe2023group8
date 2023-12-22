@@ -12,7 +12,7 @@ import '../../../routes/app_pages.dart';
 import '../../bottom_navigation/controllers/bottom_navigation_controller.dart';
 
 class ProfileController extends GetxController {
-  final bottomNavController = Get.find<BottomNavigationController>();
+  final bottomNavigationController = Get.find<BottomNavigationController>();
   final profileProvider = Get.find<ProfileProvider>();
 
   int userId = Get.arguments['userId'];
@@ -30,14 +30,14 @@ class ProfileController extends GetxController {
   void fetchUser() async {
     try {
       final profile = await profileProvider.getProfilePage(
-          id: userId, token: bottomNavController.token);
+          id: userId, token: bottomNavigationController.token);
       if (profile != null) {
         userProfile = profile;
         posts.value = await profileProvider.getPosts(
-                id: userId, token: bottomNavController.token) ??
+                id: userId, token: bottomNavigationController.token) ??
             [];
         ias.value = await profileProvider.getIas(
-                id: userId, token: bottomNavController.token) ??
+                id: userId, token: bottomNavigationController.token) ??
             [];
         fetchFollowers();
         fetchFollowings();
@@ -62,7 +62,7 @@ class ProfileController extends GetxController {
   void fetchFollowers() async {
     try {
       followers.value = await profileProvider.getFollowers(
-              id: userId, token: bottomNavController.token) ??
+              id: userId, token: bottomNavigationController.token) ??
           followers;
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
@@ -72,7 +72,7 @@ class ProfileController extends GetxController {
   void fetchFollowings() async {
     try {
       followings.value = await profileProvider.getFollowings(
-              id: userId, token: bottomNavController.token) ??
+              id: userId, token: bottomNavigationController.token) ??
           followings;
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
@@ -82,15 +82,15 @@ class ProfileController extends GetxController {
   void followUser(int targetId) async {
     try {
       final res = await profileProvider.followUser(
-          id: targetId, token: bottomNavController.token);
+          id: targetId, token: bottomNavigationController.token);
       if (res) {
-        if (userId != bottomNavController.userId) {
+        if (userId != bottomNavigationController.userId) {
           isFollowing.value = true;
-          bottomNavController.followUser();
+          bottomNavigationController.followUser();
           fetchFollowers();
         } else {
           fetchFollowings();
-          bottomNavController.followUser();
+          bottomNavigationController.followUser();
         }
       }
     } catch (e) {
@@ -101,16 +101,16 @@ class ProfileController extends GetxController {
   void unfollowUser(int targetId) async {
     try {
       final res = await profileProvider.unfollowUser(
-          id: targetId, token: bottomNavController.token);
+          id: targetId, token: bottomNavigationController.token);
       if (res) {
-        if (userId != bottomNavController.userId) {
+        if (userId != bottomNavigationController.userId) {
           isFollowing.value = false;
-          bottomNavController.unfollowUser(userId);
+          bottomNavigationController.unfollowUser(userId);
           followers.removeWhere(
-              (element) => element.id == bottomNavController.userId);
+              (element) => element.id == bottomNavigationController.userId);
         } else {
           followings.removeWhere((element) => element.id == targetId);
-          bottomNavController.unfollowUser(targetId);
+          bottomNavigationController.unfollowUser(targetId);
         }
       }
     } catch (e) {
@@ -121,23 +121,23 @@ class ProfileController extends GetxController {
   void upvotePost(int postId) async {
     try {
       final hasUpvoted = await profileProvider.hasUpVoted(
-          token: bottomNavController.token,
+          token: bottomNavigationController.token,
           postId: postId,
-          userId: bottomNavController.userId);
+          userId: bottomNavigationController.userId);
 
       bool res = false;
 
       if (hasUpvoted) {
         res = await profileProvider.unvotePost(
-            token: bottomNavController.token, postId: postId);
+            token: bottomNavigationController.token, postId: postId);
       } else {
         res = await profileProvider.upvotePost(
-            token: bottomNavController.token, postId: postId);
+            token: bottomNavigationController.token, postId: postId);
       }
 
       if (res) {
         posts.value = await profileProvider.getPosts(
-                id: userId, token: bottomNavController.token) ??
+                id: userId, token: bottomNavigationController.token) ??
             posts;
       }
     } catch (e) {
@@ -148,23 +148,23 @@ class ProfileController extends GetxController {
   void downvotePost(int postId) async {
     try {
       final hasDownvoted = await profileProvider.hasDownVoted(
-          token: bottomNavController.token,
+          token: bottomNavigationController.token,
           postId: postId,
-          userId: bottomNavController.userId);
+          userId: bottomNavigationController.userId);
 
       bool res = false;
 
       if (hasDownvoted) {
         res = await profileProvider.unvotePost(
-            token: bottomNavController.token, postId: postId);
+            token: bottomNavigationController.token, postId: postId);
       } else {
         res = await profileProvider.downvotePost(
-            token: bottomNavController.token, postId: postId);
+            token: bottomNavigationController.token, postId: postId);
       }
 
       if (res) {
         posts.value = await profileProvider.getPosts(
-                id: userId, token: bottomNavController.token) ??
+                id: userId, token: bottomNavigationController.token) ??
             posts;
       }
     } catch (e) {
@@ -172,25 +172,28 @@ class ProfileController extends GetxController {
     }
   }
 
-  void showUpVotes(int postId) async {
+  void showVotes(int postId) async {
     try {
-      final users = await profileProvider.getUpvotedUsers(
-          token: bottomNavController.token, postId: postId);
-      if (users.isNotEmpty) {
-        Get.dialog(UserListDialog(
-          title: 'Upvoters',
-          users: users,
-        ));
-      }
+      final upvotedUsers = await profileProvider.getUpvotedUsers(
+          token: bottomNavigationController.token, postId: postId);
+      final downvotedUsers = await profileProvider.getDownvotedUsers(
+          token: bottomNavigationController.token, postId: postId);
+
+      Get.dialog(UserListDialog(
+        title: 'Votes',
+        sections: const ['Upvoters', 'Downvoters'],
+        users: [upvotedUsers, downvotedUsers],
+        isRemovable: const [false, false],
+      ));
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
   }
 
-  void showDownVotes(int postId) async {
+  /*void showDownVotes(int postId) async {
     try {
       final users = await profileProvider.getDownvotedUsers(
-          token: bottomNavController.token, postId: postId);
+          token: bottomNavigationController.token, postId: postId);
       if (users.isNotEmpty) {
         Get.dialog(UserListDialog(
           title: 'Downvoters',
@@ -200,7 +203,7 @@ class ProfileController extends GetxController {
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
-  }
+  }*/
 
   void showReportUser() {
     Get.dialog(ReportDialog(
@@ -211,7 +214,7 @@ class ProfileController extends GetxController {
   void onReport(int postId, String reason, String entityType) async {
     try {
       final res = await profileProvider.report(
-          token: bottomNavController.token,
+          token: bottomNavigationController.token,
           entityId: postId,
           entityType: entityType,
           reason: reason);
@@ -227,7 +230,7 @@ class ProfileController extends GetxController {
   void onInit() {
     super.onInit();
     fetchUser();
-    isFollowing.value = bottomNavController.isUserFollowing(userId);
+    isFollowing.value = bottomNavigationController.isUserFollowing(userId);
   }
 
   @override

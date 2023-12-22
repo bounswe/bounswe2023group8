@@ -10,17 +10,16 @@ class PostTileWidget extends StatelessWidget {
   final bool hideTags;
   final void Function() onUpvote;
   final void Function() onDownvote;
-  final void Function() showUpvoters;
-  final void Function() showDownvoters;
-  const PostTileWidget(
-      {super.key,
-      required this.post,
-      this.onTap,
-      required this.hideTags,
-      required this.onUpvote,
-      required this.onDownvote,
-      required this.showUpvoters,
-      required this.showDownvoters});
+  final void Function() showVoters;
+  const PostTileWidget({
+    super.key,
+    required this.post,
+    this.onTap,
+    required this.hideTags,
+    required this.onUpvote,
+    required this.onDownvote,
+    required this.showVoters,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +104,7 @@ class PostTileWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 2),
                     InkWell(
-                      onTap: showUpvoters,
+                      onTap: showVoters,
                       child: SizedBox(
                         width: 18,
                         child: Text(

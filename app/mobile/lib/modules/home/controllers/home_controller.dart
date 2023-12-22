@@ -122,22 +122,27 @@ class HomeController extends GetxController {
     }
   }
 
-  void showUpVotes(int postId) async {
+  void showVotes(int postId) async {
     try {
-      final users = await homeProvider.getUpvotedUsers(
+      final upvotedUsers = await homeProvider.getUpvotedUsers(
           token: bottomNavigationController.token, postId: postId);
-      if (users.isNotEmpty) {
-        Get.dialog(UserListDialog(
-          title: 'Upvoters',
-          users: users,
-        ));
-      }
+      final downvotedUsers = await homeProvider.getDownvotedUsers(
+          token: bottomNavigationController.token, postId: postId);
+
+      Get.dialog(
+        UserListDialog(
+          title: 'Votes',
+          sections: const ['Upvoters', 'Downvoters'],
+          users: [upvotedUsers, downvotedUsers],
+          isRemovable: const [false, false],
+        ),
+      );
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
   }
 
-  void showDownVotes(int postId) async {
+  /*void showDownVotes(int postId) async {
     try {
       final users = await homeProvider.getDownvotedUsers(
           token: bottomNavigationController.token, postId: postId);
@@ -150,7 +155,7 @@ class HomeController extends GetxController {
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
-  }
+  }*/
 
   @override
   void onInit() {

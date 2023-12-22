@@ -98,8 +98,7 @@ class VisitorInterestAreaView extends GetView<InterestAreaController> {
                         hideTags: true,
                         onUpvote: () {},
                         onDownvote: () {},
-                        showUpvoters: () {},
-                        showDownvoters: () {},
+                        showVoters: () {},
                       );
                     })
               ],

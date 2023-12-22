@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/routes/default_transitions.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/bunch_widget.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
@@ -11,7 +10,6 @@ import '../../../data/widgets/custom_app_bar.dart';
 import '../controllers/profile_controller.dart';
 import '../widgets/followers_popup.dart';
 import '../widgets/followings_popup.dart';
-
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({Key? key}) : super(key: key);
@@ -23,13 +21,13 @@ class ProfileView extends GetView<ProfileController> {
       appBar: CustomAppBar(
         leadingAppIcon: true,
         leadingBackIcon:
-            controller.userId == controller.bottomNavController.userId
+            controller.userId == controller.bottomNavigationController.userId
                 ? false
                 : true,
         search: false,
         notification: true,
         actions: [
-          if (controller.userId != controller.bottomNavController.userId)
+          if (controller.userId != controller.bottomNavigationController.userId)
             InkWell(
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
@@ -67,7 +65,8 @@ class ProfileView extends GetView<ProfileController> {
               const SizedBox(
                 height: 20,
               ),
-              if (controller.userId != controller.bottomNavController.userId)
+              if (controller.userId !=
+                  controller.bottomNavigationController.userId)
                 controller.isFollowing.value
                     ? OutlinedButton(
                         onPressed: () =>
@@ -95,9 +94,7 @@ class ProfileView extends GetView<ProfileController> {
                   isExpanded = !isExpanded;
                 },
                 trailing: Icon(
-                  isExpanded
-                      ? Icons.arrow_drop_up
-                      : Icons.arrow_drop_down,
+                  isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
                   size: 40,
                   color: Color(0xFF203376), // Set the color as needed
                 ),
@@ -137,15 +134,13 @@ class ProfileView extends GetView<ProfileController> {
                       onTap: () => controller
                           .navigateToPostDetails(controller.posts[index]),
                       post: controller.posts[index],
-                      showDownvoters: () =>
-                          controller.showDownVotes(controller.posts[index].id),
-                      showUpvoters: () =>
-                          controller.showUpVotes(controller.posts[index].id),
                       hideTags: false,
                       onDownvote: () =>
                           controller.downvotePost(controller.posts[index].id),
                       onUpvote: () =>
                           controller.upvotePost(controller.posts[index].id),
+                      showVoters: () =>
+                          controller.showVotes(controller.posts[index].id),
                     );
                   },
                   separatorBuilder: (context, index) =>

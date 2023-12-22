@@ -123,8 +123,7 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                           hideTags: false,
                           onUpvote: () {},
                           onDownvote: () {},
-                          showDownvoters: () {},
-                          showUpvoters: () {},
+                          showVoters: () {},
                         );
                       },
                     ),

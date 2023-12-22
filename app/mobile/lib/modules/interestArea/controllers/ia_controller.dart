@@ -201,22 +201,25 @@ class InterestAreaController extends GetxController {
     }
   }
 
-  void showUpVotes(int postId) async {
+  void showVotes(int postId) async {
     try {
-      final users = await iaProvider.getUpvotedUsers(
+      final upvotedUsers = await iaProvider.getUpvotedUsers(
           token: bottomNavigationController.token, postId: postId);
-      if (users.isNotEmpty) {
-        Get.dialog(UserListDialog(
-          title: 'Upvoters',
-          users: users,
-        ));
-      }
+      final downvotedUsers = await iaProvider.getDownvotedUsers(
+          token: bottomNavigationController.token, postId: postId);
+
+      Get.dialog(UserListDialog(
+        title: 'Votes',
+        sections: const ['Upvoters', 'Downvoters'],
+        users: [upvotedUsers, downvotedUsers],
+        isRemovable: const [false, false],
+      ));
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
   }
 
-  void showDownVotes(int postId) async {
+  /*void showDownVotes(int postId) async {
     try {
       final users = await iaProvider.getDownvotedUsers(
           token: bottomNavigationController.token, postId: postId);
@@ -229,7 +232,7 @@ class InterestAreaController extends GetxController {
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
-  }
+  }*/
 
   void followIa() async {
     if (requestSent.value) {
