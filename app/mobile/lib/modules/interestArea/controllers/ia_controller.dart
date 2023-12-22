@@ -77,6 +77,9 @@ class InterestAreaController extends GetxController {
   }
 
   void fetchData() async {
+    final InterestArea? ia = await iaProvider.getIa(
+        id: interestArea.id, token: bottomNavigationController.token);
+
     if (interestArea.accessLevel == 'PUBLIC') {
       hasAccess.value = true;
     } else {
@@ -240,7 +243,15 @@ class InterestAreaController extends GetxController {
           id: interestArea.id, token: bottomNavigationController.token);
       if (res) {
         if (interestArea.accessLevel != 'PUBLIC') {
-          Get.snackbar('Success', 'Request sent successfully');
+          Get.snackbar(
+            'Success',
+            'Request sent successfully',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.brown,
+            borderRadius: 0,
+            colorText: Colors.white,
+            margin: EdgeInsets.zero,
+          );
           requestSent.value = true;
           return;
         }
@@ -269,7 +280,7 @@ class InterestAreaController extends GetxController {
     Get.dialog(ReportDialog(
         title: 'Report Bunch',
         onReport: (reason) =>
-            onReport(interestArea.id, reason, 'INTEREST_AREA')));
+            onReport(interestArea.id, reason, 'interest_area')));
   }
 
   void onReport(int postId, String reason, String entityType) async {
@@ -280,7 +291,15 @@ class InterestAreaController extends GetxController {
           entityType: entityType,
           reason: reason);
       if (res) {
-        Get.snackbar('Success', 'Reported successfully');
+        Get.snackbar(
+          'Success',
+          'Reported successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.brown,
+          borderRadius: 0,
+          colorText: Colors.white,
+          margin: EdgeInsets.zero,
+        );
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
