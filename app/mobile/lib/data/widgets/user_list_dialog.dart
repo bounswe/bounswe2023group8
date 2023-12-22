@@ -4,9 +4,16 @@ import 'package:get/get.dart';
 import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/models/enigma_user.dart';
+import 'package:mobile/routes/app_pages.dart';
 
 class UserListDialogState extends State<UserListDialog> {
-  int selectedSection = 0;
+  late int selectedSection;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedSection = widget.defaultSection;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +107,8 @@ class UserListDialogState extends State<UserListDialog> {
               final user = widget.users[selectedSection][index];
               final isRemove = widget.isRemovable[selectedSection];
               return ListTile(
+                onTap: () =>
+                    Get.toNamed(Routes.profile, arguments: {'userId': user.id}),
                 leading: Image.asset(
                   Assets.profilePlaceholder,
                   width: 40,

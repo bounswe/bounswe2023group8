@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/models/interest_area.dart';
@@ -133,6 +134,8 @@ class HomeController extends GetxController {
         UserListDialog(
           title: 'Votes',
           sections: const ['Upvoters', 'Downvoters'],
+          sectionColors: [ThemePalette.positive, ThemePalette.negative],
+          sectionTextColors: [ThemePalette.light, ThemePalette.light],
           users: [upvotedUsers, downvotedUsers],
           isRemovable: const [false, false],
         ),
@@ -141,21 +144,6 @@ class HomeController extends GetxController {
       ErrorHandlingUtils.handleApiError(e);
     }
   }
-
-  /*void showDownVotes(int postId) async {
-    try {
-      final users = await homeProvider.getDownvotedUsers(
-          token: bottomNavigationController.token, postId: postId);
-      if (users.isNotEmpty) {
-        Get.dialog(UserListDialog(
-          title: 'Downvoters',
-          users: users,
-        ));
-      }
-    } catch (e) {
-      ErrorHandlingUtils.handleApiError(e);
-    }
-  }*/
 
   @override
   void onInit() {

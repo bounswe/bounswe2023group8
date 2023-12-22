@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:map_location_picker/map_location_picker.dart';
+import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/spot.dart';
 import 'package:mobile/data/widgets/report_dialog.dart';
@@ -150,6 +151,8 @@ class PostDetailsController extends GetxController {
         title: 'Votes',
         sections: const ['Upvoters', 'Downvoters'],
         defaultSection: section,
+        sectionColors: [ThemePalette.positive, ThemePalette.negative],
+        sectionTextColors: [ThemePalette.light, ThemePalette.light],
         users: [upvotedUsers, downvotedUsers],
         isRemovable: const [false, false],
       ));

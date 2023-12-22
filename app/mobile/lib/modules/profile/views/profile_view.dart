@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/bunch_widget.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
+import 'package:mobile/data/widgets/custom_app_bar.dart';
+import 'package:mobile/modules/profile/controllers/profile_controller.dart';
 import 'package:mobile/modules/profile/widgets/profile_header_widget.dart';
-
-import '../../../data/widgets/custom_app_bar.dart';
-import '../controllers/profile_controller.dart';
-import '../widgets/followers_popup.dart';
-import '../widgets/followings_popup.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({Key? key}) : super(key: key);
@@ -55,12 +51,8 @@ class ProfileView extends GetView<ProfileController> {
                 followerCount: controller.followers.length,
                 followingCount: controller.followings.length,
                 user: controller.userProfile,
-                onFollowersPressed: () {
-                  Get.dialog(const FollowersPopup());
-                },
-                onFollowingPressed: () {
-                  Get.dialog(const FollowingsPopup());
-                },
+                onFollowersPressed: () => controller.showFollowPopUp(0),
+                onFollowingPressed: () => controller.showFollowPopUp(1),
               ),
               const SizedBox(
                 height: 20,

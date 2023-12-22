@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/models/interest_area.dart';
@@ -118,6 +119,20 @@ class ProfileController extends GetxController {
     }
   }
 
+  void showFollowPopUp(int section) {
+    Get.dialog(
+      UserListDialog(
+        title: '@${userProfile.username}',
+        sections: const ['Followers', 'Followings'],
+        defaultSection: section,
+        users: [followers, followings],
+        isRemovable: userId == userProfile.id ? [false, true] : [false, false],
+        removeTexts: const ['Remove', 'Unfollow'],
+        onRemove: [() => {}, () => unfollowUser(userId)],
+      ),
+    );
+  }
+
   void upvotePost(int postId) async {
     try {
       final hasUpvoted = await profileProvider.hasUpVoted(
@@ -182,6 +197,8 @@ class ProfileController extends GetxController {
       Get.dialog(UserListDialog(
         title: 'Votes',
         sections: const ['Upvoters', 'Downvoters'],
+        sectionColors: [ThemePalette.positive, ThemePalette.negative],
+        sectionTextColors: [ThemePalette.light, ThemePalette.light],
         users: [upvotedUsers, downvotedUsers],
         isRemovable: const [false, false],
       ));
@@ -189,21 +206,6 @@ class ProfileController extends GetxController {
       ErrorHandlingUtils.handleApiError(e);
     }
   }
-
-  /*void showDownVotes(int postId) async {
-    try {
-      final users = await profileProvider.getDownvotedUsers(
-          token: bottomNavigationController.token, postId: postId);
-      if (users.isNotEmpty) {
-        Get.dialog(UserListDialog(
-          title: 'Downvoters',
-          users: users,
-        ));
-      }
-    } catch (e) {
-      ErrorHandlingUtils.handleApiError(e);
-    }
-  }*/
 
   void showReportUser() {
     Get.dialog(ReportDialog(

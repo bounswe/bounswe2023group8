@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/models/spot.dart';
@@ -211,6 +212,8 @@ class InterestAreaController extends GetxController {
       Get.dialog(UserListDialog(
         title: 'Votes',
         sections: const ['Upvoters', 'Downvoters'],
+        sectionColors: [ThemePalette.positive, ThemePalette.negative],
+        sectionTextColors: [ThemePalette.light, ThemePalette.light],
         users: [upvotedUsers, downvotedUsers],
         isRemovable: const [false, false],
       ));
