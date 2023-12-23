@@ -6,6 +6,7 @@ import com.wia.enigma.core.data.dto.PostDto;
 import com.wia.enigma.core.data.response.LoginResponse;
 import com.wia.enigma.core.data.response.RegisterResponse;
 import com.wia.enigma.core.data.response.VerificationResponse;
+import org.springframework.data.util.Pair;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -56,4 +57,6 @@ public interface EnigmaUserService {
     void uploadProfilePicture(Long userId, MultipartFile file);
 
     void deleteProfilePicture(Long userId);
+
+    Pair<Integer, Integer> getVotes(Long profileId);
 }

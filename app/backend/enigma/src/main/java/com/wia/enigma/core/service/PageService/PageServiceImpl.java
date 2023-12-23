@@ -10,6 +10,7 @@ import com.wia.enigma.dal.repository.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,9 +39,9 @@ public class PageServiceImpl implements PageService{
     public ProfilePageDto getProfilePage(Long userId, Long profileId) {
 
         EnigmaUserDto enigmaUserDto = enigmaUserService.getVerifiedUser(profileId);
+        Pair<Integer, Integer> votes = enigmaUserService.getVotes(profileId);
 
-        ProfilePageDto profilePageDto = ProfilePageDto.builder()
-
+        return ProfilePageDto.builder()
                 .id(enigmaUserDto.getId())
                 .username(enigmaUserDto.getUsername())
                 .name(enigmaUserDto.getName())
@@ -48,9 +49,9 @@ public class PageServiceImpl implements PageService{
                 .followers(enigmaUserService.getFollowerCount(profileId))
                 .following(enigmaUserService.getFollowingCount(profileId))
                 .profilePictureUrl(enigmaUserDto.getPictureUrl())
+                .upvotes(votes.getFirst())
+                .downvotes(votes.getSecond())
                 .build();
-
-        return profilePageDto;
     }
 
     public HomePageDto getHomePage(Long userId) {
