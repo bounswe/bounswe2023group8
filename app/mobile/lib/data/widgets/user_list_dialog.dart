@@ -139,7 +139,7 @@ class UserListDialogState extends State<UserListDialog> {
                 ),
                 trailing: isRemove
                     ? InkWell(
-                        onTap: widget.onRemove?[index],
+                        onTap: widget.onRemove?[selectedSection],
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 2),
@@ -148,7 +148,7 @@ class UserListDialogState extends State<UserListDialog> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            widget.removeTexts?[index] ?? 'Remove',
+                            widget.removeTexts?[selectedSection] ?? 'Remove',
                             style: TextStyle(
                               color: ThemePalette.negative,
                               fontSize: 12,
