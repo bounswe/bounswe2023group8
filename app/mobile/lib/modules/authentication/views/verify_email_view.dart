@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 class SentEmailView extends StatelessWidget {
   final bool verify;
-  const SentEmailView({super.key, required this.verify});
+  const SentEmailView({
+    super.key,
+    required this.verify,
+  });
 
   @override
   Widget build(BuildContext context) {
