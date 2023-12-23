@@ -27,4 +27,8 @@ public class ProfilePageDto {
         Long followers;
 
         Long following;
+
+        Integer upvotes;
+
+        Integer downvotes;
 }

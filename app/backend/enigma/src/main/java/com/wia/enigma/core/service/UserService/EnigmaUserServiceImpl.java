@@ -656,4 +656,34 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
         enigmaUserRepository.save(enigmaUser);
     }
+
+    /**
+     * Gets the upvotes and downvotes of the EnigmaUser.
+     *
+     * @param userId    enigma user id
+     * @return          Pair of upvotes and downvotes
+     */
+    @Override
+    public Pair<Integer, Integer> getVotes(Long userId) {
+
+            List<PostVote> postVotes;
+            try {
+                postVotes = postVoteRepository.findByEnigmaUserId(userId);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                        "Cannot fetch PostVotes by enigma user id.");
+            }
+
+            int upvotes = 0;
+            int downvotes = 0;
+            for (PostVote postVote : postVotes) {
+                if (postVote.getVote())
+                    upvotes++;
+                else
+                    downvotes++;
+            }
+
+            return Pair.of(upvotes, downvotes);
+    }
 }
