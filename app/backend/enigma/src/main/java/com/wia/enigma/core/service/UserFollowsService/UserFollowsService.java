@@ -30,5 +30,7 @@ public interface UserFollowsService {
 
     void checkInterestAreaAccess(InterestArea interestArea, Long enigmaUserId);
 
+    void checkInterestAreaBasicDataAccess(InterestArea interestArea, Long enigmaUserId);
+
     void deleteAllForUser(Long enigmaUserId);
 }

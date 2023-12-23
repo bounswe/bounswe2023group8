@@ -3,6 +3,8 @@ package com.wia.enigma.core.controller.api.v1;
 import com.wia.enigma.configuration.security.EnigmaAuthenticationToken;
 import com.wia.enigma.core.data.dto.EnigmaUserDto;
 import com.wia.enigma.core.service.UserService.EnigmaUserService;
+import com.wia.enigma.dal.enums.ExceptionCodes;
+import com.wia.enigma.exceptions.custom.EnigmaException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -97,6 +99,15 @@ public class EnigmaUserController {
     }
 
     /*
+        WA-60: Gets interest area follow requests.
+     */
+    @GetMapping("/interest-area-follow-requests")
+    public ResponseEntity<?> getInterestAreaFollowRequests(EnigmaAuthenticationToken token) {
+
+        return ResponseEntity.ok(enigmaUserService.getInterestAreaFollowRequests(token.getEnigmaUserId()));
+    }
+
+    /*
         WA-31: Gets posts.
      */
     @GetMapping("/{id}/posts")
@@ -112,6 +123,9 @@ public class EnigmaUserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(EnigmaAuthenticationToken token,
                                         @Valid @NotNull @PathVariable Long id) {
+
+        if (!id.equals(token.getEnigmaUserId()))
+            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "You can only delete your own account.");
 
         enigmaUserService.deleteUser(id);
 
@@ -140,4 +154,5 @@ public class EnigmaUserController {
 
         return ResponseEntity.ok().build();
     }
+
 }

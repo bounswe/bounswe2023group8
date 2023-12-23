@@ -1,6 +1,8 @@
 package com.wia.enigma.core.controller;
 
 
+import com.wia.enigma.configuration.security.EnigmaAuthenticationToken;
+import com.wia.enigma.core.data.request.ChangePasswordRequest;
 import com.wia.enigma.core.data.request.SignupRequest;
 import com.wia.enigma.core.data.response.LoginResponse;
 import com.wia.enigma.core.data.response.RegisterResponse;
@@ -128,6 +130,25 @@ public class AuthController {
                                            @Valid @NotNull @RequestParam(name = "password2") String password2 ) {
 
         enigmaUserService.resetPassword(token, password1, password2);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
+    }
+
+    /**
+     *   WA-59: Changes a user's password.
+     */
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@NotNull @RequestParam Long enigmaUserId,
+                                            @Valid @NotNull @RequestBody ChangePasswordRequest changePasswordRequest) {
+
+        enigmaUserService.changePassword(
+                enigmaUserId,
+                changePasswordRequest.getOldPassword(),
+                changePasswordRequest.getNewPassword1(),
+                changePasswordRequest.getNewPassword2()
+        );
 
         return ResponseEntity
                 .status(HttpStatus.OK)

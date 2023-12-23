@@ -52,7 +52,7 @@ public class InterestAreaServiceImpl implements InterestAreaService {
         InterestArea interestArea = interestAreaRepository.findById(id)
                 .orElseThrow(() -> new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + id));
 
-        interestAreaServiceHelper.checkInterestAreaAccess(interestArea, enigmaUserId);
+        interestAreaServiceHelper.checkInterestAreaBasicDataAccess(interestArea, enigmaUserId);
 
         List<WikiTag> wikiTags = interestAreaServiceHelper.getWikiTags(id);
 
@@ -64,6 +64,8 @@ public class InterestAreaServiceImpl implements InterestAreaService {
     public InterestAreaSimpleDto createInterestArea(Long enigmaUserId, String title, String description,
                                                     EnigmaAccessLevel accessLevel, List<Long> nestedInterestAreas,
                                                     List<String> wikiTags) {
+
+        wikiTags = wikiTags.stream().distinct().toList();
 
         interestAreaServiceHelper.validateWikiTags(wikiTags);
 
@@ -88,6 +90,8 @@ public class InterestAreaServiceImpl implements InterestAreaService {
                                                     EnigmaAccessLevel accessLevel,
                                                     List<Long> nestedInterestAreas,
                                                     List<String> wikiTags) {
+
+        wikiTags = wikiTags.stream().distinct().toList();
 
         InterestArea interestArea = interestAreaServiceHelper.updateInterestAreaDetails(id, title, description, accessLevel);
 

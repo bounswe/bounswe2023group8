@@ -43,6 +43,8 @@ public interface EnigmaUserService {
 
     List<InterestAreaDto> getFollowingInterestAreas(Long userId, Long followerId);
 
+    List<InterestAreaDto> getInterestAreaFollowRequests(Long userId);
+
     EnigmaUserDto getVerifiedUser(Long id);
 
     List<EnigmaUserDto> search(Long userId, String searchKey);
@@ -51,6 +53,7 @@ public interface EnigmaUserService {
 
     void validateExistence(Long userId);
 
+    void changePassword(Long enigmaUserId, String oldPassword, String newPassword1, String newPassword2);
     void uploadProfilePicture(Long userId, MultipartFile file);
 
     void deleteProfilePicture(Long userId);
