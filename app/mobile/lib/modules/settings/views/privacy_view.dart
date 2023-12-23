@@ -15,7 +15,7 @@ class PrivacyAndSafetyView extends GetView<SettingsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
-        leadingAppIcon: true,
+        leadingAppIcon: false,
         leadingBackIcon: true,
         search: false,
         notification: false,
@@ -29,8 +29,8 @@ class PrivacyAndSafetyView extends GetView<SettingsController> {
             decoration: BoxDecoration(
               color: BackgroundPalette.dark,
               borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(8),
-                bottomRight: Radius.circular(8),
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
               ),
             ),
             child: Text(
