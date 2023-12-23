@@ -35,7 +35,7 @@ class PrivacyAndSafetyView extends GetView<SettingsController> {
             ),
             child: Text(
               textAlign: TextAlign.center,
-              'Privacy and Safety',
+              'Privacy Policy',
               style: TextStyle(
                 color: ThemePalette.light,
                 fontSize: 20,

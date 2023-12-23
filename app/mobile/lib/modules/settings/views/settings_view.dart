@@ -230,7 +230,7 @@ class SettingsView extends GetView<SettingsController> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Text(
-                  'Privacy and Safety',
+                  'Privacy Policy',
                   style: TextStyle(
                     color: ThemePalette.light,
                     fontSize: 20,

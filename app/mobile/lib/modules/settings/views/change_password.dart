@@ -21,84 +21,88 @@ class ChangePasswordView extends GetView<SettingsController> {
         notification: false,
         actions: [],
       ),
-      body: Obx(() {
-        return Column(
-          children: [
-            Container(
-              width: Get.height,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(
-                color: BackgroundPalette.dark,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
+      body: Obx(
+        () {
+          return Column(
+            children: [
+              Container(
+                width: Get.height,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: BackgroundPalette.dark,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
+                ),
+                child: Text(
+                  textAlign: TextAlign.center,
+                  'Change Password',
+                  style: TextStyle(
+                    color: ThemePalette.light,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: -0.34,
+                  ),
                 ),
               ),
-              child: Text(
-                textAlign: TextAlign.center,
-                'Change Password',
-                style: TextStyle(
-                  color: ThemePalette.light,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: -0.34,
+              Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  children: [
+                    CustomTextField(
+                      isValid: false,
+                      hintText: 'Old Password',
+                      circularBorder: true,
+                      onChanged: controller.onChangeOldPassword,
+                      obscureText: controller.obscureOldPassword.value,
+                      onSuffixTap: controller.toggleObscureOldPassword,
+                      showSuffix: true,
+                      isPassword: true,
+                    ),
+                    const SizedBox(height: 16),
+                    CustomTextField(
+                      isValid: false,
+                      hintText: 'New Password',
+                      circularBorder: true,
+                      onChanged: controller.onChangeNewPassword,
+                      obscureText: controller.obscureNewPassword.value,
+                      showSuffix: true,
+                      isPassword: true,
+                      onSuffixTap: controller.toggleObscureNewPassword,
+                    ),
+                    const SizedBox(height: 16),
+                    CustomTextField(
+                      isValid: false,
+                      hintText: 'Confirm Password',
+                      circularBorder: true,
+                      onChanged: controller.onChangeConfirmPassword,
+                      obscureText: controller.obscureConfirmPassword.value,
+                      onSuffixTap: controller.toggleObscureConfirmPassword,
+                      showSuffix: true,
+                      isPassword: true,
+                    ),
+                    const SizedBox(height: 32),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        CustomButton(
+                          text: 'Change Password',
+                          inProgress: controller.changePasswordInProgress.value,
+                          onPressed: controller.onChangePassword,
+                          active: controller.newPassword.value.length >= 6 &&
+                              (controller.newPassword.value ==
+                                  controller.confirmPassword.value),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                children: [
-                  CustomTextField(
-                    isValid: false,
-                    hintText: 'Old Password',
-                    onChanged: controller.onChangeOldPassword,
-                    obscureText: controller.obscureOldPassword.value,
-                    onSuffixTap: controller.toggleObscureOldPassword,
-                    showSuffix: true,
-                    isPassword: true,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CustomTextField(
-                    isValid: false,
-                    hintText: 'New Password',
-                    onChanged: controller.onChangeNewPassword,
-                    obscureText: controller.obscureNewPassword.value,
-                    showSuffix: true,
-                    isPassword: true,
-                    onSuffixTap: controller.toggleObscureNewPassword,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CustomTextField(
-                    isValid: false,
-                    hintText: 'Confirm Password',
-                    onChanged: controller.onChangeConfirmPassword,
-                    obscureText: controller.obscureConfirmPassword.value,
-                    onSuffixTap: controller.toggleObscureConfirmPassword,
-                    showSuffix: true,
-                    isPassword: true,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CustomButton(
-                    text: 'Change Password',
-                    inProgress: controller.changePasswordInProgress.value,
-                    onPressed: controller.onChangePassword,
-                    active: controller.newPassword.value.length > 5 &&
-                        (controller.newPassword.value ==
-                            controller.confirmPassword.value),
-                  ),
-                ],
-              ),
-            )
-          ],
-        );
-      }),
+            ],
+          );
+        },
+      ),
     );
   }
 }
