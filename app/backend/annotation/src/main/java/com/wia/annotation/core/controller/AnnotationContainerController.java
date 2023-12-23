@@ -17,11 +17,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequiredArgsConstructor
 @RequestMapping(
         path = "/wia",
-        headers =
-                "Accept: application/ld+json; " +
-                "profile=\"http://www.w3.org/ns/anno.jsonld\"" +
-                "Content-Type: application/ld+json; " +
-                "profile=\"http://www.w3.org/ns/anno.jsonld\"",
         produces = "application/ld+json",
         consumes = "application/ld+json")
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -30,7 +25,7 @@ public class AnnotationContainerController {
     final AnnotationContainerServiceImpl annotationContainerService;
 
     /**
-     * Creates an annotation container.
+     * C1: Creates an annotation container.
      *
      * @param containerName name of the annotation container
      * @param request       CreateAnnotationContainerRequest
@@ -59,7 +54,7 @@ public class AnnotationContainerController {
     }
 
     /**
-     * Gets an annotation container.
+     * C2: Gets an annotation container.
      *
      * @param containerName name of the annotation container
      * @return              HTTP 200
@@ -76,7 +71,7 @@ public class AnnotationContainerController {
     }
 
     /**
-     * Deletes an annotation container.
+     * C3: Deletes an annotation container.
      *
      * @param containerName name of the annotation container
      * @return              HTTP 204

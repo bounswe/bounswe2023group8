@@ -1,5 +1,6 @@
 package com.wia.annotation.core.data.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wia.annotation.core.data.dto.AnnotationDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,6 +45,7 @@ public class AnnotationContainerResponse extends AnnotationServerBaseResponse {
 
         String type = "AnnotationPage";
 
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         String next;
 
         String partOf;

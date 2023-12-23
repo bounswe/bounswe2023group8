@@ -17,11 +17,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequiredArgsConstructor
 @RequestMapping(
         path = "/wia",
-        headers =
-                "Accept: application/ld+json; " +
-                        "profile=\"http://www.w3.org/ns/anno.jsonld\"" +
-                        "Content-Type: application/ld+json; " +
-                        "profile=\"http://www.w3.org/ns/anno.jsonld\"",
         produces = "application/ld+json",
         consumes = "application/ld+json")
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -30,13 +25,13 @@ public class AnnotationController {
     final AnnotationService annotationService;
 
     /**
-     * Creates an annotation.
+     * A1: Creates an annotation.
      *
      * @param containerName name of the annotation container
      * @param request       CreateAnnotationRequest
      * @return              HTTP 201
      */
-    @PostMapping(path = "/{containerName}")
+    @PostMapping(path = "/{containerName}/annotation")
     public ResponseEntity<?> createAnnotation(@PathVariable String containerName,
                                               @RequestBody CreateAnnotationRequest request) {
 
@@ -61,7 +56,7 @@ public class AnnotationController {
     }
 
     /**
-     * Gets an annotation.
+     * A2: Gets an annotation.
      *
      * @param containerName     name of the annotation container
      * @param annotationNameId  name and id of the annotation
@@ -84,7 +79,7 @@ public class AnnotationController {
     }
 
     /**
-     * Deletes an annotation.
+     * A3: Deletes an annotation.
      *
      * @param containerName     name of the annotation container
      * @param annotationNameId  name and id of the annotation
@@ -98,7 +93,7 @@ public class AnnotationController {
         AnnotationResponse response =
                 annotationService.updateAnnotation(
                         containerName,
-StringUtils.divideFirst(annotationNameId),
+                        StringUtils.divideFirst(annotationNameId),
                         StringUtils.divideSecond(annotationNameId),
                         request.getBody().getValue(),
                         request.getTarget()
@@ -110,7 +105,7 @@ StringUtils.divideFirst(annotationNameId),
     }
 
     /**
-     * Deletes an annotation.
+     * A4: Deletes an annotation.
      *
      * @param containerName     name of the annotation container
      * @param annotationNameId  name and id of the annotation

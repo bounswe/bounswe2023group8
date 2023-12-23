@@ -10,5 +10,6 @@ import java.util.List;
 public class CreateAnnotationContainerRequest extends AnnotationServerBaseRequest {
 
     List<String> type;
+
     String label;
 }

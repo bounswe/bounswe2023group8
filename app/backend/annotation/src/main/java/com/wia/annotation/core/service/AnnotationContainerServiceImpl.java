@@ -4,6 +4,7 @@ import com.wia.annotation.core.data.dto.AnnotationDto;
 import com.wia.annotation.core.data.response.AnnotationContainerResponse;
 import com.wia.annotation.core.exceptions.Exceptions;
 import com.wia.annotation.core.exceptions.custom.AnnotationServerBadRequestException;
+import com.wia.annotation.core.exceptions.custom.AnnotationServerConflictException;
 import com.wia.annotation.core.exceptions.custom.AnnotationServerDatabaseException;
 import com.wia.annotation.dal.entity.Annotation;
 import com.wia.annotation.dal.entity.AnnotationContainer;
@@ -58,16 +59,16 @@ public class AnnotationContainerServiceImpl implements AnnotationContainerServic
         }
 
         if (exists)
-            throw new AnnotationServerDatabaseException(Exceptions.DB_DUPLICATE_ERROR,
+            throw new AnnotationServerConflictException(Exceptions.DB_DUPLICATE_ERROR,
                     "Annotation container with name " + containerName + " already exists.");
 
         if (type == null || type.isEmpty())
             throw new AnnotationServerBadRequestException(Exceptions.BAD_REQUEST,
                     "Annotation container type cannot be empty.");
 
-        if (!type.contains("AnnotationContainer"))
+        if (!type.contains("AnnotationCollection"))
             throw new AnnotationServerBadRequestException(Exceptions.BAD_REQUEST,
-                    "Annotation container type must contain AnnotationContainer.");
+                    "Annotation container type must contain AnnotationCollection.");
 
         if (label == null || label.isEmpty())
             throw new AnnotationServerBadRequestException(Exceptions.BAD_REQUEST,
@@ -91,15 +92,17 @@ public class AnnotationContainerServiceImpl implements AnnotationContainerServic
         String annotationContainerId = baseUrl + "/wia/" + containerName + "/";
         return AnnotationContainerResponse.builder()
                 .id(annotationContainerId)
+                .type(type)
                 .label(label)
                 .first(AnnotationContainerResponse.First.builder()
                         .id(annotationContainerId + "?page=0")
+                        .type("AnnotationPage")
                         .next(null)
                         .items(List.of())
                         .partOf(annotationContainerId)
                         .startIndex(0)
                         .build())
-                .last(annotationContainer.getId().toString() + "?page=0")
+                .last(annotationContainerId + "?page=0")
                 .total(0)
                 .modified(annotationContainer.getModified())
                 .created(annotationContainer.getCreated())
