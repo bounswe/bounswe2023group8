@@ -238,7 +238,7 @@ class PostDetailWidget extends GetView<PostDetailsController> {
                       width: 5,
                     ),
                     InkWell(
-                      onTap: controller.showUpVotes,
+                      onTap: () => controller.showVotes(0),
                       child: Text(
                         controller.post.value.upvoteCount.toString(),
                         style: TextStyle(color: ThemePalette.positive),
@@ -258,14 +258,13 @@ class PostDetailWidget extends GetView<PostDetailsController> {
                       width: 5,
                     ),
                     InkWell(
-                      onTap: controller.showDownVotes,
+                      onTap: () => controller.showVotes(1),
                       child: Text(
                         controller.post.value.downvoteCount.toString(),
                         style: const TextStyle(color: Colors.red),
                       ),
                     ),
                     const Spacer(),
-                    
                   ],
                 ),
               ],

@@ -16,6 +16,39 @@ class PostDetailsView extends GetView<PostDetailsController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: CustomAppBar(
+          leadingAppIcon: true,
+          leadingBackIcon: true,
+          search: false,
+          notification: true,
+          actions: [
+            if (!controller.visitor &&
+                controller.post.value.enigmaUser.id ==
+                    controller.bottomNavigationController.userId)
+              InkWell(
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                onTap: controller.navigateToEditPost,
+                child: Image.asset(
+                  Assets.edit,
+                  width: 20,
+                  height: 20,
+                ),
+              ),
+            if (!controller.visitor &&
+                controller.post.value.enigmaUser.id !=
+                    controller.bottomNavigationController.userId)
+              InkWell(
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                onTap: () => controller.showReportSpot(),
+                child: Icon(
+                  Icons.report_gmailerrorred,
+                  size: 30,
+                ),
+              ),
+          ],
+        ),
         bottomNavigationBar: controller.visitor
             ? VisitorBottomBar(
                 onLoginPressed: () =>
@@ -23,39 +56,6 @@ class PostDetailsView extends GetView<PostDetailsController> {
                 onSignUpPressed: () =>
                     Get.find<OpeningController>().backToAuth(false))
             : null,
-        appBar: CustomAppBar(
-          leadingAppIcon: true,
-          actions: [
-            if (!controller.visitor &&
-                controller.post.value.enigmaUser.id ==
-                    controller.bottomNavController.userId)
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: InkWell(
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    onTap: controller.navigateToEditPost,
-                    child: Image.asset(
-                      Assets.edit,
-                      height: 30,
-                    )),
-              ),
-            if (!controller.visitor &&
-                controller.post.value.enigmaUser.id !=
-                    controller.bottomNavController.userId)
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: InkWell(
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    onTap: () => controller.showReportSpot(),
-                    child: Icon(
-                      Icons.report_gmailerrorred,
-                      size: 30,
-                    )),
-              )
-          ],
-        ),
         body: Obx(() {
           if (controller.routeLoading.value) {
             return const Center(child: CircularProgressIndicator());
@@ -183,23 +183,22 @@ class PostDetailsView extends GetView<PostDetailsController> {
             )
           ],
         ),
-        trailing:
-            (comment.enigmaUser.id == controller.bottomNavController.userId)
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                  
-                      const SizedBox(height: 2),
-                      InkWell(
-                          onTap: () => controller.deleteComment(comment.id),
-                          child: Icon(
-                            Icons.delete,
-                            color: ThemePalette.main,
-                            size: 20,
-                          )),
-                    ],
-                  )
-                : null,
+        trailing: (comment.enigmaUser.id ==
+                controller.bottomNavigationController.userId)
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 2),
+                  InkWell(
+                      onTap: () => controller.deleteComment(comment.id),
+                      child: Icon(
+                        Icons.delete,
+                        color: ThemePalette.main,
+                        size: 20,
+                      )),
+                ],
+              )
+            : null,
       ),
     );
   }

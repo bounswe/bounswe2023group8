@@ -14,15 +14,19 @@ class NewIaView extends GetView<NewIaController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: const CustomAppBar(
-          leadingAppIcon: true,
-        ),
-        body: Obx(() {
-          if (controller.routeLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return SingleChildScrollView(
+    return Obx(
+      () {
+        if (controller.routeLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return Scaffold(
+          appBar: const CustomAppBar(
+            leadingAppIcon: true,
+            search: false,
+            notification: false,
+            actions: [],
+          ),
+          body: SingleChildScrollView(
             padding: const EdgeInsets.only(right: 10, left: 10, bottom: 60),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -44,7 +48,6 @@ class NewIaView extends GetView<NewIaController> {
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
@@ -83,7 +86,6 @@ class NewIaView extends GetView<NewIaController> {
                     ],
                   ),
                 ),
-
                 const SizedBox(
                   height: 16,
                 ),
@@ -128,7 +130,6 @@ class NewIaView extends GetView<NewIaController> {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 16),
                 Container(
                     padding: const EdgeInsets.all(8),
@@ -327,8 +328,6 @@ class NewIaView extends GetView<NewIaController> {
                         ])),
                 if (controller.searchSubIaResults.isNotEmpty)
                   _searchIaResults(),
-           
-        
                 const SizedBox(
                   height: 20,
                 ),
@@ -346,8 +345,10 @@ class NewIaView extends GetView<NewIaController> {
                 ),
               ],
             ),
-          );
-        }));
+          ),
+        );
+      },
+    );
   }
 
   Widget _searchTagResults() {
@@ -382,7 +383,7 @@ class NewIaView extends GetView<NewIaController> {
                           color: SeparatorPalette.dark,
                           fontSize: 12,
                           fontWeight: FontWeight.w500)),
-                ),      
+                ),
               ),
             );
           },
@@ -422,7 +423,6 @@ class NewIaView extends GetView<NewIaController> {
                           color: SeparatorPalette.dark,
                           fontSize: 12,
                           fontWeight: FontWeight.w500)),
-                     
                 ),
               )
           ],
@@ -461,7 +461,7 @@ class NewIaView extends GetView<NewIaController> {
                   child: Text(ia.name,
                       style:
                           const TextStyle(color: Colors.white, fontSize: 12)),
-                ),      
+                ),
               ),
             );
           },
@@ -499,7 +499,6 @@ class NewIaView extends GetView<NewIaController> {
                   child: Text(ia.name,
                       style:
                           const TextStyle(color: Colors.white, fontSize: 12)),
-                     
                 ),
               )
           ],

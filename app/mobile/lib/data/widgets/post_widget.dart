@@ -10,17 +10,16 @@ class PostTileWidget extends StatelessWidget {
   final bool hideTags;
   final void Function() onUpvote;
   final void Function() onDownvote;
-  final void Function() showUpvoters;
-  final void Function() showDownvoters;
-  const PostTileWidget(
-      {super.key,
-      required this.post,
-      this.onTap,
-      required this.hideTags,
-      required this.onUpvote,
-      required this.onDownvote,
-      required this.showUpvoters,
-      required this.showDownvoters});
+  final void Function() showVoters;
+  const PostTileWidget({
+    super.key,
+    required this.post,
+    this.onTap,
+    required this.hideTags,
+    required this.onUpvote,
+    required this.onDownvote,
+    required this.showVoters,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -99,21 +98,33 @@ class PostTileWidget extends StatelessWidget {
                       onTap: onUpvote,
                       child: Image.asset(
                         Assets.upvote,
-                        width: 14,
+                        width: 12,
+                        height: 12,
                       ),
                     ),
                     const SizedBox(width: 2),
                     InkWell(
-                      onTap: showUpvoters,
-                      child: Text(
-                        post.upvoteCount.toString(),
-                        style: TextStyle(
-                          color: ThemePalette.positive,
-                          fontSize: 12,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w600,
-                          height: 0,
-                          letterSpacing: -0.15,
+                      onTap: showVoters,
+                      child: SizedBox(
+                        width: 18,
+                        child: Text(
+                          post.upvoteCount >= post.downvoteCount
+                              ? (post.upvoteCount - post.downvoteCount)
+                                  .toString()
+                              : (post.downvoteCount - post.upvoteCount)
+                                  .toString(),
+                          style: TextStyle(
+                            color: post.upvoteCount >= post.downvoteCount
+                                ? post.upvoteCount == post.downvoteCount
+                                    ? ThemePalette.dark
+                                    : ThemePalette.positive
+                                : ThemePalette.negative,
+                            fontSize: 12,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: -0.14,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
@@ -122,24 +133,11 @@ class PostTileWidget extends StatelessWidget {
                       onTap: onDownvote,
                       child: Image.asset(
                         Assets.downvote,
-                        width: 14,
+                        width: 12,
+                        height: 12,
                       ),
                     ),
-                    const SizedBox(width: 2),
-                    InkWell(
-                      onTap: showDownvoters,
-                      child: Text(
-                        post.downvoteCount.toString(),
-                        style: TextStyle(
-                          color: ThemePalette.negative,
-                          fontSize: 12,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w600,
-                          height: 0,
-                          letterSpacing: -0.15,
-                        ),
-                      ),
-                    ),
+                    const SizedBox(width: 4),
                   ],
                 ),
               ],

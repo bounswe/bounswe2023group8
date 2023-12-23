@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/palette.dart';
@@ -15,7 +16,9 @@ class SettingsView extends GetView<SettingsController> {
     return Scaffold(
       appBar: const CustomAppBar(
         leadingAppIcon: true,
-        title: 'Settings',
+        search: false,
+        notification: true,
+        actions: [],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),

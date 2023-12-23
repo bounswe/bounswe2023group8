@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:map_location_picker/map_location_picker.dart';
+import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/spot.dart';
 import 'package:mobile/data/widgets/report_dialog.dart';
@@ -20,7 +22,7 @@ class PostDetailsController extends GetxController {
 
   RxList<CommentModel> comments = <CommentModel>[].obs;
 
-  BottomNavigationController bottomNavController =
+  BottomNavigationController bottomNavigationController =
       Get.find<BottomNavigationController>();
 
   late Rx<Spot> post;
@@ -32,23 +34,24 @@ class PostDetailsController extends GetxController {
 
   bool showFollowButton() {
     return !visitor &&
-        post.value.enigmaUser.id != bottomNavController.userId &&
+        post.value.enigmaUser.id != bottomNavigationController.userId &&
         !isFollowing.value;
   }
 
   bool showUnfollowButton() {
     return !visitor &&
-        post.value.enigmaUser.id != bottomNavController.userId &&
+        post.value.enigmaUser.id != bottomNavigationController.userId &&
         isFollowing.value;
   }
 
   void followUser() async {
     try {
       final res = await postDetailsProvider.followUser(
-          id: post.value.enigmaUser.id, token: bottomNavController.token);
+          id: post.value.enigmaUser.id,
+          token: bottomNavigationController.token);
       if (res) {
         isFollowing.value = true;
-        bottomNavController.followUser();
+        bottomNavigationController.followUser();
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
@@ -58,10 +61,11 @@ class PostDetailsController extends GetxController {
   void unfollowUser() async {
     try {
       final res = await postDetailsProvider.unfollowUser(
-          id: post.value.enigmaUser.id, token: bottomNavController.token);
+          id: post.value.enigmaUser.id,
+          token: bottomNavigationController.token);
       if (res) {
         isFollowing.value = false;
-        bottomNavController.unfollowUser(post.value.enigmaUser.id);
+        bottomNavigationController.unfollowUser(post.value.enigmaUser.id);
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
@@ -85,23 +89,23 @@ class PostDetailsController extends GetxController {
   void upvotePost() async {
     try {
       final hasUpvoted = await postDetailsProvider.hasUpVoted(
-          token: bottomNavController.token,
+          token: bottomNavigationController.token,
           postId: post.value.id,
-          userId: bottomNavController.userId);
+          userId: bottomNavigationController.userId);
 
       bool res = false;
 
       if (hasUpvoted) {
         res = await postDetailsProvider.unvotePost(
-            token: bottomNavController.token, postId: post.value.id);
+            token: bottomNavigationController.token, postId: post.value.id);
       } else {
         res = await postDetailsProvider.upvotePost(
-            token: bottomNavController.token, postId: post.value.id);
+            token: bottomNavigationController.token, postId: post.value.id);
       }
 
       if (res) {
         post.value = await postDetailsProvider.getPostById(
-                id: post.value.id, token: bottomNavController.token) ??
+                id: post.value.id, token: bottomNavigationController.token) ??
             post.value;
       }
     } catch (e) {
@@ -112,23 +116,23 @@ class PostDetailsController extends GetxController {
   void downvotePost() async {
     try {
       final hasDownvoted = await postDetailsProvider.hasDownVoted(
-          token: bottomNavController.token,
+          token: bottomNavigationController.token,
           postId: post.value.id,
-          userId: bottomNavController.userId);
+          userId: bottomNavigationController.userId);
 
       bool res = false;
 
       if (hasDownvoted) {
         res = await postDetailsProvider.unvotePost(
-            token: bottomNavController.token, postId: post.value.id);
+            token: bottomNavigationController.token, postId: post.value.id);
       } else {
         res = await postDetailsProvider.downvotePost(
-            token: bottomNavController.token, postId: post.value.id);
+            token: bottomNavigationController.token, postId: post.value.id);
       }
 
       if (res) {
         post.value = await postDetailsProvider.getPostById(
-                id: post.value.id, token: bottomNavController.token) ??
+                id: post.value.id, token: bottomNavigationController.token) ??
             post.value;
       }
     } catch (e) {
@@ -136,31 +140,22 @@ class PostDetailsController extends GetxController {
     }
   }
 
-  void showUpVotes() async {
+  void showVotes(int section) async {
     try {
-      final users = await postDetailsProvider.getUpvotedUsers(
-          token: bottomNavController.token, postId: post.value.id);
-      if (users.isNotEmpty) {
-        Get.dialog(UserListDialog(
-          title: 'Upvoters',
-          users: users,
-        ));
-      }
-    } catch (e) {
-      ErrorHandlingUtils.handleApiError(e);
-    }
-  }
+      final upvotedUsers = await postDetailsProvider.getUpvotedUsers(
+          token: bottomNavigationController.token, postId: post.value.id);
+      final downvotedUsers = await postDetailsProvider.getDownvotedUsers(
+          token: bottomNavigationController.token, postId: post.value.id);
 
-  void showDownVotes() async {
-    try {
-      final users = await postDetailsProvider.getDownvotedUsers(
-          token: bottomNavController.token, postId: post.value.id);
-      if (users.isNotEmpty) {
-        Get.dialog(UserListDialog(
-          title: 'Downvoters',
-          users: users,
-        ));
-      }
+      Get.dialog(UserListDialog(
+        title: 'Votes',
+        sections: const ['Upvoters', 'Downvoters'],
+        defaultSection: section,
+        sectionColors: [ThemePalette.positive, ThemePalette.negative],
+        sectionTextColors: [ThemePalette.light, ThemePalette.light],
+        users: [upvotedUsers, downvotedUsers],
+        isRemovable: const [false, false],
+      ));
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
@@ -175,7 +170,7 @@ class PostDetailsController extends GetxController {
   void onReport(int postId, String reason, String entityType) async {
     try {
       final res = await postDetailsProvider.report(
-          token: bottomNavController.token,
+          token: bottomNavigationController.token,
           entityId: postId,
           entityType: entityType,
           reason: reason);
@@ -198,7 +193,7 @@ class PostDetailsController extends GetxController {
   void fetchComments() async {
     try {
       comments.value = await postDetailsProvider.getPostComments(
-              token: bottomNavController.token, postId: postArg.id) ??
+              token: bottomNavigationController.token, postId: postArg.id) ??
           comments;
       routeLoading.value = false;
     } catch (e) {
@@ -209,7 +204,7 @@ class PostDetailsController extends GetxController {
   void makeComment() async {
     try {
       final res = await postDetailsProvider.comment(
-          token: bottomNavController.token,
+          token: bottomNavigationController.token,
           postId: post.value.id,
           content: commentController.text);
       if (res) {
@@ -224,7 +219,7 @@ class PostDetailsController extends GetxController {
   void deleteComment(int commentId) async {
     try {
       final res = await postDetailsProvider.deleteComment(
-          token: bottomNavController.token,
+          token: bottomNavigationController.token,
           postId: post.value.id,
           commentId: commentId);
       if (res) {
@@ -237,13 +232,11 @@ class PostDetailsController extends GetxController {
 
   void startEditingComment(int commentId) {}
 
-
-
   @override
   void onInit() {
     super.onInit();
     isFollowing.value =
-        bottomNavController.isUserFollowing(postArg.enigmaUser.id);
+        bottomNavigationController.isUserFollowing(postArg.enigmaUser.id);
     post = postArg.obs;
     fetchComments();
   }

@@ -12,12 +12,19 @@ class NewPostView extends GetView<NewPostController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: const CustomAppBar(
-          leadingAppIcon: true,
-        ),
-        body: Obx(() {
-          return SingleChildScrollView(
+    return Obx(
+      () {
+        if (controller.routeLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return Scaffold(
+          appBar: const CustomAppBar(
+            leadingAppIcon: true,
+            search: false,
+            notification: false,
+            actions: [],
+          ),
+          body: SingleChildScrollView(
             padding: const EdgeInsets.only(right: 10, left: 10, bottom: 60),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -174,7 +181,7 @@ class NewPostView extends GetView<NewPostController> {
                     Expanded(
                         child: InkWell(
                       onTap: () => controller.showLabelSelectionModal(context),
-                          child: Container(
+                      child: Container(
                           height: 36,
                           decoration: BoxDecoration(
                             color: const Color(0xFFF1F1F1),
@@ -224,22 +231,21 @@ class NewPostView extends GetView<NewPostController> {
                 ),
                 InkWell(
                     onTap: () => controller.pickDate(),
-                          child: Row(
-                            children: [
+                    child: Row(
+                      children: [
                         const Text("Publication Date: "),
                         const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                  "${controller.publicationDate.value == '' ? 'Pick a Date' : controller.publicationDate}"
-                                  // enabled: false,
-                                  // decoration: const InputDecoration(labelText: 'Publication Date'),
-                                  // onChanged: (value) => controller.publicationDate(value),
-                                  // maxLines: null,
-                                  // keyboardType: TextInputType.multiline,
-                                  ),
-                            ],
-                        
+                          width: 10,
+                        ),
+                        Text(
+                            "${controller.publicationDate.value == '' ? 'Pick a Date' : controller.publicationDate}"
+                            // enabled: false,
+                            // decoration: const InputDecoration(labelText: 'Publication Date'),
+                            // onChanged: (value) => controller.publicationDate(value),
+                            // maxLines: null,
+                            // keyboardType: TextInputType.multiline,
+                            ),
+                      ],
                     )),
                 const SizedBox(
                   height: 10,
@@ -259,9 +265,6 @@ class NewPostView extends GetView<NewPostController> {
                         ),
                       ],
                     )),
-
-           
-
                 const SizedBox(
                   height: 20,
                 ),
@@ -279,8 +282,10 @@ class NewPostView extends GetView<NewPostController> {
                 ),
               ],
             ),
-          );
-        }));
+          ),
+        );
+      },
+    );
   }
 
   Widget _searchTagResults() {
@@ -367,4 +372,3 @@ class NewPostView extends GetView<NewPostController> {
     );
   }
 }
-

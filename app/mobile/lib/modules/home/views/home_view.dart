@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/bunch_widget.dart';
-import 'package:mobile/data/widgets/custom_search_bar.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
 import 'package:mobile/data/widgets/profile_column.dart';
 import 'package:mobile/modules/home/controllers/home_controller.dart';
@@ -26,16 +24,10 @@ class HomeView extends GetView<HomeController> {
         return Scaffold(
           appBar: CustomAppBar(
             leadingAppIcon: true,
-            titleWidget: CustomSearchBar(
-              onChanged: controller.onSearchQueryChanged,
-            ),
-            actions: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 14.0, horizontal: 8.0),
-                child: SvgPicture.asset(Assets.notification),
-              )
-            ],
+            search: true,
+            onSearchQueryChanged: controller.onSearchQueryChanged,
+            notification: true,
+            actions: const [],
           ),
           body: Container(
             color: ThemePalette.white,
@@ -152,10 +144,8 @@ class HomeView extends GetView<HomeController> {
                                   .upvotePost(controller.posts[index].id),
                               onDownvote: () => controller
                                   .downvotePost(controller.posts[index].id),
-                              showDownvoters: () => controller
-                                  .showDownVotes(controller.posts[index].id),
-                              showUpvoters: () => controller
-                                  .showUpVotes(controller.posts[index].id),
+                              showVoters: () => controller
+                                  .showVotes(controller.posts[index].id),
                             );
                           },
                           separatorBuilder: (context, index) =>
@@ -299,8 +289,8 @@ class HomeView extends GetView<HomeController> {
                         .downvotePost(controller.searchPosts[index].id),
                     onUpvote: () =>
                         controller.upvotePost(controller.searchPosts[index].id),
-                    showDownvoters: () {},
-                    showUpvoters: () {},
+                    showVoters: () =>
+                        controller.showVotes(controller.searchPosts[index].id),
                   );
                 },
                 separatorBuilder: (context, index) {
