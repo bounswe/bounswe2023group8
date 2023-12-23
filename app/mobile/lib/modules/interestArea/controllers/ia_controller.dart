@@ -47,9 +47,8 @@ class InterestAreaController extends GetxController {
     viewState.value = state;
   }
 
-// change
   bool get isOwner =>
-      interestArea.enigmaUserId != bottomNavigationController.userId;
+      interestArea.enigmaUserId == bottomNavigationController.userId;
 
   void onSearchQueryChanged(String value) {
     searchQuery.value = value;
@@ -110,7 +109,7 @@ class InterestAreaController extends GetxController {
       nestedIas.value = await iaProvider.getNestedIas(
               id: interestArea.id, token: bottomNavigationController.token) ??
           [];
-      routeLoading.value = false;
+      fetchIa();
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
