@@ -10,8 +10,7 @@ import 'package:mobile/modules/settings/views/change_password.dart';
 import 'package:mobile/routes/app_pages.dart';
 
 class SettingsController extends GetxController {
-
-  final bottomNavController = Get.find<BottomNavigationController>();
+  final bottomNavigationController = Get.find<BottomNavigationController>();
   final settingsProvider = Get.find<SettingsProvider>();
 
   var oldPassword = ''.obs;
@@ -55,7 +54,7 @@ class SettingsController extends GetxController {
   }
 
   void navigateToChangePassword() {
-    Get.to(() => ChangePasswordView());
+    Get.to(() => const ChangePasswordView());
   }
 
   void onChangePassword() async {
@@ -65,7 +64,7 @@ class SettingsController extends GetxController {
     try {
       changePasswordInProgress.value = true;
       final res = await settingsProvider.changePassword(
-          token: bottomNavController.token,
+          token: bottomNavigationController.token,
           engimaUserId: userId,
           oldPassword: oldPassword.value,
           newPassword1: newPassword.value,
@@ -94,7 +93,7 @@ class SettingsController extends GetxController {
   void onDeleteUser() async {
     try {
       final res = await settingsProvider.deleteUser(
-          token: bottomNavController.token, id: userId);
+          token: bottomNavigationController.token, id: userId);
       if (res) {
         _box.remove('username');
         _box.remove('password');
@@ -105,12 +104,11 @@ class SettingsController extends GetxController {
       ErrorHandlingUtils.handleApiError(e);
     }
   }
-  
 
   void onLogout() async {
     try {
-      final res =
-          await settingsProvider.logout(token: bottomNavController.token);
+      final res = await settingsProvider.logout(
+          token: bottomNavigationController.token);
       if (res) {
         _box.remove('username');
         _box.remove('password');

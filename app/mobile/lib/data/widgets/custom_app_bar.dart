@@ -28,10 +28,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: ThemePalette.white,
       leadingWidth: leadingAppIcon
           ? leadingBackIcon
-              ? 77
+              ? 83
               : 51
           : leadingBackIcon
-              ? 34
+              ? 48
               : 16,
       titleSpacing: 32,
       elevation: 0.5,
@@ -45,8 +45,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onTap: () => Navigator.of(context).pop(),
                 child: Image.asset(
                   Assets.back,
-                  width: 18,
-                  height: 18,
+                  width: 24,
+                  height: 24,
                 ),
               ),
               const SizedBox(width: 8),

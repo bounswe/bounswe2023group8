@@ -30,6 +30,7 @@ class HomeView extends GetView<HomeController> {
             actions: const [],
           ),
           body: Container(
+            height: Get.height,
             color: ThemePalette.white,
             child: SingleChildScrollView(
               padding: const EdgeInsets.only(bottom: 60),
@@ -229,7 +230,7 @@ class HomeView extends GetView<HomeController> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: SizedBox(
-                height: 120,
+                height: 106,
                 child: ListView.separated(
                   padding: EdgeInsets.zero,
                   scrollDirection: Axis.horizontal,
