@@ -36,8 +36,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
                     width: 20,
                     height: 20,
                   ),
-                ),
-
+                )
               else
                 Padding(
                   padding: const EdgeInsets.all(10),
@@ -50,7 +49,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
                         size: 30,
                       )),
                 ),
-				const SizedBox(width: 16),
+              const SizedBox(width: 16),
             ],
           ),
           body: Container(

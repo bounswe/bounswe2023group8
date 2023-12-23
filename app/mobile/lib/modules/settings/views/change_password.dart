@@ -8,10 +8,18 @@ import 'package:mobile/data/widgets/custom_text_field.dart';
 import '../controllers/settings_controller.dart';
 
 class ChangePasswordView extends GetView<SettingsController> {
+  const ChangePasswordView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(leadingAppIcon: true),
+      appBar: const CustomAppBar(
+        leadingAppIcon: true,
+        leadingBackIcon: true,
+        search: false,
+        notification: false,
+        actions: [],
+      ),
       body: Obx(() {
         return Column(
           children: [
