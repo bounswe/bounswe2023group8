@@ -31,6 +31,8 @@ public class AnnotationContainerResponse extends AnnotationServerBaseResponse {
 
     Timestamp modified;
 
+    Timestamp created;
+
     @Data
     @Builder
     @NoArgsConstructor

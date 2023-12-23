@@ -10,4 +10,6 @@ public interface AnnotationRepository extends JpaRepository<Annotation, Long> {
     List<Annotation> findAllByContainerNameOrderById(String containerName);
 
     Boolean existsByContainerName(String containerName);
+
+    Annotation findByContainerNameAndAnnotationNameAndId(String containerName, String name, Long id);
 }

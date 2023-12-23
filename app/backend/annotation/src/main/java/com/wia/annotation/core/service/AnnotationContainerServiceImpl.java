@@ -77,6 +77,7 @@ public class AnnotationContainerServiceImpl implements AnnotationContainerServic
                 .containerName(containerName)
                 .label(label)
                 .modified(new Timestamp(System.currentTimeMillis()))
+                .created(new Timestamp(System.currentTimeMillis()))
                 .build();
 
         try {
@@ -101,6 +102,7 @@ public class AnnotationContainerServiceImpl implements AnnotationContainerServic
                 .last(annotationContainer.getId().toString() + "?page=0")
                 .total(0)
                 .modified(annotationContainer.getModified())
+                .created(annotationContainer.getCreated())
                 .build();
     }
 
@@ -167,6 +169,7 @@ public class AnnotationContainerServiceImpl implements AnnotationContainerServic
                 .last(annotationContainer.getId().toString() + "?page=" + lastPage)
                 .total(annotations.size())
                 .modified(annotationContainer.getModified())
+                .created(annotationContainer.getCreated())
                 .build();
     }
 

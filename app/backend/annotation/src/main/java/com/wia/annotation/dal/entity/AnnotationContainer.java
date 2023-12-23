@@ -30,4 +30,7 @@ public class AnnotationContainer {
 
     @Column(name = "modified")
     Timestamp modified;
+
+    @Column(name = "created")
+    Timestamp created;
 }

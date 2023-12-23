@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @Entity
@@ -33,4 +35,10 @@ public class Annotation {
 
     @Column(name = "target")
     String target;
+
+    @Column(name = "modified")
+    Timestamp modified;
+
+    @Column(name = "created")
+    Timestamp created;
 }
