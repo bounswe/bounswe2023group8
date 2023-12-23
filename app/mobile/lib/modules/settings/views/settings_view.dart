@@ -16,7 +16,7 @@ class SettingsView extends GetView<SettingsController> {
       appBar: const CustomAppBar(
         leadingAppIcon: true,
         search: false,
-        notification: true,
+        notification: false,
         actions: [],
       ),
       body: SingleChildScrollView(
