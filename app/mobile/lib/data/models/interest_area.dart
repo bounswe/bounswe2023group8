@@ -9,6 +9,7 @@ class InterestArea {
   final List<WikiTag> wikiTags;
   final DateTime createTime;
   final String description;
+  final String? pictureUrl;
 
   InterestArea({
     required this.id,
@@ -19,6 +20,7 @@ class InterestArea {
     required this.wikiTags,
     required this.createTime,
     required this.description,
+    this.pictureUrl,
   });
 
   factory InterestArea.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,7 @@ class InterestArea {
 
     return InterestArea(
       id: json['id'] ?? 0,
+      pictureUrl: json['pictureUrl'],
       enigmaUserId: json['enigmaUserId'] ?? 0,
       accessLevel: json['accessLevel'] ?? '',
       name: json['title'] ?? '',

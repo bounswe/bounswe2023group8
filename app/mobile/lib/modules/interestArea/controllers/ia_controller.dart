@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/interest_area.dart';
@@ -27,6 +28,8 @@ class InterestAreaController extends GetxController {
   RxList<InterestArea> nestedIas = <InterestArea>[].obs;
 
   RxList<IaRequest> followRequests = <IaRequest>[].obs;
+
+  final ImagePicker _picker = ImagePicker();
 
   var searchIas = <InterestArea>[].obs;
 
@@ -78,9 +81,6 @@ class InterestAreaController extends GetxController {
   }
 
   void fetchData() async {
-    final InterestArea? ia = await iaProvider.getIa(
-        id: interestArea.id, token: bottomNavigationController.token);
-
     if (interestArea.accessLevel == 'PUBLIC') {
       hasAccess.value = true;
     } else {
@@ -109,10 +109,55 @@ class InterestAreaController extends GetxController {
       nestedIas.value = await iaProvider.getNestedIas(
               id: interestArea.id, token: bottomNavigationController.token) ??
           [];
-      routeLoading.value = false;
+      fetchIa();
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
+  }
+
+  void uploadImage() async {
+    try {
+      _picker.pickImage(source: ImageSource.gallery).then((value) async {
+        if (value != null) {
+          routeLoading.value = true;
+          final res = await iaProvider.uploadImage(
+              id: interestArea.id,
+              token: bottomNavigationController.token,
+              image: value.path);
+          if (res) {
+            fetchIa();
+          }
+        }
+      });
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void deletePicture() async {
+    try {
+      routeLoading.value = true;
+      final res = await iaProvider.deleteImage(
+          id: interestArea.id, token: bottomNavigationController.token);
+      if (res) {
+        fetchIa();
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void fetchIa() async {
+    try {
+      final res = await iaProvider.getIa(
+          id: interestArea.id, token: bottomNavigationController.token);
+      if (res != null) {
+        interestArea = res;
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+    routeLoading.value = false;
   }
 
   void acceptIaRequest(int requestId) async {

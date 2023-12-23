@@ -43,6 +43,32 @@ class ProfileProvider extends GetConnect {
     return null;
   }
 
+  Future<EnigmaUser?> getUser(
+      {required String token, required int userId}) async {
+    final response = await get('v1/user', query: {
+      'id': userId.toString()
+    }, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        return EnigmaUser.fromJson(body);
+      }
+    } else {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+
+    return null;
+  }
+
   Future<List<Spot>?> getPosts({required int id, required String token}) async {
     final response = await get('v1/user/$id/posts', headers: {
       'Accept': 'application/json',
@@ -374,6 +400,51 @@ class ProfileProvider extends GetConnect {
       'entityType': entityType,
       'reason': reason,
     }, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      return true;
+    } else {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
+
+  Future<bool> uploadImage(
+      {required String token, required String image}) async {
+    String fileName = image.split('/').last;
+    final data = FormData({
+      'image': MultipartFile(image, filename: fileName),
+    });
+
+    final response = await post('v1/user/upload-picture', data, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      return true;
+    } else {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
+  Future<bool> deleteImage({required String token}) async {
+    final response = await delete('v1/user/delete-picture', headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',
     });

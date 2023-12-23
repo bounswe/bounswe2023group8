@@ -16,8 +16,10 @@ class InterestAreaView extends GetView<InterestAreaController> {
     return Obx(
       () {
         if (controller.routeLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Scaffold(
+            body: const Center(
+              child: CircularProgressIndicator(),
+            ),
           );
         }
         return Scaffold(
@@ -26,7 +28,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
             leadingBackIcon: true,
             search: true,
             onSearchQueryChanged: controller.onSearchQueryChanged,
-            notification: true,
+            notification: false,
             actions: [
               if (controller.isOwner)
                 InkWell(
@@ -66,13 +68,74 @@ class InterestAreaView extends GetView<InterestAreaController> {
                           children: [
                             Column(
                               children: [
-                                Container(
-                                  width: Get.width,
-                                  height: Get.height * 0.2,
-                                  decoration: BoxDecoration(
-                                    color: BackgroundPalette.regular,
-                                    // if ekle foto varsa image olsun
-                                  ),
+                                Stack(
+                                  children: [
+                                    Container(
+                                      width: Get.width,
+                                      height: Get.height * 0.2,
+                                      decoration: BoxDecoration(
+                                        color: BackgroundPalette.regular,
+                                        image: controller
+                                                    .interestArea.pictureUrl !=
+                                                null
+                                            ? DecorationImage(
+                                                image: NetworkImage(controller
+                                                    .interestArea.pictureUrl!),
+                                                fit: BoxFit.cover,
+                                              )
+                                            : null,
+                                      ),
+                                    ),
+                                    if (controller.isOwner)
+                                      Positioned(
+                                        top: 10,
+                                        right: 16,
+                                        child: Row(
+                                          children: [
+                                            InkWell(
+                                              onTap: controller.uploadImage,
+                                              child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(4),
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        BackgroundPalette.light,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.photo,
+                                                    size: 16,
+                                                  )),
+                                            ),
+                                            if (controller.interestArea
+                                                        .pictureUrl !=
+                                                    null &&
+                                                controller.interestArea
+                                                    .pictureUrl!.isNotEmpty)
+                                              InkWell(
+                                                  onTap:
+                                                      controller.deletePicture,
+                                                  child: Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              4),
+                                                      decoration: BoxDecoration(
+                                                        color: BackgroundPalette
+                                                            .light,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                      ),
+                                                      child: Icon(
+                                                        Icons.delete,
+                                                        size: 16,
+                                                      ))),
+                                          ],
+                                        ),
+                                      ),
+                                  ],
                                 ),
                                 Divider(
                                   height: 0,
@@ -798,7 +861,15 @@ class InterestAreaView extends GetView<InterestAreaController> {
               title: Text(controller.followRequests[index].follower.name),
               subtitle:
                   Text(controller.followRequests[index].follower.username),
-              leading: CircleAvatar(
+              leading: controller.followRequests[index].follower.pictureUrl !=
+                          null &&
+                      controller
+                          .followRequests[index].follower.pictureUrl!.isNotEmpty
+                  ? CircleAvatar(
+                      backgroundImage: NetworkImage(controller
+                          .followRequests[index].follower.pictureUrl!),
+                    )
+                  : const CircleAvatar(
                 backgroundImage: AssetImage(Assets.profilePlaceholder),
               ),
               trailing: Row(

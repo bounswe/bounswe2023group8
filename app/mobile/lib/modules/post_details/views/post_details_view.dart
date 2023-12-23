@@ -20,7 +20,7 @@ class PostDetailsView extends GetView<PostDetailsController> {
           leadingAppIcon: true,
           leadingBackIcon: true,
           search: false,
-          notification: true,
+          notification: false,
           actions: [
             if (!controller.visitor &&
                 controller.post.value.enigmaUser.id ==
@@ -144,7 +144,13 @@ class PostDetailsView extends GetView<PostDetailsController> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        leading: CircleAvatar(
+        leading: comment.enigmaUser.pictureUrl != null &&
+                comment.enigmaUser.pictureUrl!.isNotEmpty
+            ? CircleAvatar(
+                radius: 20,
+                backgroundImage: NetworkImage(comment.enigmaUser.pictureUrl!),
+              )
+            : const CircleAvatar(
           radius: 20,
           backgroundImage: AssetImage(Assets.profilePlaceholder),
         ),

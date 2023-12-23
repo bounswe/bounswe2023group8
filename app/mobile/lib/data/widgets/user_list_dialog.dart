@@ -109,7 +109,12 @@ class UserListDialogState extends State<UserListDialog> {
               return ListTile(
                 onTap: () =>
                     Get.toNamed(Routes.profile, arguments: {'userId': user.id}),
-                leading: Image.asset(
+                leading: user.pictureUrl != null && user.pictureUrl!.isNotEmpty
+                    ? CircleAvatar(
+                        radius: 20,
+                        backgroundImage: NetworkImage(user.pictureUrl!),
+                      )
+                    : Image.asset(
                   Assets.profilePlaceholder,
                   width: 40,
                   height: 40,

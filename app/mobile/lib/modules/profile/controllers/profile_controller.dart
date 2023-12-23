@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/enigma_user.dart';
@@ -27,9 +28,13 @@ class ProfileController extends GetxController {
   var posts = <Spot>[].obs;
   var ias = <InterestArea>[].obs;
 
+  final ImagePicker _picker = ImagePicker();
+
+  Rx<EnigmaUser?> user = Rx<EnigmaUser?>(null);
+
   var isFollowing = false.obs;
 
-  void fetchUser() async {
+  void fetchUserProfile() async {
     try {
       final profile = await profileProvider.getProfilePage(
           id: userId, token: bottomNavigationController.token);
@@ -43,12 +48,57 @@ class ProfileController extends GetxController {
             [];
         fetchFollowers();
         fetchFollowings();
+        fetchUser();
         routeLoading.value = false;
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
   }
+
+  void fetchUser() async {
+    try {
+      final res = await profileProvider.getUser(
+          userId: userId, token: bottomNavigationController.token);
+      if (res != null) {
+        user.value = res;
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+    routeLoading.value = false;
+  }
+
+  void uploadImage() async {
+    try {
+      _picker.pickImage(source: ImageSource.gallery).then((value) async {
+        if (value != null) {
+          routeLoading.value = true;
+          final res = await profileProvider.uploadImage(
+              token: bottomNavigationController.token, image: value.path);
+          if (res) {
+            fetchUser();
+          }
+        }
+      });
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void deletePicture() async {
+    try {
+      routeLoading.value = true;
+      final res = await profileProvider.deleteImage(
+          token: bottomNavigationController.token);
+      if (res) {
+        fetchUser();
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
 
   void navigateToPostDetails(Spot post) {
     Get.toNamed(Routes.postDetails,
@@ -242,7 +292,7 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchUser();
+    fetchUserProfile();
     isFollowing.value = bottomNavigationController.isUserFollowing(userId);
   }
 
