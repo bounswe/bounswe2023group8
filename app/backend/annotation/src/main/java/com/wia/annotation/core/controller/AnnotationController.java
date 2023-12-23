@@ -31,7 +31,7 @@ public class AnnotationController {
      * @param request       CreateAnnotationRequest
      * @return              HTTP 201
      */
-    @PostMapping(path = "/{containerName}/annotation")
+    @PostMapping(path = "/{containerName}")
     public ResponseEntity<?> createAnnotation(@PathVariable String containerName,
                                               @RequestBody CreateAnnotationRequest request) {
 
@@ -41,6 +41,7 @@ public class AnnotationController {
                         request.getBody().getName(),
                         request.getType(),
                         request.getBody().getValue(),
+                        request.getBody().getType(),
                         request.getTarget()
                 );
 
@@ -48,7 +49,7 @@ public class AnnotationController {
                 .created(
                         ServletUriComponentsBuilder
                                 .fromCurrentContextPath()
-                                .path("/wai/{containerName}/annotation/{annotationName}{annotationId}")
+                                .path("/wai/{containerName}/{annotationName}{annotationId}")
                                 .buildAndExpand(containerName, request.getBody().getName(), response.getId())
                                 .toUri()
                 )
@@ -62,7 +63,7 @@ public class AnnotationController {
      * @param annotationNameId  name and id of the annotation
      * @return                  AnnotationResponse
      */
-    @GetMapping(path = "/{containerName}/annotation/{annotationNameId}")
+    @GetMapping(path = "/{containerName}/{annotationNameId}")
     public ResponseEntity<?> getAnnotation(@PathVariable String containerName,
                                            @PathVariable String annotationNameId) {
 
@@ -79,13 +80,13 @@ public class AnnotationController {
     }
 
     /**
-     * A3: Deletes an annotation.
+     * A3: Updates an annotation.
      *
      * @param containerName     name of the annotation container
      * @param annotationNameId  name and id of the annotation
      * @return                  HTTP 204
      */
-    @PutMapping(path = "/{containerName}/annotation/{annotationNameId}")
+    @PutMapping(path = "/{containerName}/{annotationNameId}")
     public ResponseEntity<?> updateAnnotation(@PathVariable String containerName,
                                               @PathVariable String annotationNameId,
                                               @RequestBody CreateAnnotationRequest request) {
@@ -111,7 +112,7 @@ public class AnnotationController {
      * @param annotationNameId  name and id of the annotation
      * @return                  HTTP 204
      */
-    @DeleteMapping(path = "/{containerName}/annotation/{annotationNameId}")
+    @DeleteMapping(path = "/{containerName}/{annotationNameId}")
     public ResponseEntity<?> deleteAnnotation(@PathVariable String containerName,
                                               @PathVariable String annotationNameId) {
 

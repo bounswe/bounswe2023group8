@@ -27,17 +27,15 @@ public class AnnotationContainerController {
     /**
      * C1: Creates an annotation container.
      *
-     * @param containerName name of the annotation container
      * @param request       CreateAnnotationContainerRequest
      * @return              HTTP 201
      */
-    @PostMapping(path = "/{containerName}")
-    public ResponseEntity<?> createAnnotationContainer(@PathVariable String containerName,
-                                                       @RequestBody CreateAnnotationContainerRequest request) {
+    @PostMapping
+    public ResponseEntity<?> createAnnotationContainer(@RequestBody CreateAnnotationContainerRequest request) {
 
         AnnotationContainerResponse response =
                 annotationContainerService.createAnnotationContainer(
-                        containerName,
+                        request.getName(),
                         request.getType(),
                         request.getLabel()
                 );
@@ -47,7 +45,7 @@ public class AnnotationContainerController {
                         ServletUriComponentsBuilder
                                 .fromCurrentContextPath()
                                 .path("/wai/{containerName}")
-                                .buildAndExpand(containerName)
+                                .buildAndExpand(request.getName())
                                 .toUri()
                 )
                 .body(response);

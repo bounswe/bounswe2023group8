@@ -12,4 +12,6 @@ public class CreateAnnotationContainerRequest extends AnnotationServerBaseReques
     List<String> type;
 
     String label;
+
+    String name;
 }

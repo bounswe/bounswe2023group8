@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -46,8 +47,6 @@ public class AnnotationContainerServiceImpl implements AnnotationContainerServic
     public AnnotationContainerResponse createAnnotationContainer(String containerName,
                                                                  List<String> type,
                                                                  String label) {
-
-        final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 
         boolean exists = false;
         try {
@@ -89,21 +88,51 @@ public class AnnotationContainerServiceImpl implements AnnotationContainerServic
                     "Could not save annotation container.");
         }
 
+        return getAnnotationContainerResponse(containerName, annotationContainer);
+    }
+
+    /**
+     * Fetches an annotation container response.
+     *
+     * @param containerName         name of the annotation container
+     * @param annotationContainer   annotation container
+     * @return                      AnnotationContainerResponse
+     */
+    private AnnotationContainerResponse getAnnotationContainerResponse(String containerName, AnnotationContainer annotationContainer) {
+
+        final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+
+        List<Annotation> annotations = annotationService.getAnnotations(containerName);
+        List<Annotation> annotationPage = annotations.subList(0, Math.min(annotations.size(), pageSize));
+        int lastPage = annotations.size() / pageSize;
+
         String annotationContainerId = baseUrl + "/wia/" + containerName + "/";
         return AnnotationContainerResponse.builder()
                 .id(annotationContainerId)
-                .type(type)
-                .label(label)
+                .label(annotationContainer.getLabel())
                 .first(AnnotationContainerResponse.First.builder()
                         .id(annotationContainerId + "?page=0")
+                        .next((lastPage > 0 ? annotationContainerId + "?page=1" : null))
                         .type("AnnotationPage")
-                        .next(null)
-                        .items(List.of())
+                        .items(annotationPage
+                                .stream()
+                                .map(annotation ->
+                                        AnnotationDto.builder()
+                                                .id(baseUrl + "/wia/" + containerName + "/" + annotation.getAnnotationName() + annotation.getId())
+                                                .type(annotation.getType())
+                                                .body(AnnotationDto.Body.builder()
+                                                        .value(annotation.getValue())
+                                                        .type(annotation.getValueType())
+                                                        .build())
+                                                .target(annotation.getTarget())
+                                                .build())
+                                .collect(Collectors.toList())
+                        )
                         .partOf(annotationContainerId)
                         .startIndex(0)
                         .build())
-                .last(annotationContainerId + "?page=0")
-                .total(0)
+                .last(annotationContainerId + "?page=" + lastPage)
+                .total(annotations.size())
                 .modified(annotationContainer.getModified())
                 .created(annotationContainer.getCreated())
                 .build();
@@ -117,8 +146,6 @@ public class AnnotationContainerServiceImpl implements AnnotationContainerServic
      */
     @Override
     public AnnotationContainerResponse getAnnotationContainer(String containerName) {
-
-        final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 
         boolean exists = false;
         try {
@@ -142,38 +169,7 @@ public class AnnotationContainerServiceImpl implements AnnotationContainerServic
                     "Could not fetch annotation container.");
         }
 
-        List<Annotation> annotations = annotationService.getAnnotations(containerName);
-        List<Annotation> annotationPage = annotations.subList(0, Math.min(annotations.size(), pageSize));
-        int lastPage = annotations.size() / pageSize;
-
-        String annotationContainerId = baseUrl + "/wia/" + containerName + "/";
-        return AnnotationContainerResponse.builder()
-                .id(annotationContainerId)
-                .label(annotationContainer.getLabel())
-                .first(AnnotationContainerResponse.First.builder()
-                        .id(annotationContainerId + "?page=0")
-                        .next(null)
-                        .items(annotationPage
-                                .stream()
-                                .map(annotation ->
-                                        AnnotationDto.builder()
-                                                .id(baseUrl + "/wia/" + containerName + "/" + annotation.getAnnotationName())
-                                                .type(annotation.getType())
-                                                .body(AnnotationDto.Body.builder()
-                                                        .value(annotation.getValue())
-                                                        .build())
-                                                .target(annotation.getTarget())
-                                                .build())
-                                .collect(Collectors.toList())
-                        )
-                        .partOf(annotationContainerId)
-                        .startIndex(0)
-                        .build())
-                .last(annotationContainer.getId().toString() + "?page=" + lastPage)
-                .total(annotations.size())
-                .modified(annotationContainer.getModified())
-                .created(annotationContainer.getCreated())
-                .build();
+        return getAnnotationContainerResponse(containerName, annotationContainer);
     }
 
     /**
@@ -211,4 +207,14 @@ public class AnnotationContainerServiceImpl implements AnnotationContainerServic
         }
     }
 
+    /**
+     * Checks if an annotation container exists.
+     *
+     * @param containerName name of the annotation container
+     * @return              true if exists, false otherwise
+     */
+    @Override
+    public Boolean annotationContainerExists(String containerName) {
+        return annotationContainerRepository.existsByContainerName(containerName);
+    }
 }

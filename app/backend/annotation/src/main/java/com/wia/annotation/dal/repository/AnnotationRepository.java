@@ -12,4 +12,6 @@ public interface AnnotationRepository extends JpaRepository<Annotation, Long> {
     Boolean existsByContainerName(String containerName);
 
     Annotation findByContainerNameAndAnnotationNameAndId(String containerName, String name, Long id);
+
+    Boolean existsByContainerNameAndAnnotationNameAndId(String containerName, String name, Long id);
 }

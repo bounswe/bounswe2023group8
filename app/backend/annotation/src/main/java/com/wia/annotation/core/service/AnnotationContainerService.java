@@ -13,4 +13,6 @@ public interface AnnotationContainerService {
     AnnotationContainerResponse getAnnotationContainer(String containerName);
 
     void deleteAnnotationContainer(String containerName);
+
+    Boolean annotationContainerExists(String containerName);
 }

@@ -22,8 +22,11 @@ public class CreateAnnotationRequest extends  AnnotationServerBaseRequest {
     @AllArgsConstructor
     @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
     public static class Body {
+
         String type = "TextualBody";
+
         String value;
+
         String name;
     }
 }

@@ -30,8 +30,11 @@ public class Annotation {
     @Column(name = "type")
     String type;
 
-    @Column(name = "label")
+    @Column(name = "value")
     String value;
+
+    @Column(name = "value_type")
+    String valueType;
 
     @Column(name = "target")
     String target;

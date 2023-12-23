@@ -16,6 +16,7 @@ public interface AnnotationService {
                                         String name,
                                         String type,
                                         String value,
+                                        String valueType,
                                         String target);
 
     @Transactional
