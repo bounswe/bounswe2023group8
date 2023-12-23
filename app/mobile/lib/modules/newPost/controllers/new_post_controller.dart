@@ -17,6 +17,8 @@ class NewPostController extends GetxController {
   var tagQuery = ''.obs;
   var sourceLink = ''.obs;
 
+  var isAgeRestricted = false.obs;
+
   var createInProgress = false.obs;
 
   final titleController = TextEditingController();
@@ -56,6 +58,10 @@ class NewPostController extends GetxController {
 
   void onChangeSourceLink(String value) {
     sourceLink.value = value;
+  }
+
+  void onChangeIsAgeRestricted() {
+    isAgeRestricted.value = !isAgeRestricted.value;
   }
 
   void onChangeTitle(String value) {
@@ -265,6 +271,7 @@ class NewPostController extends GetxController {
         token: bottomNavController.token,
         sourceLink: sourceLink.value,
         interestAreaId: selectedIa.value!.id,
+        isAgeRestricted: isAgeRestricted.value,
         label: label.value,
       );
       if (res) {

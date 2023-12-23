@@ -37,7 +37,20 @@ class InterestAreaView extends GetView<InterestAreaController> {
                     height: 20,
                   ),
                 ),
-              const SizedBox(width: 16),
+
+              else
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: InkWell(
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      onTap: () => controller.showReportBunch(),
+                      child: Icon(
+                        Icons.report_gmailerrorred,
+                        size: 30,
+                      )),
+                ),
+				const SizedBox(width: 16),
             ],
           ),
           body: Container(

@@ -21,13 +21,10 @@ class PrivacyAndSafetyView extends GetView<SettingsController> {
         actions: [],
       ),
       body: Column(
-        children: [
-          Container(
-            child: Column(
-              children: [
-                Container(
-                  width: 420,
-                  height: 44,
+       
+          children: [
+            Container(
+              width: Get.width,
                   decoration: const BoxDecoration(
                     color: Color(0xFF486375),
                     borderRadius: BorderRadius.only(
@@ -68,11 +65,11 @@ class PrivacyAndSafetyView extends GetView<SettingsController> {
                         height: 0,
                         letterSpacing: -0.20,
                       ),
-                    )),
+                    ),),
               ],
             ),
-          ),
-        ],
+          
+        
       ),
     );
   }

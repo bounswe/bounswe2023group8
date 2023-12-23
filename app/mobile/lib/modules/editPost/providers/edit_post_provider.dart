@@ -20,6 +20,7 @@ class EditPostProvider extends GetConnect {
       required int postId,
       required String sourceLink,
       required int interestAreaId,
+      required bool isAgeRestricted,
       required int label,
       required String content,
       required List<String> tags,
@@ -34,6 +35,7 @@ class EditPostProvider extends GetConnect {
       "wikiTags": tags,
       "label": label,
       "content": content,
+      "isAgeRestricted": isAgeRestricted,
       "geoLocation": {
         "latitude": latitude,
         "longitude": longitude,
@@ -48,7 +50,7 @@ class EditPostProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       return true;
     } else {
       if (response.bodyString != null) {
@@ -70,7 +72,7 @@ class EditPostProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       return true;
     } else {
       if (response.bodyString != null) {
@@ -93,7 +95,7 @@ class EditPostProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!) as List;
         return body.map((e) => WikiTag.fromWikiResponse(e)).toList();
@@ -116,7 +118,7 @@ class EditPostProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!);
         return (body as List)

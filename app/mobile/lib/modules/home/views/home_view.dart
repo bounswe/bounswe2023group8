@@ -32,6 +32,7 @@ class HomeView extends GetView<HomeController> {
           body: Container(
             color: ThemePalette.white,
             child: SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 60),
               physics: const ClampingScrollPhysics(),
               child: controller.searchQuery.value.isNotEmpty
                   ? _searchBody()
@@ -228,7 +229,7 @@ class HomeView extends GetView<HomeController> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: SizedBox(
-                height: 106,
+                height: 120,
                 child: ListView.separated(
                   padding: EdgeInsets.zero,
                   scrollDirection: Axis.horizontal,

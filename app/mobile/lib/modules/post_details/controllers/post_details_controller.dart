@@ -164,7 +164,7 @@ class PostDetailsController extends GetxController {
   void showReportSpot() {
     Get.dialog(ReportDialog(
         title: 'Report Spot',
-        onReport: (reason) => onReport(post.value.id, reason, 'POST')));
+        onReport: (reason) => onReport(post.value.id, reason, 'post')));
   }
 
   void onReport(int postId, String reason, String entityType) async {
@@ -175,7 +175,15 @@ class PostDetailsController extends GetxController {
           entityType: entityType,
           reason: reason);
       if (res) {
-        Get.snackbar('Success', 'Reported successfully');
+        Get.snackbar(
+          'Success',
+          'Reported successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.brown,
+          borderRadius: 0,
+          colorText: Colors.white,
+          margin: EdgeInsets.zero,
+        );
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);

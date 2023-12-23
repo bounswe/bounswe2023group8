@@ -17,6 +17,7 @@ class Spot {
   final int upvoteCount;
   final int downvoteCount;
   final int commentCount;
+  final bool isAgeRestricted;
 
   Spot({
     required this.id,
@@ -32,6 +33,7 @@ class Spot {
     required this.upvoteCount,
     required this.downvoteCount,
     required this.commentCount,
+    this.isAgeRestricted = false,
   });
 
   factory Spot.fromJson(Map<String, dynamic> json) {
@@ -50,6 +52,7 @@ class Spot {
         upvoteCount: json['upvoteCount'] ?? 0,
         downvoteCount: json['downvoteCount'] ?? 0,
         commentCount: json['commentCount'] ?? 0,
+        isAgeRestricted: json['isAgeRestricted'] ?? false,
         createTime: json['createTime'] != null
             ? '${json['createTime'].toString().substring(8, 10)}.${json['createTime'].toString().substring(5, 7)}.${json['createTime'].toString().substring(0, 4)} ${json['createTime'].toString().substring(11, 16)}'
             : '');

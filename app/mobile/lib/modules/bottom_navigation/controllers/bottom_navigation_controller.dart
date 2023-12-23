@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/models/interest_area.dart';
+import 'package:mobile/modules/bottom_navigation/models/app_user.dart';
 import 'package:mobile/modules/bottom_navigation/providers/bottom_nav_provider.dart';
 import 'package:mobile/modules/newIa/bindings/new_ia_binding.dart';
 import 'package:mobile/modules/newIa/views/new_ia_view.dart';
@@ -22,6 +23,8 @@ class BottomNavigationController extends GetxController {
 
   final String token = Get.arguments['token'];
   final int userId = Get.arguments['userId'];
+
+  AppUser? signedInUser;
 
   List<EnigmaUser> followingUsers = <EnigmaUser>[];
   List<InterestArea> followingIas = <InterestArea>[];
@@ -46,6 +49,17 @@ class BottomNavigationController extends GetxController {
 
   void followUser() async {
     fetchData();
+  }
+
+  void getUser() async {
+    try {
+      final res = await bottomNavProvider.getUser(token: token, userId: userId);
+      if (res != null) {
+        signedInUser = res;
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
   }
 
   void unfollowUser(int id) async {
@@ -133,6 +147,7 @@ class BottomNavigationController extends GetxController {
   @override
   void onInit() async {
     fetchData();
+    getUser();
     super.onInit();
   }
 }

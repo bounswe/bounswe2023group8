@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
-import 'package:mobile/data/constants/assets.dart';
+import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/modules/settings/views/privacy_view.dart';
-import 'package:mobile/routes/app_pages.dart';
 
 import '../controllers/settings_controller.dart';
 
@@ -21,14 +20,217 @@ class SettingsView extends GetView<SettingsController> {
         notification: true,
         actions: [],
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(
-            children: [
-              Container(
-                width: 328,
-                height: 40,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 16),
+            Container(
+              width: Get.width,
+              decoration: BoxDecoration(
+                color: const Color(0xFF486375),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              child: const Text(
+                'Account',
+                style: TextStyle(
+                  color: Color(0xFFF1F1F1),
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xffCDCFCF),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'E-mail',
+                    style: TextStyle(
+                      color: ThemePalette.dark,
+                      fontSize: 14,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Container(
+                      width: Get.width,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 5),
+                      decoration: ShapeDecoration(
+                        color: const Color(0xffFFFAF6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text(
+                        controller.bottomNavController.signedInUser?.email ??
+                            '',
+                        style: TextStyle(
+                          color: ThemePalette.dark,
+                          fontSize: 10,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                          height: 0,
+                          letterSpacing: -0.17,
+                        ),
+                      )),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Username',
+                    style: TextStyle(
+                      color: ThemePalette.dark,
+                      fontSize: 14,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Container(
+                      width: Get.width,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 5),
+                      decoration: ShapeDecoration(
+                        color: const Color(0xffFFFAF6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text(
+                        controller.bottomNavController.signedInUser?.username ??
+                            '',
+                        style: TextStyle(
+                          color: ThemePalette.dark,
+                          fontSize: 10,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                          height: 0,
+                          letterSpacing: -0.17,
+                        ),
+                      )),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Password',
+                        style: TextStyle(
+                          color: ThemePalette.dark,
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: controller.navigateToChangePassword,
+                        child: Text(
+                          'Change',
+                          style: TextStyle(
+                            color: ThemePalette.negative,
+                            fontSize: 14,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Container(
+                      width: Get.width,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 5),
+                      decoration: ShapeDecoration(
+                        color: const Color(0xffFFFAF6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text(
+                        '******',
+                        style: TextStyle(
+                          color: ThemePalette.dark,
+                          fontSize: 10,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      )),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Birthday',
+                    style: TextStyle(
+                      color: ThemePalette.dark,
+                      fontSize: 14,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Container(
+                      width: Get.width,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 5),
+                      decoration: ShapeDecoration(
+                        color: const Color(0xffFFFAF6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text(
+                        controller.bottomNavController.signedInUser?.birthday ??
+                            '',
+                        style: TextStyle(
+                          color: ThemePalette.dark,
+                          fontSize: 10,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      )),
+                  const SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                      onTap: controller.onDeleteUser,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 2, horizontal: 10),
+                        decoration: ShapeDecoration(
+                          color: ThemePalette.negative,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          'Delete Account',
+                          style: TextStyle(
+                            color: Color(0xFFF1F1F1),
+                            fontSize: 14,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w600,
+                      
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            InkWell(
+              onTap: () {
+                Get.to(() => const PrivacyAndSafetyView());
+              },
+              child: Container(
+                width: Get.width,
                 decoration: BoxDecoration(
                   color: const Color(0xFF486375),
                   borderRadius: BorderRadius.circular(8),
@@ -36,247 +238,39 @@ class SettingsView extends GetView<SettingsController> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                 child: const Text(
-                  'Account',
+                  'Privacy And Safety',
                   style: TextStyle(
                     color: Color(0xFFF1F1F1),
-                    fontSize: 20,
+                    fontSize: 16,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w600,
-                    height: 0,
-                    letterSpacing: -0.34,
                   ),
                 ),
               ),
-              Container(
-                width: 328,
-                height: 260,
-                padding: const EdgeInsets.only(
-                  top: 16,
-                  left: 32,
-                  right: 16,
-                  bottom: 16,
-                ),
+            ),
+            const SizedBox(height: 12),
+            InkWell(
+              onTap: controller.onLogout,
+              child: Container(
+                width: Get.width,
                 decoration: BoxDecoration(
-                  color: const Color(0xffCDCFCF),
+                  color: const Color(0xFF486375),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Column(
-                  children: [
-                    const Text(
-                      'E-mail',
-                      style: TextStyle(
-                        color: Color(0xFF434343),
-                        fontSize: 14,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w600,
-                        height: 0,
-                        letterSpacing: -0.24,
-                      ),
-                    ),
-                    Container(
-                        width: 280,
-                        height: 20,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 5),
-                        decoration: ShapeDecoration(
-                          color: const Color(0xffFFFAF6),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: const Text(
-                          'email',
-                          style: TextStyle(
-                            color: Color(0xFF434343),
-                            fontSize: 10,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
-                            height: 0,
-                            letterSpacing: -0.17,
-                          ),
-                        )),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Username',
-                      style: TextStyle(
-                        color: Color(0xFF434343),
-                        fontSize: 14,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w600,
-                        height: 0,
-                        letterSpacing: -0.24,
-                      ),
-                    ),
-                    Container(
-                        width: 280,
-                        height: 20,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 5),
-                        decoration: ShapeDecoration(
-                          color: const Color(0xffFFFAF6),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: const Text(
-                          'username',
-                          style: TextStyle(
-                            color: Color(0xFF434343),
-                            fontSize: 10,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
-                            height: 0,
-                            letterSpacing: -0.17,
-                          ),
-                        )),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Password',
-                      style: TextStyle(
-                        color: Color(0xFF434343),
-                        fontSize: 14,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w600,
-                        height: 0,
-                        letterSpacing: -0.24,
-                      ),
-                    ),
-                    Container(
-                        width: 280,
-                        height: 20,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 5),
-                        decoration: ShapeDecoration(
-                          color: const Color(0xffFFFAF6),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: const Text(
-                          '******',
-                          style: TextStyle(
-                            color: Color(0xFF434343),
-                            fontSize: 10,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
-                            height: 0,
-                            letterSpacing: -0.17,
-                          ),
-                        )),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Birthday',
-                      style: TextStyle(
-                        color: Color(0xFF434343),
-                        fontSize: 14,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w600,
-                        height: 0,
-                        letterSpacing: -0.24,
-                      ),
-                    ),
-                    Container(
-                        width: 280,
-                        height: 20,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 5),
-                        decoration: ShapeDecoration(
-                          color: const Color(0xffFFFAF6),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: const Text(
-                          'dd/mm/yyyy',
-                          style: TextStyle(
-                            color: Color(0xFF434343),
-                            fontSize: 10,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
-                            height: 0,
-                            letterSpacing: -0.17,
-                          ),
-                        )),
-                    const SizedBox(height: 12),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 2, horizontal: 3),
-                      width: 124,
-                      height: 24,
-                      decoration: ShapeDecoration(
-                        color: const Color(0xFFC32626),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: const Text(
-                        'Delete Account',
-                        style: TextStyle(
-                          color: Color(0xFFF1F1F1),
-                          fontSize: 14,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w600,
-                          height: 0,
-                          letterSpacing: -0.24,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              InkWell(
-                onTap: () {
-                  Get.to(() => const PrivacyAndSafetyView());
-                },
-                child: Container(
-                  width: 328,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF486375),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                  child: const Text(
-                    'Privacy And Safety',
-                    style: TextStyle(
-                      color: Color(0xFFF1F1F1),
-                      fontSize: 20,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: -0.34,
-                    ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                child: const Text(
+                  'Logout',
+                  style: TextStyle(
+                    color: Color(0xFFF1F1F1),
+                    fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
-              InkWell(
-                onTap: controller.onLogout,
-                child: Container(
-                  width: 328,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF486375),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                  child: const Text(
-                    'Logout',
-                    style: TextStyle(
-                      color: Color(0xFFF1F1F1),
-                      fontSize: 20,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w600,
-                      height: 0,
-                      letterSpacing: -0.34,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
