@@ -14,9 +14,10 @@ class ProfileColumn extends StatelessWidget {
       onTap: onTap,
       child: Column(
         children: [
-          const CircleAvatar(
-            radius: 40,
-            backgroundImage: AssetImage(Assets.profilePlaceholder),
+          Image.asset(
+            Assets.profilePlaceholder,
+            width: 80,
+            height: 80,
           ),
           const SizedBox(height: 4),
           Text(
