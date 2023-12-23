@@ -127,9 +127,11 @@ class ProfileController extends GetxController {
         sections: const ['Followers', 'Followings'],
         defaultSection: section,
         users: [followers, followings],
-        isRemovable: userId == userProfile.id ? [false, true] : [false, false],
+        isRemovable: bottomNavigationController.userId == userProfile.id
+            ? [false, true]
+            : [false, false],
         removeTexts: const ['Remove', 'Unfollow'],
-        onRemove: [() => {}, () => unfollowUser(userId)],
+        onRemove: [(temp) => {}, unfollowUser],
       ),
     );
   }

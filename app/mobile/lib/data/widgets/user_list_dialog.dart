@@ -139,7 +139,10 @@ class UserListDialogState extends State<UserListDialog> {
                 ),
                 trailing: isRemove
                     ? InkWell(
-                        onTap: widget.onRemove?[selectedSection],
+                        onTap: () => setState(() {
+                          widget.onRemove?[selectedSection](user.id);
+                          widget.users[selectedSection].remove(user);
+                        }),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 2),
@@ -177,7 +180,7 @@ class UserListDialog extends StatefulWidget {
   final List<List<EnigmaUser>> users;
   final List<bool> isRemovable;
   final List<String>? removeTexts;
-  final List<void Function()>? onRemove;
+  final List<void Function(int)>? onRemove;
   const UserListDialog({
     super.key,
     required this.title,
