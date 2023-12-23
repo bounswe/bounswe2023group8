@@ -62,9 +62,18 @@ class PostDetailWidget extends GetView<PostDetailsController> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const CircleAvatar(
-                        radius: 20,
-                        backgroundImage: AssetImage(Assets.profilePlaceholder)),
+                    controller.post.value.enigmaUser.pictureUrl != null &&
+                            controller
+                                .post.value.enigmaUser.pictureUrl!.isNotEmpty
+                        ? CircleAvatar(
+                            radius: 20,
+                            backgroundImage: NetworkImage(
+                                controller.post.value.enigmaUser.pictureUrl!),
+                          )
+                        : const CircleAvatar(
+                            radius: 20,
+                            backgroundImage:
+                                AssetImage(Assets.profilePlaceholder)),
                     const SizedBox(
                       width: 6,
                     ),

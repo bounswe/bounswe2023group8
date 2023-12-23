@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/bunch_widget.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/modules/profile/controllers/profile_controller.dart';
-import 'package:mobile/modules/profile/widgets/profile_header_widget.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({Key? key}) : super(key: key);
@@ -21,16 +21,19 @@ class ProfileView extends GetView<ProfileController> {
                 ? false
                 : true,
         search: false,
-        notification: true,
+        notification: false,
         actions: [
           if (controller.userId != controller.bottomNavigationController.userId)
-            InkWell(
-              highlightColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              onTap: () => controller.showReportUser(),
-              child: Icon(
-                Icons.report_gmailerrorred,
-                size: 20,
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: InkWell(
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                onTap: () => controller.showReportUser(),
+                child: Icon(
+                  Icons.report_gmailerrorred,
+                  size: 30,
+                ),
               ),
             ),
         ],
@@ -47,13 +50,7 @@ class ProfileView extends GetView<ProfileController> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ProfileHeaderWidget(
-                followerCount: controller.followers.length,
-                followingCount: controller.followings.length,
-                user: controller.userProfile,
-                onFollowersPressed: () => controller.showFollowPopUp(0),
-                onFollowingPressed: () => controller.showFollowPopUp(1),
-              ),
+              profileHeader(),
               const SizedBox(
                 height: 20,
               ),
@@ -141,6 +138,159 @@ class ProfileView extends GetView<ProfileController> {
           );
         }),
       ),
+    );
+  }
+
+  Widget profileHeader() {
+    return Container(
+      child: SizedBox(
+          child: Row(
+        children: [
+          Column(
+            children: [
+              controller.user.value?.pictureUrl != null &&
+                      controller.user.value!.pictureUrl!.isNotEmpty
+                  ? CircleAvatar(
+                      radius: 40,
+                      backgroundImage:
+                          NetworkImage(controller.user.value!.pictureUrl!))
+                  : const CircleAvatar(
+                      radius: 40,
+                      backgroundImage: AssetImage(Assets.profilePlaceholder)),
+              if (controller.userId ==
+                  controller.bottomNavigationController.userId)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Row(
+                    children: [
+                      InkWell(
+                        onTap: controller.uploadImage,
+                        child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Icon(
+                              Icons.photo,
+                              size: 16,
+                              color: Colors.white,
+                            )),
+                      ),
+                      if (controller.user.value?.pictureUrl != null &&
+                          controller.user.value!.pictureUrl!.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4.0),
+                          child: InkWell(
+                              onTap: controller.deletePicture,
+                              child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                    size: 16,
+                                  ))),
+                        ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            flex: 8,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    controller.userProfile.name,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    '@${controller.userProfile.username}',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: () => controller.showFollowPopUp(0),
+                        child: Text(
+                          '${controller.followers.length} Followers',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      InkWell(
+                        onTap: () => controller.showFollowPopUp(1),
+                        child: Text(
+                          '${controller.followings.length} Following',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ]),
+          ),
+          Expanded(
+            flex: 1,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Image.asset(
+                  Assets.upvote,
+                  width: 25,
+                ),
+                Image.asset(
+                  Assets.downvote,
+                  width: 25,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 5),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                0.toString(),
+                style: const TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                0.toString(),
+                style: const TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          )
+        ],
+      )),
     );
   }
 }

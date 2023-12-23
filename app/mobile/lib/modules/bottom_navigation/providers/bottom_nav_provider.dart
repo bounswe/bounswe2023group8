@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/models/interest_area.dart';
-import 'package:mobile/modules/bottom_navigation/models/app_user.dart';
 
 import '../../../data/constants/config.dart';
 import '../../../data/models/custom_exception.dart';
@@ -42,7 +41,8 @@ class BottomNavProvider extends GetConnect {
     return null;
   }
 
-  Future<AppUser?> getUser({required String token, required int userId}) async {
+  Future<EnigmaUser?> getUser(
+      {required String token, required int userId}) async {
     final response = await get('v1/user', query: {
       'id': userId.toString()
     }, headers: {
@@ -55,7 +55,7 @@ class BottomNavProvider extends GetConnect {
     } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!);
-        return AppUser.fromJson(body);
+        return EnigmaUser.fromJson(body);
       }
     } else {
       if (response.bodyString != null) {

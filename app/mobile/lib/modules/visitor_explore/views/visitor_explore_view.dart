@@ -201,10 +201,15 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
 Widget popularUsers({required EnigmaUser user}) {
   return Column(
     children: [
-      const CircleAvatar(
-        radius: 40,
-        backgroundImage: AssetImage(Assets.profilePlaceholder),
-      ),
+      user.pictureUrl != null && user.pictureUrl!.isNotEmpty
+          ? CircleAvatar(
+              radius: 40,
+              backgroundImage: NetworkImage(user.pictureUrl!),
+            )
+          : const CircleAvatar(
+              radius: 40,
+              backgroundImage: AssetImage(Assets.profilePlaceholder),
+            ),
       const SizedBox(height: 4),
       Text(
         user.name,
