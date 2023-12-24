@@ -20,7 +20,7 @@ public class AnnotationContainerResponse extends AnnotationServerBaseResponse {
 
     String id;
 
-    List<String> type = List.of("BasicContainer", "AnnotationCollection");
+    List<String> type;
 
     String label;
 

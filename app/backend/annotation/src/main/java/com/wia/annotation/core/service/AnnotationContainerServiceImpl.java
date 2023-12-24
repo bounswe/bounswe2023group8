@@ -110,6 +110,7 @@ public class AnnotationContainerServiceImpl implements AnnotationContainerServic
         return AnnotationContainerResponse.builder()
                 .id(annotationContainerId)
                 .label(annotationContainer.getLabel())
+                .type(List.of("BasicContainer", "AnnotationCollection"))
                 .first(AnnotationContainerResponse.First.builder()
                         .id(annotationContainerId + "?page=0")
                         .next((lastPage > 0 ? annotationContainerId + "?page=1" : null))
