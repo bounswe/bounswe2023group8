@@ -89,3 +89,30 @@ const getPost = async ({ axiosInstance, id }: getPostProps) => {
 export const useGetPost = (props: {}) => {
   return useMutation(getPost, props);
 };
+
+export type deletePostProps = {
+  id: string;
+  axiosInstance: AxiosInstance
+}
+
+const deletePost = async ({axiosInstance, id}: deletePostProps)=> {
+    const params = new URLSearchParams({
+        id: id
+    }).toString();
+    const response = await axiosInstance.delete(
+        `${process.env.REACT_APP_BACKEND_API_URL}/v1/post?${params}`
+    );
+
+    if (response.status >= 200 && response.status < 300) {
+        return response.data;
+    }
+}
+
+type useDeletePostProps = {
+    config?: any
+}
+
+export const useDeletePost = (props: useDeletePostProps) => {
+    const {config} = props;
+    return useMutation(deletePost, config);
+}

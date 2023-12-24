@@ -2,15 +2,13 @@ import React from 'react';
 import {Link} from "react-router-dom";
 import Label from "../Label/Label";
 import {format} from "date-fns";
+import {useAuth} from "../../contexts/AuthContext";
 
 export type DetailedPostCardPreviewProps = {
     interestAreaId: string;
     interestAreaTitle: string;
-    enigmaUserName: string;
-    enigmaUserId: string;
-    enigmaUserUsername: string;
     title: string;
-    label: string;
+    label: number;
     sourceLink: string;
     content: string;
 }
@@ -19,15 +17,28 @@ const createdAtString = format(new Date(), "PPpp");
 
 const DetailedPostCardPreview = ({
                                      content,
-                                     enigmaUserId,
-                                     enigmaUserName,
-                                     enigmaUserUsername,
                                      interestAreaId,
                                      interestAreaTitle,
                                      label,
                                      sourceLink,
                                      title
                                  }: DetailedPostCardPreviewProps) => {
+
+    const handleLabelDisplay = (num: number) => {
+        if (num == 0){
+            return "DOCUMENTATION"
+        } else if (num == 1) {
+            return "LEARNING"
+        } else if (num == 2) {
+            return "NEWS"
+        } else if (num == 3) {
+            return "RESEARCH"
+        } else {
+            return "DISCUSSION"
+        }
+    }
+    const {userData} = useAuth();
+
     return (
         <div className="card WA-theme-bg-regular rounded-4 mb-3 mt-4">
             <div className="d-flex justify-content-between align-items-center">
@@ -44,15 +55,21 @@ const DetailedPostCardPreview = ({
                             </Link>
                         </div>
                         <div className="d-inline-flex">
-                            <img alt="Profile picture" src="/assets/PlaceholderProfile.png" width="64" height="64"/>
+                            {userData.pictureUrl
+                                ? <img alt="profile picture" src={userData.pictureUrl} width="64" height="64"
+                                       className="rounded-circle img-fluid object-fit-cover m-2"
+                                />
+                                :
+                                <img alt="Profile picture" src="/assets/PlaceholderProfile.png" width="64" height="64"/>
+                            }
                             <div className="">
-                                <div className="fw-bold fs-6 WA-theme-dark">{enigmaUserName}</div>
+                                <div className="fw-bold fs-6 WA-theme-dark">{userData.name}</div>
                                 <div className="d-flex justify-content-between">
                                     <div className="d-flex">
-                                        <Link to={`/profile/${enigmaUserId}`}
+                                        <Link to={`/profile/${userData.id}`}
                                               style={{textDecoration: 'none'}}
                                               className="WA-theme-main">
-                                            {` @${enigmaUserUsername}`}
+                                            {` @${userData.username}`}
                                         </Link>
                                     </div>
                                     {/*<div className="d-flex">*/}
@@ -79,7 +96,7 @@ const DetailedPostCardPreview = ({
                                      height="32"
                                 />
                             </div>
-                            <Label className="" label={label}/>
+                            <Label className="" label={handleLabelDisplay(label)}/>
                             <Link to={sourceLink} className="truncate-text-2 WA-theme-main fw-bold mt-1">
                                 {sourceLink}
                             </Link>

@@ -1,16 +1,13 @@
 import React, {useState} from "react";
 import {useAuth} from "../../contexts/AuthContext";
-import PostCreateCard, {
-    CreatePostFormData,
-} from "../../components/Post/Create/PostCreateCard";
-import {SelectedLocationFormData} from "../../components/Geolocation/LocationPicker";
-import {useLocation, useParams} from "react-router-dom";
+import PostCreateCard from "../../components/Post/Create/PostCreateCard";
+import {useLocation} from "react-router-dom";
 import {useUpdatePost} from "../../hooks/usePost";
 import {WikiTag} from "../InterestAreaViewPage";
 import DetailedPostCardPreview from "../../components/Post/DetailedPostCardPreview";
 
 const PostUpdatePage = () => {
-    const {axiosInstance, userData} = useAuth();
+    const {axiosInstance} = useAuth();
     const propsFromParent = useLocation();
     const {post} = propsFromParent.state;
     const {
@@ -22,6 +19,7 @@ const PostUpdatePage = () => {
         label,
         content,
         geolocation,
+        isAgeRestricted
     }
         = post;
 
@@ -34,6 +32,7 @@ const PostUpdatePage = () => {
         }),
         label: label,
         sourceLink: sourceLink,
+        isAgeRestricted: isAgeRestricted,
     });
     const [locationDetails, setLocationDetails] = useState(
         { locationSelected: true, ...geolocation}
@@ -99,8 +98,7 @@ const PostUpdatePage = () => {
             </div>
             <div className="col-6 mt-5 ms-1">
                 <h3>Preview</h3>
-                <DetailedPostCardPreview  content={postDetails.content} enigmaUserId={userData.id.toString()}
-                                          enigmaUserName={userData.name} enigmaUserUsername={userData.username}
+                <DetailedPostCardPreview  content={postDetails.content}
                                           interestAreaId={interestArea.id} interestAreaTitle={interestArea.title}
                                           label={postDetails.label.toString()} sourceLink={postDetails.sourceLink} title={postDetails.title}/>
             </div>
