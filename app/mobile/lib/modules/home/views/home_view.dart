@@ -141,30 +141,30 @@ class HomeView extends GetView<HomeController> {
                           ),
                         ),
                         ListView.separated(
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: controller.posts.length,
-                            itemBuilder: (context, index) {
-                              return PostTileWidget(
-                                onTap: () => controller.navigateToPostDetails(
-                                    controller.posts[index]),
-                                post: controller.posts[index],
-                                hideTags: false,
-                                onUpvote: () => controller
-                                    .upvotePost(controller.posts[index].id),
-                                onDownvote: () => controller
-                                    .downvotePost(controller.posts[index].id),
-                                showDownvoters: () => controller
-                                    .showDownVotes(controller.posts[index].id),
-                                showUpvoters: () => controller
-                                    .showUpVotes(controller.posts[index].id),
-                              );
-                            },
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(height: 8),
-                          ),
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: controller.posts.length,
+                          itemBuilder: (context, index) {
+                            return PostTileWidget(
+                              onTap: () => controller.navigateToPostDetails(
+                                  controller.posts[index]),
+                              post: controller.posts[index],
+                              hideTags: false,
+                              onUpvote: () => controller
+                                  .upvotePost(controller.posts[index].id),
+                              onDownvote: () => controller
+                                  .downvotePost(controller.posts[index].id),
+                              showDownvoters: () => controller
+                                  .showDownVotes(controller.posts[index].id),
+                              showUpvoters: () => controller
+                                  .showUpVotes(controller.posts[index].id),
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 8),
+                        ),
                       ],
                     ),
             ),
