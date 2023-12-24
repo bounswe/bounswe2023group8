@@ -56,6 +56,15 @@ public class InterestAreaServiceImpl implements InterestAreaService {
 
         List<WikiTag> wikiTags = interestAreaServiceHelper.getWikiTags(id);
 
+        try{
+            interestAreaServiceHelper.checkInterestAreaAccess(interestArea, enigmaUserId);
+        }catch (EnigmaException e) {
+
+            InterestAreaDto interestAreaDto = interestArea.mapToInterestAreaDto(wikiTags);
+            interestAreaDto.setCreatorId(null);
+            return interestAreaDto;
+        }
+
         return interestArea.mapToInterestAreaDto(wikiTags);
     }
 

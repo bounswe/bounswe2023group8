@@ -6,7 +6,6 @@ import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;
 import com.wia.enigma.core.data.request.CreateInterestAreaRequest;
 import com.wia.enigma.core.service.InterestAreaService.InterestAreaService;
 import com.wia.enigma.core.service.PostService.PostService;
-import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -19,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -30,7 +28,6 @@ public class InterestAreaController {
 
     final InterestAreaService interestAreaService;
     final PostService postService;
-    final UserFollowsService userFollowsService;
 
     /*
         WA-8: Gets interest areas.
