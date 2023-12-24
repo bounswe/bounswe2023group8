@@ -5,6 +5,7 @@ import com.wia.enigma.core.data.model.InterestAreaModel;
 import com.wia.enigma.core.service.PostService.PostService;
 import com.wia.enigma.core.service.UserService.EnigmaUserService;
 import com.wia.enigma.dal.entity.*;
+import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.repository.*;
 import lombok.*;
@@ -56,11 +57,9 @@ public class PageServiceImpl implements PageService{
 
     public HomePageDto getHomePage(Long userId) {
 
-        HomePageDto homePageDto = HomePageDto.builder()
-
+        return HomePageDto.builder()
                 .posts(getPosts(userId))
                 .build();
-        return homePageDto;
     }
 
 
@@ -127,5 +126,83 @@ public class PageServiceImpl implements PageService{
                     postCommentRepository.countByPostId(post.getId())
             );
         }).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    public ExplorePageDto getExplorePage() {
+
+        return ExplorePageDto.builder()
+                .posts(getPublicPosts(20L))
+                .interestAreas(getInterestAreas(5L))
+                .enigmaUsers(getEnigmaUsers(5L))
+                .build();
+    }
+
+
+    private List<PostDto> getPublicPosts(Long postCount){
+
+        List<Post> posts = postRepository.findByAccessLevelOrderByCreateTimeDesc(EnigmaAccessLevel.PUBLIC);
+
+        posts = posts.subList(0, Math.min(posts.size(), postCount.intValue()));
+
+        List<EnigmaUserDto> enigmaUserDtos = enigmaUserRepository.findByIdIn(posts.stream().map(Post::getEnigmaUserId).toList()).stream().map(EnigmaUser::mapToEnigmaUserDto).toList();
+
+        List<EntityTag> entityTags = entityTagRepository.findByEntityIdInAndEntityType(posts.stream().map(Post::getId).toList(), EntityType.POST);
+
+        List<String> wikiTagIds = entityTags.stream()
+                .map(EntityTag::getWikiDataTagId).toList();
+
+        List<InterestAreaModel> interestAreaModels =  interestAreaRepository.findAllByIdIn(posts.stream().map(Post::getInterestAreaId).toList()).stream()
+                .map(InterestArea::mapToInterestAreaModel)
+                .toList();
+
+        List<WikiTag> wikiTags = wikiTagRepository.findByIdIn(wikiTagIds);
+
+        List<PostDto> publicPosts = posts.stream().map(post -> {
+
+            if(post.getIsAgeRestricted() != null && post.getIsAgeRestricted()){
+
+                return null;
+            }
+
+            return post.mapToPostDto(
+                    entityTags.stream().filter(entityTag -> entityTag.getEntityId().equals(post.getId())).map(
+                            entityTag -> wikiTags.stream().filter(wikiTag -> wikiTag.getId().equals(entityTag.getWikiDataTagId())).findFirst().orElse(null)
+                    ).collect(Collectors.toList()),
+                    enigmaUserDtos.stream().filter(enigmaUserDto -> enigmaUserDto.getId().equals(post.getEnigmaUserId())).findFirst().orElse(null),
+                    interestAreaModels.stream().filter(interestAreaModel -> interestAreaModel.getId().equals(post.getInterestAreaId())).findFirst().orElse(null),
+                    postVoteRepository.countByPostIdAndVote(post.getId(), true),
+                    postVoteRepository.countByPostIdAndVote(post.getId(), false),
+                    postCommentRepository.countByPostId(post.getId())
+            );
+        }).filter(Objects::nonNull).collect(Collectors.toList());
+
+        return publicPosts;
+
+    }
+
+    private List<InterestAreaDto> getInterestAreas(Long interestAreaCount){
+
+        List<InterestArea> interestAreas = interestAreaRepository.findByAccessLevelInOrderByCreateTimeDesc(List.of(EnigmaAccessLevel.PUBLIC, EnigmaAccessLevel.PRIVATE));
+
+        interestAreas = interestAreas.subList(0, Math.min(interestAreas.size(), interestAreaCount.intValue()));
+
+        List<EntityTag> entityTags = entityTagRepository.findByEntityIdInAndEntityType(interestAreas.stream().map(InterestArea::getId).toList(), EntityType.INTEREST_AREA);
+        List<String> wikiTagIds = entityTags.stream().map(EntityTag::getWikiDataTagId).toList();
+        List<WikiTag> wikiTags = wikiTagRepository.findByIdIn(wikiTagIds);
+
+        return interestAreas.stream().map(interestArea -> interestArea.mapToInterestAreaDto(
+                entityTags.stream().filter(entityTag -> entityTag.getEntityId().equals(interestArea.getId())).map(
+                        entityTag -> wikiTags.stream().filter(wikiTag -> wikiTag.getId().equals(entityTag.getWikiDataTagId())).findFirst().orElse(null)
+                ).collect(Collectors.toList())
+        )).collect(Collectors.toList());
+    }
+
+    private List<EnigmaUserDto> getEnigmaUsers(Long enigmaUserCount){
+
+        List<EnigmaUser> enigmaUsers = enigmaUserRepository.findAll();
+
+        enigmaUsers = enigmaUsers.subList(0, Math.min(enigmaUsers.size(), enigmaUserCount.intValue()));
+
+        return enigmaUsers.stream().map(EnigmaUser::mapToEnigmaUserDto).collect(Collectors.toList());
     }
 }

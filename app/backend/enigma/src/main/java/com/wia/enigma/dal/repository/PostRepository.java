@@ -1,6 +1,7 @@
 package com.wia.enigma.dal.repository;
 
 import com.wia.enigma.dal.entity.Post;
+import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import com.wia.enigma.dal.enums.PostLabel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface PostRepository  extends JpaRepository<Post, Long> {
+    List<Post> findByAccessLevelOrderByCreateTimeDesc(EnigmaAccessLevel accessLevel);
 
     List<Post> findByTitleContainsOrContentContainsOrSourceLinkContains(String title, String content, String sourceLink);
 
