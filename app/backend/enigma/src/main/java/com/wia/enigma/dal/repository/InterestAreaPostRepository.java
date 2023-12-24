@@ -7,11 +7,12 @@ import java.util.Collection;
 import java.util.List;
 
 public interface InterestAreaPostRepository extends JpaRepository<InterestAreaPost, Long> {
-    List<InterestAreaPost> findByInterestAreaIdIn(Collection<Long> interestAreaIds);
-    List<InterestAreaPost> findByInterestAreaId(Long interestAreaId);
 
+    List<InterestAreaPost> findByInterestAreaIdIn(Collection<Long> interestAreaIds);
+
+    List<InterestAreaPost> findByInterestAreaId(Long interestAreaId);
 
     void deleteAllByInterestAreaId(Long interestAreaId);
 
-
+    void deleteAllByInterestAreaIdIn(Collection<Long> interestAreaIds);
 }

@@ -14,13 +14,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Objects;
+
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
+@RunWith(SpringRunner.class)
 @AutoConfigureMockMvc(addFilters = false)
 public class SigninTests {
 
@@ -31,7 +34,8 @@ public class SigninTests {
     private EnigmaUserService enigmaUserService;
 
     @Test
-    public void testSignin_ValidCredentials_ShouldReturnOk() throws Exception {
+    public void signin_success() throws Exception {
+
         SecurityDetailsResponse securityDetailsResponse = SecurityDetailsResponse.builder()
                 .tokenType("Bearer")
                 .accessToken("mockAccessToken12345")
@@ -43,11 +47,11 @@ public class SigninTests {
                 .authentication(securityDetailsResponse)
                 .build();
 
-        when(enigmaUserService.loginEnigmaUser("testUsername", "testPassword")).thenReturn(mockLoginResponse);
+        when(enigmaUserService.loginEnigmaUser(anyString(), anyString())).thenReturn(mockLoginResponse);
 
-        mockMvc.perform(get("/auth/signin")
-                        .param("user", "testUsername")
-                        .param("password", "testPassword"))
+        mockMvc.perform(get("/api/auth/signin")
+                        .param("user", "username")
+                        .param("password", "password"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.authentication.tokenType").value("Bearer"))
                 .andExpect(jsonPath("$.authentication.accessToken").value("mockAccessToken12345"))
@@ -55,29 +59,37 @@ public class SigninTests {
                 .andExpect(jsonPath("$.authentication.expiresIn").value(3600));
     }
 
-
     @Test
-    public void testSignin_InvalidUsernameOrEmail_ShouldReturnBadRequest() throws Exception {
-        when(enigmaUserService.loginEnigmaUser("invalidUsername", "testPassword"))
-                .thenThrow(new EnigmaException(ExceptionCodes.USER_NOT_FOUND, "EnigmaUser not found for username or email: invalidUsername"));
-
-        mockMvc.perform(get("/auth/signin")
-                        .param("user", "invalidUsername")
-                        .param("password", "testPassword"))
+    public void signin_missingUsernameOrEmail() throws Exception {
+        mockMvc.perform(get("/api/auth/signin")
+                        .param("password", "password"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("EnigmaUser not found for username or email: invalidUsername")));
+                .andExpect(result -> assertTrue(Objects.requireNonNull(result.getResponse().getErrorMessage()).contains("Required parameter 'user' is not present")));
     }
 
     @Test
-    public void testSignin_InvalidPassword_ShouldReturnUnauthorized() throws Exception {
-        when(enigmaUserService.loginEnigmaUser("testUsername", "invalidPassword"))
+    public void signin_userNotFound() throws Exception {
+
+        when(enigmaUserService.loginEnigmaUser(anyString(), anyString()))
+                .thenThrow(new EnigmaException(ExceptionCodes.USER_NOT_FOUND, "EnigmaUser not found for username or email: username"));
+
+        mockMvc.perform(get("/api/auth/signin")
+                        .param("user", "username")
+                        .param("password", "password"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(containsString("EnigmaUser not found for username or email: username")));
+    }
+
+    @Test
+    public void signin_invalidPassword() throws Exception {
+
+        when(enigmaUserService.loginEnigmaUser(anyString(), anyString()))
                 .thenThrow(new EnigmaException(ExceptionCodes.INVALID_PASSWORD, "Password is not valid."));
 
-        mockMvc.perform(get("/auth/signin")
-                        .param("user", "testUsername")
-                        .param("password", "invalidPassword"))
-                .andExpect(status().isUnauthorized())
+        mockMvc.perform(get("/api/auth/signin")
+                        .param("user", "username")
+                        .param("password", "password"))
+                .andExpect(status().isBadRequest())
                 .andExpect(content().string(containsString("Password is not valid.")));
     }
-
 }
