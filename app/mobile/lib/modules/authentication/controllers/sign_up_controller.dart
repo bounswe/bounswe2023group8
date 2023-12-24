@@ -79,9 +79,6 @@ class SignUpController extends GetxController {
 
   void toggleTermsOfService() {
     acceptTerms.value = !acceptTerms.value;
-    Get.to(() => const SentEmailView(
-          verify: true,
-        ));
   }
 
   void navigateToSignin() {
