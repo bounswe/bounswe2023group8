@@ -15,6 +15,7 @@ export interface EnigmaUser {
   name: string;
   email: string;
   birthday: string;
+  pictureUrl: string;
   createTime: string;
 }
 

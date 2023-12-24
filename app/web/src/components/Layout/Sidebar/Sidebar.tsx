@@ -16,10 +16,10 @@ const Sidebar = () => {
                 </Nav.Link>
                 <Nav.Link href={`/create_interest_area`}>
                     <svg width="26" height="30" viewBox="0 0 26 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M7.85714 3H1V29H25V3H18.1429" stroke="#434343" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M18 1H8V3V5H18V3V1Z" stroke="#434343" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M8 17H18" stroke="#434343" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M13 12V22" stroke="#434343" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.85714 3H1V29H25V3H18.1429" stroke="#434343" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M18 1H8V3V5H18V3V1Z" stroke="#434343" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M8 17H18" stroke="#434343" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M13 12V22" stroke="#434343" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                     <span className="fs-5"> Create Bunch</span>
                 </Nav.Link>

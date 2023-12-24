@@ -4,12 +4,14 @@ import Tag from "../Tag/Tag";
 import {Post} from "../../pages/InterestAreaViewPage";
 import LocationViewer from "../Geolocation/LocationViewer";
 import {useAuth} from "../../contexts/AuthContext";
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import Label from "../Label/Label";
 import {useDownvoteSpot, useGetSpotVotes, useUnvoteSpot, useUpvoteSpot} from "../../hooks/useSpotVotes";
+import {useDeletePost} from "../../hooks/usePost";
 
 export type DetailedPostCardProps = {
-    post: Post
+    post: Post;
+    handleCreateCommentCardDisplay: () => void;
 }
 
 const DetailedPostCard = (props: DetailedPostCardProps) => {
@@ -31,13 +33,32 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
             wikiTags,
             upvoteCount,
             downvoteCount,
-        }
+        },
+        handleCreateCommentCardDisplay,
     } = props;
 
     const {userData, axiosInstance} = useAuth();
-    const { postId } = useParams();
+    const {postId} = useParams();
     const [upvotes, setUpvotes] = useState(upvoteCount);
     const [downvotes, setDownvotes] = useState(downvoteCount);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const navigate = useNavigate();
+    const {mutate: deleteSpot} = useDeletePost({
+        config: {
+            onSuccess: (data: any) => {
+                navigate(`/interest-area/${interestArea.id}`);
+            }
+        }
+    })
+
+    const handleDeleteSpot = (event: React.FormEvent) => {
+        event.preventDefault()
+        deleteSpot({
+            id: id.toString(),
+            axiosInstance: axiosInstance
+        })
+    }
 
     const {mutate: getSpotVotes, data: votesOnSpot} = useGetSpotVotes({});
     const {mutate: upvoteSpot} = useUpvoteSpot({
@@ -46,10 +67,10 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                 const vote = votesOnSpot.filter((datum: { enigmaUser: { id: number; }; }) => {
                     return datum.enigmaUser.id == userData.id;
                 })[0];
-                if( vote && !vote.isUpvote){
+                if (vote && !vote.isUpvote) {
                     setDownvotes(downvotes - 1);
                     setUpvotes(upvotes + 1);
-                }else {
+                } else {
                     setUpvotes(upvotes + 1);
                 }
 
@@ -67,11 +88,11 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                     return datum.enigmaUser.id == userData.id;
                 })[0];
 
-                if( vote && vote.isUpvote){
+                if (vote && vote.isUpvote) {
                     console.log("upvoted before. Can downvote");
                     setUpvotes(upvotes - 1);
                     setDownvotes(downvotes + 1);
-                }else {
+                } else {
                     console.log("not voted before. Can downvote");
                     setDownvotes(downvotes + 1);
                 }
@@ -90,10 +111,10 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                     return datum.enigmaUser.id == userData.id;
                 })[0];
 
-                if( vote.isUpvote){
+                if (vote.isUpvote) {
                     console.log("upvoted before. Can downvote");
                     setUpvotes(upvotes - 1);
-                }else {
+                } else {
                     console.log("not voted before. Can downvote");
                     setDownvotes(downvotes - 1);
                 }
@@ -118,18 +139,18 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
         const vote = votesOnSpot.filter((datum: { enigmaUser: { id: number; }; }) => {
             return datum.enigmaUser.id == userData.id;
         })[0];
-        if(vote && vote.isUpvote){
+        if (vote && vote.isUpvote) {
             unvoteSpot({
                 axiosInstance: axiosInstance,
                 id: postId || "1",
             })
-        }else if( vote && !vote.isUpvote){
+        } else if (vote && !vote.isUpvote) {
             upvoteSpot({
                 axiosInstance: axiosInstance,
                 id: postId || "1",
             })
 
-        }else {
+        } else {
             upvoteSpot({
                 axiosInstance: axiosInstance,
                 id: postId || "1",
@@ -141,17 +162,17 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
         const vote = votesOnSpot.filter((datum: { enigmaUser: { id: number; }; }) => {
             return datum.enigmaUser.id == userData.id;
         })[0];
-        if(vote && !vote.isUpvote){
+        if (vote && !vote.isUpvote) {
             unvoteSpot({
                 axiosInstance: axiosInstance,
                 id: postId || "1",
             })
-        }else if( vote && vote.isUpvote){
+        } else if (vote && vote.isUpvote) {
             downvoteSpot({
                 axiosInstance: axiosInstance,
                 id: postId || "1",
             })
-        }else {
+        } else {
             downvoteSpot({
                 axiosInstance: axiosInstance,
                 id: postId || "1",
@@ -177,8 +198,14 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                             </Link>
                         </div>
                         <div className="d-inline-flex">
-                            <img alt="Profile picture" src="/assets/PlaceholderProfile.png" width="64" height="64"/>
-                            <div className="">
+                            {enigmaUser.pictureUrl
+                                ? <img alt="profile picture" src={enigmaUser.pictureUrl} width="64" height="64"
+                                       className="rounded-circle img-fluid object-fit-cover m-2"
+                                />
+                                :
+                                <img alt="Profile picture" src="/assets/PlaceholderProfile.png" width="64" height="64"/>
+                            }
+                            <div className="my-3 mx-2">
                                 <div className="fw-bold fs-6 WA-theme-dark">{enigmaUser.name}</div>
                                 <div className="d-flex justify-content-between">
                                     <div className="d-flex">
@@ -196,8 +223,58 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                         </div>
                     </span>
                 </span>
+                <span className="mx-3">
+                    {enigmaUser.id == userData.id
+                        ?
+                        <span className="d-flex">
+                            {!isDeleting
+                                ? <div>
+                                    <Link to={`/update_post/${postId}`}
+                                          state={{
+                                              post: {
+                                                  content: content,
+                                                  createTime: createTime,
+                                                  enigmaUser: enigmaUser,
+                                                  geolocation: geolocation,
+                                                  id: id,
+                                                  interestArea: interestArea,
+                                                  label: label,
+                                                  sourceLink: sourceLink,
+                                                  title: title,
+                                                  wikiTags: wikiTags,
+                                                  upvoteCount: upvoteCount,
+                                                  downvoteCount: downvotes,
+                                              }
+                                          }}
+                                          style={{textDecoration: 'none'}}
+                                          className="btn WA-theme-bg-main WA-theme-light mx-1">Edit
+                                        Spot</Link>
+                                    <button className="btn WA-theme-bg-negative WA-theme-light mx-1"
+                                            onClick={() => {
+                                                setIsDeleting(!isDeleting)
+                                            }}>
+                                        Delete Spot
+                                    </button>
+                                </div>
+                                : <div>
+                                    Are you sure?
+                                    <button className="btn WA-theme-bg-main WA-theme-light mx-1"
+                                            onClick={handleDeleteSpot}>
+                                        Delete Spot
+                                    </button>
+                                    <button className="btn WA-theme-bg-dark WA-theme-light mx-1"
+                                            onClick={() => {
+                                                setIsDeleting(!isDeleting)
+                                            }}>
+                                        Cancel
+                                    </button>
+                                </div>
+                            }
+                        </span>
+                        : <></>}
+                </span>
             </div>
-            <div className="card WA-theme-bg-light rounded-4 ms-4 m-1 ">
+            <div className="card WA-theme-bg-light rounded-4 ms-4 m-2 ">
                 <img alt="Bookmark Icon" src="/assets/theme/images/FactCheck=False.png"
                      width="64" height="64"
                      style={{position: "absolute", top: '-0.66em', left: '-0.60em'}}
@@ -225,31 +302,15 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                                     <img alt="upvote icon" src="/assets/theme/icons/Upvote.png" width="32" height="32"
                                          style={{cursor: 'pointer'}} onClick={handleUpvote}/>
                                     <span className="WA-theme-positive fw-bold fs-6 me-5"> {upvotes} </span>
-                                    <img alt="downvote icon" src="/assets/theme/icons/Downvote.png" width="32" height="32"
+                                    <img alt="downvote icon" src="/assets/theme/icons/Downvote.png" width="32"
+                                         height="32"
                                          style={{cursor: 'pointer'}} onClick={handleDownvote}/>
                                     <span className="WA-theme-negative fw-bold fs-6"> {downvotes} </span>
-                                </span>
-                                {enigmaUser.id == userData.id ?
-                                    <span className="d-flex">
-                                        <Link to={`/update_post/${postId}`}
-                                              state={{post: {
-                                                      content: content,
-                                                      createTime: createTime,
-                                                      enigmaUser: enigmaUser,
-                                                      geolocation: geolocation,
-                                                      id: id,
-                                                      interestArea: interestArea,
-                                                      label: label,
-                                                      sourceLink: sourceLink,
-                                                      title: title,
-                                                      wikiTags: wikiTags,
-                                                      upvoteCount: upvoteCount,
-                                                      downvoteCount: downvotes,
-                                                  }}}
-                                              style={{textDecoration: 'none'}}
-                                              className="btn-primary btn WA-theme-bg-main">Edit Spot</Link>
+                                    <span onClick={handleCreateCommentCardDisplay} style={{cursor: 'pointer'}}><
+                                        i className="bi bi-chat-left-text-fill WA-theme-main fs-4 ms-5"></i>
                                     </span>
-                                : <></>}
+
+                                </span>
                             </span>
                         </div>
 
