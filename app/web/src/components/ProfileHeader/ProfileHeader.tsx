@@ -15,12 +15,14 @@ type ProfileHeaderProps = {
     following: number;
     user_profile_image: string;
   };
+  reputation: string;
   style: object;
   className: string;
 };
 
 const ProfileHeader = ({
   user: { id, name, username, followers, following, user_profile_image },
+  reputation, 
   style,
   className,
 }: ProfileHeaderProps) => {
@@ -114,18 +116,19 @@ const ProfileHeader = ({
                   </Col>
                 </Row>
               </Col>
-              {/*<Col className="col-2 m-auto">*/}
-              {/*    <p className="fs-5 bi-hand-thumbs-up-fill " style={{color: 'green'}}>{all_time_likes}</p>*/}
-              {/*    <p className="fs-5 bi-hand-thumbs-down-fill text-danger">{all_time_dislikes}</p>*/}
-              {/*</Col>*/}
             </Row>
           </Col>
         </Row>
+
         <FollowerModal show={showFollowerModal} setShow={handleFollowerModal} />
         <FollowingModal
           show={showFollowingModal}
           setShow={handleFollowingModal}
         />
+      </div>
+      <div className="card-text" style={{ marginRight: "300px",padding: "15px",fontSize: "1.1rem", background: "rgb(136, 154, 186)", color: "white", borderRadius: "35px", display:"flex", flexDirection: "column", alignItems:"center"}}>
+        <p>Reputation:</p>
+        <p style={{ fontSize: "1.5rem", margin: "0px"}} >{reputation}</p>
       </div>
       <Col>
         <div className="mx-2 my-3 w-75 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
