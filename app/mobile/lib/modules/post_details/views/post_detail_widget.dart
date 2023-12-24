@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/modules/post_details/controllers/post_details_controller.dart';
+import 'package:mobile/routes/app_pages.dart';
 import '../../../../data/constants/assets.dart';
 
 class PostDetailWidget extends GetView<PostDetailsController> {
@@ -28,12 +29,18 @@ class PostDetailWidget extends GetView<PostDetailsController> {
                   padding: const EdgeInsets.only(left: 40),
                   child: Row(
                     children: [
-                      Text(
-                        controller.post.value.interestArea.name,
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: ThemePalette.dark,
-                            fontWeight: FontWeight.w700),
+                      InkWell(
+                        onTap: () => Get.toNamed(Routes.interestArea,
+                            arguments: {
+                              'interestArea': controller.post.value.interestArea
+                            }),
+                        child: Text(
+                          controller.post.value.interestArea.name,
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: ThemePalette.dark,
+                              fontWeight: FontWeight.w700),
+                        ),
                       ),
                       const Spacer(),
                       Column(
@@ -62,6 +69,11 @@ class PostDetailWidget extends GetView<PostDetailsController> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    InkWell(
+                        onTap: () => Get.toNamed(Routes.profile, arguments: {
+                              'userId': controller.post.value.enigmaUser.id
+                            }),
+                        child: 
                     controller.post.value.enigmaUser.pictureUrl != null &&
                             controller
                                 .post.value.enigmaUser.pictureUrl!.isNotEmpty
@@ -73,26 +85,36 @@ class PostDetailWidget extends GetView<PostDetailsController> {
                         : const CircleAvatar(
                             radius: 20,
                             backgroundImage:
-                                AssetImage(Assets.profilePlaceholder)),
+                                    AssetImage(Assets.profilePlaceholder))),
                     const SizedBox(
                       width: 6,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          controller.post.value.enigmaUser.name,
-                          style: TextStyle(
-                              color: ThemePalette.dark,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600),
+                        InkWell(
+                          onTap: () => Get.toNamed(Routes.profile, arguments: {
+                            'userId': controller.post.value.enigmaUser.id
+                          }),
+                          child: Text(
+                            controller.post.value.enigmaUser.name,
+                            style: TextStyle(
+                                color: ThemePalette.dark,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600),
+                          ),
                         ),
-                        Text(
-                          '@${controller.post.value.enigmaUser.username}',
-                          style: TextStyle(
-                              color: ThemePalette.main,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w300),
+                        InkWell(
+                          onTap: () => Get.toNamed(Routes.profile, arguments: {
+                            'userId': controller.post.value.enigmaUser.id
+                          }),
+                          child: Text(
+                            '@${controller.post.value.enigmaUser.username}',
+                            style: TextStyle(
+                                color: ThemePalette.main,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w300),
+                          ),
                         ),
                       ],
                     ),

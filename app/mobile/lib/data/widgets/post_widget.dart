@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/models/spot.dart';
+import 'package:mobile/routes/app_pages.dart';
 
 class PostTileWidget extends StatelessWidget {
   final Spot post;
@@ -34,14 +35,18 @@ class PostTileWidget extends StatelessWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              post.interestArea.name,
-              style: TextStyle(
-                color: ThemePalette.dark,
-                fontSize: 14,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w600,
-                letterSpacing: -0.2,
+            InkWell(
+              onTap: () => Get.toNamed(Routes.interestArea,
+                  arguments: {'interestArea': post.interestArea}),
+              child: Text(
+                post.interestArea.name,
+                style: TextStyle(
+                  color: ThemePalette.dark,
+                  fontSize: 14,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -0.2,
+                ),
               ),
             ),
             Row(
@@ -59,14 +64,18 @@ class PostTileWidget extends StatelessWidget {
                           letterSpacing: -0.15),
                     ),
                     const SizedBox(width: 4),
-                    Text(
-                      '@${post.enigmaUser.username}',
-                      style: TextStyle(
-                        color: ThemePalette.main,
-                        fontSize: 10,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: -0.15,
+                    InkWell(
+                      onTap: () => Get.toNamed(Routes.profile,
+                          arguments: {'userId': post.enigmaUser.id}),
+                      child: Text(
+                        '@${post.enigmaUser.username}',
+                        style: TextStyle(
+                          color: ThemePalette.main,
+                          fontSize: 10,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: -0.15,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 4),

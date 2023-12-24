@@ -20,7 +20,6 @@ class SignUpBody extends GetView<SignUpController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: Get.height * 0.1),
               Image.asset(
                 Assets.logo,
                 height: Get.height * 0.2,
@@ -36,7 +35,7 @@ class SignUpBody extends GetView<SignUpController> {
                   letterSpacing: -0.5,
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 12),
               CustomTextField(
                 hintText: 'Name',
                 initialValue: controller.signUpName.value,
@@ -45,7 +44,7 @@ class SignUpBody extends GetView<SignUpController> {
                 circularBorder: true,
                 showSuffix: false,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               CustomTextField(
                 hintText: 'E-mail',
                 initialValue: controller.signUpEmail.value,
@@ -54,7 +53,7 @@ class SignUpBody extends GetView<SignUpController> {
                 circularBorder: true,
                 showSuffix: false,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               CustomTextField(
                 hintText: 'Username',
                 initialValue: controller.signUpUsername.value,
@@ -63,7 +62,7 @@ class SignUpBody extends GetView<SignUpController> {
                 circularBorder: true,
                 showSuffix: false,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               InkWell(
                   onTap: () => controller.pickDate(),
                   child: Container(
@@ -97,7 +96,7 @@ class SignUpBody extends GetView<SignUpController> {
                               : ThemePalette.dark),
                     ),
                   )),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               CustomTextField(
                   hintText: 'Password',
                   initialValue: controller.signUpPassword.value,
@@ -106,7 +105,7 @@ class SignUpBody extends GetView<SignUpController> {
                   onChanged: (value) => controller.onChangePassword(value),
                   circularBorder: true,
                   onSuffixTap: () => controller.togglePasswordVisibility()),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               CustomTextField(
                   hintText: 'Confirm Password',
                   initialValue: controller.confirmPassword.value,
@@ -117,7 +116,7 @@ class SignUpBody extends GetView<SignUpController> {
                   circularBorder: true,
                   onSuffixTap: () =>
                       controller.toggleConfirmPasswordVisibility()),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               !controller.confirmPasswordValid.value
                   ? Text(
                       "Confirm password must match your password!",
@@ -159,7 +158,7 @@ class SignUpBody extends GetView<SignUpController> {
                   ),
                 ],
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 16),
               CustomButton(
                 onPressed: controller.onSignUp,
                 width: 152,
@@ -176,7 +175,7 @@ class SignUpBody extends GetView<SignUpController> {
                     controller.signUpNameValid.value &&
                     controller.acceptTerms.value,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

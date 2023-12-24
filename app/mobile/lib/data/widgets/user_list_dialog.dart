@@ -107,18 +107,20 @@ class UserListDialogState extends State<UserListDialog> {
               final user = widget.users[selectedSection][index];
               final isRemove = widget.isRemovable[selectedSection];
               return ListTile(
-                onTap: () =>
-                    Get.toNamed(Routes.profile, arguments: {'userId': user.id}),
+                onTap: (widget.redirectToProfile)
+                    ? () => Get.toNamed(Routes.profile,
+                        arguments: {'userId': user.id})
+                    : null,
                 leading: user.pictureUrl != null && user.pictureUrl!.isNotEmpty
                     ? CircleAvatar(
                         radius: 20,
                         backgroundImage: NetworkImage(user.pictureUrl!),
                       )
                     : Image.asset(
-                  Assets.profilePlaceholder,
-                  width: 40,
-                  height: 40,
-                ),
+                        Assets.profilePlaceholder,
+                        width: 40,
+                        height: 40,
+                      ),
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -186,6 +188,7 @@ class UserListDialog extends StatefulWidget {
   final List<bool> isRemovable;
   final List<String>? removeTexts;
   final List<void Function(int)>? onRemove;
+  final bool redirectToProfile;
   const UserListDialog({
     super.key,
     required this.title,
@@ -197,6 +200,7 @@ class UserListDialog extends StatefulWidget {
     required this.isRemovable,
     this.removeTexts,
     this.onRemove,
+    this.redirectToProfile = true,
   });
 
   @override

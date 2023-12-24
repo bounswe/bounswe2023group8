@@ -182,6 +182,7 @@ class ProfileController extends GetxController {
             : [false, false],
         removeTexts: const ['Remove', 'Unfollow'],
         onRemove: [(temp) => {}, unfollowUser],
+        redirectToProfile: false,
       ),
     );
   }
@@ -254,6 +255,7 @@ class ProfileController extends GetxController {
         sectionTextColors: [ThemePalette.light, ThemePalette.light],
         users: [upvotedUsers, downvotedUsers],
         isRemovable: const [false, false],
+        redirectToProfile: false,
       ));
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);

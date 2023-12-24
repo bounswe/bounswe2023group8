@@ -5,6 +5,7 @@ import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/modules/post_details/models/comment.dart';
 import 'package:mobile/modules/post_details/views/post_detail_widget.dart';
+import 'package:mobile/routes/app_pages.dart';
 
 import '../../../data/constants/assets.dart';
 import '../../../data/widgets/visitor_bottom_bar.dart';
@@ -144,7 +145,10 @@ class PostDetailsView extends GetView<PostDetailsController> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        leading: comment.enigmaUser.pictureUrl != null &&
+        leading: InkWell(
+            onTap: () => Get.toNamed(Routes.profile,
+                arguments: {'userId': comment.enigmaUser.id}),
+            child: comment.enigmaUser.pictureUrl != null &&
                 comment.enigmaUser.pictureUrl!.isNotEmpty
             ? CircleAvatar(
                 radius: 20,
@@ -153,15 +157,19 @@ class PostDetailsView extends GetView<PostDetailsController> {
             : const CircleAvatar(
           radius: 20,
           backgroundImage: AssetImage(Assets.profilePlaceholder),
-        ),
-        title: Text(
-          '@${comment.enigmaUser.username}',
-          style: TextStyle(
-            color: ThemePalette.main,
-            fontSize: 12,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w600,
-            letterSpacing: -0.2,
+                  )),
+        title: InkWell(
+          onTap: () => Get.toNamed(Routes.profile,
+              arguments: {'userId': comment.enigmaUser.id}),
+          child: Text(
+            '@${comment.enigmaUser.username}',
+            style: TextStyle(
+              color: ThemePalette.main,
+              fontSize: 12,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.2,
+            ),
           ),
         ),
         subtitle: Column(
