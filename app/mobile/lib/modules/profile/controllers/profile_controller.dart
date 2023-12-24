@@ -34,6 +34,8 @@ class ProfileController extends GetxController {
 
   var isFollowing = false.obs;
 
+  var isBunchExpanded = true.obs;
+
   void fetchUserProfile() async {
     try {
       final profile = await profileProvider.getProfilePage(
@@ -98,7 +100,6 @@ class ProfileController extends GetxController {
       ErrorHandlingUtils.handleApiError(e);
     }
   }
-
 
   void navigateToPostDetails(Spot post) {
     Get.toNamed(Routes.postDetails,

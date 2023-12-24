@@ -44,6 +44,8 @@ class Assets {
   static const String delete = 'assets/icons/delete.png';
   static const String createSpot = 'assets/icons/create_spot.png';
   static const String newPicture = 'assets/icons/new_pic.png';
+  static const String expand = 'assets/icons/expand.svg';
+  static const String collapse = 'assets/icons/collapse.svg';
 
   // Radios
 

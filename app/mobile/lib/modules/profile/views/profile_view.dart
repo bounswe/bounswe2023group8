@@ -12,7 +12,6 @@ class ProfileView extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    bool isExpanded = false;
     return Obx(
       () {
         if (controller.routeLoading.value) {
@@ -55,72 +54,124 @@ class ProfileView extends GetView<ProfileController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 profileHeader(),
-                ExpansionTile(
-                  tilePadding: EdgeInsets.zero,
-                  title: Text(
-                    'Bunches',
-                    style: TextStyle(color: ThemePalette.dark, fontSize: 16),
-                  ),
-                  subtitle: const Divider(
-                    thickness: 1,
-                    color: Color(0xFF203376),
-                  ),
-                  initiallyExpanded: true,
-                  onExpansionChanged: (value) {
-                    isExpanded = !isExpanded;
-                  },
-                  trailing: Icon(
-                    isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                    size: 40,
-                    color: Color(0xFF203376), // Set the color as needed
-                  ),
-                  children: [
-                    ListView.separated(
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Bunches",
+                            style: TextStyle(
+                              color: ThemePalette.dark,
+                              fontSize: 16,
+                              fontFamily: 'Work Sans',
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: -0.25,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                controller.isBunchExpanded.value
+                                    ? 'Hide'
+                                    : 'Show',
+                                style: TextStyle(
+                                  color: SeparatorPalette.dark,
+                                  fontSize: 12,
+                                  fontFamily: 'Work Sans',
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: -0.2,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              InkWell(
+                                onTap: () {
+                                  controller.isBunchExpanded.value =
+                                      !controller.isBunchExpanded.value;
+                                },
+                                child: Image.asset(
+                                  controller.isBunchExpanded.value
+                                      ? Assets.collapse
+                                      : Assets.expand,
+                                  width: 14,
+                                  height: 12,
+                                  color: SeparatorPalette.dark,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Divider(
+                        color: SeparatorPalette.dark,
+                        height: 1,
+                        thickness: 1,
+                      ),
+                      const SizedBox(height: 8),
+                      ListView.separated(
+                        padding: EdgeInsets.zero,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: controller.ias.length,
                         itemBuilder: (context, index) {
+                          final ia = controller.ias[index];
                           return BunchWidget(
-                              ia: controller.ias[index],
-                              onTap: () => controller
-                                  .navigateToIa(controller.ias[index]));
+                            ia: ia,
+                            onTap: () => controller.navigateToIa(ia),
+                          );
                         },
-                        separatorBuilder: (context, index) => const SizedBox(
-                              height: 10,
-                            )),
-                  ],
+                        separatorBuilder: (context, index) {
+                          return const SizedBox(height: 8);
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        "Spots",
+                        style: TextStyle(
+                          color: ThemePalette.dark,
+                          fontSize: 16,
+                          fontFamily: 'Work Sans',
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: -0.25,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Divider(
+                        color: SeparatorPalette.dark,
+                        height: 1,
+                        thickness: 1,
+                      ),
+                      const SizedBox(height: 8),
+                      ListView.separated(
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: controller.posts.length,
+                        itemBuilder: (context, index) {
+                          return PostTileWidget(
+                            onTap: () => controller
+                                .navigateToPostDetails(controller.posts[index]),
+                            post: controller.posts[index],
+                            hideTags: false,
+                            onDownvote: () => controller
+                                .downvotePost(controller.posts[index].id),
+                            onUpvote: () => controller
+                                .upvotePost(controller.posts[index].id),
+                            showVoters: () => controller
+                                .showVotes(controller.posts[index].id),
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return const SizedBox(height: 8);
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  'Spots',
-                  style: TextStyle(color: ThemePalette.dark, fontSize: 16),
-                ),
-                const Divider(
-                  thickness: 1,
-                  color: Colors.grey,
-                ),
-                ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: controller.posts.length,
-                    itemBuilder: (context, index) {
-                      return PostTileWidget(
-                        onTap: () => controller
-                            .navigateToPostDetails(controller.posts[index]),
-                        post: controller.posts[index],
-                        hideTags: false,
-                        onDownvote: () =>
-                            controller.downvotePost(controller.posts[index].id),
-                        onUpvote: () =>
-                            controller.upvotePost(controller.posts[index].id),
-                        showVoters: () =>
-                            controller.showVotes(controller.posts[index].id),
-                      );
-                    },
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 8))
               ],
             ),
           ),
@@ -328,7 +379,7 @@ class ProfileView extends GetView<ProfileController> {
                           ],
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ],
