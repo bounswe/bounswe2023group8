@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
+import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/data/widgets/custom_button.dart';
 import 'package:mobile/data/widgets/custom_text_field.dart';
@@ -14,93 +15,94 @@ class ChangePasswordView extends GetView<SettingsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
-        leadingAppIcon: true,
+        leadingAppIcon: false,
         leadingBackIcon: true,
         search: false,
         notification: false,
         actions: [],
       ),
-      body: Obx(() {
-        return Column(
-          children: [
-            Container(
-              width: Get.height,
-              decoration: const BoxDecoration(
-                color: Color(0xFF486375),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
+      body: Obx(
+        () {
+          return Column(
+            children: [
+              Container(
+                width: Get.height,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: BackgroundPalette.dark,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
+                ),
+                child: Text(
+                  textAlign: TextAlign.center,
+                  'Change Password',
+                  style: TextStyle(
+                    color: ThemePalette.light,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: -0.34,
+                  ),
                 ),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-              child: const Text(
-                textAlign: TextAlign.center,
-                'Change Password',
-                style: TextStyle(
-                  color: Color(0xFFF1F1F1),
-                  fontSize: 20,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w600,
+              Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  children: [
+                    CustomTextField(
+                      isValid: false,
+                      hintText: 'Old Password',
+                      circularBorder: true,
+                      onChanged: controller.onChangeOldPassword,
+                      obscureText: controller.obscureOldPassword.value,
+                      onSuffixTap: controller.toggleObscureOldPassword,
+                      showSuffix: true,
+                      isPassword: true,
+                    ),
+                    const SizedBox(height: 16),
+                    CustomTextField(
+                      isValid: false,
+                      hintText: 'New Password',
+                      circularBorder: true,
+                      onChanged: controller.onChangeNewPassword,
+                      obscureText: controller.obscureNewPassword.value,
+                      showSuffix: true,
+                      isPassword: true,
+                      onSuffixTap: controller.toggleObscureNewPassword,
+                    ),
+                    const SizedBox(height: 16),
+                    CustomTextField(
+                      isValid: false,
+                      hintText: 'Confirm Password',
+                      circularBorder: true,
+                      onChanged: controller.onChangeConfirmPassword,
+                      obscureText: controller.obscureConfirmPassword.value,
+                      onSuffixTap: controller.toggleObscureConfirmPassword,
+                      showSuffix: true,
+                      isPassword: true,
+                    ),
+                    const SizedBox(height: 32),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        CustomButton(
+                          text: 'Change Password',
+                          inProgress: controller.changePasswordInProgress.value,
+                          onPressed: controller.onChangePassword,
+                          active: controller.newPassword.value.length >= 6 &&
+                              (controller.newPassword.value ==
+                                  controller.confirmPassword.value),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Column(
-                children: [
-                  CustomTextField(
-                    isValid: false,
-                    hintText: 'Old Password',
-                    onChanged: controller.onChangeOldPassword,
-                    obscureText: controller.obscureOldPassword.value,
-                    onSuffixTap: controller.toggleObscureOldPassword,
-                    showSuffix: true,
-                    isPassword: true,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CustomTextField(
-                    isValid: false,
-                    hintText: 'New Password',
-                    onChanged: controller.onChangeNewPassword,
-                    obscureText: controller.obscureNewPassword.value,
-                    showSuffix: true,
-                    isPassword: true,
-                    onSuffixTap: controller.toggleObscureNewPassword,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CustomTextField(
-                    isValid: false,
-                    hintText: 'Confirm Password',
-                    onChanged: controller.onChangeConfirmPassword,
-                    obscureText: controller.obscureConfirmPassword.value,
-                    onSuffixTap: controller.toggleObscureConfirmPassword,
-                    showSuffix: true,
-                    isPassword: true,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CustomButton(
-                    text: 'Change Password',
-                    inProgress: controller.changePasswordInProgress.value,
-                    onPressed: controller.onChangePassword,
-                    active: controller.newPassword.value.length > 5 &&
-                        (controller.newPassword.value ==
-                            controller.confirmPassword.value),
-                  ),
-                ],
-              ),
-            )
-          ],
-        );
-      }),
+            ],
+          );
+        },
+      ),
     );
   }
 }
