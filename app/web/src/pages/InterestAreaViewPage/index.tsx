@@ -10,6 +10,7 @@ import {
 } from "../../hooks/useInterestArea";
 import { AccessLevel, accessLevelMapping } from "../InterestAreaUpdatePage";
 import { useReportAnIssue } from "../../hooks/useModeration";
+import { useGetWaitingBunchFollowRequests } from "../../hooks/useUser";
 
 export interface EnigmaUser {
   id: number;
@@ -62,6 +63,8 @@ const ViewInterestArea = () => {
   const [interestAreaData, setInterestAreaData] = useState<any>(null);
   const [subInterestAreasData, setSubInterestAreasData] = useState<any>(null);
   const [postsData, setPostsData] = useState<Post[] | null>(null);
+  const [isFollowingRequestWaiting, setIsFollowingRequestWaiting] =
+    useState(false);
 
   const { mutate: followInterestArea } = useFollowInterestArea({
     axiosInstance,
@@ -94,13 +97,26 @@ const ViewInterestArea = () => {
     },
   });
 
+  useGetWaitingBunchFollowRequests({
+    axiosInstance,
+    config: {
+      retry: !isFollowingRequestWaiting,
+      enabled: !isFollowingRequestWaiting,
+      onSuccess: (data: any) => {
+        setIsFollowingRequestWaiting(
+          data.some((request: any) => request.id === parseInt(iaId as string))
+        );
+      },
+    },
+  });
+
   const { isSuccess: isNestedInterestAreasSuccess } =
     useGetSubInterestAreasOfInterestArea({
       axiosInstance,
       interestAreaId: parseInt(iaId as string),
       config: {
-        retry: isSuccess,
-        enabled: isSuccess,
+        retry: !isFollowingRequestWaiting,
+        enabled: !isFollowingRequestWaiting,
         onSuccess: (data: any) => {
           const newDetails = data.map((result: any) => ({
             title: result.title,
@@ -408,12 +424,18 @@ const ViewInterestArea = () => {
               request to join this bunch.
             </p>
             <div className="m-3 d-flex justify-content-center align-items-center rounded-5">
-              <button
-                onClick={() => followBunch()}
-                className="btn mx-2 WA-theme-bg-dark WA-theme-light"
-              >
-                Join
-              </button>
+              {isFollowingRequestWaiting ? (
+                <button className="btn mx-2 WA-theme-bg-positive WA-theme-light">
+                  Waiting for approval
+                </button>
+              ) : (
+                <button
+                  onClick={() => followBunch()}
+                  className="btn mx-2 WA-theme-bg-dark WA-theme-light"
+                >
+                  Join
+                </button>
+              )}
             </div>
           </div>
         )

@@ -3,7 +3,7 @@
 //
 
 import { AxiosInstance } from "axios";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
 export type GetUserProps = {
   axiosInstance: AxiosInstance;
@@ -32,4 +32,40 @@ export const useGetUser = (props: useGetUserProps) => {
     ...config,
     variables: data,
   });
+};
+
+//
+// GET WAITING BUNCH FOLLOW REQUESTS
+//
+
+export type GetWaitingBunchFollowRequestsProps = {
+  axiosInstance: AxiosInstance;
+};
+
+const getWaitingBunchFollowRequests = async ({
+  axiosInstance,
+}: GetWaitingBunchFollowRequestsProps) => {
+  const response = await axiosInstance.get(
+    `${process.env.REACT_APP_BACKEND_API_URL}/v1/user/interest-area-follow-requests`
+  );
+
+  if (response.status >= 200 && response.status < 300) {
+    return response.data;
+  }
+};
+
+type useGetWaitingBunchFollowRequestsProps =
+  GetWaitingBunchFollowRequestsProps & {
+    config?: any;
+  };
+
+export const useGetWaitingBunchFollowRequests = (
+  props: useGetWaitingBunchFollowRequestsProps
+) => {
+  const { axiosInstance, config } = props;
+  return useQuery(
+    ["getWaitingBunchFollowRequests"],
+    () => getWaitingBunchFollowRequests({ axiosInstance }),
+    config
+  );
 };
