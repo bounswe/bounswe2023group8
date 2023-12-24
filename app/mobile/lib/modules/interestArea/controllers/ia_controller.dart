@@ -39,6 +39,22 @@ class InterestAreaController extends GetxController {
 
   var viewState = BunchViewState.main.obs;
 
+  // Sort posts by the newest first
+  void sortByDate() {
+    posts.sort((a, b) => b.createTime.compareTo(a.createTime));
+    posts.refresh();
+  }
+
+  // Sort posts by the top votes
+  void sortByTop() {
+    posts.sort((a, b) {
+      int aVotes = a.upvoteCount - a.downvoteCount;
+      int bVotes = b.upvoteCount - b.downvoteCount;
+      return bVotes.compareTo(aVotes);
+    });
+    posts.refresh();
+  }
+  
   void onChangeState(BunchViewState state) {
     viewState.value = state;
   }
