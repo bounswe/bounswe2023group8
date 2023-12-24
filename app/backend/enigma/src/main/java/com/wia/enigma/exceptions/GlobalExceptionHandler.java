@@ -37,6 +37,8 @@ public class GlobalExceptionHandler {
             case INVALID_REQUEST:
             case INVALID_NESTED_INTEREST_AREA_IDS:
             case INVALID_WIKI_TAG_ID:
+            case DB_UNIQUE_CONSTRAINT_VIOLATION:
+            case DB_CONSTRAINT_VIOLATION:
                 return HttpStatus.BAD_REQUEST;
             case INVALID_JWT:
             case INVALID_JWT_CLAIM:
@@ -60,8 +62,6 @@ public class GlobalExceptionHandler {
             case DB_SAVE_ERROR:
             case DB_UPDATE_ERROR:
             case DB_DELETE_ERROR:
-            case DB_UNIQUE_CONSTRAINT_VIOLATION:
-            case DB_CONSTRAINT_VIOLATION:
                 return HttpStatus.INTERNAL_SERVER_ERROR;
             case API_RETURNED_NON_200:
                 return HttpStatus.SERVICE_UNAVAILABLE;
