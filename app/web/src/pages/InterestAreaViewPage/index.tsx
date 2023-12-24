@@ -3,11 +3,13 @@ import PostPreviewCard from "../../components/Post/PostSmallPreview/PostPreviewC
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import {
+  useFollowInterestArea,
   useGetInterestArea,
   useGetPostsOfInterestArea,
   useGetSubInterestAreasOfInterestArea,
 } from "../../hooks/useInterestArea";
 import { AccessLevel, accessLevelMapping } from "../InterestAreaUpdatePage";
+import { useReportAnIssue } from "../../hooks/useModeration";
 
 export interface EnigmaUser {
   id: number;
@@ -62,6 +64,18 @@ const ViewInterestArea = () => {
   const [subInterestAreasData, setSubInterestAreasData] = useState<any>(null);
   const [postsData, setPostsData] = useState<Post[] | null>(null);
 
+  const { mutate: followInterestArea } = useFollowInterestArea({
+    axiosInstance,
+    interestAreaId: parseInt(iaId as string),
+  });
+
+  const followBunch = () => {
+    followInterestArea({
+      axiosInstance,
+      interestAreaId: parseInt(iaId as string),
+    });
+  };
+
   const { isSuccess } = useGetInterestArea({
     axiosInstance,
     interestAreaId: parseInt(iaId as string),
@@ -99,6 +113,8 @@ const ViewInterestArea = () => {
     });
   const [showContent, setShowContent] = useState(false);
   const [showPosts, setShowPosts] = useState(true);
+  const [reportReason, setReportReason] = useState("");
+  const [showReport, setShowReport] = useState(false);
 
   useEffect(() => {
     // Set a timeout to update the state after 2 seconds
@@ -134,6 +150,26 @@ const ViewInterestArea = () => {
     },
   });
 
+  const { mutate: reportAnIssue } = useReportAnIssue({
+    axiosInstance,
+    issue: {
+      entityId: parseInt(iaId as string),
+      entityType: "interest_area",
+      reason: reportReason,
+    },
+  });
+
+  const reportBunch = () => {
+    reportAnIssue({
+      axiosInstance,
+      issue: {
+        entityId: parseInt(iaId as string),
+        entityType: "interest_area",
+        reason: reportReason,
+      },
+    });
+  };
+
   return (
     <>
       {isSuccess && isPostsSuccess && isNestedInterestAreasSuccess ? (
@@ -152,7 +188,9 @@ const ViewInterestArea = () => {
                   <h1>{interestAreaData?.title}</h1>
                 </div>
                 <div className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
-                  <span className="mx-2">Join</span>
+                  <span onClick={() => followBunch()} className="mx-2">
+                    Join
+                  </span>
                 </div>
                 <div className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
                   <img
@@ -160,6 +198,38 @@ const ViewInterestArea = () => {
                     src="/assets/theme/icons/NoNotificationNotSelected.png"
                     style={{ width: "20px" }}
                   />
+                </div>
+                <div className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
+                  {showReport ? (
+                    <>
+                      <input
+                        type="text"
+                        className="form-control mx-4"
+                        placeholder="Please write a reason"
+                        onChange={(e) => setReportReason(e.target.value)}
+                      ></input>
+                      <div className="d-flex mx-3">
+                        <button onClick={() => reportBunch()} className="btn">
+                          Submit
+                        </button>
+                        <button
+                          onClick={() => setShowReport(!showReport)}
+                          className="btn"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => setShowReport(!showReport)}
+                        className="btn mx-3 rounded-5"
+                      >
+                        Report
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
               <button
