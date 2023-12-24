@@ -459,7 +459,9 @@ class InterestAreaView extends GetView<InterestAreaController> {
             ),
             const SizedBox(width: 12),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                controller.sortByDate(); //Call sorting fnc here
+              },
               child: Container(
                 height: 28,
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
@@ -491,7 +493,9 @@ class InterestAreaView extends GetView<InterestAreaController> {
             ),
             const SizedBox(width: 12),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                controller.sortByTop(); //Call sorting fnc here
+              },
               child: Container(
                 height: 28,
                 padding:

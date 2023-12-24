@@ -22,6 +22,23 @@ class HomeController extends GetxController {
   var searchUsers = <EnigmaUser>[].obs;
   var searchIas = <InterestArea>[].obs;
 
+    // Sort posts by the newest first
+  void sortByDate() {
+    posts.sort((a, b) => b.createTime.compareTo(a.createTime));
+    posts.refresh();
+  }
+
+  // Sort posts by the top votes
+  void sortByTop() {
+    posts.sort((a, b) {
+      int aVotes = a.upvoteCount - a.downvoteCount;
+      int bVotes = b.upvoteCount - b.downvoteCount;
+      return bVotes.compareTo(aVotes);
+    });
+    posts.refresh();
+  }
+  
+
   void navigateToPostDetails(Spot post) {
     Get.toNamed(Routes.postDetails,
         arguments: {'post': post, 'visitor': false});

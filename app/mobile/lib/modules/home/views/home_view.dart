@@ -63,7 +63,9 @@ class HomeView extends GetView<HomeController> {
                               ),
                               const SizedBox(width: 12),
                               InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  controller.sortByDate(); //Call sorting fnc here
+                                },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 4, vertical: 2),
@@ -95,7 +97,9 @@ class HomeView extends GetView<HomeController> {
                               ),
                               const SizedBox(width: 12),
                               InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  controller.sortByTop(); //Call sorting fnc here
+                                },
                                 child: Container(
                                   height: 28,
                                   padding: const EdgeInsets.only(
@@ -151,7 +155,7 @@ class HomeView extends GetView<HomeController> {
                           },
                           separatorBuilder: (context, index) =>
                               const SizedBox(height: 8),
-                        )
+                        ),
                       ],
                     ),
             ),
