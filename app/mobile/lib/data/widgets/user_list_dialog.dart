@@ -113,7 +113,7 @@ class UserListDialogState extends State<UserListDialog> {
                     : null,
                 leading: user.pictureUrl != null && user.pictureUrl!.isNotEmpty
                     ? CircleAvatar(
-                        radius: 20,
+                        radius: 30,
                         backgroundImage: NetworkImage(user.pictureUrl!),
                       )
                     : Image.asset(

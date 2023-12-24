@@ -228,7 +228,7 @@ class ProfileView extends GetView<ProfileController> {
                   Row(
                     children: [
                       InkWell(
-                        onTap: () => controller.showFollowPopUp(0),
+                        onTap: () => controller.showFollowPopUp(Sections.followers),
                         child: Text(
                           '${controller.followers.length} Followers',
                           style: const TextStyle(
@@ -240,7 +240,7 @@ class ProfileView extends GetView<ProfileController> {
                       ),
                       const SizedBox(width: 10),
                       InkWell(
-                        onTap: () => controller.showFollowPopUp(1),
+                        onTap: () => controller.showFollowPopUp(Sections.following),
                         child: Text(
                           '${controller.followings.length} Following',
                           style: const TextStyle(

@@ -14,6 +14,16 @@ import 'package:mobile/modules/profile/providers/profile_provider.dart';
 import '../../../routes/app_pages.dart';
 import '../../bottom_navigation/controllers/bottom_navigation_controller.dart';
 
+enum Sections{
+  followers("Followers",0), following("Following",1) ;
+  final String title;
+  final int section;
+  const Sections(
+    this.title,
+      this.section,
+  );
+}
+
 class ProfileController extends GetxController {
   final bottomNavigationController = Get.find<BottomNavigationController>();
   final profileProvider = Get.find<ProfileProvider>();
@@ -33,6 +43,7 @@ class ProfileController extends GetxController {
   Rx<EnigmaUser?> user = Rx<EnigmaUser?>(null);
 
   var isFollowing = false.obs;
+
 
   void fetchUserProfile() async {
     try {
@@ -170,13 +181,13 @@ class ProfileController extends GetxController {
     }
   }
 
-  void showFollowPopUp(int section) {
+  void showFollowPopUp(Sections section) {
     Get.dialog(
       UserListDialog(
-        title: '@${userProfile.username}',
-        sections: const ['Followers', 'Followings'],
-        defaultSection: section,
+        title: section.title,
+        sections: const [],
         users: [followers, followings],
+        defaultSection: section.section,
         isRemovable: bottomNavigationController.userId == userProfile.id
             ? [false, true]
             : [false, false],
