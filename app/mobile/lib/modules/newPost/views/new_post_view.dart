@@ -373,10 +373,37 @@ class NewPostView extends GetView<NewPostController> {
                             ),
                           ),
                         ])),
-                const SizedBox(
-                  height: 8,
-                ),
                 if (controller.searchTagResults.isNotEmpty) _searchTagResults(),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    SelectCircle(
+                        value: controller.isAgeRestricted.value,
+                        onTap: (val) {
+                          controller.onChangeIsAgeRestricted();
+                        }),
+                    const Text(" Age Restricted Content"),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                InkWell(
+                  onTap: () => controller.pickDate(),
+                      child: Row(
+                      children: [
+                          const Text("Publication Date: "),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                          "${controller.publicationDate.value == '' ? 'Pick a Date' : controller.publicationDate}"
+                            // enabled: false,
+                            // decoration: const InputDecoration(labelText: 'Publication Date'),
+                            // onChanged: (value) => controller.publicationDate(value),
+                            // maxLines: null,
+                            // keyboardType: TextInputType.multiline,
+                          ),
+                        ],
+                      )),
                 const SizedBox(
                   height: 16,
                 ),
