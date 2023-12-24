@@ -60,6 +60,7 @@ public class InterestArea {
     public InterestAreaDto mapToInterestAreaDto(List<WikiTag> wikiTags) {
         return InterestAreaDto.builder()
                 .id(this.getId())
+                .creatorId(this.getEnigmaUserId())
                 .title(this.getTitle())
                 .description(this.getDescription())
                 .accessLevel(this.getAccessLevel())

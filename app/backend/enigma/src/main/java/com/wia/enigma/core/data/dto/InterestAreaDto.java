@@ -19,6 +19,8 @@ public class InterestAreaDto {
 
     Long id;
 
+    Long creatorId;
+
     EnigmaAccessLevel accessLevel;
 
     String title;
