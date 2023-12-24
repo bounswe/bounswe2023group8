@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface PostRepository  extends JpaRepository<Post, Long> {
     List<Post> findByAccessLevelOrderByCreateTimeDesc(EnigmaAccessLevel accessLevel);
@@ -32,4 +33,9 @@ public interface PostRepository  extends JpaRepository<Post, Long> {
            "FROM Post P " +
            "WHERE P.id = :postId")
     Long findEnigmaUserIdByPostId(Long postId);
+
+    @Query("SELECT P.id " +
+           "FROM Post P " +
+           "WHERE P.enigmaUserId = :userId")
+    Set<Long> findAllIdsByEnigmaUserId(Long userId);
 }

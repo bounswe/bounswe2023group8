@@ -4,6 +4,7 @@ import com.wia.enigma.dal.entity.PostVote;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Set;
 
 public interface PostVoteRepository extends JpaRepository<PostVote, Long> {
 
@@ -13,5 +14,5 @@ public interface PostVoteRepository extends JpaRepository<PostVote, Long> {
 
     PostVote findByEnigmaUserIdAndPostId(Long enigmaUserId, Long postId);
 
-    List<PostVote> findByEnigmaUserId(Long userId);
+    List<PostVote> findAllByPostIdIn(Set<Long> postIds);
 }
