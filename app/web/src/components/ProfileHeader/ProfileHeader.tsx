@@ -7,20 +7,20 @@ import { useReportAnIssue } from "../../hooks/useModeration";
 import { useAuth } from "../../contexts/AuthContext";
 
 type ProfileHeaderProps = {
-  user: {
-    id: number;
-    name: string;
-    username: string;
-    followers: number;
-    following: number;
-    user_profile_image: string;
-  };
-  style: object;
-  className: string;
+    user: {
+        id: number,
+        name: string,
+        username: string,
+        followers: number,
+        following: number,
+        pictureUrl: string
+    },
+    style: object,
+    className: string
 };
 
 const ProfileHeader = ({
-  user: { id, name, username, followers, following, user_profile_image },
+  user: { id, name, username, followers, following, pictureUrl },
   style,
   className,
 }: ProfileHeaderProps) => {
@@ -73,16 +73,10 @@ const ProfileHeader = ({
             className="col-4 justify-content-center my-4"
             style={{ maxHeight: "80px", maxWidth: "80px" }}
           >
-            {user_profile_image ? (
-              <img
-                src={user_profile_image}
-                className="rounded-circle img-fluid object-fit-cover h-100 w-100"
-                style={{ borderRadius: "50%" }}
-                alt="PP goes here"
-              />
-            ) : (
-              <h1 className="bi bi-person-circle display-1 mx-4"></h1>
-            )}
+            {pictureUrl
+                    ? <img src={pictureUrl} className="rounded-circle img-fluid object-fit-cover h-100 w-100"
+                           style={{borderRadius: '50%'}} alt="PP goes here"/>
+                    : <h1 className="bi bi-person-circle display-1 mx-4"></h1>}
           </Col>
           <Col className="col-8">
             <Row className="card-body">
@@ -96,7 +90,6 @@ const ProfileHeader = ({
                 >
                   @{username}
                 </p>
-
                 <Row className="justify-content-between">
                   <Col className="card-text" style={{ fontSize: "1.2rem" }}>
                     <SpanWithOnClick
