@@ -8,6 +8,7 @@ import {
   useGetUserFollowingInterestAreas,
   useGetUserPosts,
   useGetUserProfile,
+  useGetUserReputation,
 } from "../../hooks/useProfile";
 import { useParams } from "react-router-dom";
 import { Post } from "../InterestAreaViewPage";
@@ -32,6 +33,13 @@ const ProfilePage = () => {
     isSuccess: isSuccessPosts,
   } = useGetUserPosts({});
 
+  // Use the new hook to get user reputation
+  const { data: reputationData, isSuccess: isSuccessReputation } =
+    useGetUserReputation({
+      axiosInstance: axiosInstance,
+      userId: userId || "-1",
+    });
+
   useEffect(() => {
     getUserProfile({
       axiosInstance: axiosInstance,
@@ -52,6 +60,7 @@ const ProfilePage = () => {
     <>
       {isSuccessProfile && (
         <ProfileHeader
+          reputation={reputationData.reputation}
           style={{ background: "#EEF0EB", marginLeft: "60px" }}
           user={profileData}
           className="col-5 border-0"
