@@ -463,8 +463,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
         ),
       ),
       const SizedBox(height: 8),
-      Obx(() {
-        return ListView.separated(
+        ListView.separated(
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           physics: const NeverScrollableScrollPhysics(),
@@ -485,8 +484,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
             );
           },
           separatorBuilder: (context, index) => const SizedBox(height: 8),
-        );
-      }),
+        ),
     ];
   }
 

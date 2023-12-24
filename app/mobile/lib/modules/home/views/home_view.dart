@@ -140,8 +140,7 @@ class HomeView extends GetView<HomeController> {
                             ],
                           ),
                         ),
-                        Obx(() {
-                         return ListView.separated(
+                        ListView.separated(
                             shrinkWrap: true,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8),
@@ -165,8 +164,7 @@ class HomeView extends GetView<HomeController> {
                             },
                             separatorBuilder: (context, index) =>
                                 const SizedBox(height: 8),
-                          );
-                        }),
+                          ),
                       ],
                     ),
             ),
