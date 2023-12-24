@@ -251,31 +251,32 @@ class NewPostView extends GetView<NewPostController> {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          Container(
-                              height: 36,
-                              width: 320,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFFAF6),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Center(
-                                    child: Text(
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
+                          Expanded(
+                            child: Container(
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFFFAF6),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Center(
+                                      child: Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                        ),
+                                        controller.address.value == ''
+                                            ? 'Select Location'
+                                            : controller.address.value,
                                       ),
-                                      controller.address.value == ''
-                                          ? 'Select Location'
-                                          : controller.address.value,
                                     ),
                                   ),
                                 ),
-                              ),
+                            ),
                           ),
                           const SizedBox(width: 8),
                           InkWell(
