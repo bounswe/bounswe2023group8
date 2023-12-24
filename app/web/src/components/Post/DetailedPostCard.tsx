@@ -8,11 +8,24 @@ import {Link, useNavigate, useParams} from "react-router-dom";
 import Label from "../Label/Label";
 import {useDownvoteSpot, useGetSpotVotes, useUnvoteSpot, useUpvoteSpot} from "../../hooks/useSpotVotes";
 import {useDeletePost} from "../../hooks/usePost";
-// import { useReportAnIssue } from "../../hooks/useModeration";
+import {useReportAnIssue} from "../../hooks/useModeration";
+import CommentCreateCard from "../Comment/CommentCreateCard";
+import CommentCard, {Comment} from "../Comment/CommentCard";
+import {DeleteCommentProps} from "../../hooks/useComment";
+import {UseMutateFunction} from "react-query";
 
 export type DetailedPostCardProps = {
     post: Post;
     handleCreateCommentCardDisplay: () => void;
+    showCreateCommentCard: boolean;
+    commentContent: string;
+    handleCreateCommentInputChange:
+        (e: React.ChangeEvent<HTMLInputElement>
+            | React.ChangeEvent<HTMLSelectElement>
+            | React.ChangeEvent<HTMLTextAreaElement>) => void
+    handleCommentSubmit: (event: React.FormEvent) => void;
+    deleteComment: UseMutateFunction<any, unknown, DeleteCommentProps, unknown>;
+    comments: any;
 }
 
 export type Annotation = {
@@ -43,6 +56,12 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
             downvoteCount,
         },
         handleCreateCommentCardDisplay,
+        showCreateCommentCard,
+        commentContent,
+        handleCreateCommentInputChange,
+        handleCommentSubmit,
+        deleteComment,
+        comments,
     } = props;
 
     const {userData, axiosInstance} = useAuth();
@@ -488,206 +507,209 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
 
     const {post} = props;
 
-    // const { mutate: reportAnIssue } = useReportAnIssue({
-    //     axiosInstance,
-    //     issue: {
-    //         entityId: parseInt(postId as string),
-    //         entityType: "post",
-    //         reason: reportReason,
-    //     },
-    // });
+    const {mutate: reportAnIssue} = useReportAnIssue({
+        axiosInstance,
+        issue: {
+            entityId: parseInt(postId as string),
+            entityType: "post",
+            reason: reportReason,
+        },
+    });
 
-    // const reportSpot = () => {
-    //     reportAnIssue({
-    //         axiosInstance,
-    //         issue: {
-    //             entityId: parseInt(postId as string),
-    //             entityType: "post",
-    //             reason: reportReason,
-    //         },
-    //     });
-    // };
+    const reportSpot = () => {
+        reportAnIssue({
+            axiosInstance,
+            issue: {
+                entityId: parseInt(postId as string),
+                entityType: "post",
+                reason: reportReason,
+            },
+        });
+    };
 
     return (
-        <div className="row overflow-x-hidden">
-            <div className="card WA-theme-bg-regular rounded-4 mb-3 mt-4 col-8">
-                <div className="d-flex justify-content-between align-items-center">
-                    <span className="d-flex">
-                        <span style={{position: "relative", top: "-0.5em"}}>
-                            <img alt="Bunch Icon" src="/assets/theme/images/Bunch.png"></img>
-                        </span>
-                        <span className="flex-column">
-                            <div>
-                                <Link
-                                    to={`/interest-area/${interestArea.id}`}
-                                    style={{textDecoration: "none"}}
-                                    className="fs-4 fw-bold WA-theme-dark"
-                                >
-                                    {interestArea.title}
-                                </Link>
-                            </div>
-                            <div className="d-inline-flex">
-                                 {enigmaUser.pictureUrl
-                                     ? <img alt="profile picture" src={enigmaUser.pictureUrl} width="64" height="64"
-                                            className="rounded-circle img-fluid object-fit-cover m-2"
-                                     />
-                                     :
-                                     <img alt="Profile picture" src="/assets/PlaceholderProfile.png" width="64"
-                                          height="64"/>
-                                 }
-                                <div className="my-3 mx-2">
-                                    <div className="fw-bold fs-6 WA-theme-dark">
-                                        {enigmaUser.name}
-                                    </div>
-                                    <div className="d-flex justify-content-between">
-                                        <div className="d-flex">
-                                            <Link
-                                                to={`/profile/${enigmaUser.id}`}
-                                                style={{textDecoration: "none"}}
-                                                className="WA-theme-main"
-                                            >
-                                                {` @${enigmaUser.username}`}
-                                            </Link>
-                                        </div>
-                                        {/*<div className="d-flex">*/}
-                                        {/*    <button className="btn btn-outline-primary">Follow</button>*/}
-                                        {/*</div>*/}
-                                    </div>
-                                </div>
-                            </div>
-                        </span>
-                        <div
-                            className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
-                            {showReport ? (
-                                <>
-                                    <input
-                                        type="text"
-                                        className="form-control mx-4"
-                                        placeholder="Please write a reason"
-                                        onChange={(e) => setReportReason(e.target.value)}
-                                    ></input>
-                                    <div className="d-flex mx-3">
-                                        <button onClick={() => console.log("report")} className="btn">
-                                            Submit
-                                        </button>
-                                        <button
-                                            onClick={() => setShowReport(!showReport)}
-                                            className="btn"
-                                        >
-                                            Close
-                                        </button>
-                                    </div>
-                                </>
-                            ) : (
-                                <>
-                                    <button
-                                        onClick={() => setShowReport(!showReport)}
-                                        className="btn mx-3 rounded-5"
-                                    >
-                                        Report Post
-                                    </button>
-                                </>
-                            )}
-                        </div>
-                        <span className="mx-3">
-                            {enigmaUser.id == userData.id
-                                ? <span className="d-flex">
-                                    {!isDeleting
-                                        ?
-                                        <div>
-                                            <Link to={`/update_post/${postId}`}
-                                                  state={{
-                                                      post: {
-                                                          content: content,
-                                                          createTime: createTime,
-                                                          enigmaUser: enigmaUser,
-                                                          geolocation: geolocation,
-                                                          id: id,
-                                                          interestArea: interestArea,
-                                                          label: label,
-                                                          sourceLink: sourceLink,
-                                                          title: title,
-                                                          wikiTags: wikiTags,
-                                                          upvoteCount: upvoteCount,
-                                                          downvoteCount: downvotes,
-                                                      }
-                                                  }}
-                                                  style={{textDecoration: 'none'}}
-                                                  className="btn WA-theme-bg-main WA-theme-light mx-1">Edit
-                                                Spot
-                                            </Link>
-                                            <button className="btn WA-theme-bg-negative WA-theme-light mx-1"
-                                                    onClick={() => {
-                                                        setIsDeleting(!isDeleting)
-                                                    }}>
-                                                Delete Spot
-                                            </button>
-                                        </div>
-                                        :
-                                        <div>
-                                            Are you sure?
-                                            <button className="btn WA-theme-bg-main WA-theme-light mx-1"
-                                                    onClick={handleDeleteSpot}>
-                                                Delete Spot
-                                            </button>
-                                            <button className="btn WA-theme-bg-dark WA-theme-light mx-1"
-                                                    onClick={() => {
-                                                        setIsDeleting(!isDeleting)
-                                                    }}>
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    }
-                                    </span>
-                                : <></>}
-                        </span>
-                    </span>
-                </div>
-                <div className="card WA-theme-bg-light rounded-4 ms-4 m-1 ">
-                    <img
-                        alt="Bookmark Icon"
-                        src="/assets/theme/images/FactCheck=False.png"
-                        width="64"
-                        height="64"
-                        style={{position: "absolute", top: "-0.66em", left: "-0.60em"}}
-                    />
-                    <div className="row g-0 ms-4">
-                        <div className="col-9">
-                            <div className="card-body">
-                                <div className="d-flex justify-content-between">
+        <div className="row">
+            <div className="col-8">
+                <div className="card WA-theme-bg-regular rounded-4 mb-3 mt-4">
+                    <div className="d-flex justify-content-between align-items-center">
+                        <span className="d-flex">
+                            <span style={{position: "relative", top: "-0.5em"}}>
+                                <img alt="Bunch Icon" src="/assets/theme/images/Bunch.png"></img>
+                            </span>
+                            <span className="flex-column">
+                                <div>
                                     <Link
-                                        to={`/posts/${id}`}
+                                        to={`/interest-area/${interestArea.id}`}
                                         style={{textDecoration: "none"}}
-                                        className="card-title truncate-text-2 WA-theme-dark fs-5 fw-bold"
+                                        className="fs-4 fw-bold WA-theme-dark"
                                     >
-                                        {title}
+                                        {interestArea.title}
                                     </Link>
-                                    <img
-                                        alt="Geolocation Button"
-                                        src="/assets/theme/icons/GeolocationIcon.png"
-                                        width="32"
-                                        height="32"
-                                        onClick={handleLocationModalShow}
-                                    />
                                 </div>
-                                <Label className="" label={label}/>
-                                <Link
-                                    to={sourceLink}
-                                    className="truncate-text-2 WA-theme-main fw-bold mt-1"
-                                >
-                                    {sourceLink}
-                                </Link>
-                                {annotationsVisible ? (
-                                    <div className="card-title truncate-text-4 WA-theme-dark">
-                                        {renderHighlightedText()}
+                                <div className="d-inline-flex">
+                                     {enigmaUser.pictureUrl
+                                         ? <img alt="profile picture" src={enigmaUser.pictureUrl} width="64" height="64"
+                                                className="rounded-circle img-fluid object-fit-cover m-2"
+                                         />
+                                         :
+                                         <img alt="Profile picture" src="/assets/PlaceholderProfile.png" width="64"
+                                              height="64"/>
+                                     }
+                                    <div className="my-3 mx-2">
+                                        <div className="fw-bold fs-6 WA-theme-dark">
+                                            {enigmaUser.name}
+                                        </div>
+                                        <div className="d-flex justify-content-between">
+                                            <div className="d-flex">
+                                                <Link
+                                                    to={`/profile/${enigmaUser.id}`}
+                                                    style={{textDecoration: "none"}}
+                                                    className="WA-theme-main"
+                                                >
+                                                    {` @${enigmaUser.username}`}
+                                                </Link>
+                                            </div>
+                                            {/*<div className="d-flex">*/}
+                                            {/*    <button className="btn btn-outline-primary">Follow</button>*/}
+                                            {/*</div>*/}
+                                        </div>
                                     </div>
-                                ) : (
-                                    <p className="card-text">{content}</p>
-                                )}
+                                </div>
+                            </span>
 
-                                {/* <p className="card-text">{renderHighlightedText()}</p> */}
-                                <div className="mb-2">{`Date: ${createdAtString}`}</div>
-                                <span className="m-3 d-flex justify-content-between">
+                        </span>
+                        <span className="mx-3">
+                                {enigmaUser.id == userData.id
+                                    ? <span className="d-flex">
+                                        {!isDeleting
+                                            ?
+                                            <div>
+                                                <Link to={`/update_post/${postId}`}
+                                                      state={{
+                                                          post: {
+                                                              content: content,
+                                                              createTime: createTime,
+                                                              enigmaUser: enigmaUser,
+                                                              geolocation: geolocation,
+                                                              id: id,
+                                                              interestArea: interestArea,
+                                                              label: label,
+                                                              sourceLink: sourceLink,
+                                                              title: title,
+                                                              wikiTags: wikiTags,
+                                                              upvoteCount: upvoteCount,
+                                                              downvoteCount: downvotes,
+                                                          }
+                                                      }}
+                                                      style={{textDecoration: 'none'}}
+                                                      className="btn WA-theme-bg-main WA-theme-light mx-1">Edit
+                                                    Spot
+                                                </Link>
+                                                <button className="btn WA-theme-bg-negative WA-theme-light mx-1"
+                                                        onClick={() => {
+                                                            setIsDeleting(!isDeleting)
+                                                        }}>
+                                                    Delete Spot
+                                                </button>
+                                            </div>
+                                            :
+                                            <div>
+                                                Are you sure?
+                                                <button className="btn WA-theme-bg-main WA-theme-light mx-1"
+                                                        onClick={handleDeleteSpot}>
+                                                    Delete Spot
+                                                </button>
+                                                <button className="btn WA-theme-bg-dark WA-theme-light mx-1"
+                                                        onClick={() => {
+                                                            setIsDeleting(!isDeleting)
+                                                        }}>
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        }
+                                    </span>
+                                    : <span className="d-flex">
+                                        <div
+                                            className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
+                                            {showReport ? (
+                                                <>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control mx-4"
+                                                        placeholder="Please write a reason"
+                                                        onChange={(e) => setReportReason(e.target.value)}
+                                                    ></input>
+                                                    <div className="d-flex mx-3">
+                                                        <button onClick={() => reportSpot()} className="btn">
+                                                            Submit
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setShowReport(!showReport)}
+                                                            className="btn"
+                                                        >
+                                                            Close
+                                                        </button>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <button
+                                                        onClick={() => setShowReport(!showReport)}
+                                                        className="btn mx-3 rounded-5"
+                                                    >
+                                                        Report Post
+                                                    </button>
+                                                </>
+                                            )}
+                                        </div>
+                                    </span>}
+                                </span>
+                    </div>
+                    <div className="card WA-theme-bg-light rounded-4 ms-4 m-2 ">
+                        <img
+                            alt="Bookmark Icon"
+                            src="/assets/theme/images/FactCheck=False.png"
+                            width="64"
+                            height="64"
+                            style={{position: "absolute", top: "-0.66em", left: "-0.60em"}}
+                        />
+                        <div className="row g-0 ms-4">
+                            <div className="col-9">
+                                <div className="card-body">
+                                    <div className="d-flex justify-content-between">
+                                        <Link
+                                            to={`/posts/${id}`}
+                                            style={{textDecoration: "none"}}
+                                            className="card-title truncate-text-2 WA-theme-dark fs-5 fw-bold"
+                                        >
+                                            {title}
+                                        </Link>
+                                        <img
+                                            alt="Geolocation Button"
+                                            src="/assets/theme/icons/GeolocationIcon.png"
+                                            width="32"
+                                            height="32"
+                                            onClick={handleLocationModalShow}
+                                        />
+                                    </div>
+                                    <Label className="" label={label}/>
+                                    <Link
+                                        to={sourceLink}
+                                        className="truncate-text-2 WA-theme-main fw-bold mt-1"
+                                    >
+                                        {sourceLink}
+                                    </Link>
+                                    {annotationsVisible ? (
+                                        <div className="card-title truncate-text-4 WA-theme-dark">
+                                            {renderHighlightedText()}
+                                        </div>
+                                    ) : (
+                                        <p className="card-text">{content}</p>
+                                    )}
+
+                                    {/* <p className="card-text">{renderHighlightedText()}</p> */}
+                                    <div className="mb-2">{`Date: ${createdAtString}`}</div>
+                                    <span className="m-3 d-flex justify-content-between">
                                     <span className="d-flex">
                                         <img
                                             alt="upvote icon"
@@ -714,22 +736,36 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                                         </span>
                                     </span>
                                 </span>
+                                </div>
                             </div>
-                        </div>
-                        <div className="col-3 container d-flex justify-content-start p-1 m-0 ">
-                            <div className="vr my-3 col-1"></div>
-                            <div
-                                className="mx-auto flex-fill align-self-center overflow-y-auto px-3 my-1"
-                                style={{maxHeight: "200px"}}
-                            >
-                                {wikiTags.map((tag: any) => (
-                                    <Tag className="" key={`${id}-${tag.id}`} label={tag.label}/>
-                                ))}
+                            <div className="col-3 container d-flex justify-content-start p-1 m-0 ">
+                                <div className="vr my-3 col-1"></div>
+                                <div
+                                    className="mx-auto flex-fill align-self-center overflow-y-auto px-3 my-1"
+                                    style={{maxHeight: "200px"}}
+                                >
+                                    {wikiTags.map((tag: any) => (
+                                        <Tag className="" key={`${id}-${tag.id}`} label={tag.label}/>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            {/*    COMMENTS GO HERE*/}
+                <div className="">
+                    {showCreateCommentCard &&
+                        <CommentCreateCard content={commentContent} handleSubmit={handleCommentSubmit}
+                                           handleInputChange={handleCreateCommentInputChange}/>
+                    }
+                    {comments
+                        ? <div className="">
+                            {[...comments].reverse().map((comment: Comment) => {
+                                return <CommentCard key={comment.id} comment={comment} deleteComment={deleteComment}/>
+                            })}
+                        </div>
+                        : <></>
+                    }
+                </div>
             </div>
             <div className="card WA-theme-bg-regular rounded-4 mb-3 mt-4 col-4 h-100">
                 <div className="mb-3">

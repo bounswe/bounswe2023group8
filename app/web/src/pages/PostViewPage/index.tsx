@@ -3,9 +3,7 @@ import {useParams} from 'react-router-dom';
 import DetailedPostCard from '../../components/Post/DetailedPostCard';
 import {useGetPost} from "../../hooks/usePost";
 import {useAuth} from "../../contexts/AuthContext";
-import CommentCreateCard from "../../components/Comment/CommentCreateCard";
 import {useCreateComment, useDeleteComment, useGetComments} from "../../hooks/useComment";
-import CommentCard, {Comment} from "../../components/Comment/CommentCard";
 
 const PostViewPage = () => {
     const {postId} = useParams();
@@ -39,7 +37,7 @@ const PostViewPage = () => {
         setShowCreateCommentCard(!showCreateCommentCard);
     }
 
-    const handleInputChange = (
+    const handleCreateCommentInputChange = (
         e:
             | React.ChangeEvent<HTMLInputElement>
             | React.ChangeEvent<HTMLSelectElement>
@@ -77,30 +75,19 @@ const PostViewPage = () => {
     return (
         <>
             <div className="d-flex">
-                <div className="col-8 d-flex flex-column">
+                <div className="col-12 d-flex flex-column">
                     <div className="card-body overflow-y-auto">
                         {post && <DetailedPostCard
                             post={post}
                             handleCreateCommentCardDisplay={handleCreateCommentCardDisplay}
+                            commentContent={commentContent}
+                            handleCreateCommentInputChange={handleCreateCommentInputChange}
+                            handleCommentSubmit={handleCommentSubmit}
+                            comments={comments}
+                            deleteComment={deleteComment}
+                            showCreateCommentCard={showCreateCommentCard}
                         />}
                     </div>
-                    <div className="">
-                        {showCreateCommentCard &&
-                            <CommentCreateCard content={commentContent} handleSubmit={handleCommentSubmit}
-                                               handleInputChange={handleInputChange}/>
-                        }
-                        {comments
-                            ? <div className="overflow-y-scroll h-75">
-                                {[...comments].reverse().map((comment: Comment) => {
-                                    return <CommentCard key={comment.id} comment={comment} deleteComment={deleteComment}/>
-                                })}
-                            </div>
-                            : <></>
-                        }
-                    </div>
-                </div>
-                <div className="col-4">
-                    Annotations go into this div
                 </div>
             </div>
         </>
