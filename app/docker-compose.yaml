@@ -5,7 +5,7 @@ services:
     image: mysql:latest
     restart: always
     env_file:
-      - ./backend/enigma/.env
+      - ./.env.enigma-db
     volumes:
       - enigma_data:/var/lib/mysql
     ports:
@@ -15,7 +15,7 @@ services:
     image: mysql:latest
     restart: always
     env_file:
-      - ./backend/annotation/.env
+      - ./.env.annotation-db
     volumes:
       - annotation_data:/var/lib/mysql
     ports:
