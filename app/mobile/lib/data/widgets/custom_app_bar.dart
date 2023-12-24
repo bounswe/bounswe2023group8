@@ -12,6 +12,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool search;
   final Function(String)? onSearchQueryChanged;
   final bool notification;
+  final Color? backgroundColor;
+  final double? elevation;
   const CustomAppBar({
     super.key,
     this.leadingAppIcon = false,
@@ -20,21 +22,23 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onSearchQueryChanged,
     required this.notification,
     required this.actions,
+    this.backgroundColor,
+    this.elevation,
   });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: ThemePalette.white,
+      backgroundColor: backgroundColor ?? ThemePalette.white,
       leadingWidth: leadingAppIcon
           ? leadingBackIcon
               ? 77
               : 51
           : leadingBackIcon
-              ? 34
+              ? 42
               : 16,
       titleSpacing: 32,
-      elevation: 0.5,
+      elevation: elevation ?? 0.5,
       shadowColor: SeparatorPalette.dark,
       leading: Padding(
         padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),

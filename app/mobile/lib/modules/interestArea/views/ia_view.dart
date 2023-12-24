@@ -5,6 +5,7 @@ import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/bunch_widget.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
+import 'package:mobile/routes/app_pages.dart';
 import '../controllers/ia_controller.dart';
 import '../../../data/widgets/custom_app_bar.dart';
 
@@ -858,20 +859,33 @@ class InterestAreaView extends GetView<InterestAreaController> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              title: Text(controller.followRequests[index].follower.name),
-              subtitle:
-                  Text(controller.followRequests[index].follower.username),
-              leading: controller.followRequests[index].follower.pictureUrl !=
-                          null &&
-                      controller
-                          .followRequests[index].follower.pictureUrl!.isNotEmpty
-                  ? CircleAvatar(
-                      backgroundImage: NetworkImage(controller
-                          .followRequests[index].follower.pictureUrl!),
-                    )
-                  : const CircleAvatar(
-                backgroundImage: AssetImage(Assets.profilePlaceholder),
-              ),
+              title: InkWell(
+                  onTap: () => Get.toNamed(Routes.profile, arguments: {
+                        'userId': controller.followRequests[index].follower.id
+                      }),
+                  child: Text(controller.followRequests[index].follower.name)),
+              subtitle: InkWell(
+                  onTap: () => Get.toNamed(Routes.profile, arguments: {
+                        'userId': controller.followRequests[index].follower.id
+                      }),
+                  child:
+                      Text(controller.followRequests[index].follower.username)),
+              leading: InkWell(
+                  onTap: () => Get.toNamed(Routes.profile, arguments: {
+                        'userId': controller.followRequests[index].follower.id
+                      }),
+                  child: controller.followRequests[index].follower.pictureUrl !=
+                              null &&
+                          controller.followRequests[index].follower.pictureUrl!
+                              .isNotEmpty
+                      ? CircleAvatar(
+                          backgroundImage: NetworkImage(controller
+                              .followRequests[index].follower.pictureUrl!),
+                        )
+                      : const CircleAvatar(
+                          backgroundImage:
+                              AssetImage(Assets.profilePlaceholder),
+                        )),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

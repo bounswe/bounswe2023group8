@@ -19,13 +19,13 @@ class LoginBody extends GetView<LoginController> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: Get.height * 0.1),
+              const Spacer(flex: 7),
               Image.asset(
                 Assets.logo,
                 height: Get.height * 0.2,
                 fit: BoxFit.contain,
               ),
-              const SizedBox(height: 8),
+              const Spacer(flex: 1),
               Text(
                 'Log in',
                 style: TextStyle(
@@ -35,7 +35,7 @@ class LoginBody extends GetView<LoginController> {
                   letterSpacing: -0.5,
                 ),
               ),
-              const SizedBox(height: 32),
+              const Spacer(flex: 4),
               CustomTextField(
                 hintText: 'E-mail or Username',
                 initialValue: controller.loginUsername.value,
@@ -44,7 +44,7 @@ class LoginBody extends GetView<LoginController> {
                 circularBorder: true,
                 showSuffix: false,
               ),
-              const SizedBox(height: 16),
+              const Spacer(flex: 2),
               CustomTextField(
                 hintText: 'Password',
                 initialValue: controller.loginPassword.value,
@@ -54,7 +54,7 @@ class LoginBody extends GetView<LoginController> {
                 circularBorder: true,
                 onSuffixTap: () => controller.togglePasswordVisibility(),
               ),
-              const SizedBox(height: 6),
+              const Spacer(flex: 1),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -74,7 +74,7 @@ class LoginBody extends GetView<LoginController> {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              const Spacer(flex: 1),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -105,7 +105,7 @@ class LoginBody extends GetView<LoginController> {
                   ),
                 ],
               ),
-              const SizedBox(height: 64),
+              const Spacer(flex: 6),
               CustomButton(
                 onPressed: controller.onSignIn,
                 width: 152,
@@ -118,7 +118,7 @@ class LoginBody extends GetView<LoginController> {
                 active: controller.loginUsernameValid.value &&
                     controller.loginPasswordValid.value,
               ),
-              const SizedBox(height: 64),
+              const Spacer(flex: 6),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -145,6 +145,7 @@ class LoginBody extends GetView<LoginController> {
                   ),
                 ],
               ),
+              const Spacer(flex: 14),
             ],
           );
         },
