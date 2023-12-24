@@ -34,7 +34,6 @@ export type GetUserFollowingInterestAreasProps = {
 
 const getUserFollowingInterestAreas = async(props: GetUserFollowingInterestAreasProps) => {
     const {axiosInstance, userId} = props;
-    ///v1/user/2/interest-areas
     const response = await axiosInstance.get(
         `${process.env.REACT_APP_BACKEND_API_URL}/v1/user/${userId}/interest-areas`,
     )
@@ -54,7 +53,6 @@ export type GetUserPostsProps = {
 
 const getUserPosts = async(props: GetUserFollowingInterestAreasProps) => {
     const {axiosInstance, userId} = props;
-    ///v1/user/2/interest-areas
     const response = await axiosInstance.get(
         `${process.env.REACT_APP_BACKEND_API_URL}/v1/user/${userId}/posts`,
     )
