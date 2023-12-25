@@ -69,74 +69,20 @@ class InterestAreaView extends GetView<InterestAreaController> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Stack(
-                                  children: [
-                                    Container(
-                                      width: Get.width,
-                                      height: Get.height * 0.2,
-                                      decoration: BoxDecoration(
-                                        color: BackgroundPalette.regular,
-                                        image: controller
-                                                    .interestArea.pictureUrl !=
-                                                null
-                                            ? DecorationImage(
-                                                image: NetworkImage(controller
-                                                    .interestArea.pictureUrl!),
-                                                fit: BoxFit.cover,
-                                              )
-                                            : null,
-                                      ),
-                                    ),
-                                    if (controller.isOwner)
-                                      Positioned(
-                                        top: 10,
-                                        right: 16,
-                                        child: Row(
-                                          children: [
-                                            InkWell(
-                                              onTap: controller.uploadImage,
-                                              child: Container(
-                                                  padding:
-                                                      const EdgeInsets.all(4),
-                                                  decoration: BoxDecoration(
-                                                    color:
-                                                        BackgroundPalette.light,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                  ),
-                                                  child: Icon(
-                                                    Icons.photo,
-                                                    size: 16,
-                                                  )),
-                                            ),
-                                            if (controller.interestArea
-                                                        .pictureUrl !=
-                                                    null &&
-                                                controller.interestArea
-                                                    .pictureUrl!.isNotEmpty)
-                                              InkWell(
-                                                onTap: controller.deletePicture,
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.all(4),
-                                                  decoration: BoxDecoration(
-                                                    color:
-                                                        BackgroundPalette.light,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                  ),
-                                                  child: Icon(
-                                                    Icons.delete,
-                                                    size: 16,
-                                                  ),
-                                                ),
-                                              ),
-                                          ],
-                                        ),
-                                      ),
-                                  ],
+                                Container(
+                                  width: Get.width,
+                                  height: Get.height * 0.2,
+                                  decoration: BoxDecoration(
+                                    color: BackgroundPalette.regular,
+                                    image: controller.interestArea.pictureUrl !=
+                                            null
+                                        ? DecorationImage(
+                                            image: NetworkImage(controller
+                                                .interestArea.pictureUrl!),
+                                            fit: BoxFit.cover,
+                                          )
+                                        : null,
+                                  ),
                                 ),
                                 Divider(
                                   height: 0,
@@ -154,6 +100,51 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                   ...requestBody()
                               ],
                             ),
+                            if (controller.isOwner)
+                              Positioned(
+                                top: 16,
+                                right: 16,
+                                child: Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: controller.uploadImage,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: BackgroundPalette.light,
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: Image.asset(
+                                          Assets.newPicture,
+                                          width: 16,
+                                          height: 16,
+                                        ),
+                                      ),
+                                    ),
+                                    if (controller.interestArea.pictureUrl !=
+                                            null &&
+                                        controller.interestArea.pictureUrl!
+                                            .isNotEmpty)
+                                      InkWell(
+                                        onTap: controller.deletePicture,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                            color: BackgroundPalette.light,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          child: Image.asset(
+                                            Assets.delete,
+                                            width: 16,
+                                            height: 16,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
                             Positioned(
                               top: Get.height * 0.17,
                               child: Container(
