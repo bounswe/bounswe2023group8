@@ -27,6 +27,7 @@ class ProfileController extends GetxController {
   var followings = <EnigmaUser>[].obs;
   var posts = <Spot>[].obs;
   var ias = <InterestArea>[].obs;
+  RxMap<int, List<bool>> isVotes = <int, List<bool>>{}.obs;
 
   final ImagePicker _picker = ImagePicker();
 
@@ -46,6 +47,7 @@ class ProfileController extends GetxController {
             [];
         fetchFollowers();
         fetchFollowings();
+        await getVotedInfo();
         routeLoading.value = false;
       }
     } catch (e) {
@@ -234,6 +236,25 @@ class ProfileController extends GetxController {
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  Future getVotedInfo() async {
+    try {
+      for (var post in posts) {
+        final hasUpvoted = await profileProvider.hasUpVoted(
+            token: bottomNavigationController.token,
+            postId: post.id,
+            userId: bottomNavigationController.userId);
+        final hasDownvoted = await profileProvider.hasDownVoted(
+            token: bottomNavigationController.token,
+            postId: post.id,
+            userId: bottomNavigationController.userId);
+        isVotes[post.id] = [hasUpvoted, hasDownvoted];
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+      rethrow;
     }
   }
 

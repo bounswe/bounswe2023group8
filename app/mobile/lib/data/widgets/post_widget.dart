@@ -5,46 +5,42 @@ import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/models/spot.dart';
 import 'package:mobile/routes/app_pages.dart';
 
-class PostTileWidget extends StatelessWidget {
-  final Spot post;
-  final void Function()? onTap;
-  final bool hideTags;
-  final void Function() onUpvote;
-  final void Function() onDownvote;
-  final void Function() showVoters;
-  const PostTileWidget({
-    super.key,
-    required this.post,
-    this.onTap,
-    required this.hideTags,
-    required this.onUpvote,
-    required this.onDownvote,
-    required this.showVoters,
-  });
+class PostTileWidgetState extends State<PostTileWidget> {
+  var isUpvoted = false;
+  var isDownvoted = false;
+
+  @override
+  void initState() {
+    isUpvoted = widget.isUpvoted;
+    isDownvoted = widget.isDownvoted;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    var totalVote = widget.post.upvoteCount - widget.post.downvoteCount;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: BackgroundPalette.regular,
       ),
       child: ListTile(
-        onTap: onTap,
+        onTap: widget.onTap,
         contentPadding: const EdgeInsets.only(left: 8, right: 4),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InkWell(
               onTap: () => Get.toNamed(Routes.interestArea,
-                  arguments: {'interestArea': post.interestArea}),
+                  arguments: {'interestArea': widget.post.interestArea}),
               child: Text(
-                post.interestArea.name,
+                widget.post.interestArea.name,
                 style: TextStyle(
                   color: ThemePalette.dark,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   letterSpacing: -0.3,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
@@ -65,9 +61,9 @@ class PostTileWidget extends StatelessWidget {
                     const SizedBox(width: 4),
                     InkWell(
                       onTap: () => Get.toNamed(Routes.profile,
-                          arguments: {'userId': post.enigmaUser.id}),
+                          arguments: {'userId': widget.post.enigmaUser.id}),
                       child: Text(
-                        '@${post.enigmaUser.username}',
+                        '@${widget.post.enigmaUser.username}',
                         style: TextStyle(
                           color: ThemePalette.main,
                           fontSize: 12,
@@ -87,7 +83,7 @@ class PostTileWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      post.createTime,
+                      widget.post.createTime,
                       style: TextStyle(
                         color: ThemePalette.dark,
                         fontSize: 12,
@@ -100,28 +96,33 @@ class PostTileWidget extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    InkWell(
-                      onTap: onUpvote,
-                      child: Image.asset(
-                        Assets.upvote,
-                        width: 15,
-                        height: 15,
-                      ),
-                    ),
+                    isDownvoted
+                        ? const SizedBox(width: 15)
+                        : InkWell(
+                            onTap: () {
+                              setState(() {
+                                isUpvoted = !isUpvoted;
+                                widget.onUpvote();
+                              });
+                            },
+                            child: Image.asset(
+                              isUpvoted ? Assets.upvote : Assets.upvoteEmpty,
+                              width: 15,
+                              height: 15,
+                            ),
+                          ),
                     const SizedBox(width: 2),
                     InkWell(
-                      onTap: showVoters,
+                      onTap: widget.showVoters,
                       child: SizedBox(
                         width: 18,
                         child: Text(
-                          post.upvoteCount >= post.downvoteCount
-                              ? (post.upvoteCount - post.downvoteCount)
-                                  .toString()
-                              : (post.downvoteCount - post.upvoteCount)
-                                  .toString(),
+                          totalVote >= 0
+                              ? (totalVote).toString()
+                              : (-totalVote).toString(),
                           style: TextStyle(
-                            color: post.upvoteCount >= post.downvoteCount
-                                ? post.upvoteCount == post.downvoteCount
+                            color: totalVote >= 0
+                                ? totalVote == 0
                                     ? ThemePalette.dark
                                     : ThemePalette.positive
                                 : ThemePalette.negative,
@@ -134,14 +135,23 @@ class PostTileWidget extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 2),
-                    InkWell(
-                      onTap: onDownvote,
-                      child: Image.asset(
-                        Assets.downvote,
-                        width: 15,
-                        height: 15,
-                      ),
-                    ),
+                    isUpvoted
+                        ? const SizedBox(width: 15)
+                        : InkWell(
+                            onTap: () {
+                              setState(() {
+                                isDownvoted = !isDownvoted;
+                                widget.onDownvote();
+                              });
+                            },
+                            child: Image.asset(
+                              isDownvoted
+                                  ? Assets.downvote
+                                  : Assets.downvoteEmpty,
+                              width: 15,
+                              height: 15,
+                            ),
+                          ),
                     const SizedBox(width: 4),
                   ],
                 ),
@@ -164,13 +174,14 @@ class PostTileWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    post.title,
+                    widget.post.title,
                     style: TextStyle(
                       color: ThemePalette.dark,
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       letterSpacing: -0.24,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 1),
                   Container(
@@ -181,7 +192,7 @@ class PostTileWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      post.label,
+                      widget.post.label,
                       style: TextStyle(
                         color: BackgroundPalette.light,
                         fontSize: 10,
@@ -192,7 +203,7 @@ class PostTileWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    post.sourceLink,
+                    widget.post.sourceLink,
                     style: TextStyle(
                         color: ThemePalette.main,
                         fontSize: 12,
@@ -201,10 +212,10 @@ class PostTileWidget extends StatelessWidget {
                         decoration: TextDecoration.underline,
                         overflow: TextOverflow.ellipsis),
                   ),
-                  const SizedBox(height: 4),
-                  if (hideTags)
+                  const SizedBox(height: 8),
+                  if (widget.hideTags)
                     Text(
-                      post.content,
+                      widget.post.content,
                       style: TextStyle(
                         color: ThemePalette.dark,
                         fontSize: 12,
@@ -213,58 +224,67 @@ class PostTileWidget extends StatelessWidget {
                       ),
                     )
                   else
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            post.content,
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
-                              color: ThemePalette.dark,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: -0.2,
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxHeight: 100,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: SingleChildScrollView(
+                              child: Text(
+                                widget.post.content,
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: ThemePalette.dark,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: -0.2,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 2),
-                            child: Wrap(
-                              spacing: 4,
-                              runSpacing: 4,
-                              children: [
-                                for (final tag in post.wikiTags)
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 6, vertical: 1),
-                                    decoration: BoxDecoration(
-                                      color: BackgroundPalette.soft,
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: SeparatorPalette.dark
-                                            .withOpacity(0.6),
-                                        width: 1,
+                          const SizedBox(width: 8),
+                          Expanded(
+                            flex: 4,
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              child: Wrap(
+                                spacing: 4,
+                                runSpacing: 4,
+                                children: [
+                                  for (final tag in widget.post.wikiTags)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6, vertical: 1),
+                                      decoration: BoxDecoration(
+                                        color: BackgroundPalette.soft,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: SeparatorPalette.dark
+                                              .withOpacity(0.6),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        "#${tag.label}",
+                                        style: TextStyle(
+                                          color: SeparatorPalette.dark,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w400,
+                                          letterSpacing: -0.17,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ),
-                                    child: Text(
-                                      "#${tag.label}",
-                                      style: TextStyle(
-                                        color: SeparatorPalette.dark,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w400,
-                                        letterSpacing: -0.17,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        )
-                      ],
+                        ],
+                      ),
                     ),
                 ],
               ),
@@ -281,4 +301,29 @@ class PostTileWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+class PostTileWidget extends StatefulWidget {
+  final Spot post;
+  final void Function()? onTap;
+  final bool hideTags;
+  final bool isUpvoted;
+  final bool isDownvoted;
+  final void Function() onUpvote;
+  final void Function() onDownvote;
+  final void Function() showVoters;
+  const PostTileWidget({
+    super.key,
+    required this.post,
+    this.onTap,
+    required this.hideTags,
+    required this.isUpvoted,
+    required this.isDownvoted,
+    required this.onUpvote,
+    required this.onDownvote,
+    required this.showVoters,
+  });
+
+  @override
+  State<PostTileWidget> createState() => PostTileWidgetState();
 }

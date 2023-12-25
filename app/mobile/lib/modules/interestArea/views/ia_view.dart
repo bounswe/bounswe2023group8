@@ -534,15 +534,17 @@ class InterestAreaView extends GetView<InterestAreaController> {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: controller.posts.length,
         itemBuilder: (context, index) {
+          final spot = controller.posts[index];
+          final isVoted = controller.isVotes[spot.id] ?? [false, false];
           return PostTileWidget(
-            onTap: () =>
-                controller.navigateToPostDetails(controller.posts[index]),
-            post: controller.posts[index],
+            onTap: () => controller.navigateToPostDetails(spot),
+            post: spot,
             hideTags: true,
-            onUpvote: () => controller.upvotePost(controller.posts[index].id),
-            onDownvote: () =>
-                controller.downvotePost(controller.posts[index].id),
-            showVoters: () => controller.showVotes(controller.posts[index].id),
+            isUpvoted: isVoted[0],
+            isDownvoted: isVoted[1],
+            onUpvote: () => controller.upvotePost(spot.id),
+            onDownvote: () => controller.downvotePost(spot.id),
+            showVoters: () => controller.showVotes(spot.id),
           );
         },
         separatorBuilder: (context, index) => const SizedBox(height: 8),
@@ -857,58 +859,62 @@ class InterestAreaView extends GetView<InterestAreaController> {
       if (controller.followRequests.isNotEmpty) ...[
         Text('Follow Requests:',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-      const SizedBox(
-        height: 10,
-      ),
-      ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: controller.followRequests.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              contentPadding: EdgeInsets.only(left: 10),
-              minVerticalPadding: 0,
-              tileColor: Colors.grey.shade300,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              title: InkWell(
-                  onTap: () => Get.toNamed(Routes.profile, arguments: {
-                        'userId': controller.followRequests[index].follower.id
-                      }),
-                  child: Text(controller.followRequests[index].follower.name)),
-              subtitle: InkWell(
-                  onTap: () => Get.toNamed(Routes.profile, arguments: {
-                        'userId': controller.followRequests[index].follower.id
-                      }),
-                  child:
-                      Text(controller.followRequests[index].follower.username)),
-              leading: InkWell(
-                  onTap: () => Get.toNamed(Routes.profile, arguments: {
-                        'userId': controller.followRequests[index].follower.id
-                      }),
-                  child: controller.followRequests[index].follower.pictureUrl !=
-                              null &&
-                          controller.followRequests[index].follower.pictureUrl!
-                              .isNotEmpty
-                      ? CircleAvatar(
-                          backgroundImage: NetworkImage(controller
-                              .followRequests[index].follower.pictureUrl!),
-                        )
-                      : const CircleAvatar(
-                          backgroundImage:
-                              AssetImage(Assets.profilePlaceholder),
-                        )),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                      onPressed: () => controller.acceptIaRequest(
-                          controller.followRequests[index].requestId),
+        const SizedBox(
+          height: 10,
+        ),
+        ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: controller.followRequests.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                contentPadding: EdgeInsets.only(left: 10),
+                minVerticalPadding: 0,
+                tileColor: Colors.grey.shade300,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                title: InkWell(
+                    onTap: () => Get.toNamed(Routes.profile, arguments: {
+                          'userId': controller.followRequests[index].follower.id
+                        }),
+                    child:
+                        Text(controller.followRequests[index].follower.name)),
+                subtitle: InkWell(
+                    onTap: () => Get.toNamed(Routes.profile, arguments: {
+                          'userId': controller.followRequests[index].follower.id
+                        }),
+                    child: Text(
+                        controller.followRequests[index].follower.username)),
+                leading: InkWell(
+                    onTap: () => Get.toNamed(Routes.profile, arguments: {
+                          'userId': controller.followRequests[index].follower.id
+                        }),
+                    child:
+                        controller.followRequests[index].follower.pictureUrl !=
+                                    null &&
+                                controller.followRequests[index].follower
+                                    .pictureUrl!.isNotEmpty
+                            ? CircleAvatar(
+                                backgroundImage: NetworkImage(controller
+                                    .followRequests[index]
+                                    .follower
+                                    .pictureUrl!),
+                              )
+                            : const CircleAvatar(
+                                backgroundImage:
+                                    AssetImage(Assets.profilePlaceholder),
+                              )),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                        onPressed: () => controller.acceptIaRequest(
+                            controller.followRequests[index].requestId),
                         icon: const Icon(Icons.check, color: Colors.green)),
-                  IconButton(
-                      onPressed: () => controller.rejectIaRequest(
-                          controller.followRequests[index].requestId),
+                    IconButton(
+                        onPressed: () => controller.rejectIaRequest(
+                            controller.followRequests[index].requestId),
                         icon: const Icon(Icons.close, color: Colors.red)),
                   ],
                 ),

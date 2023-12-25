@@ -119,17 +119,18 @@ class ProfileView extends GetView<ProfileController> {
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: controller.posts.length,
                   itemBuilder: (context, index) {
+                    final spot = controller.posts[index];
+                    final isVoted =
+                        controller.isVotes[spot.id] ?? [false, false];
                     return PostTileWidget(
-                      onTap: () => controller
-                          .navigateToPostDetails(controller.posts[index]),
-                      post: controller.posts[index],
+                      onTap: () => controller.navigateToPostDetails(spot),
+                      post: spot,
                       hideTags: false,
-                      onDownvote: () =>
-                          controller.downvotePost(controller.posts[index].id),
-                      onUpvote: () =>
-                          controller.upvotePost(controller.posts[index].id),
-                      showVoters: () =>
-                          controller.showVotes(controller.posts[index].id),
+                      isUpvoted: isVoted[0],
+                      isDownvoted: isVoted[1],
+                      onDownvote: () => controller.downvotePost(spot.id),
+                      onUpvote: () => controller.upvotePost(spot.id),
+                      showVoters: () => controller.showVotes(spot.id),
                     );
                   },
                   separatorBuilder: (context, index) =>
@@ -152,8 +153,7 @@ class ProfileView extends GetView<ProfileController> {
                       controller.userProfile.profilePictureUrl!.isNotEmpty
                   ? CircleAvatar(
                       radius: 40,
-                      backgroundImage:
-                          NetworkImage(
+                      backgroundImage: NetworkImage(
                           controller.userProfile.profilePictureUrl!))
                   : const CircleAvatar(
                       radius: 40,

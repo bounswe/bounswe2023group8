@@ -27,7 +27,9 @@ class Assets {
   static const String explore = 'assets/icons/explore.svg';
   static const String notification = 'assets/icons/notifications.svg';
   static const String upvote = 'assets/icons/upvote.png';
+  static const String upvoteEmpty = 'assets/icons/upvote_empty.png';
   static const String downvote = 'assets/icons/downvote.png';
+  static const String downvoteEmpty = 'assets/icons/downvote_empty.png';
   static const String sortNew = 'assets/icons/sort_new.png';
   static const String sortTop = 'assets/icons/sort_top.png';
   static const String public = 'assets/icons/public.png';
