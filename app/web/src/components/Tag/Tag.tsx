@@ -31,12 +31,16 @@ const stringToRGBWithOpacity = (name: string, opacity: number): string | undefin
 const Tag = (props: TagProps) => {
     const {className, label} = props;
     const colour = stringToRGBWithOpacity(label, 0.6);
-    return <p
+    return <div
         className={`rounded-4 text-center m-1 px-2 ${className}`}
-        style={{backgroundColor: colour}}
+        style={{backgroundColor: colour, paddingTop: '0.1em', paddingBottom: '0.15em'}}
     >
-        #{label}
-    </p>
+        <div style={{
+            color: 'white',
+            textShadow: '-1px -1px 3px black, 1px -1px 3px black, -1px 1px 3px black, 1px 1px 3px black',}}>
+            #{label}
+        </div>
+    </div>
 }
 
 export default Tag;

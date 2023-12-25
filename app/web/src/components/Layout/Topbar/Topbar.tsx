@@ -12,14 +12,6 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import SpanWithOnClick from "../../shared/SpanWithOnClick/SpanWithOnClick";
 
-const mockNotifications = [
-  {
-    href: "notification1",
-    title: 'Your Interest Area "All About Rice" is trending!',
-  },
-  { href: "notification2", title: "You gained a badge: Food Enthusiast!" },
-];
-
 const Topbar = () => {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -95,20 +87,6 @@ const Topbar = () => {
             </div>
             {isAuthenticated ? (
               <Nav className="container justify-content-end m-3 ">
-                <NavDropdown
-                  title={<span className="fs-5 bi bi-bell"></span>}
-                  id="collapsible-nav-dropdown"
-                  drop="start"
-                >
-                  {mockNotifications.map((notification) => (
-                    <NavDropdown.Item
-                      key={notification.title}
-                      href={notification.href}
-                    >
-                      {notification.title}
-                    </NavDropdown.Item>
-                  ))}
-                </NavDropdown>
                 <NavDropdown
                   title={
                     <span>
