@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
         path = "/wia",
         produces = "application/ld+json",
         consumes = "application/ld+json")
+@CrossOrigin(origins = "*")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AnnotationContainerController {
 
