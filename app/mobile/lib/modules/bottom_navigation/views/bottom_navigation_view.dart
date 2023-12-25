@@ -13,25 +13,42 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () {
-        return Scaffold(
-          body: Stack(
-            alignment: Alignment.bottomLeft,
-            children: [
-              Navigator(
-                key: Get.nestedKey(1),
-                initialRoute: Routes.home,
-                onGenerateRoute: controller.onGenerateRoute,
-              ),
-              BottomNavbar(
-                selected: controller.currentIndex.value,
-                onTap: controller.changePage,
-              ),
-            ],
+    return Scaffold(
+      body: Stack(children: [
+        Navigator(
+          key: Get.nestedKey(1),
+          initialRoute: Routes.home,
+          onGenerateRoute: controller.onGenerateRoute,
+        ),
+        Positioned(
+          bottom: 0,
+          child: Obx(() {
+            return BottomNavbar(
+              selected: controller.currentIndex.value,
+              onTap: controller.changePage,
+            );
+          }),
+        ),
+        Positioned(
+          bottom: 25,
+          left: Get.width * 0.5 - 24,
+          child: Center(
+            child: CircleAvatar(
+                backgroundColor: ThemePalette.main,
+                radius: 24,
+                child: InkWell(
+                  onTap: () {
+                    controller.changePage(2);
+                  },
+                  child: Icon(
+                    Icons.add,
+                    size: 40,
+                    color: ThemePalette.light,
+                  ),
+                )),
           ),
-        );
-      },
+        ),
+      ]),
     );
   }
 }
@@ -48,67 +65,50 @@ class BottomNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      clipBehavior: Clip.none,
-      children: [
-        Container(
-          width: Get.width,
-          height: 50,
-          padding: const EdgeInsets.symmetric(horizontal: 36),
-          color: BackgroundPalette.soft,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _bottomNavBarItem(
-                asset: Assets.home,
-                label: 'Home',
-                selected: selected == 0,
-                onTap: () {
-                  onTap(0);
-                },
-              ),
-              _bottomNavBarItem(
-                asset: Assets.profile,
-                label: 'Profile',
-                selected: selected == 1,
-                onTap: () {
-                  onTap(1);
-                },
-              ),
-              const SizedBox(width: 48),
-              _bottomNavBarItem(
-                  asset: Assets.createBunch,
-                  label: 'CreateBunch',
-                  selected: selected == 3,
-                  onTap: () {
-                    onTap(3);
-                  }),
-              _bottomNavBarItem(
-                  asset: Assets.settings,
-                  label: 'Settings',
-                  selected: selected == 4,
-                  onTap: () {
-                    onTap(4);
-                  }),
-            ],
-          ),
-        ),
-  
-          Positioned(
-            top: -12,
-            child: InkWell(
+    return SizedBox(
+      height: 50,
+      child: Container(
+        height: 50,
+        width: Get.width,
+        color: BackgroundPalette.soft,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _bottomNavBarItem(
+              asset: Assets.home,
+              label: 'Home',
+              selected: selected == 0,
               onTap: () {
-                onTap(2);
+                onTap(0);
               },
-              child: Image.asset(
-                Assets.createSpot,
-                width: 48,
-                height: 48,
-              ),
             ),
-          ),
-      ],
+            _bottomNavBarItem(
+              asset: Assets.profile,
+              label: 'Profile',
+              selected: selected == 1,
+              onTap: () {
+                onTap(1);
+              },
+            ),
+            const SizedBox(),
+            _bottomNavBarItem(
+                asset: Assets.createBunch,
+                label: 'CreateBunch',
+                selected: selected == 3,
+                onTap: () {
+                  onTap(3);
+                }),
+            _bottomNavBarItem(
+                asset: Assets.settings,
+                label: 'Settings',
+                selected: selected == 4,
+                onTap: () {
+                  onTap(4);
+                }),
+          ],
+        ),
+      ),
     );
   }
 
@@ -123,13 +123,11 @@ class BottomNavbar extends StatelessWidget {
           child: selected
               ? SvgPicture.asset(
                   asset,
-                  width: 24,
                   height: 26,
                   color: ThemePalette.main,
                 )
               : SvgPicture.asset(
                   asset,
-                  width: 24,
                   height: 26,
                   color: ThemePalette.dark,
                 ),
