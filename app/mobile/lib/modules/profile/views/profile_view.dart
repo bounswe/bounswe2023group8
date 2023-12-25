@@ -34,7 +34,7 @@ class ProfileView extends GetView<ProfileController> {
             notification: false,
             actions: [
               if (controller.userId !=
-                  controller.bottomNavigationController.userId)
+                  controller.bottomNavigationController.userId) ...[
                 InkWell(
                   highlightColor: Colors.transparent,
                   splashColor: Colors.transparent,
@@ -45,7 +45,8 @@ class ProfileView extends GetView<ProfileController> {
                     height: 24,
                   ),
                 ),
-              const SizedBox(width: 16),
+                const SizedBox(width: 16),
+              ],
             ],
           ),
           body: SingleChildScrollView(
@@ -349,7 +350,7 @@ class ProfileView extends GetView<ProfileController> {
                               width: 20,
                               height: 20,
                             ),
-                            const SizedBox(width: 5),
+                            const SizedBox(width: 6),
                             Text(
                               controller.userProfile.upvotes.toString(),
                               style: TextStyle(
@@ -369,7 +370,7 @@ class ProfileView extends GetView<ProfileController> {
                               width: 20,
                               height: 20,
                             ),
-                            const SizedBox(width: 5),
+                            const SizedBox(width: 6),
                             Text(
                               controller.userProfile.downvotes.toString(),
                               style: TextStyle(

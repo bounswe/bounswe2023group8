@@ -17,8 +17,8 @@ class InterestAreaView extends GetView<InterestAreaController> {
     return Obx(
       () {
         if (controller.routeLoading.value) {
-          return Scaffold(
-            body: const Center(
+          return const Scaffold(
+            body: Center(
               child: CircularProgressIndicator(),
             ),
           );
@@ -41,16 +41,15 @@ class InterestAreaView extends GetView<InterestAreaController> {
                   ),
                 )
               else
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: InkWell(
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      onTap: () => controller.showReportBunch(),
-                      child: Icon(
-                        Icons.report_gmailerrorred,
-                        size: 30,
-                      )),
+                InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: () => controller.showReportBunch(),
+                  child: Image.asset(
+                    Assets.report,
+                    width: 24,
+                    height: 24,
+                  ),
                 ),
               const SizedBox(width: 16),
             ],
@@ -117,23 +116,23 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                                 controller.interestArea
                                                     .pictureUrl!.isNotEmpty)
                                               InkWell(
-                                                  onTap:
-                                                      controller.deletePicture,
-                                                  child: Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              4),
-                                                      decoration: BoxDecoration(
-                                                        color: BackgroundPalette
-                                                            .light,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20),
-                                                      ),
-                                                      child: Icon(
-                                                        Icons.delete,
-                                                        size: 16,
-                                                      ))),
+                                                onTap: controller.deletePicture,
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(4),
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        BackgroundPalette.light,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.delete,
+                                                    size: 16,
+                                                  ),
+                                                ),
+                                              ),
                                           ],
                                         ),
                                       ),
@@ -450,7 +449,6 @@ class InterestAreaView extends GetView<InterestAreaController> {
               style: TextStyle(
                 color: ThemePalette.dark,
                 fontSize: 16,
-                fontFamily: 'Inter',
                 fontWeight: FontWeight.w600,
                 letterSpacing: -0.2,
               ),
@@ -480,7 +478,6 @@ class InterestAreaView extends GetView<InterestAreaController> {
                       style: TextStyle(
                         color: ThemePalette.dark,
                         fontSize: 12,
-                        fontFamily: 'Inter',
                         fontWeight: FontWeight.w400,
                         letterSpacing: -0.15,
                       ),

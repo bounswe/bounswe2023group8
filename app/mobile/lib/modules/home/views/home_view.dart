@@ -231,32 +231,26 @@ class HomeView extends GetView<HomeController> {
             const SizedBox(height: 8),
             Container(
               width: Get.width,
-              padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
                 color: BackgroundPalette.dark,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: SizedBox(
-                height: 114,
+                height: 106,
                 child: ListView.separated(
-                  padding: EdgeInsets.zero,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   scrollDirection: Axis.horizontal,
                   physics: const ClampingScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: controller.searchUsers.length + 1,
+                  itemCount: controller.searchUsers.length,
                   itemBuilder: (context, index) {
-                    if (index == controller.searchUsers.length) {
-                      return const SizedBox(width: 8);
-                    }
                     final user = controller.searchUsers[index];
                     return ProfileColumn(
                         user: user,
                         onTap: () => controller.navigateToProfile(user.id));
                   },
                   separatorBuilder: (context, index) {
-                    if (index == controller.searchUsers.length - 1) {
-                      return const SizedBox(width: 0);
-                    }
                     return const SizedBox(width: 16);
                   },
                 ),
