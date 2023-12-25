@@ -50,6 +50,7 @@ class ProfileView extends GetView<ProfileController> {
           ),
           body: SingleChildScrollView(
             physics: const ClampingScrollPhysics(),
+            padding: EdgeInsets.only(bottom: 60),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
