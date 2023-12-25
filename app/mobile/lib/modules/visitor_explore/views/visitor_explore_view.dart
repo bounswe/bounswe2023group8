@@ -119,6 +119,7 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                       SizedBox(
                         height: 402,
                         child: ListView.separated(
+                          padding: const EdgeInsets.only(bottom: 8),
                           physics: const ClampingScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: controller.spots.length,

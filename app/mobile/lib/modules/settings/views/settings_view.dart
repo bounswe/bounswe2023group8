@@ -219,7 +219,7 @@ class SettingsView extends GetView<SettingsController> {
             const SizedBox(height: 16),
             InkWell(
               onTap: () {
-                Get.to(() => const PrivacyAndSafetyView());
+                Get.to(() => const PrivacyPolicyView());
               },
               child: Container(
                 width: Get.width,

@@ -5,8 +5,8 @@ import 'package:mobile/data/widgets/custom_app_bar.dart';
 
 import '../controllers/settings_controller.dart';
 
-class PrivacyAndSafetyView extends GetView<SettingsController> {
-  const PrivacyAndSafetyView({super.key});
+class PrivacyPolicyView extends GetView<SettingsController> {
+  const PrivacyPolicyView({super.key});
 
   @override
   Widget build(BuildContext context) {

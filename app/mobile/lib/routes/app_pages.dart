@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:mobile/modules/editIA/bindings/edit_ia_binding.dart';
 import 'package:mobile/modules/editIA/views/edit_ia_view.dart';
+import 'package:mobile/modules/visitor_settings/bindings/visitor_settings_binding.dart';
+import 'package:mobile/modules/visitor_settings/views/visitor_settings_view.dart';
 
 import '../modules/post_details/bindings/post_details_binding.dart';
 import '../modules/post_details/views/post_details_view.dart';
@@ -68,11 +70,11 @@ class AppPages {
         binding: ProfileBinding()),
     GetPage(
         name: _Paths.newPost,
-        page: () => NewPostView(),
+        page: () => const NewPostView(),
         binding: NewPostBinding()),
     GetPage(
         name: _Paths.editPost,
-        page: () => EditPostView(),
+        page: () => const EditPostView(),
         binding: EditPostBinding()),
     GetPage(
         name: _Paths.newIa,
@@ -82,6 +84,11 @@ class AppPages {
       name: _Paths.visitorExplore,
       page: () => const VisitorExploreView(),
       binding: VisitorExploreBinding(),
+    ),
+    GetPage(
+      name: _Paths.visitorSettings,
+      page: () => const VisitorSettingsView(),
+      binding: VisitorSettingsBinding(),
     ),
     GetPage(
       name: _Paths.postDetails,

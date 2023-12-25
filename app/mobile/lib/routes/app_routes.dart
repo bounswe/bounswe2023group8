@@ -15,6 +15,7 @@ abstract class Routes {
   static const interestArea = _Paths.interestArea;
   static const visitorInterestArea = _Paths.visitorInterestArea;
   static const visitorExplore = _Paths.visitorExplore;
+  static const visitorSettings = _Paths.visitorSettings;
   static const postDetails = _Paths.postDetails;
   static const editIa = _Paths.editIa;
 }
@@ -34,5 +35,6 @@ abstract class _Paths {
   static const interestArea = '/interest-area';
   static const visitorInterestArea = '/visitor-interest-area';
   static const visitorExplore = '/visitor-explore';
+  static const visitorSettings = '/visitor-settings';
   static const postDetails = '/post-details';
 }
