@@ -194,8 +194,8 @@ class ProfileView extends GetView<ProfileController> {
                       controller.userProfile.profilePictureUrl!.isNotEmpty
                   ? CircleAvatar(
                       radius: 40,
-                      backgroundImage:
-                          NetworkImage(controller.user.value!.pictureUrl!),
+                      backgroundImage: NetworkImage(
+                          controller.userProfile.profilePictureUrl!),
                     )
                   : Image.asset(
                       Assets.profilePlaceholder,
@@ -215,8 +215,9 @@ class ProfileView extends GetView<ProfileController> {
                         height: 20,
                       ),
                     ),
-                    if (controller.user.value?.pictureUrl != null &&
-                        controller.user.value!.pictureUrl!.isNotEmpty) ...[
+                    if (controller.userProfile.profilePictureUrl != null &&
+                        controller
+                            .userProfile.profilePictureUrl!.isNotEmpty) ...[
                       const SizedBox(width: 8),
                       InkWell(
                         onTap: controller.deletePicture,
