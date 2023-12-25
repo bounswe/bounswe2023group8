@@ -389,6 +389,7 @@ class PostDetailsController extends GetxController {
 
           if (res) {
             annotationController.clear();
+            fetchAnnotations();
             Get.snackbar(
               'Success',
               'Annotation added successfully',
