@@ -24,7 +24,7 @@ public class AnnotationContainerResponse extends AnnotationServerBaseResponse {
 
     String label;
 
-    First first;
+    Page first;
 
     String last;
 
@@ -39,7 +39,7 @@ public class AnnotationContainerResponse extends AnnotationServerBaseResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-    public static class First {
+    public static class Page {
 
         String id;
 

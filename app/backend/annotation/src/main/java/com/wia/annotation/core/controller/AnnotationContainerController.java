@@ -58,10 +58,11 @@ public class AnnotationContainerController {
      * @return              HTTP 200
      */
     @GetMapping(path = "/{containerName}")
-    public ResponseEntity<?> getAnnotationContainer(@PathVariable String containerName) {
+    public ResponseEntity<?> getAnnotationContainer(@PathVariable String containerName,
+                                                    @RequestParam(defaultValue = "0") Integer page) {
 
         AnnotationContainerResponse response =
-                annotationContainerService.getAnnotationContainer(containerName);
+                annotationContainerService.getAnnotationContainer(containerName, page);
 
         return ResponseEntity
                 .ok()
