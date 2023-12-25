@@ -12,9 +12,11 @@ const Sidebar = () => {
           <Nav.Link href="/home">
             <span className="fs-5 bi bi-house-door-fill"> Home</span>
           </Nav.Link>
+          
           <Nav.Link href={`/profile/${userData.id}`}>
             <span className="fs-5 bi bi-person-circle"> Profile</span>
           </Nav.Link>
+
           <Nav.Link href={`/create_interest_area`}>
             <svg
               width="26"
@@ -54,9 +56,10 @@ const Sidebar = () => {
             </svg>
             <span className="fs-5"> Create Bunch</span>
           </Nav.Link>
+
           <div className="mt-auto">
-            <Nav.Link href="#settings">
-              <span className="fs-5 bi bi-gear-fill "> Settings</span>
+            <Nav.Link href="/settings" className="nav-link">
+              <span className="fs-5 bi bi-gear-fill"> Settings</span>
             </Nav.Link>
           </div>
         </Nav>
