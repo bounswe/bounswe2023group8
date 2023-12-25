@@ -271,3 +271,107 @@ export const useUnfollowInterestArea = (
   const { config } = props;
   return useMutation(unfollowInterestArea, config);
 };
+
+//
+//  GET FOLLOW REQUESTS OF INTEREST AREAS
+//
+
+export type GetFollowRequestsOfInterestAreaProps = {
+  axiosInstance: AxiosInstance;
+  interestAreaId: number;
+};
+
+const getFollowRequestsOfInterestArea = async ({
+  axiosInstance,
+  interestAreaId,
+}: GetFollowRequestsOfInterestAreaProps) => {
+  const response = await axiosInstance.get(
+    `${process.env.REACT_APP_BACKEND_API_URL}/v1/interest-area/${interestAreaId}/follow-requests`
+  );
+
+  if (response.status >= 200 && response.status < 300) {
+    return response.data;
+  }
+};
+
+type useGetFollowRequestsOfInterestAreaProps =
+  GetFollowRequestsOfInterestAreaProps & {
+    config?: any;
+  };
+
+export const useGetFollowRequestsOfInterestArea = (
+  props: useGetFollowRequestsOfInterestAreaProps
+) => {
+  const { interestAreaId, config } = props;
+  return useQuery(
+    ["getFollowRequestsOfInterestArea", interestAreaId],
+    () => getFollowRequestsOfInterestArea(props),
+    config
+  );
+};
+
+//
+//  ACCEPT FOLLOW REQUEST
+//
+
+export type AcceptFollowRequestProps = {
+  axiosInstance: AxiosInstance;
+  requestId: number;
+};
+
+const acceptFollowRequest = async ({
+  axiosInstance,
+  requestId,
+}: AcceptFollowRequestProps) => {
+  const response = await axiosInstance.get(
+    `${process.env.REACT_APP_BACKEND_API_URL}/v1/interest-area/accept-follow-request?requestId=${requestId}`
+  );
+
+  if (response.status >= 200 && response.status < 300) {
+    return response.data;
+  }
+};
+
+type useAcceptFollowRequestProps = {
+  axiosInstance: AxiosInstance;
+  requestId: number;
+  config?: any;
+};
+
+export const useAcceptFollowRequest = (props: useAcceptFollowRequestProps) => {
+  const { config } = props;
+  return useMutation(acceptFollowRequest, config);
+};
+
+//
+//  REJECT FOLLOW REQUEST
+//
+
+export type RejectFollowRequestProps = {
+  axiosInstance: AxiosInstance;
+  requestId: number;
+};
+
+const rejectFollowRequest = async ({
+  axiosInstance,
+  requestId,
+}: RejectFollowRequestProps) => {
+  const response = await axiosInstance.get(
+    `${process.env.REACT_APP_BACKEND_API_URL}/v1/interest-area/reject-follow-request?requestId=${requestId}`
+  );
+
+  if (response.status >= 200 && response.status < 300) {
+    return response.data;
+  }
+};
+
+type useRejectFollowRequestProps = {
+  axiosInstance: AxiosInstance;
+  requestId: number;
+  config?: any;
+};
+
+export const useRejectFollowRequest = (props: useRejectFollowRequestProps) => {
+  const { config } = props;
+  return useMutation(rejectFollowRequest, config);
+};
