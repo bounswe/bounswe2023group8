@@ -432,7 +432,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
     return [
       Container(
         margin: const EdgeInsets.only(right: 16),
-        padding: const EdgeInsets.only(left: 16, top: 33, bottom: 8),
+        padding: const EdgeInsets.only(left: 16, top: 40, bottom: 8),
         decoration: BoxDecoration(
           borderRadius:
               const BorderRadius.only(bottomRight: Radius.circular(10)),
@@ -533,8 +533,6 @@ class InterestAreaView extends GetView<InterestAreaController> {
             onTap: () => controller.navigateToPostDetails(spot),
             post: spot,
             hideTags: true,
-            isUpvoted: isVoted[0],
-            isDownvoted: isVoted[1],
             onUpvote: () => controller.upvotePost(spot.id),
             onDownvote: () => controller.downvotePost(spot.id),
             showVoters: () => controller.showVotes(spot.id),
@@ -847,44 +845,64 @@ class InterestAreaView extends GetView<InterestAreaController> {
   List<Widget> requestBody() {
     return [
       const SizedBox(
-        height: 40,
+        height: 50,
       ),
       if (controller.followRequests.isNotEmpty) ...[
-        Text('Follow Requests:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text('Follow Requests:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        ),
         const SizedBox(
           height: 10,
         ),
-        ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: controller.followRequests.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                contentPadding: EdgeInsets.only(left: 10),
-                minVerticalPadding: 0,
-                tileColor: Colors.grey.shade300,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                title: InkWell(
-                    onTap: () => Get.toNamed(Routes.profile, arguments: {
-                          'userId': controller.followRequests[index].follower.id
-                        }),
-                    child:
-                        Text(controller.followRequests[index].follower.name)),
-                subtitle: InkWell(
-                    onTap: () => Get.toNamed(Routes.profile, arguments: {
-                          'userId': controller.followRequests[index].follower.id
-                        }),
-                    child: Text(
-                        controller.followRequests[index].follower.username)),
-                leading: InkWell(
-                    onTap: () => Get.toNamed(Routes.profile, arguments: {
-                          'userId': controller.followRequests[index].follower.id
-                        }),
-                    child:
-                        controller.followRequests[index].follower.pictureUrl !=
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: controller.followRequests.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        offset: const Offset(0, 0),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.only(left: 10),
+                    minVerticalPadding: 0,
+                    tileColor: Colors.grey.shade300,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    title: InkWell(
+                        onTap: () => Get.toNamed(Routes.profile, arguments: {
+                              'userId':
+                                  controller.followRequests[index].follower.id
+                            }),
+                        child: Text(
+                            controller.followRequests[index].follower.name)),
+                    subtitle: InkWell(
+                        onTap: () => Get.toNamed(Routes.profile, arguments: {
+                              'userId':
+                                  controller.followRequests[index].follower.id
+                            }),
+                        child: Text(controller
+                            .followRequests[index].follower.username)),
+                    leading: InkWell(
+                        onTap: () => Get.toNamed(Routes.profile, arguments: {
+                              'userId':
+                                  controller.followRequests[index].follower.id
+                            }),
+                        child: controller.followRequests[index].follower
+                                        .pictureUrl !=
                                     null &&
                                 controller.followRequests[index].follower
                                     .pictureUrl!.isNotEmpty
@@ -898,33 +916,38 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                 backgroundImage:
                                     AssetImage(Assets.profilePlaceholder),
                               )),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                        onPressed: () => controller.acceptIaRequest(
-                            controller.followRequests[index].requestId),
-                        icon: const Icon(Icons.check, color: Colors.green)),
-                    IconButton(
-                        onPressed: () => controller.rejectIaRequest(
-                            controller.followRequests[index].requestId),
-                        icon: const Icon(Icons.close, color: Colors.red)),
-                  ],
-                ),
-              );
-            },
-            separatorBuilder: (context, index) {
-              return const SizedBox(
-                height: 10,
-              );
-            }),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                            onPressed: () => controller.acceptIaRequest(
+                                controller.followRequests[index].requestId),
+                            icon: const Icon(Icons.check, color: Colors.green)),
+                        IconButton(
+                            onPressed: () => controller.rejectIaRequest(
+                                controller.followRequests[index].requestId),
+                            icon: const Icon(Icons.close, color: Colors.red)),
+                      ],
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(
+                  height: 10,
+                );
+              }),
+        ),
       ],
       if (controller.tagSuggestions.isNotEmpty) ...[
-        const SizedBox(
-          height: 20,
+        const Divider(
+          height: 30,
         ),
-        Text('Tag Suggestions:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text('Tag Suggestions:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        ),
         const SizedBox(
           height: 10,
         ),

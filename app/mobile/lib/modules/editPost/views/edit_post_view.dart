@@ -20,26 +20,27 @@ class EditPostView extends GetView<EditPostController> {
           search: false,
           notification: false,
           actions: [
-            InkWell(
-              onTap: () {
-                Dialogs.showCustomDialog(
-                    onAction: () {
-                      controller.onDeletePost();
-                      Get.back();
-                    },
-                    title: 'Delete Spot',
-                    content: Text(
-                        'Are you sure you want to delete the ${controller.spot.title} spot?'),
-                    cancelText: 'No',
-                    actionText: 'Yes');
-              },
-              child: Image.asset(
-                Assets.delete,
-                width: 20,
-                height: 20,
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: InkWell(
+                onTap: () {
+                  Dialogs.showCustomDialog(
+                      onAction: () {
+                        controller.onDeletePost();
+                        Get.back();
+                      },
+                      title: 'Delete Spot',
+                      content: Text(
+                          'Are you sure you want to delete the ${controller.spot.title} spot?'),
+                      cancelText: 'No',
+                      actionText: 'Yes');
+                },
+                child: Image.asset(
+                  Assets.delete,
+                 
+                ),
               ),
             ),
-            const SizedBox(width: 16),
           ],
         ),
         body: Obx(() {

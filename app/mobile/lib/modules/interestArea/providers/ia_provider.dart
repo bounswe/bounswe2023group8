@@ -633,4 +633,33 @@ class IaProvider extends GetConnect {
     return false;
   }
 
+
+  Future<bool> hasRequestSent({required String token, required int id}) async {
+    final response =
+        await get('v1/user/interest-area-follow-requests', headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    }
+    if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!) as List;
+        for (final request in body) {
+          if (request['id'] == id) {
+            return true;
+          }
+        }
+      }
+    } else {
+      if (response.bodyString != null && response.bodyString!.isNotEmpty) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
 }

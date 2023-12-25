@@ -41,9 +41,12 @@ class VisitorExploreController extends GetxController {
 
   void fetchData() async {
     try {
-      spots.value = await exploreProvider.getExploreSpots() ?? [];
-      users.value = await exploreProvider.getExploreProfiles() ?? [];
-      bunches.value = await exploreProvider.getExploreBunches() ?? [];
+      final res = await exploreProvider.getExplore();
+      if (res != null) {
+        spots.value = res['posts']! as List<Spot>;
+        users.value = res['profiles']! as List<EnigmaUser>;
+        bunches.value = res['bunches']! as List<InterestArea>;
+      }
       routeLoading.value = false;
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);

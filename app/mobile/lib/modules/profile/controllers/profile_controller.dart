@@ -49,7 +49,7 @@ class ProfileController extends GetxController {
             [];
         fetchFollowers();
         fetchFollowings();
-        await getVotedInfo();
+        // await getVotedInfo();
         routeLoading.value = false;
       }
     } catch (e) {

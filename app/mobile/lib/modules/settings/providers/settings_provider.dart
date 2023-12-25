@@ -45,7 +45,7 @@ class SettingsProvider extends GetConnect {
       'newPassword1': newPassword1,
       'newPassword2': newPassword2,
     }, query: {
-      'engimaUserId': engimaUserId.toString()
+      'enigmaUserId': engimaUserId.toString()
     }, headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',
