@@ -1,51 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:mobile/data/constants/assets.dart';
-import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/models/interest_area.dart';
 
 class BunchWidget extends StatelessWidget {
   final InterestArea ia;
   final void Function()? onTap;
-  const BunchWidget({
-    super.key,
-    required this.ia,
-    this.onTap,
-  });
+  const BunchWidget({super.key, required this.ia, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
       child: Container(
-        width: Get.width,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: BackgroundPalette.regular,
+          color: Color(0xffCDCFCF),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: Get.width - 88,
-              ),
-              child: Text(
-                ia.name,
-                style: TextStyle(
-                  color: ThemePalette.dark,
-                  fontSize: 16,
+            Text(
+              ia.name,
+              style: TextStyle(
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  letterSpacing: -0.31,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
+                  color: Color(0xff434343)),
             ),
-            const SizedBox(width: 8),
-            Image.asset(
-              ia.accessLevel == 'PUBLIC' ? Assets.public : Assets.private,
-              width: 16,
-              height: 16,
+            Icon(
+              ia.accessLevel == 'PUBLIC' ? Icons.public : Icons.lock,
             )
           ],
         ),
