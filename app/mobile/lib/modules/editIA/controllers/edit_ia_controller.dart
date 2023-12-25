@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
@@ -27,7 +29,6 @@ class EditIaController extends GetxController {
   RxList<InterestArea> searchSubIaResults = <InterestArea>[].obs;
   RxList<InterestArea> selectedSubIas = <InterestArea>[].obs;
 
-
   final bottomNavController = Get.find<BottomNavigationController>();
   final newIaProvider = Get.find<EditIaProvider>();
 
@@ -56,8 +57,6 @@ class EditIaController extends GetxController {
     }
     searchSubIa();
   }
-
-
 
   void onChangeTagQuery(String value) {
     searchTagResults.clear();
@@ -114,7 +113,7 @@ class EditIaController extends GetxController {
         searchTagResults.value = tags;
       }
     } catch (e) {
-      ErrorHandlingUtils.handleApiError(e);
+      log('');
     }
   }
 
