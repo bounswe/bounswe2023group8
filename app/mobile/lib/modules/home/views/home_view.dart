@@ -140,17 +140,20 @@ class HomeView extends GetView<HomeController> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: controller.posts.length,
                           itemBuilder: (context, index) {
+                            final spot = controller.posts[index];
+                            final isVoted =
+                                controller.isVotes[spot.id] ?? [false, false];
                             return PostTileWidget(
-                              onTap: () => controller.navigateToPostDetails(
-                                  controller.posts[index]),
-                              post: controller.posts[index],
+                              onTap: () =>
+                                  controller.navigateToPostDetails(spot),
+                              post: spot,
                               hideTags: false,
-                              onUpvote: () => controller
-                                  .upvotePost(controller.posts[index].id),
-                              onDownvote: () => controller
-                                  .downvotePost(controller.posts[index].id),
-                              showVoters: () => controller
-                                  .showVotes(controller.posts[index].id),
+                              isUpvoted: isVoted[0],
+                              isDownvoted: isVoted[1],
+                              onUpvote: () => controller.upvotePost(spot.id),
+                              onDownvote: () =>
+                                  controller.downvotePost(spot.id),
+                              showVoters: () => controller.showVotes(spot.id),
                             );
                           },
                           separatorBuilder: (context, index) =>
@@ -280,28 +283,27 @@ class HomeView extends GetView<HomeController> {
             ),
             const SizedBox(height: 8),
             ListView.separated(
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: controller.searchPosts.length,
-              itemBuilder: (context, index) {
-                return PostTileWidget(
-                  onTap: () => controller
-                      .navigateToPostDetails(controller.searchPosts[index]),
-                  post: controller.searchPosts[index],
-                  hideTags: false,
-                  onDownvote: () =>
-                      controller.downvotePost(controller.searchPosts[index].id),
-                  onUpvote: () =>
-                      controller.upvotePost(controller.searchPosts[index].id),
-                  showVoters: () =>
-                      controller.showVotes(controller.searchPosts[index].id),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return const SizedBox(height: 8);
-              },
-            ),
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: controller.searchPosts.length,
+                itemBuilder: (context, index) {
+                  final spot = controller.searchPosts[index];
+                  final isVoted = controller.isVotes[spot.id] ?? [false, false];
+                  return PostTileWidget(
+                    onTap: () => controller.navigateToPostDetails(spot),
+                    post: spot,
+                    hideTags: false,
+                    isUpvoted: isVoted[0],
+                    isDownvoted: isVoted[1],
+                    onDownvote: () => controller.downvotePost(spot.id),
+                    onUpvote: () => controller.upvotePost(spot.id),
+                    showVoters: () => controller.showVotes(spot.id),
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return const SizedBox(height: 8);
+                }),
           ],
           //TODO: Make bottom bar clip
         ],

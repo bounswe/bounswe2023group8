@@ -11,6 +11,7 @@ import '../../../routes/app_pages.dart';
 
 class HomeController extends GetxController {
   RxList<Spot> posts = <Spot>[].obs;
+  RxMap<int, List<bool>> isVotes = <int, List<bool>>{}.obs;
 
   final routeLoading = true.obs;
 
@@ -22,7 +23,7 @@ class HomeController extends GetxController {
   var searchUsers = <EnigmaUser>[].obs;
   var searchIas = <InterestArea>[].obs;
 
-    // Sort posts by the newest first
+  // Sort posts by the newest first
   void sortByDate() {
     posts.sort((a, b) => b.createTime.compareTo(a.createTime));
     posts.refresh();
@@ -37,7 +38,6 @@ class HomeController extends GetxController {
     });
     posts.refresh();
   }
-  
 
   void navigateToPostDetails(Spot post) {
     Get.toNamed(Routes.postDetails,
@@ -84,6 +84,7 @@ class HomeController extends GetxController {
       posts.value = await homeProvider.getHomePage(
               token: bottomNavigationController.token) ??
           [];
+      await getVotedInfo();
       routeLoading.value = false;
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
@@ -108,7 +109,10 @@ class HomeController extends GetxController {
       }
 
       if (res) {
-        fetchData();
+        posts.value = await homeProvider.getHomePage(
+                token: bottomNavigationController.token) ??
+            [];
+        search();
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
@@ -133,10 +137,32 @@ class HomeController extends GetxController {
       }
 
       if (res) {
-        fetchData();
+        posts.value = await homeProvider.getHomePage(
+                token: bottomNavigationController.token) ??
+            [];
+        search();
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  Future getVotedInfo() async {
+    try {
+      for (var post in posts) {
+        final hasUpvoted = await homeProvider.hasUpVoted(
+            token: bottomNavigationController.token,
+            postId: post.id,
+            userId: bottomNavigationController.userId);
+        final hasDownvoted = await homeProvider.hasDownVoted(
+            token: bottomNavigationController.token,
+            postId: post.id,
+            userId: bottomNavigationController.userId);
+        isVotes[post.id] = [hasUpvoted, hasDownvoted];
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+      rethrow;
     }
   }
 
