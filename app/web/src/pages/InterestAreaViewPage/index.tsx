@@ -221,8 +221,6 @@ const ViewInterestArea = () => {
         const sortedByCreateTime = newDetails?.slice().sort((a, b) =>
           Number(new Date(b.createTime)) - Number(new Date(a.createTime))
         );
-        console.log(newDetails)
-        newDetails[0].upvoteCount = 10;
         setPostsData(sortedByCreateTime || null);
         setFilteredAndSortedPostsData(sortedByCreateTime || null);
       },
