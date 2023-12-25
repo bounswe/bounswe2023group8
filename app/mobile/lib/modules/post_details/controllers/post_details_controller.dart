@@ -4,6 +4,8 @@ import 'package:map_location_picker/map_location_picker.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/spot.dart';
+import 'package:mobile/data/models/tag_suggestion.dart';
+import 'package:mobile/data/models/wiki_tag.dart';
 import 'package:mobile/data/widgets/report_dialog.dart';
 import 'package:mobile/data/widgets/user_list_dialog.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
@@ -16,10 +18,19 @@ class PostDetailsController extends GetxController {
   Spot postArg = Get.arguments['post'];
 
   final bool visitor = false; //Get.arguments['visitor'];
+  
+
+  var tagSuggestionView = false.obs;
 
   var isFollowing = false.obs;
 
+  RxList<TagSuggestion> tagSuggestions = <TagSuggestion>[].obs;
+
   RxList<CommentModel> comments = <CommentModel>[].obs;
+  
+  RxList<WikiTag> searchTagResults = <WikiTag>[].obs;
+  RxList<WikiTag> selectedTags = <WikiTag>[].obs;
+  RxString tagQuery = ''.obs;
 
   BottomNavigationController bottomNavigationController =
       Get.find<BottomNavigationController>();
@@ -229,7 +240,192 @@ class PostDetailsController extends GetxController {
     }
   }
 
-  void startEditingComment(int commentId) {}
+  void showTagSuggestionModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Obx(() {
+          return Padding(
+            padding: const EdgeInsets.only(
+                right: 8.0, left: 8.0, top: 12.0, bottom: 8.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        onChanged: onChangeTagQuery,
+                        decoration: InputDecoration(
+                          hintText: 'Search tags',
+                          contentPadding: const EdgeInsets.only(left: 10),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: ThemePalette.dark,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: ThemePalette.dark,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        searchTagResults.clear();
+                        Get.back();
+                      },
+                      icon: const Icon(Icons.clear),
+                    ),
+                  ],
+                ),
+                Expanded(
+                    child: ListView.separated(
+                  itemBuilder: (context, index) {
+                    bool selected = selectedTags.any(
+                        (element) => element.id == searchTagResults[index].id);
+                    return ListTile(
+                      title: Text(searchTagResults[index].label),
+                      trailing: selected
+                          ? const Icon(Icons.check, color: Colors.green)
+                          : const SizedBox.shrink(),
+                      onTap: () {
+                        if (selected) {
+                          selectedTags.removeWhere((element) =>
+                              element.id == searchTagResults[index].id);
+                        } else {
+                          selectedTags.add(searchTagResults[index]);
+                        }
+                        searchTagResults.refresh();
+                      },
+                    );
+                  },
+                  separatorBuilder: (context, ind) {
+                    return const Divider();
+                  },
+                  itemCount: searchTagResults.length,
+                )),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ThemePalette.main,
+                    primary: ThemePalette.main,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () {
+                    Get.back();
+                    if (selectedTags.isNotEmpty) {
+                      suggestTag();
+                    }
+                  },
+                  child: const Text(
+                    'Suggest',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ),
+          );
+        });
+      },
+    );
+  }
+
+  void onChangeTagQuery(String value) {
+    searchTagResults.clear();
+    tagQuery.value = value;
+    if (value == '') {
+      return;
+    }
+    searchTags();
+  }
+
+  void searchTags() async {
+    try {
+      final tags = await postDetailsProvider.searchTags(
+          key: tagQuery.value, token: bottomNavigationController.token);
+      if (tags != null) {
+        searchTagResults.value = tags;
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void acceptTagSuggestion(int tagSuggestionId) async {
+    try {
+      final res = await postDetailsProvider.acceptTagSuggestion(
+          tagSuggestionId: tagSuggestionId,
+          token: bottomNavigationController.token);
+      if (res) {
+        tagSuggestions.removeWhere((element) => element.id == tagSuggestionId);
+        post.value = await postDetailsProvider.getPostById(
+                id: post.value.id, token: bottomNavigationController.token) ??
+            post.value;
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void rejectTagSuggestion(int tagSuggestionId) async {
+    try {
+      final res = await postDetailsProvider.rejectTagSuggestion(
+          tagSuggestionId: tagSuggestionId,
+          token: bottomNavigationController.token);
+      if (res) {
+        tagSuggestions.removeWhere((element) => element.id == tagSuggestionId);
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void suggestTag() async {
+    try {
+      final res = await postDetailsProvider.suggestTag(
+          token: bottomNavigationController.token,
+          tags: selectedTags.map((e) => e.id).toList(),
+          entityType: 'POST',
+          entityId: post.value.id);
+      if (res) {
+        Get.snackbar(
+          'Success',
+          'Tag suggested successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.brown,
+          borderRadius: 0,
+          colorText: Colors.white,
+          margin: EdgeInsets.zero,
+        );
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void fetchTagSuggestions() async {
+    try {
+      tagSuggestions.value = await postDetailsProvider.getTagSuggestions(
+              entityId: post.value.id,
+              entityType: 'POST',
+              token: bottomNavigationController.token) ??
+          tagSuggestions;
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void toggleTagSuggestionView() {
+    tagSuggestionView.value = !tagSuggestionView.value;
+  }
+
+  
+
 
   @override
   void onInit() {
@@ -238,5 +434,8 @@ class PostDetailsController extends GetxController {
         bottomNavigationController.isUserFollowing(postArg.enigmaUser.id);
     post = postArg.obs;
     fetchComments();
+    if (post.value.enigmaUser.id == bottomNavigationController.userId) {
+      fetchTagSuggestions();
+    }
   }
 }

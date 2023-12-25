@@ -44,15 +44,11 @@ public class EnigmaUser {
     @Column(name = "is_verified")
     Boolean isVerified = false;
 
-    @Column(name = "is_deleted")
-    Boolean isDeleted = false;
+    @Column(name = "picture_url")
+    String pictureUrl;
 
     @Column(name = "create_time")
     Timestamp createTime;
-
-    @Column(name = "delete_time")
-    Timestamp deleteTime;
-
 
     public EnigmaUserDto mapToEnigmaUserDto() {
         return EnigmaUserDto.builder()
@@ -61,6 +57,7 @@ public class EnigmaUser {
                 .name(this.getName())
                 .email(this.getEmail())
                 .birthday(this.getBirthday())
+                .pictureUrl(this.getPictureUrl())
                 .createTime(this.getCreateTime())
                 .build();
     }

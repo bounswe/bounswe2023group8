@@ -21,7 +21,7 @@ class ProfileController extends GetxController {
   int userId = Get.arguments['userId'];
 
   var routeLoading = true.obs;
-  late final UserProfile userProfile;
+  late UserProfile userProfile;
 
   var followers = <EnigmaUser>[].obs;
   var followings = <EnigmaUser>[].obs;
@@ -29,8 +29,6 @@ class ProfileController extends GetxController {
   var ias = <InterestArea>[].obs;
 
   final ImagePicker _picker = ImagePicker();
-
-  Rx<EnigmaUser?> user = Rx<EnigmaUser?>(null);
 
   var isFollowing = false.obs;
 
@@ -48,7 +46,6 @@ class ProfileController extends GetxController {
             [];
         fetchFollowers();
         fetchFollowings();
-        fetchUser();
         routeLoading.value = false;
       }
     } catch (e) {
@@ -56,12 +53,12 @@ class ProfileController extends GetxController {
     }
   }
 
-  void fetchUser() async {
+  void fetchProfile() async {
     try {
-      final res = await profileProvider.getUser(
-          userId: userId, token: bottomNavigationController.token);
+      final res = await profileProvider.getProfilePage(
+          id: userId, token: bottomNavigationController.token);
       if (res != null) {
-        user.value = res;
+        userProfile = res;
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
@@ -77,7 +74,7 @@ class ProfileController extends GetxController {
           final res = await profileProvider.uploadImage(
               token: bottomNavigationController.token, image: value.path);
           if (res) {
-            fetchUser();
+            fetchProfile();
           }
         }
       });
@@ -92,13 +89,12 @@ class ProfileController extends GetxController {
       final res = await profileProvider.deleteImage(
           token: bottomNavigationController.token);
       if (res) {
-        fetchUser();
+        fetchProfile();
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
   }
-
 
   void navigateToPostDetails(Spot post) {
     Get.toNamed(Routes.postDetails,

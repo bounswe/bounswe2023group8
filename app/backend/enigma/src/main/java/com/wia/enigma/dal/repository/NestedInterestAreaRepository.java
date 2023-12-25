@@ -7,8 +7,10 @@ import java.util.Collection;
 import java.util.List;
 
 public interface NestedInterestAreaRepository extends JpaRepository<NestedInterestArea, Long> {
+
     List<NestedInterestArea> findByParentInterestAreaIdIn(Collection<Long> parentInterestAreaIds);
 
     List<NestedInterestArea> findAllByParentInterestAreaId(Long parentInterestAreaId);
+
     void deleteAllByParentInterestAreaId(Long parentInterestAreaId);
 }
