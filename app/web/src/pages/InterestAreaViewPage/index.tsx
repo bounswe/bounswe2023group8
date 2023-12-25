@@ -14,7 +14,10 @@ import {
 } from "../../hooks/useInterestArea";
 import { AccessLevel, accessLevelMapping } from "../InterestAreaUpdatePage";
 import { useReportAnIssue } from "../../hooks/useModeration";
-import { useGetWaitingBunchFollowRequests } from "../../hooks/useUser";
+import {
+  useGetUserFollowingInterestAreas,
+  useGetWaitingBunchFollowRequests,
+} from "../../hooks/useUser";
 import SuggestTagModal from "../../components/SuggestTags/SuggestTagModal";
 import { useToastContext } from "../../contexts/ToastContext";
 import { Modal } from "react-bootstrap";
@@ -76,6 +79,7 @@ const ViewInterestArea = () => {
   >(null);
   const [isFollowingRequestWaiting, setIsFollowingRequestWaiting] =
     useState(false);
+  const [isUserFollowing, setIsUserFollowing] = useState(false);
 
   const [suggestTagModalShow, setSuggestTagModalShow] = useState(false);
   const handleSuggestTagModalShow = () => {
@@ -88,6 +92,8 @@ const ViewInterestArea = () => {
     config: {
       onSuccess: () => {
         refetch();
+        refetchInterestArea();
+        refetchUserFollowingBunches();
         const tempState = toastState.filter((toast) => {
           return toast.message != "Followed the Bunch successfully!";
         });
@@ -134,6 +140,19 @@ const ViewInterestArea = () => {
     },
   });
 
+  const { refetch: refetchUserFollowingBunches } =
+    useGetUserFollowingInterestAreas({
+      axiosInstance,
+      id: userData.id,
+      config: {
+        onSuccess: (data: any) => {
+          setIsUserFollowing(
+            data.some((ia: any) => ia.id === parseInt(iaId as string))
+          );
+        },
+      },
+    });
+
   const { toastState, setToastState } = useToastContext();
   const { mutate: unfollowInterestArea } = useUnfollowInterestArea({
     axiosInstance,
@@ -141,6 +160,8 @@ const ViewInterestArea = () => {
     config: {
       onSuccess: () => {
         refetch();
+        refetchInterestArea();
+        refetchUserFollowingBunches();
       },
     },
   });
@@ -159,7 +180,7 @@ const ViewInterestArea = () => {
     });
   };
 
-  const { isSuccess } = useGetInterestArea({
+  const { isSuccess, refetch: refetchInterestArea } = useGetInterestArea({
     axiosInstance,
     interestAreaId: parseInt(iaId as string),
     config: {
@@ -387,13 +408,27 @@ const ViewInterestArea = () => {
                 <div className="m-3 WA-theme-light">
                   <h1>{interestAreaData?.title}</h1>
                 </div>
-                <div
-                  onClick={() => followBunch()}
-                  style={{ cursor: "pointer" }}
-                  className="mx-2 my-3 px-2 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5"
-                >
-                  Follow
-                </div>
+                {isUserFollowing ? (
+                  <>
+                    <div
+                      onClick={() => unFollowBunch()}
+                      style={{ cursor: "pointer" }}
+                      className="mx-2 my-3 px-2 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5"
+                    >
+                      Unfollow
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div
+                      onClick={() => followBunch()}
+                      style={{ cursor: "pointer" }}
+                      className="mx-2 my-3 px-2 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5"
+                    >
+                      Follow
+                    </div>
+                  </>
+                )}
                 <div className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
                   <img
                     className="mx-2"
