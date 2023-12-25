@@ -67,6 +67,7 @@ const ViewInterestArea = () => {
   const [interestAreaData, setInterestAreaData] = useState<any>(null);
   const [subInterestAreasData, setSubInterestAreasData] = useState<any>(null);
   const [postsData, setPostsData] = useState<Post[] | null>(null);
+  const [filteredAndSortedPosts, setFilteredAndSortedPostsData] = useState<Post[] | null>(null);
   const [isFollowingRequestWaiting, setIsFollowingRequestWaiting] =
     useState(false);
 
@@ -184,6 +185,8 @@ const ViewInterestArea = () => {
   const [showPosts, setShowPosts] = useState(true);
   const [reportReason, setReportReason] = useState("");
   const [showReport, setShowReport] = useState(false);
+  const [sortType, setSortType] = useState("new");
+  const [filterType, setFilterType] = useState("ALL");
 
   useEffect(() => {
     // Set a timeout to update the state after 2 seconds
@@ -215,10 +218,43 @@ const ViewInterestArea = () => {
           upvoteCount: result.upvoteCount,
           downvoteCount: result.downvoteCount,
         }));
-        setPostsData(newDetails);
+        const sortedByCreateTime = newDetails?.slice().sort((a, b) =>
+          Number(new Date(b.createTime)) - Number(new Date(a.createTime))
+        );
+        console.log(newDetails)
+        newDetails[0].upvoteCount = 10;
+        setPostsData(sortedByCreateTime || null);
+        setFilteredAndSortedPostsData(sortedByCreateTime || null);
       },
     },
   });
+
+  useEffect(() => {
+    console.log(sortType)
+    if(sortType === 'new'){
+      const sortedByCreateTime = filteredAndSortedPosts?.slice().sort((a, b) =>
+        Number(new Date(b.createTime)) - Number(new Date(a.createTime))
+      );
+      setFilteredAndSortedPostsData(sortedByCreateTime || null);
+    }else if(sortType === 'top'){
+      const sortedByUpvoteCount = filteredAndSortedPosts?.slice().sort((a, b) => (Number(b.upvoteCount) - Number(b.downvoteCount)) - (Number(a.upvoteCount) - Number(a.downvoteCount)));
+      setFilteredAndSortedPostsData(sortedByUpvoteCount || null);
+    }
+  }, [sortType])
+
+  useEffect(() => {
+    let sortedData = postsData?.slice()
+    console.log(postsData, sortedData)
+    if(sortType === 'new'){
+      sortedData = postsData?.slice().sort((a, b) =>
+        Number(new Date(b.createTime)) - Number(new Date(a.createTime))
+      );
+    }else if(sortType === 'top'){
+      sortedData = postsData?.slice().sort((a, b) => (Number(b.upvoteCount) - Number(b.downvoteCount)) - (Number(a.upvoteCount) - Number(a.downvoteCount)));
+    }
+    const filteredPosts = sortedData?.filter(post => post.label === filterType || filterType === 'ALL');
+    setFilteredAndSortedPostsData(filteredPosts || null);
+  }, [filterType])
 
   const { mutate: reportAnIssue } = useReportAnIssue({
     axiosInstance,
@@ -330,7 +366,7 @@ const ViewInterestArea = () => {
             >
               <div className="d-flex mt-5">
                 <div className="">Sort By:</div>
-                <div className="ms-3 WA-theme-bg-soft rounded-4 d-flex">
+                <div className="ms-3 WA-theme-bg-soft rounded-4 d-flex" onClick={() => setSortType("new")}>
                   <div>
                     <img
                       src="/assets/theme/icons/NewFilter.png"
@@ -341,7 +377,7 @@ const ViewInterestArea = () => {
                     <span>New</span>
                   </div>
                 </div>
-                <div className="ms-3 WA-theme-bg-soft rounded-4 d-flex">
+                <div className="ms-3 WA-theme-bg-soft rounded-4 d-flex" onClick={() => setSortType("top")}>
                   <div>
                     <img
                       src="/assets/theme/icons/TopIcon.png"
@@ -350,6 +386,33 @@ const ViewInterestArea = () => {
                   </div>
                   <div className="mx-2 d-flex justify-content-center align-items-center">
                     <span>Top</span>
+                  </div>
+                </div>
+              </div>
+              <div className="d-flex mt-5">
+                <div className="">Filter By:</div>
+                <div className="ms-3 WA-theme-bg-soft rounded-4 d-flex" onClick={() => setSortType("new")}>
+                  <div className="mx-2 d-flex justify-content-center align-items-center">
+                    <div className="mb-3">
+                      <label htmlFor="label" className="form-label ">
+                        Label:
+                      </label>
+                      <select
+                        id="label"
+                        className="form-select"
+                        name="label"
+                        onChange={(e) => {
+                          setFilterType(e.target.value);
+                        }}
+                      >
+                        <option value={"All".toUpperCase()}>All</option>
+                        <option value={"Discussion".toUpperCase()}>Discussion</option>
+                        <option value={"Documentation".toUpperCase()}>Documentation</option>
+                        <option value={"Learning".toUpperCase()}>Learning</option>
+                        <option value={"News".toUpperCase()}>News</option>
+                        <option value={"Research".toUpperCase()}>Research</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -362,9 +425,9 @@ const ViewInterestArea = () => {
               </div>
             )}
             {showPosts &&
-              postsData &&
-              postsData.length > 0 &&
-              postsData.map((post) => (
+              filteredAndSortedPosts &&
+              filteredAndSortedPosts.length > 0 &&
+              filteredAndSortedPosts.map((post) => (
                 <div key={post.id} className="my-3">
                   <PostPreviewCard {...post} />
                 </div>
