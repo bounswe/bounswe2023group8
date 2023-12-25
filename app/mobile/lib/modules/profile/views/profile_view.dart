@@ -16,12 +16,9 @@ class ProfileView extends GetView<ProfileController> {
     return Obx(
       () {
         if (controller.routeLoading.value) {
-          return Scaffold(
-            body: SizedBox(
-              height: Get.height - 200,
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
             ),
           );
         }
@@ -221,8 +218,7 @@ class ProfileView extends GetView<ProfileController> {
                     ),
                     if (controller.userProfile.value.profilePictureUrl !=
                             null &&
-                        controller
-                            .userProfile.value.profilePictureUrl!
+                        controller.userProfile.value.profilePictureUrl!
                             .isNotEmpty) ...[
                       const SizedBox(width: 8),
                       InkWell(
