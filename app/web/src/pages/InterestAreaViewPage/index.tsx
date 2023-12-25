@@ -417,28 +417,39 @@ const ViewInterestArea = () => {
         </div>
       ) : (
         showContent && (
-          <div className="m-3 p-3" style={{ backgroundColor: "#fffaf6" }}>
-            <h2>Private Bunch</h2>
-            <p>
-              This section contains private and confidential information. Access
-              is restricted to authorized individuals only. You can send a
-              request to join this bunch.
-            </p>
-            <div className="m-3 d-flex justify-content-center align-items-center rounded-5">
-              {isFollowingRequestWaiting ? (
-                <button className="btn mx-2 WA-theme-bg-positive WA-theme-light">
-                  Waiting for approval
-                </button>
-              ) : (
-                <button
-                  onClick={() => followBunch()}
-                  className="btn mx-2 WA-theme-bg-dark WA-theme-light"
-                >
-                  Join
-                </button>
-              )}
+          <>
+            <div className="card WA-theme-bg-dark m-3">
+              <h1 className="m-3">{interestAreaData?.title}</h1>
+              <h5 className="m-3">{interestAreaData?.description}</h5>
             </div>
-          </div>
+            <div>
+              <div className="m-3 p-3 WA-theme-bg-regular">
+                <h2>You&apos;re not allowed to see this bunch</h2>
+                <p>
+                  This section contains private and confidential information.
+                  Access is restricted to authorized individuals only.
+                </p>
+                <p>You can send a request to join this bunch.</p>
+                <div className="m-3 d-flex justify-content-center align-items-center rounded-5">
+                  {isFollowingRequestWaiting ? (
+                    <button
+                      className="btn mx-2"
+                      style={{ backgroundColor: "#FFC300", color: "white" }}
+                    >
+                      Waiting for approval
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => followBunch()}
+                      className="btn mx-2 WA-theme-bg-dark WA-theme-light"
+                    >
+                      Join
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </>
         )
       )}
     </>
