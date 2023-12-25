@@ -35,7 +35,7 @@ public class InterestArea {
     @Column(name = "title")
     String title;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     String description;
 
     @Column(name = "create_time")

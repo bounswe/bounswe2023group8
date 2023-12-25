@@ -25,4 +25,8 @@ public interface ModerationService {
 
     List<ModerationDto> getModeration(EnigmaAuthorities authorities, ModerationType type, Long interestAreaId,
                                       Long postId, Long toUserId, Long fromUserId);
+
+    void assertNotBanned(Long userId, Long interestAreaId);
+
+    void assertNotBanned(Long userId, Long postId, Long interestAreaId);
 }

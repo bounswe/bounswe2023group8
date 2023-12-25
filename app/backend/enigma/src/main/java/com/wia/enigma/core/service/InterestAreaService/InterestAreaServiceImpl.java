@@ -2,6 +2,7 @@ package com.wia.enigma.core.service.InterestAreaService;
 
 import com.wia.enigma.core.data.dto.*;
 import com.wia.enigma.core.data.response.FollowRequestsResponse;
+import com.wia.enigma.core.service.ModerationService;
 import com.wia.enigma.core.service.StorageService.StorageService;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.WikiService.WikiService;
@@ -41,6 +42,7 @@ public class InterestAreaServiceImpl implements InterestAreaService {
     final UserFollowsService userFollowsService;
     final WikiService wikiTagService;
     final StorageService storageService;
+    final ModerationService moderationService;
 
     final InterestAreaServiceHelper interestAreaServiceHelper;
 
@@ -53,6 +55,7 @@ public class InterestAreaServiceImpl implements InterestAreaService {
                 .orElseThrow(() -> new EnigmaException(ExceptionCodes.INTEREST_AREA_NOT_FOUND, "Interest area not found for id: " + id));
 
         interestAreaServiceHelper.checkInterestAreaBasicDataAccess(interestArea, enigmaUserId);
+        moderationService.assertNotBanned(enigmaUserId, id);
 
         List<WikiTag> wikiTags = interestAreaServiceHelper.getWikiTags(id);
 
