@@ -13,6 +13,7 @@ import CommentCreateCard from "../Comment/CommentCreateCard";
 import CommentCard, {Comment} from "../Comment/CommentCard";
 import {DeleteCommentProps} from "../../hooks/useComment";
 import {UseMutateFunction} from "react-query";
+import axios, { AxiosResponse } from "axios";
 
 export type DetailedPostCardProps = {
     post: Post;
@@ -28,12 +29,190 @@ export type DetailedPostCardProps = {
     comments: any;
 }
 
-export type Annotation = {
-    startIndex: number;
-    endIndex: number;
-    content: string;
-    source: string;
-};
+interface AnnotationModel {
+  id: string;
+  start: number;
+  end: number;
+  note: string;
+  userId: number;
+  name: string;
+  profilePhoto?: string | null;
+  username: string;
+}
+
+class AnnotationModel {
+  constructor({
+    id,
+    start,
+    end,
+    note,
+    userId,
+    name,
+    profilePhoto,
+    username,
+  }: {
+    id: string;
+    start: number;
+    end: number;
+    note: string;
+    userId: number;
+    name: string;
+    profilePhoto?: string | null;
+    username: string;
+  }) {
+    this.id = id;
+    this.start = start;
+    this.end = end;
+    this.note = note;
+    this.userId = userId;
+    this.name = name;
+    this.profilePhoto = profilePhoto;
+    this.username = username;
+  }
+
+  static fromJson(json: any): AnnotationModel {
+    const target: string = json['target'];
+    const uri = new URL(target);
+
+    return new AnnotationModel({
+      id: json['id'],
+      note: uri.searchParams.get('comment') || '',
+      start: parseInt(json['body']['value'].split('-').shift() || '0', 10),
+      end: parseInt(json['body']['value'].split('-').pop() || '0', 10),
+      userId: uri.searchParams.has('userId') ? parseInt(uri.searchParams.get('userId') || '0', 10) : 0,
+      name: uri.searchParams.get('name') || '',
+      profilePhoto: uri.searchParams.get('profilePhoto') === '' ? null : uri.searchParams.get('profilePhoto') || undefined,
+      username: uri.searchParams.get('username') || '',
+    });
+  }
+}
+  
+  // Example usage:
+  const jsonExample = {
+    id: 'http://18.192.100.93/wia/post-4/aggregating-1',
+    body: { value: 'Example Note' },
+    target: 'http://bunchup.com.tr/post/4?userId=123&name=John&profilePhoto=&username=johndoe',
+  };
+  
+  const annotationExample = AnnotationModel.fromJson(jsonExample);
+
+interface EnigmaUser {
+    id: string;
+    name: string;
+    pictureUrl?: string;
+    username: string;
+}
+
+async function createAnnotation({
+    postId,
+    comment,
+    text,
+    user,
+  }: {
+    postId: number;
+    comment: string;
+    text: string;
+    user: EnigmaUser;
+  }): Promise<boolean> {
+    try {
+      const baseUrl = 'http://18.192.100.93:80/wia';
+      const response: AxiosResponse = await axios.post(
+        `/post-${postId}`,
+        {
+          type: 'Annotation',
+          body: { type: 'TextualBody', value: text, name: 'annotation' },
+          target: `http://18.192.100.93:80/wia/post-${postId}?userId=${user.id}&name=${user.name}&profilePhoto=${user.pictureUrl || ''}&username=${user.username}&comment=${comment}`,
+        },
+        {
+          headers: {
+            Accept: 'application/ld+json',
+            'Content-Type': 'application/ld+json',
+          },
+          baseURL: baseUrl,
+        }
+      );
+  
+    //   // Resetting the base URL to the original value
+    //   // Make sure to replace Config.baseUrl with the actual base URL
+    //   const originalBaseUrl = Config.baseUrl;
+    //   axios.defaults.baseURL = originalBaseUrl;
+  
+      if (!response.status) {
+        throw { message: 'Error', details: response.statusText || 'The connection has timed out.' };
+      }
+  
+      if (response.status >= 200 && response.status < 300) {
+        return true;
+      } else {
+        if (response.data && response.data.message) {
+          throw { message: response.data.message, details: response.data.details };
+        }
+      }
+  
+      return false;
+    } catch (error) {
+      // Handle other errors here
+      console.error(error);
+      return false;
+    }
+}
+
+
+async function getAnnotations({ token, postId }: { token: string; postId: number }): Promise<AnnotationModel[] | null> {
+    try {
+      const baseUrl = 'http://18.192.100.93:80/wia';
+      const response = await axios.get(`/post-${postId}`, {
+        headers: {
+          Accept: 'application/ld+json',
+          "Content-Type": 'application/ld+json',
+        },
+        baseURL: baseUrl,
+      });
+  
+      // Resetting the base URL to the original value
+      // Make sure to replace Config.baseUrl with the actual base URL
+    //   const originalBaseUrl = Config.baseUrl;
+    //   axios.defaults.baseURL = originalBaseUrl;
+  
+      if (!response.status) {
+        throw { message: 'Error', details: response.statusText || 'The connection has timed out.' };
+      }
+  
+      if (response.status >= 200 && response.status < 300) {
+        if (response.data && response.data.first && response.data.first.items && response.data.first.items.length > 0) {
+          return response.data.first.items.map((e: any) => {
+            let x = AnnotationModel.fromJson(e)
+            if (x.start > x.end) {
+                const temp = x.start;
+                x.start = x.end;
+                x.end = temp;
+            }
+            return {
+                id: x.id,
+                start: x.start,
+                end: x.end,
+                note: x.note,
+                userId: x.userId,
+                name: x.name,
+                profilePhoto: x.profilePhoto,
+                username: x.username,
+            }
+        })
+        }
+      } else {
+        if (response.data && response.data.message) {
+          throw { message: response.data.message, details: response.data.details };
+        }
+      }
+  
+      return null;
+    } catch (error) {
+      // Handle other errors here
+      console.error(error);
+      return null;
+    }
+  }
+  
 
 const DetailedPostCard = (props: DetailedPostCardProps) => {
     const [locationModalShow, setLocationModalShow] = useState(false);
@@ -70,6 +249,159 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
     const [downvotes, setDownvotes] = useState(downvoteCount);
     const [isDeleting, setIsDeleting] = useState(false);
     const [annotationsVisible, setAnnotationsVisible] = useState(true);
+
+
+    
+    async function createAnnotationContainer(token: string, postId: number): Promise<boolean> {
+        try {
+        const baseUrl = 'http://18.192.100.93:80/wia';
+        const response: AxiosResponse = await axios.post(`${baseUrl}`, {
+            name: `post-${postId}`,
+            label: `post-${postId}`,
+            type: ["BasicContainer", "AnnotationCollection"],
+        }, {
+            headers: {
+            'Accept': 'application/ld+json',
+            'Content-Type': 'application/ld+json',
+            },
+        });
+    
+        // Resetting the base URL to the original value
+        // const originalBaseUrl = Config.baseUrl;
+        // axios.defaults.baseURL = originalBaseUrl;
+    
+        if (!response.status) {
+            throw new CustomException('Error', response.statusText || 'The connection has timed out.');
+        }
+    
+        if (response.status >= 200 && response.status < 300) {
+            return true;
+        } else {
+            if (response.data && response.data.length > 0) {
+            throw new CustomException(response.data);
+            }
+        }
+    
+        return false;
+        } catch (error) {
+        // Handle other errors here
+        console.error(error);
+        return false;
+        }
+    }
+    
+    class CustomException {
+        constructor(public message: string, public details?: any) {}
+    
+        static fromJson(json: any): CustomException {
+        // Implement the conversion from JSON to CustomException if needed
+        return new CustomException('Error');
+        }
+    }
+
+    const onAnnotate = async () => {
+        try {
+          try {
+            const createContainerRes = await createAnnotationContainer(userData.id.toString(), Number(postId));
+    
+            if (createContainerRes) {
+                const createAnnotationRes = await createAnnotation({
+                    user: {
+                        id: userData.id.toString(),
+                        name: userData.name,
+                        pictureUrl: userData.pictureUrl,
+                        username: userData.username,
+                    },
+                    text: selectedTextRanges.start.toString() + "-" + selectedTextRanges.end.toString(),
+                    comment: selectedTextAnnotation,
+                    postId: Number(postId),
+                });
+
+                console.log(1)
+              if (createAnnotationRes) {
+                console.log(11)
+                setSelectedTextAnnotation('');
+                const anns = getAnnotations({ token: userData.id.toString(), postId: Number(postId) });
+                anns.then((resolvedAnnotations) => {
+                    setAnnotations(resolvedAnnotations || []);
+                });
+                anns.then((resolvedAnnotations) => {
+                    setDisplayAnnotations(resolvedAnnotations || []);
+                });
+                anns.then((resolvedAnnotations) => {
+                    setHighlightAnnotations(resolvedAnnotations || []);
+                });        
+                // Show success notification using your preferred notification library
+              }
+            }else{
+                // Handle error appropriately
+                const createAnnotationRes = await createAnnotation({
+                    user: {
+                        id: userData.id.toString(),
+                        name: userData.name,
+                        pictureUrl: userData.pictureUrl,
+                        username: userData.username,
+                    },
+                    text: selectedTextRanges.start.toString() + "-" + selectedTextRanges.end.toString(),
+                    comment: selectedTextAnnotation,
+                    postId: Number(postId),
+                });
+      
+                console.log(2)
+                if (createAnnotationRes) {
+                    console.log(21)
+                  setSelectedTextAnnotation('');
+                  const anns = getAnnotations({ token: userData.id.toString(), postId: Number(postId) });
+                  anns.then((resolvedAnnotations) => {
+                      setAnnotations(resolvedAnnotations || []);
+                  });
+                  anns.then((resolvedAnnotations) => {
+                      setDisplayAnnotations(resolvedAnnotations || []);
+                  });
+                  anns.then((resolvedAnnotations) => {
+                      setHighlightAnnotations(resolvedAnnotations || []);
+                  });        
+                  // Show success notification using your preferred notification library
+                }
+            }
+          } catch (e) {
+            // Handle error appropriately
+            const createAnnotationRes = await createAnnotation({
+              user: {
+                id: userData.id.toString(),
+                name: userData.name,
+                pictureUrl: userData.pictureUrl,
+                username: userData.username,
+              },
+              text: selectedTextRanges.start.toString() + "-" + selectedTextRanges.end.toString(),
+              comment: selectedTextAnnotation,
+              postId: Number(postId),
+            });
+
+            console.log(5)
+
+            if (createAnnotationRes) {
+                console.log(51)
+              setSelectedTextAnnotation('');
+              const anns = getAnnotations({ token: userData.id.toString(), postId: Number(postId) });
+              anns.then((resolvedAnnotations) => {
+                  setAnnotations(resolvedAnnotations || []);
+              });
+              anns.then((resolvedAnnotations) => {
+                  setDisplayAnnotations(resolvedAnnotations || []);
+              });
+              anns.then((resolvedAnnotations) => {
+                  setHighlightAnnotations(resolvedAnnotations || []);
+              });        
+                
+              // Show success notification using your preferred notification library
+            }
+          }
+        } catch (e) {
+          // Handle error appropriately
+            console.log(e)
+        }
+      };
 
     const navigate = useNavigate();
     const {mutate: deleteSpot} = useDeletePost({
@@ -116,11 +448,9 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                 })[0];
 
                 if (vote && vote.isUpvote) {
-                    console.log("upvoted before. Can downvote");
                     setUpvotes(upvotes - 1);
                     setDownvotes(downvotes + 1);
                 } else {
-                    console.log("not voted before. Can downvote");
                     setDownvotes(downvotes + 1);
                 }
 
@@ -139,10 +469,8 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                 })[0];
 
                 if (vote.isUpvote) {
-                    console.log("upvoted before. Can downvote");
                     setUpvotes(upvotes - 1);
                 } else {
-                    console.log("not voted before. Can downvote");
                     setDownvotes(downvotes - 1);
                 }
 
@@ -207,9 +535,9 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
 
     const createdAtString = format(new Date(createTime), "PPpp");
 
-    const [annotations, setAnnotations] = useState<Annotation[]>([]);
-    const [displayAnnotations, setDisplayAnnotations] = useState<Annotation[]>([]);
-    const [highlightAnnotations, setHighlightAnnotations] = useState<Annotation[]>([]);
+    const [annotations, setAnnotations] = useState<AnnotationModel[]>([]);
+    const [displayAnnotations, setDisplayAnnotations] = useState<AnnotationModel[]>([]);
+    const [highlightAnnotations, setHighlightAnnotations] = useState<AnnotationModel[]>([]);
     const [mergedRanges, setMergedRanges] = useState<{start: number, end: number}[]>([]);
 
     const [selectedText, setSelectedText] = useState("");
@@ -228,7 +556,6 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
 
             let currentPosition = 0;
             let basePosition = 0;
-            console.log(6666, mergedRanges);
             mergedRanges.forEach((range, index) => {
                 const {start, end} = range;
 
@@ -242,25 +569,13 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                 } else if (beforeHighlight == parentText) {
                     basePosition = currentPosition;
                 }
-                console.log(
-                    highlightedText,
-                    parentText,
-                    beforeHighlight,
-                    highlightedText == parentText,
-                    beforeHighlight == parentText
-                );
                 currentPosition = end;
             });
             if (currentPosition < post.content.length) {
-                console.log(post.content.slice(currentPosition) == parentText);
                 if (post.content.slice(currentPosition) == parentText) {
                     basePosition = currentPosition;
                 }
             }
-            console.log(
-                basePosition + selection.anchorOffset,
-                basePosition + selection.focusOffset
-            );
             setSelectedTextRanges({
                 start: basePosition + selection.anchorOffset,
                 end: basePosition + selection.focusOffset,
@@ -269,60 +584,16 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
         }
     };
     useEffect(() => {
-      // set annotations by api
-      // mock data for now
-      const ann1 : Annotation = {
-        startIndex: 0,
-        endIndex: 10,
-        content: "Ankara",
-        source: "Furkan",
-      }
-      const ann2 : Annotation = {
-        startIndex: 15,
-        endIndex: 20,
-        content: "Ankara",
-        source: "Ahmet",
-      }
-      const ann4 : Annotation = {
-        startIndex: 15,
-        endIndex: 25,
-        content: "Ankara'nin baskenti olmasi cok guzel bir seydir. Ankara dunyaya hakim olacak, dunya Ankara'ya, Ankara da bana hakim olacak.",
-        source: "Furkan",
-      }
-    //   const ann5 : Annotation = {
-    //     startIndex: 45,
-    //     endIndex: 70,
-    //     content: "Ankara",
-    //   }
-    //   const ann6 : Annotation = {
-    //     startIndex: 5,
-    //     endIndex: 20,
-    //     content: "Istanbul dunyaya hakim olacak, dunya Istanbul'a, Istanbul da bana hakim olacak.",
-    //   }
-    //   const ann7 : Annotation = {
-    //     startIndex: 5,
-    //     endIndex: 20,
-    //     content: "Istanbul dunyaya hakim olacak, dunya Istanbul'a, Istanbul da bana hakim olacak.",
-    //   }
-    //   const ann8 : Annotation = {
-    //     startIndex: 5,
-    //     endIndex: 20,
-    //     content: "Istanbul dunyaya hakim olacak, dunya Istanbul'a, Istanbul da bana hakim olacak.",
-    //   }
-    //   const ann9 : Annotation = {
-    //     startIndex: 5,
-    //     endIndex: 20,
-    //     content: "Istanbul dunyaya hakim olacak, dunya Istanbul'a, Istanbul da bana hakim olacak.",
-    //   }
-    //   const ann10 : Annotation = {
-    //     startIndex: 5,
-    //     endIndex: 20,
-    //     content: "Istanbul dunyaya hakim olacak, dunya Istanbul'a, Istanbul da bana hakim olacak.",
-    //   }
-      setAnnotations([ann1, ann2, ann4]);
-      setDisplayAnnotations([ann1, ann2, ann4]);
-      setHighlightAnnotations([ann1, ann2, ann4]);
-      
+        const anns = getAnnotations({ token: userData.id.toString(), postId: Number(postId) });
+        anns.then((resolvedAnnotations) => {
+            setAnnotations(resolvedAnnotations || []);
+        });
+        anns.then((resolvedAnnotations) => {
+            setDisplayAnnotations(resolvedAnnotations || []);
+        });
+        anns.then((resolvedAnnotations) => {
+            setHighlightAnnotations(resolvedAnnotations || []);
+        });        
     //   setAnnotations([ann1, ann2, ann4, ann5, ann6, ann7, ann8, ann9, ann10]);
     //   setDisplayAnnotations([ann1, ann2, ann4, ann5, ann6, ann7, ann8, ann9, ann10]);
     }, []);
@@ -337,7 +608,7 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
         event: React.ChangeEvent<HTMLSelectElement>
     ) => {
         const filterAnnotationsBySource = (sourceToFilter: string) => {
-            const filteredAnnotations = annotations.filter(annotation => (annotation.source === sourceToFilter || sourceToFilter === 'All'));
+            const filteredAnnotations = annotations.filter(annotation => (annotation.username === sourceToFilter || sourceToFilter === 'All'));
             setDisplayAnnotations(filteredAnnotations);
             setHighlightAnnotations(filteredAnnotations);
         };
@@ -352,7 +623,7 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
     }, [highlightAnnotations])
 
     useEffect(() => {
-        const uniqueSources = Array.from(new Set(highlightAnnotations.map(annotation => annotation.source)));
+        const uniqueSources = Array.from(new Set(highlightAnnotations.map(annotation => annotation.username)));
         setUniqueSources(['All', ...uniqueSources])
     }, [annotations])
 
@@ -364,17 +635,17 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
         };
     }, [mergedRanges]);
 
-    function mergeOverlappingRanges(annotations: Annotation[]) {
-        annotations.sort((a, b) => a.startIndex - b.startIndex);
+    function mergeOverlappingRanges(annotations: AnnotationModel[]) {
+        annotations.sort((a, b) => a.start - b.start);
 
         const replicateRanges = [];
 
-        let currentStartIndex = annotations[0].startIndex;
-        let currentEndIndex = annotations[0].endIndex;
+        let currentStartIndex = annotations[0].start;
+        let currentEndIndex = annotations[0].end;
 
         for (let i = 1; i < annotations.length; i++) {
-            const nextStartIndex = annotations[i].startIndex;
-            const nextEndIndex = annotations[i].endIndex;
+            const nextStartIndex = annotations[i].start;
+            const nextEndIndex = annotations[i].end;
 
             if (currentEndIndex >= nextStartIndex) {
                 // Merge overlapping ranges
@@ -394,7 +665,6 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
 
         // Add the last merged range
         replicateRanges.push({start: currentStartIndex, end: currentEndIndex});
-        console.log(55555, replicateRanges);
         return replicateRanges;
     }
 
@@ -429,7 +699,7 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                     }}
                     key={`highlighted-${index}`}
                     className="highlighted-text"
-                    style={{backgroundColor: "red"}}
+                    style={{backgroundColor: "powderblue"}}
                 >
           {highlightedText}
         </span>
@@ -449,16 +719,15 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
     };
 
     const hoverAnnotation = (startIndex: number, endIndex: number) => {
-        const annotationsInRange: Annotation[] = [];
+        const annotationsInRange: AnnotationModel[] = [];
         annotations.forEach((annotation) => {
             if (
-                annotation.startIndex >= startIndex &&
-                annotation.endIndex <= endIndex
+                annotation.start >= startIndex &&
+                annotation.end <= endIndex
             ) {
                 annotationsInRange.push(annotation);
             }
         });
-        console.log(annotationsInRange);
         setDisplayAnnotations(annotationsInRange);
     };
 
@@ -472,43 +741,13 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
         setSelectedTextAnnotation(event.target.value);
     };
 
-    const createAnnotation = () => {
-        console.log(selectedTextRanges);
-        if (selectedTextRanges.start > selectedTextRanges.end) {
-            const x = selectedTextRanges.start;
-            selectedTextRanges.start = selectedTextRanges.end;
-            selectedTextRanges.end = x;
-        }
-        console.log(annotations)
-        setAnnotations([...annotations, {
-            startIndex: selectedTextRanges.start,
-            endIndex: selectedTextRanges.end,
-            content: selectedTextAnnotation,
-            source: "Furkan"
-        }])
-        setDisplayAnnotations([...annotations, {
-            startIndex: selectedTextRanges.start,
-            endIndex: selectedTextRanges.end,
-            content: selectedTextAnnotation,
-            source: "Furkan"
-        }])
-        setHighlightAnnotations([...annotations, {
-            startIndex: selectedTextRanges.start,
-            endIndex: selectedTextRanges.end,
-            content: selectedTextAnnotation,
-            source: "Furkan"
-        }])
-        // connect api here
-    }
-
     const [searchTerm, setSearchTerm] = useState('');
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue: string = event.target.value;
-        console.log(inputValue)
         setSearchTerm(inputValue);
         const filterAnnotationsBySource = (sourceToFilter: string) => {
-            const filteredAnnotations = annotations.filter(annotation => (annotation.content.toLowerCase().includes(sourceToFilter.toLowerCase()) || content.slice(annotation.startIndex, annotation.endIndex).toLowerCase().includes(sourceToFilter.toLowerCase())));
+            const filteredAnnotations = annotations.filter(annotation => (annotation.note.toLowerCase().includes(sourceToFilter.toLowerCase()) || content.slice(annotation.start, annotation.end).toLowerCase().includes(sourceToFilter.toLowerCase())));
             setDisplayAnnotations(filteredAnnotations);
             setHighlightAnnotations(filteredAnnotations);
         };
@@ -827,13 +1066,13 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                         {displayAnnotations.map((annotation, index) => (
                             <tr key={index}>
                                 <td style={{backgroundColor: "transparent"}}>
-                                    {content.slice(annotation.startIndex, annotation.endIndex)}
+                                    {content.slice(annotation.start, annotation.end)}
                                 </td>
                                 <td style={{backgroundColor: "transparent"}}>
-                                    {annotation.content}
+                                    {annotation.note}
                                 </td>
                                 <td style={{backgroundColor: "transparent"}}>
-                                    {annotation.source}
+                                    {annotation.username}
                                 </td>
                             </tr>
                         ))}
@@ -854,7 +1093,7 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                                     <label htmlFor="annotationInput" className="form-label">Annotate: {selectedText == "" ? "Please make a selection for annotation" : selectedText}</label>
                                     <input type="text" className="form-control" id="annotationInput" placeholder="Type your annotation here" onChange={handleInputChange} />
                                 </div>
-                                <button onClick={() => createAnnotation()} className={`btn btn-primary ${selectedText == "" && "disabled"}`}>Add Annotation</button>
+                                <button onClick={() => onAnnotate()} className={`btn btn-primary ${(selectedText == "" || selectedTextAnnotation == "") && "disabled"}`}>Add Annotation</button>
                             </>
                     }
                 </div>
