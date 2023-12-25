@@ -64,7 +64,7 @@ class HomeView extends GetView<HomeController> {
                               const SizedBox(width: 12),
                               InkWell(
                                 onTap: () {
-                                  controller.sortByDate(); //Call sorting fnc here
+                                  controller.sortByDate();
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
@@ -98,7 +98,7 @@ class HomeView extends GetView<HomeController> {
                               const SizedBox(width: 12),
                               InkWell(
                                 onTap: () {
-                                  controller.sortByTop(); //Call sorting fnc here
+                                  controller.sortByTop();
                                 },
                                 child: Container(
                                   height: 28,
@@ -179,7 +179,7 @@ class HomeView extends GetView<HomeController> {
                 color: ThemePalette.dark,
                 fontSize: 16,
                 fontFamily: 'Work Sans',
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
                 letterSpacing: -0.25,
               ),
             ),
@@ -215,7 +215,7 @@ class HomeView extends GetView<HomeController> {
                 color: ThemePalette.dark,
                 fontSize: 16,
                 fontFamily: 'Work Sans',
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
                 letterSpacing: -0.25,
               ),
             ),
@@ -268,7 +268,7 @@ class HomeView extends GetView<HomeController> {
                 color: ThemePalette.dark,
                 fontSize: 16,
                 fontFamily: 'Work Sans',
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
                 letterSpacing: -0.25,
               ),
             ),
@@ -280,27 +280,28 @@ class HomeView extends GetView<HomeController> {
             ),
             const SizedBox(height: 8),
             ListView.separated(
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: controller.searchPosts.length,
-                itemBuilder: (context, index) {
-                  return PostTileWidget(
-                    onTap: () => controller
-                        .navigateToPostDetails(controller.searchPosts[index]),
-                    post: controller.searchPosts[index],
-                    hideTags: false,
-                    onDownvote: () => controller
-                        .downvotePost(controller.searchPosts[index].id),
-                    onUpvote: () =>
-                        controller.upvotePost(controller.searchPosts[index].id),
-                    showVoters: () =>
-                        controller.showVotes(controller.searchPosts[index].id),
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return const SizedBox(height: 8);
-                }),
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: controller.searchPosts.length,
+              itemBuilder: (context, index) {
+                return PostTileWidget(
+                  onTap: () => controller
+                      .navigateToPostDetails(controller.searchPosts[index]),
+                  post: controller.searchPosts[index],
+                  hideTags: false,
+                  onDownvote: () =>
+                      controller.downvotePost(controller.searchPosts[index].id),
+                  onUpvote: () =>
+                      controller.upvotePost(controller.searchPosts[index].id),
+                  showVoters: () =>
+                      controller.showVotes(controller.searchPosts[index].id),
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(height: 8);
+              },
+            ),
           ],
           //TODO: Make bottom bar clip
         ],
