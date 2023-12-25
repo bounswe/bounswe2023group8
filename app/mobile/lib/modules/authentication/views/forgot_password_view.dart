@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
+import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/modules/authentication/controllers/forgot_password_controller.dart';
 
 import '../../../data/widgets/custom_button.dart';
@@ -15,6 +16,13 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: ThemePalette.white,
+      appBar: CustomAppBar(
+        search: false,
+        notification: false,
+        actions: [],
+        elevation: 0,
+        leadingBackIcon: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Obx(() {

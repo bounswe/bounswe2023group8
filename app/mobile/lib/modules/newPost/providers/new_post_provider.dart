@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:get/get.dart';
 import 'package:mobile/data/models/interest_area.dart';
@@ -25,6 +24,7 @@ class NewPostProvider extends GetConnect {
       required List<String> tags,
       required double latitude,
       required double longitude,
+      required bool isAgeRestricted,
       required String address,
       required String token}) async {
     final response = await post('v1/post', {
@@ -32,6 +32,7 @@ class NewPostProvider extends GetConnect {
       "sourceLink": sourceLink,
       "title": title,
       "wikiTags": tags,
+      "isAgeRestricted": isAgeRestricted,
       "label": label,
       "content": content,
       "geoLocation": {
@@ -46,7 +47,7 @@ class NewPostProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       return true;
     } else {
       if (response.bodyString != null) {
@@ -69,7 +70,7 @@ class NewPostProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!) as List;
         return body.map((e) => WikiTag.fromWikiResponse(e)).toList();
@@ -94,10 +95,12 @@ class NewPostProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!);
-        return (body as List).map((e) => InterestArea.fromJson(e)).toList();
+        return (body as List)
+            .map((e) => InterestArea.fromJson(e))
+            .toList();
       }
     } else {
       if (response.bodyString != null) {
