@@ -5,7 +5,6 @@ class InterestArea {
   final int? creatorId;
   final String accessLevel;
   final String name;
-  final List<String> nestedInterestAreas;
   final List<WikiTag> wikiTags;
   final DateTime createTime;
   final String description;
@@ -16,7 +15,6 @@ class InterestArea {
     required this.creatorId,
     required this.accessLevel,
     required this.name,
-    required this.nestedInterestAreas,
     required this.wikiTags,
     required this.createTime,
     required this.description,
@@ -34,7 +32,6 @@ class InterestArea {
       creatorId: json['creatorId'],
       accessLevel: json['accessLevel'] ?? '',
       name: json['title'] ?? '',
-      nestedInterestAreas: List<String>.from(json['nestedInterestAreas'] ?? []),
       wikiTags: parsedWikiTags,
       createTime: DateTime.parse(json['createTime'] ?? ''),
       description: json['description'] ?? '',

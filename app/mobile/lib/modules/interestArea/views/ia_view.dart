@@ -528,7 +528,6 @@ class InterestAreaView extends GetView<InterestAreaController> {
         itemCount: controller.posts.length,
         itemBuilder: (context, index) {
           final spot = controller.posts[index];
-          final isVoted = controller.isVotes[spot.id] ?? [false, false];
           return PostTileWidget(
             onTap: () => controller.navigateToPostDetails(spot),
             post: spot,
@@ -594,6 +593,44 @@ class InterestAreaView extends GetView<InterestAreaController> {
               ),
             ),
             const SizedBox(height: 8),
+            if (controller.nestedIas.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Container(
+                width: Get.width,
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    color: BackgroundPalette.dark,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final subIa in controller.nestedIas) ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: SeparatorPalette.light,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          subIa.name,
+                          style: TextStyle(
+                            color: SeparatorPalette.dark,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: -0.2,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+            const SizedBox(height: 8),
+            if (!controller.isOwner ||
+                controller.interestArea.wikiTags.isNotEmpty)
             Container(
               width: Get.width,
               padding: const EdgeInsets.all(8),
@@ -657,50 +694,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
                 ],
               ),
             ),
-            if (controller.interestArea.nestedInterestAreas.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Container(
-                width: Get.width,
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: BackgroundPalette.dark,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: SizedBox(
-                  height: 21,
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount:
-                        controller.interestArea.nestedInterestAreas.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final nestedBunch =
-                          controller.interestArea.nestedInterestAreas[index];
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: BackgroundPalette.solid,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          nestedBunch,
-                          style: TextStyle(
-                            color: BackgroundPalette.soft,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: -0.2,
-                          ),
-                        ),
-                      );
-                    },
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const SizedBox(width: 8);
-                    },
-                  ),
-                ),
-              ),
-            ],
+           
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.all(8),
