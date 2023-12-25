@@ -847,7 +847,7 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                     <h4>Add Your Annotation</h4>
                     {
                         annotationsVisible
-                            ? <h5>To add an annotation please "Hide Highlightings" first!</h5>
+                            ? <h5>To add an annotation please &quot;Hide Highlighings&quot; first!</h5>
                             :
                             <>
                                 <div className="mb-3">
