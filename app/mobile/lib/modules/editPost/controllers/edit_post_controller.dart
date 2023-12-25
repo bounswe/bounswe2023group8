@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -9,6 +11,9 @@ import 'package:mobile/data/models/wiki_tag.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
 import 'package:mobile/modules/editPost/providers/edit_post_provider.dart';
 import 'package:mobile/modules/home/controllers/home_controller.dart';
+import 'package:mobile/modules/newPost/views/select_location_view.dart';
+import 'package:mobile/modules/post_details/controllers/post_details_controller.dart';
+import 'package:mobile/modules/profile/controllers/profile_controller.dart';
 import 'package:mobile/routes/app_pages.dart';
 
 class EditPostController extends GetxController {
@@ -45,6 +50,9 @@ class EditPostController extends GetxController {
   final bottomNavController = Get.find<BottomNavigationController>();
   final editPostProvider = Get.find<EditPostProvider>();
   HomeController? homeController;
+  ProfileController? profileController;
+  PostDetailsController postDetailsController =
+      Get.find<PostDetailsController>();
 
   @override
   void onInit() {
@@ -55,6 +63,11 @@ class EditPostController extends GetxController {
       homeController = Get.find<HomeController>();
     } catch (e) {
       homeController = null;
+    }
+    try {
+      profileController = Get.find<ProfileController>();
+    } catch (e) {
+      profileController = null;
     }
   }
 
@@ -129,7 +142,7 @@ class EditPostController extends GetxController {
         searchTagResults.value = tags;
       }
     } catch (e) {
-      ErrorHandlingUtils.handleApiError(e);
+      log('');
     }
   }
 
@@ -247,8 +260,9 @@ class EditPostController extends GetxController {
       final res = await editPostProvider.deletePost(
           id: spot.id, token: bottomNavController.token);
       if (res) {
-        Get.until((route) => Get.currentRoute == Routes.bottomNavigation);
         homeController?.fetchData();
+        profileController?.fetchUserProfile();
+        Get.until((route) => Get.currentRoute == Routes.bottomNavigation);
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
@@ -256,14 +270,7 @@ class EditPostController extends GetxController {
   }
 
   void navigateToSelectAddress() {
-    //TO AVOID GOOGLE MAP API BILLING, DONT NAVIGATE TO SELECT LOCATION VIEW AND SET DEFAULT LOCATION
-    //EXEPT FOR PRESENTATION
-
-    address.value =
-        'Bebek, Güney Kampüs, Boğaziçi Universites, 34342 Beşiktaş/İstanbul, Türkiye';
-    latitude.value = 41.0834112;
-    longitude.value = 29.0501748;
-    //Get.to(SelectLocationView());
+    Get.to(SelectLocationView());
   }
 
   void onSelectAddress(GeocodingResult? result) {
@@ -279,22 +286,23 @@ class EditPostController extends GetxController {
   void onUpdatePost() async {
     try {
       final res = await editPostProvider.updatePost(
-        title: title.value,
-        postId: spot.id,
+          title: title.value,
+          postId: spot.id,
           address: address.value,
           latitude: latitude.value,
           longitude: longitude.value,
-        content: content.value,
-        tags: selectedTags.map((e) => e.id).toList(),
-        token: bottomNavController.token,
-        sourceLink: sourceLink.value,
-        interestAreaId: selectedIa.value!.id,
-        label: label.value,
-          isAgeRestricted: isAgeRestricted.value
-      );
+          content: content.value,
+          tags: selectedTags.map((e) => e.id).toList(),
+          token: bottomNavController.token,
+          sourceLink: sourceLink.value,
+          interestAreaId: selectedIa.value!.id,
+          label: label.value,
+          isAgeRestricted: isAgeRestricted.value);
       if (res) {
-        Get.back();
         homeController?.fetchData();
+        profileController?.fetchUserProfile();
+        postDetailsController.fetchPost();
+        Get.back();
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);

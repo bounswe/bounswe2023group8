@@ -69,6 +69,7 @@ class SettingsController extends GetxController {
           newPassword1: newPassword.value,
           newPassword2: confirmPassword.value);
       if (res) {
+        Get.back();
         Get.snackbar(
           'Success',
           'Password changed successfully',
@@ -81,7 +82,7 @@ class SettingsController extends GetxController {
         oldPassword.value = '';
         newPassword.value = '';
         confirmPassword.value = '';
-        Get.back();
+       
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);

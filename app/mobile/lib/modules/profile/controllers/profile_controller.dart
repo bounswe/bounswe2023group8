@@ -21,23 +21,26 @@ class ProfileController extends GetxController {
   int userId = Get.arguments['userId'];
 
   var routeLoading = true.obs;
-  late UserProfile userProfile;
+  late Rx<UserProfile> userProfile;
 
   var followers = <EnigmaUser>[].obs;
   var followings = <EnigmaUser>[].obs;
   var posts = <Spot>[].obs;
   var ias = <InterestArea>[].obs;
+  RxMap<int, List<bool>> isVotes = <int, List<bool>>{}.obs;
 
   final ImagePicker _picker = ImagePicker();
 
   var isFollowing = false.obs;
+
+  var isBunchExpanded = true.obs;
 
   void fetchUserProfile() async {
     try {
       final profile = await profileProvider.getProfilePage(
           id: userId, token: bottomNavigationController.token);
       if (profile != null) {
-        userProfile = profile;
+        userProfile = profile.obs;
         posts.value = await profileProvider.getPosts(
                 id: userId, token: bottomNavigationController.token) ??
             [];
@@ -46,6 +49,7 @@ class ProfileController extends GetxController {
             [];
         fetchFollowers();
         fetchFollowings();
+        // await getVotedInfo();
         routeLoading.value = false;
       }
     } catch (e) {
@@ -58,7 +62,7 @@ class ProfileController extends GetxController {
       final res = await profileProvider.getProfilePage(
           id: userId, token: bottomNavigationController.token);
       if (res != null) {
-        userProfile = res;
+        userProfile.value = res;
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
@@ -169,11 +173,11 @@ class ProfileController extends GetxController {
   void showFollowPopUp(int section) {
     Get.dialog(
       UserListDialog(
-        title: '@${userProfile.username}',
-        sections: const ['Followers', 'Followings'],
+        title: '@${userProfile.value.username}',
+        sections: const ['Followers', 'Following'],
         defaultSection: section,
         users: [followers, followings],
-        isRemovable: bottomNavigationController.userId == userProfile.id
+        isRemovable: bottomNavigationController.userId == userProfile.value.id
             ? [false, true]
             : [false, false],
         removeTexts: const ['Remove', 'Unfollow'],
@@ -204,6 +208,7 @@ class ProfileController extends GetxController {
         posts.value = await profileProvider.getPosts(
                 id: userId, token: bottomNavigationController.token) ??
             posts;
+        fetchProfile();
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
@@ -231,9 +236,29 @@ class ProfileController extends GetxController {
         posts.value = await profileProvider.getPosts(
                 id: userId, token: bottomNavigationController.token) ??
             posts;
+        fetchProfile();
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  Future getVotedInfo() async {
+    try {
+      for (var post in posts) {
+        final hasUpvoted = await profileProvider.hasUpVoted(
+            token: bottomNavigationController.token,
+            postId: post.id,
+            userId: bottomNavigationController.userId);
+        final hasDownvoted = await profileProvider.hasDownVoted(
+            token: bottomNavigationController.token,
+            postId: post.id,
+            userId: bottomNavigationController.userId);
+        isVotes[post.id] = [hasUpvoted, hasDownvoted];
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+      rethrow;
     }
   }
 

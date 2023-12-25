@@ -32,7 +32,7 @@ class UserProfile {
       following: json['following'],
       upvotes: json['upvotes'],
       downvotes: json['downvotes'],
-      profilePictureUrl: json['profilePictureUrl'],
+      profilePictureUrl: json['pictureUrl'],
     );
   }
 }

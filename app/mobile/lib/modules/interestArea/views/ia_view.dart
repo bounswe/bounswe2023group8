@@ -17,8 +17,8 @@ class InterestAreaView extends GetView<InterestAreaController> {
     return Obx(
       () {
         if (controller.routeLoading.value) {
-          return Scaffold(
-            body: const Center(
+          return const Scaffold(
+            body: Center(
               child: CircularProgressIndicator(),
             ),
           );
@@ -41,16 +41,15 @@ class InterestAreaView extends GetView<InterestAreaController> {
                   ),
                 )
               else
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: InkWell(
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      onTap: () => controller.showReportBunch(),
-                      child: Icon(
-                        Icons.report_gmailerrorred,
-                        size: 30,
-                      )),
+                InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: () => controller.showReportBunch(),
+                  child: Image.asset(
+                    Assets.report,
+                    width: 24,
+                    height: 24,
+                  ),
                 ),
               const SizedBox(width: 16),
             ],
@@ -70,74 +69,20 @@ class InterestAreaView extends GetView<InterestAreaController> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Stack(
-                                  children: [
-                                    Container(
-                                      width: Get.width,
-                                      height: Get.height * 0.2,
-                                      decoration: BoxDecoration(
-                                        color: BackgroundPalette.regular,
-                                        image: controller
-                                                    .interestArea.pictureUrl !=
-                                                null
-                                            ? DecorationImage(
-                                                image: NetworkImage(controller
-                                                    .interestArea.pictureUrl!),
-                                                fit: BoxFit.cover,
-                                              )
-                                            : null,
-                                      ),
-                                    ),
-                                    if (controller.isOwner)
-                                      Positioned(
-                                        top: 10,
-                                        right: 16,
-                                        child: Row(
-                                          children: [
-                                            InkWell(
-                                              onTap: controller.uploadImage,
-                                              child: Container(
-                                                  padding:
-                                                      const EdgeInsets.all(4),
-                                                  decoration: BoxDecoration(
-                                                    color:
-                                                        BackgroundPalette.light,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                  ),
-                                                  child: Icon(
-                                                    Icons.photo,
-                                                    size: 16,
-                                                  )),
-                                            ),
-                                            if (controller.interestArea
-                                                        .pictureUrl !=
-                                                    null &&
-                                                controller.interestArea
-                                                    .pictureUrl!.isNotEmpty)
-                                              InkWell(
-                                                  onTap:
-                                                      controller.deletePicture,
-                                                  child: Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              4),
-                                                      decoration: BoxDecoration(
-                                                        color: BackgroundPalette
-                                                            .light,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20),
-                                                      ),
-                                                      child: Icon(
-                                                        Icons.delete,
-                                                        size: 16,
-                                                      ))),
-                                          ],
-                                        ),
-                                      ),
-                                  ],
+                                Container(
+                                  width: Get.width,
+                                  height: Get.height * 0.2,
+                                  decoration: BoxDecoration(
+                                    color: BackgroundPalette.regular,
+                                    image: controller.interestArea.pictureUrl !=
+                                            null
+                                        ? DecorationImage(
+                                            image: NetworkImage(controller
+                                                .interestArea.pictureUrl!),
+                                            fit: BoxFit.cover,
+                                          )
+                                        : null,
+                                  ),
                                 ),
                                 Divider(
                                   height: 0,
@@ -149,17 +94,63 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                   ...mainBody()
                                 else if (controller.viewState.value ==
                                     BunchViewState.about)
-                                  ...aboutBody()
+                                  ...aboutBody(context)
                                 else if (controller.viewState.value ==
                                     BunchViewState.requests)
                                   ...requestBody()
                               ],
                             ),
+                            if (controller.isOwner)
+                              Positioned(
+                                top: 16,
+                                right: 16,
+                                child: Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: controller.uploadImage,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: BackgroundPalette.light,
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: Image.asset(
+                                          Assets.newPicture,
+                                          width: 16,
+                                          height: 16,
+                                        ),
+                                      ),
+                                    ),
+                                    if (controller.interestArea.pictureUrl !=
+                                            null &&
+                                        controller.interestArea.pictureUrl!
+                                            .isNotEmpty)
+                                      InkWell(
+                                        onTap: controller.deletePicture,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                            color: BackgroundPalette.light,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          child: Image.asset(
+                                            Assets.delete,
+                                            width: 16,
+                                            height: 16,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
                             Positioned(
                               top: Get.height * 0.17,
                               child: Container(
                                 width: Get.width * 0.8,
-                                padding: const EdgeInsets.only(top: 8),
+                                padding:
+                                    const EdgeInsets.only(top: 8, right: 16),
                                 decoration: BoxDecoration(
                                   color: BackgroundPalette.dark,
                                   borderRadius: BorderRadius.circular(20),
@@ -178,14 +169,19 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                     Row(
                                       children: [
                                         const SizedBox(width: 16),
-                                        Text(
-                                          controller.interestArea.name,
-                                          style: TextStyle(
-                                            color: ThemePalette.light,
-                                            fontSize: 14,
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: -0.25,
+                                        ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            maxWidth: Get.width * 0.8 - 112,
+                                          ),
+                                          child: Text(
+                                            controller.interestArea.name,
+                                            style: TextStyle(
+                                              color: ThemePalette.light,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: -0.25,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
                                         const SizedBox(width: 16),
@@ -208,10 +204,9 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                                     child: Text(
                                                       "Leave",
                                                       style: TextStyle(
-                                                        color:
-                                                            ThemePalette.main,
+                                                        color: ThemePalette
+                                                            .negative,
                                                         fontSize: 10,
-                                                        fontFamily: 'Inter',
                                                         fontWeight:
                                                             FontWeight.w500,
                                                         letterSpacing: -0.15,
@@ -437,7 +432,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
     return [
       Container(
         margin: const EdgeInsets.only(right: 16),
-        padding: const EdgeInsets.only(left: 16, top: 33, bottom: 8),
+        padding: const EdgeInsets.only(left: 16, top: 40, bottom: 8),
         decoration: BoxDecoration(
           borderRadius:
               const BorderRadius.only(bottomRight: Radius.circular(10)),
@@ -450,7 +445,6 @@ class InterestAreaView extends GetView<InterestAreaController> {
               style: TextStyle(
                 color: ThemePalette.dark,
                 fontSize: 16,
-                fontFamily: 'Inter',
                 fontWeight: FontWeight.w600,
                 letterSpacing: -0.2,
               ),
@@ -480,7 +474,6 @@ class InterestAreaView extends GetView<InterestAreaController> {
                       style: TextStyle(
                         color: ThemePalette.dark,
                         fontSize: 12,
-                        fontFamily: 'Inter',
                         fontWeight: FontWeight.w400,
                         letterSpacing: -0.15,
                       ),
@@ -534,15 +527,14 @@ class InterestAreaView extends GetView<InterestAreaController> {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: controller.posts.length,
         itemBuilder: (context, index) {
+          final spot = controller.posts[index];
           return PostTileWidget(
-            onTap: () =>
-                controller.navigateToPostDetails(controller.posts[index]),
-            post: controller.posts[index],
+            onTap: () => controller.navigateToPostDetails(spot),
+            post: spot,
             hideTags: true,
-            onUpvote: () => controller.upvotePost(controller.posts[index].id),
-            onDownvote: () =>
-                controller.downvotePost(controller.posts[index].id),
-            showVoters: () => controller.showVotes(controller.posts[index].id),
+            onUpvote: () => controller.upvotePost(spot.id),
+            onDownvote: () => controller.downvotePost(spot.id),
+            showVoters: () => controller.showVotes(spot.id),
           );
         },
         separatorBuilder: (context, index) => const SizedBox(height: 8),
@@ -550,7 +542,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
     ];
   }
 
-  List<Widget> aboutBody() {
+  List<Widget> aboutBody(BuildContext context) {
     return [
       Container(
         width: Get.width,
@@ -585,74 +577,36 @@ class InterestAreaView extends GetView<InterestAreaController> {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const SizedBox(width: 8),
-                      Text(
-                        controller.interestArea.description,
-                        style: TextStyle(
-                          color: ThemePalette.dark,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: -0.2,
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Text(
+                      controller.interestArea.description,
+                      style: TextStyle(
+                        color: ThemePalette.dark,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: -0.2,
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 8),
-            Container(
-              width: Get.width,
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: BackgroundPalette.dark,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: SizedBox(
-                height: 21,
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: controller.interestArea.wikiTags.length + 1,
-                  itemBuilder: (BuildContext context, int index) {
-                    if (index == controller.interestArea.wikiTags.length) {
-                      if (!controller.hasAccess.value || controller.isOwner) {
-                        return SizedBox.shrink();
-                      }
-                      return InkWell(
-                        onTap: () => controller.showTagSuggestionModal(context),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: BackgroundPalette.solid,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(
-                                Assets.add,
-                                width: 12,
-                                height: 12,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                "Suggest",
-                                style: TextStyle(
-                                  color: ThemePalette.light,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    } else {
-                      final wikitag = controller.interestArea.wikiTags[index];
-                      return Container(
+            if (controller.nestedIas.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Container(
+                width: Get.width,
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    color: BackgroundPalette.dark,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final subIa in controller.nestedIas) ...[
+                      Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 3),
                         decoration: BoxDecoration(
@@ -660,7 +614,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
-                          "#${wikitag.label}",
+                          subIa.name,
                           style: TextStyle(
                             color: SeparatorPalette.dark,
                             fontSize: 12,
@@ -668,59 +622,79 @@ class InterestAreaView extends GetView<InterestAreaController> {
                             letterSpacing: -0.2,
                           ),
                         ),
-                      );
-                    }
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const SizedBox(width: 8);
-                  },
+                      ),
+                    ],
+                  ],
                 ),
               ),
-            ),
-            if (controller.interestArea.nestedInterestAreas.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Container(
-                width: Get.width,
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
+            ],
+            const SizedBox(height: 8),
+            if (!controller.isOwner ||
+                controller.interestArea.wikiTags.isNotEmpty)
+            Container(
+              width: Get.width,
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
                   color: BackgroundPalette.dark,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: SizedBox(
-                  height: 21,
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount:
-                        controller.interestArea.nestedInterestAreas.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final nestedBunch =
-                          controller.interestArea.nestedInterestAreas[index];
-                      return Container(
+                  borderRadius: BorderRadius.circular(10)),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final tag in controller.interestArea.wikiTags) ...[
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: SeparatorPalette.light,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        "#${tag.label}",
+                        style: TextStyle(
+                          color: SeparatorPalette.dark,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: -0.2,
+                        ),
+                      ),
+                    ),
+                  ],
+                  if (!controller.isOwner)
+                    InkWell(
+                      onTap: () => controller.showTagSuggestionModal(context),
+                      child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 3),
+                            horizontal: 6, vertical: 3),
                         decoration: BoxDecoration(
                           color: BackgroundPalette.solid,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Text(
-                          nestedBunch,
-                          style: TextStyle(
-                            color: BackgroundPalette.soft,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: -0.2,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SvgPicture.asset(
+                              Assets.add,
+                              width: 12,
+                              height: 12,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              "Suggest",
+                              style: TextStyle(
+                                color: ThemePalette.light,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const SizedBox(width: 8);
-                    },
-                  ),
-                ),
+                      ),
+                    ),
+                ],
               ),
-            ],
+            ),
+           
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.all(8),
@@ -852,80 +826,109 @@ class InterestAreaView extends GetView<InterestAreaController> {
   List<Widget> requestBody() {
     return [
       const SizedBox(
-        height: 40,
+        height: 50,
       ),
       if (controller.followRequests.isNotEmpty) ...[
-        Text('Follow Requests:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-      const SizedBox(
-        height: 10,
-      ),
-      ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: controller.followRequests.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              contentPadding: EdgeInsets.only(left: 10),
-              minVerticalPadding: 0,
-              tileColor: Colors.grey.shade300,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              title: InkWell(
-                  onTap: () => Get.toNamed(Routes.profile, arguments: {
-                        'userId': controller.followRequests[index].follower.id
-                      }),
-                  child: Text(controller.followRequests[index].follower.name)),
-              subtitle: InkWell(
-                  onTap: () => Get.toNamed(Routes.profile, arguments: {
-                        'userId': controller.followRequests[index].follower.id
-                      }),
-                  child:
-                      Text(controller.followRequests[index].follower.username)),
-              leading: InkWell(
-                  onTap: () => Get.toNamed(Routes.profile, arguments: {
-                        'userId': controller.followRequests[index].follower.id
-                      }),
-                  child: controller.followRequests[index].follower.pictureUrl !=
-                              null &&
-                          controller.followRequests[index].follower.pictureUrl!
-                              .isNotEmpty
-                      ? CircleAvatar(
-                          backgroundImage: NetworkImage(controller
-                              .followRequests[index].follower.pictureUrl!),
-                        )
-                      : const CircleAvatar(
-                          backgroundImage:
-                              AssetImage(Assets.profilePlaceholder),
-                        )),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                      onPressed: () => controller.acceptIaRequest(
-                          controller.followRequests[index].requestId),
-                        icon: const Icon(Icons.check, color: Colors.green)),
-                  IconButton(
-                      onPressed: () => controller.rejectIaRequest(
-                          controller.followRequests[index].requestId),
-                        icon: const Icon(Icons.close, color: Colors.red)),
-                  ],
-                ),
-              );
-            },
-            separatorBuilder: (context, index) {
-              return const SizedBox(
-                height: 10,
-              );
-            }),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text('Follow Requests:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: controller.followRequests.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        offset: const Offset(0, 0),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.only(left: 10),
+                    minVerticalPadding: 0,
+                    tileColor: Colors.grey.shade300,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    title: InkWell(
+                        onTap: () => Get.toNamed(Routes.profile, arguments: {
+                              'userId':
+                                  controller.followRequests[index].follower.id
+                            }),
+                        child: Text(
+                            controller.followRequests[index].follower.name)),
+                    subtitle: InkWell(
+                        onTap: () => Get.toNamed(Routes.profile, arguments: {
+                              'userId':
+                                  controller.followRequests[index].follower.id
+                            }),
+                        child: Text(controller
+                            .followRequests[index].follower.username)),
+                    leading: InkWell(
+                        onTap: () => Get.toNamed(Routes.profile, arguments: {
+                              'userId':
+                                  controller.followRequests[index].follower.id
+                            }),
+                        child: controller.followRequests[index].follower
+                                        .pictureUrl !=
+                                    null &&
+                                controller.followRequests[index].follower
+                                    .pictureUrl!.isNotEmpty
+                            ? CircleAvatar(
+                                backgroundImage: NetworkImage(controller
+                                    .followRequests[index]
+                                    .follower
+                                    .pictureUrl!),
+                              )
+                            : const CircleAvatar(
+                                backgroundImage:
+                                    AssetImage(Assets.profilePlaceholder),
+                              )),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                            onPressed: () => controller.acceptIaRequest(
+                                controller.followRequests[index].requestId),
+                            icon: const Icon(Icons.check, color: Colors.green)),
+                        IconButton(
+                            onPressed: () => controller.rejectIaRequest(
+                                controller.followRequests[index].requestId),
+                            icon: const Icon(Icons.close, color: Colors.red)),
+                      ],
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(
+                  height: 10,
+                );
+              }),
+        ),
       ],
       if (controller.tagSuggestions.isNotEmpty) ...[
-        const SizedBox(
-          height: 20,
+        const Divider(
+          height: 30,
         ),
-        Text('Tag Suggestions:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text('Tag Suggestions:',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        ),
         const SizedBox(
           height: 10,
         ),

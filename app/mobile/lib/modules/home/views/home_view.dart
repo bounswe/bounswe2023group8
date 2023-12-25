@@ -26,8 +26,12 @@ class HomeView extends GetView<HomeController> {
             leadingAppIcon: true,
             search: true,
             onSearchQueryChanged: controller.onSearchQueryChanged,
-            notification: true,
-            actions: const [],
+            notification: false,
+            actions: const [
+              SizedBox(
+                width: 30,
+              )
+            ],
           ),
           body: Container(
             height: Get.height,
@@ -140,17 +144,17 @@ class HomeView extends GetView<HomeController> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: controller.posts.length,
                           itemBuilder: (context, index) {
+                            final spot = controller.posts[index];
+                        
                             return PostTileWidget(
-                              onTap: () => controller.navigateToPostDetails(
-                                  controller.posts[index]),
-                              post: controller.posts[index],
+                              onTap: () =>
+                                  controller.navigateToPostDetails(spot),
+                              post: spot,
                               hideTags: false,
-                              onUpvote: () => controller
-                                  .upvotePost(controller.posts[index].id),
-                              onDownvote: () => controller
-                                  .downvotePost(controller.posts[index].id),
-                              showVoters: () => controller
-                                  .showVotes(controller.posts[index].id),
+                              onUpvote: () => controller.upvotePost(spot.id),
+                              onDownvote: () =>
+                                  controller.downvotePost(spot.id),
+                              showVoters: () => controller.showVotes(spot.id),
                             );
                           },
                           separatorBuilder: (context, index) =>
@@ -228,32 +232,26 @@ class HomeView extends GetView<HomeController> {
             const SizedBox(height: 8),
             Container(
               width: Get.width,
-              padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               decoration: BoxDecoration(
                 color: BackgroundPalette.dark,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: SizedBox(
-                height: 114,
+                height: 120,
                 child: ListView.separated(
-                  padding: EdgeInsets.zero,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   scrollDirection: Axis.horizontal,
                   physics: const ClampingScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: controller.searchUsers.length + 1,
+                  itemCount: controller.searchUsers.length,
                   itemBuilder: (context, index) {
-                    if (index == controller.searchUsers.length) {
-                      return const SizedBox(width: 8);
-                    }
                     final user = controller.searchUsers[index];
                     return ProfileColumn(
                         user: user,
                         onTap: () => controller.navigateToProfile(user.id));
                   },
                   separatorBuilder: (context, index) {
-                    if (index == controller.searchUsers.length - 1) {
-                      return const SizedBox(width: 0);
-                    }
                     return const SizedBox(width: 16);
                   },
                 ),
@@ -280,28 +278,24 @@ class HomeView extends GetView<HomeController> {
             ),
             const SizedBox(height: 8),
             ListView.separated(
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: controller.searchPosts.length,
-              itemBuilder: (context, index) {
-                return PostTileWidget(
-                  onTap: () => controller
-                      .navigateToPostDetails(controller.searchPosts[index]),
-                  post: controller.searchPosts[index],
-                  hideTags: false,
-                  onDownvote: () =>
-                      controller.downvotePost(controller.searchPosts[index].id),
-                  onUpvote: () =>
-                      controller.upvotePost(controller.searchPosts[index].id),
-                  showVoters: () =>
-                      controller.showVotes(controller.searchPosts[index].id),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return const SizedBox(height: 8);
-              },
-            ),
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: controller.searchPosts.length,
+                itemBuilder: (context, index) {
+                  final spot = controller.searchPosts[index];
+                  return PostTileWidget(
+                    onTap: () => controller.navigateToPostDetails(spot),
+                    post: spot,
+                    hideTags: false,
+                    onDownvote: () => controller.downvotePost(spot.id),
+                    onUpvote: () => controller.upvotePost(spot.id),
+                    showVoters: () => controller.showVotes(spot.id),
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return const SizedBox(height: 8);
+                }),
           ],
           //TODO: Make bottom bar clip
         ],

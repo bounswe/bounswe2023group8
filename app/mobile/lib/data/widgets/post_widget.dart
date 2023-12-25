@@ -9,6 +9,7 @@ class PostTileWidget extends StatelessWidget {
   final Spot post;
   final void Function()? onTap;
   final bool hideTags;
+  final bool hideVoters;
   final void Function() onUpvote;
   final void Function() onDownvote;
   final void Function() showVoters;
@@ -17,6 +18,7 @@ class PostTileWidget extends StatelessWidget {
     required this.post,
     this.onTap,
     required this.hideTags,
+    this.hideVoters = false,
     required this.onUpvote,
     required this.onDownvote,
     required this.showVoters,
@@ -24,6 +26,7 @@ class PostTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var totalVote = post.upvoteCount - post.downvoteCount;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -42,15 +45,17 @@ class PostTileWidget extends StatelessWidget {
                 post.interestArea.name,
                 style: TextStyle(
                   color: ThemePalette.dark,
-                  fontSize: 14,
-                  fontFamily: 'Inter',
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  letterSpacing: -0.2,
+                  letterSpacing: -0.3,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
+            const SizedBox(height: 1),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -58,10 +63,9 @@ class PostTileWidget extends StatelessWidget {
                       'Spotted by',
                       style: TextStyle(
                           color: ThemePalette.dark,
-                          fontSize: 10,
-                          fontFamily: 'Inter',
+                          fontSize: 13,
                           fontWeight: FontWeight.w400,
-                          letterSpacing: -0.15),
+                          letterSpacing: -0.2),
                     ),
                     const SizedBox(width: 4),
                     InkWell(
@@ -71,10 +75,9 @@ class PostTileWidget extends StatelessWidget {
                         '@${post.enigmaUser.username}',
                         style: TextStyle(
                           color: ThemePalette.main,
-                          fontSize: 10,
-                          fontFamily: 'Inter',
+                          fontSize: 13,
                           fontWeight: FontWeight.w400,
-                          letterSpacing: -0.15,
+                          letterSpacing: -0.2,
                         ),
                       ),
                     ),
@@ -83,72 +86,69 @@ class PostTileWidget extends StatelessWidget {
                       '•',
                       style: TextStyle(
                         color: ThemePalette.dark,
-                        fontSize: 10,
+                        fontSize: 12,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      post.createTime,
+                      post.createTime.split(' ').first,
                       style: TextStyle(
                         color: ThemePalette.dark,
-                        fontSize: 10,
-                        fontFamily: 'Inter',
+                        fontSize: 13,
                         fontWeight: FontWeight.w400,
-                        letterSpacing: -0.15,
+                        letterSpacing: -0.2,
                       ),
                     ),
                   ],
                 ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    InkWell(
-                      onTap: onUpvote,
-                      child: Image.asset(
-                        Assets.upvote,
-                        width: 12,
-                        height: 12,
-                      ),
-                    ),
-                    const SizedBox(width: 2),
-                    InkWell(
-                      onTap: showVoters,
-                      child: SizedBox(
-                        width: 18,
-                        child: Text(
-                          post.upvoteCount >= post.downvoteCount
-                              ? (post.upvoteCount - post.downvoteCount)
-                                  .toString()
-                              : (post.downvoteCount - post.upvoteCount)
-                                  .toString(),
-                          style: TextStyle(
-                            color: post.upvoteCount >= post.downvoteCount
-                                ? post.upvoteCount == post.downvoteCount
-                                    ? ThemePalette.dark
-                                    : ThemePalette.positive
-                                : ThemePalette.negative,
-                            fontSize: 12,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: -0.14,
-                          ),
-                          textAlign: TextAlign.center,
+                if (!hideVoters)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InkWell(
+                        onTap: onUpvote,
+                        child: Image.asset(
+                          Assets.upvote,
+                          width: 18,
+                          height: 18,
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 2),
-                    InkWell(
-                      onTap: onDownvote,
-                      child: Image.asset(
-                        Assets.downvote,
-                        width: 12,
-                        height: 12,
+                      const SizedBox(width: 2),
+                      InkWell(
+                        onTap: showVoters,
+                        child: SizedBox(
+                          width: 18,
+                          child: Text(
+                            totalVote >= 0
+                                ? (totalVote).toString()
+                                : (-totalVote).toString(),
+                            style: TextStyle(
+                              color: totalVote >= 0
+                                  ? totalVote == 0
+                                      ? ThemePalette.dark
+                                      : ThemePalette.positive
+                                  : ThemePalette.negative,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: -0.2,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 4),
-                  ],
-                ),
+                      const SizedBox(width: 2),
+                      InkWell(
+                        onTap: onDownvote,
+                        child: Image.asset(
+                          Assets.downvote,
+                          width: 18,
+                          height: 18,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                    ],
+                  ),
               ],
             ),
           ],
@@ -158,7 +158,7 @@ class PostTileWidget extends StatelessWidget {
           children: [
             Container(
               width: Get.width,
-              margin: const EdgeInsets.only(left: 12, top: 9),
+              margin: const EdgeInsets.only(left: 12, top: 5),
               padding:
                   const EdgeInsets.only(left: 27, right: 12, top: 4, bottom: 4),
               decoration: BoxDecoration(
@@ -171,15 +171,14 @@ class PostTileWidget extends StatelessWidget {
                     post.title,
                     style: TextStyle(
                       color: ThemePalette.dark,
-                      fontSize: 12,
-                      fontFamily: 'Inter',
+                      fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      letterSpacing: -0.2,
+                      letterSpacing: -0.24,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 1),
                   Container(
-                    height: 12,
                     padding:
                         const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
                     decoration: BoxDecoration(
@@ -190,10 +189,9 @@ class PostTileWidget extends StatelessWidget {
                       post.label,
                       style: TextStyle(
                         color: BackgroundPalette.light,
-                        fontSize: 8,
-                        fontFamily: 'Inter',
+                        fontSize: 10,
                         fontWeight: FontWeight.w400,
-                        letterSpacing: -0.15,
+                        letterSpacing: -0.17,
                       ),
                     ),
                   ),
@@ -202,60 +200,88 @@ class PostTileWidget extends StatelessWidget {
                     post.sourceLink,
                     style: TextStyle(
                         color: ThemePalette.main,
-                        fontSize: 10,
-                        fontFamily: 'Inter',
+                        fontSize: 12,
                         fontWeight: FontWeight.w600,
                         letterSpacing: -0.2,
                         decoration: TextDecoration.underline,
                         overflow: TextOverflow.ellipsis),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    post.content,
-                    style: TextStyle(
-                      color: ThemePalette.dark,
-                      fontSize: 10,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: -0.15,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  hideTags == true
-                      ? const SizedBox()
-                      : SizedBox(
-                          height: 12,
-                          child: ListView.separated(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: post.wikiTags.length,
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return const SizedBox(width: 4);
-                            },
-                            itemBuilder: (BuildContext context, int index) {
-                              final wikitag = post.wikiTags[index];
-                              return Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 1),
-                                decoration: BoxDecoration(
-                                  color: BackgroundPalette.soft,
-                                  borderRadius: BorderRadius.circular(10),
+                  const SizedBox(height: 8),
+                  if (hideTags)
+                    Text(
+                      post.content,
+                      style: TextStyle(
+                        color: ThemePalette.dark,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: -0.2,
+                      ),
+                    )
+                  else
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxHeight: 100,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: SingleChildScrollView(
+                              physics: const ClampingScrollPhysics(),
+                              child: Text(
+                                post.content,
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: ThemePalette.dark,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: -0.2,
                                 ),
-                                child: Text(
-                                  "#${wikitag.label}",
-                                  style: TextStyle(
-                                    color: SeparatorPalette.dark,
-                                    fontSize: 8,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w400,
-                                    letterSpacing: -0.15,
-                                  ),
-                                ),
-                              );
-                            },
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            flex: 4,
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              physics: const ClampingScrollPhysics(),
+                              child: Wrap(
+                                spacing: 4,
+                                runSpacing: 4,
+                                children: [
+                                  for (final tag in post.wikiTags)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6, vertical: 1),
+                                      decoration: BoxDecoration(
+                                        color: BackgroundPalette.soft,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: SeparatorPalette.dark
+                                              .withOpacity(0.6),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        "#${tag.label}",
+                                        style: TextStyle(
+                                          color: SeparatorPalette.dark,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w400,
+                                          letterSpacing: -0.17,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),

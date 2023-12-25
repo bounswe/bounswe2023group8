@@ -27,7 +27,9 @@ class Assets {
   static const String explore = 'assets/icons/explore.svg';
   static const String notification = 'assets/icons/notifications.svg';
   static const String upvote = 'assets/icons/upvote.png';
+  static const String upvoteEmpty = 'assets/icons/upvote_empty.png';
   static const String downvote = 'assets/icons/downvote.png';
+  static const String downvoteEmpty = 'assets/icons/downvote_empty.png';
   static const String sortNew = 'assets/icons/sort_new.png';
   static const String sortTop = 'assets/icons/sort_top.png';
   static const String public = 'assets/icons/public.png';
@@ -43,6 +45,11 @@ class Assets {
   static const String back = 'assets/icons/back.png';
   static const String delete = 'assets/icons/delete.png';
   static const String createSpot = 'assets/icons/create_spot.png';
+  static const String newPicture = 'assets/icons/new_pic.png';
+  static const String expand = 'assets/icons/expand.svg';
+  static const String collapse = 'assets/icons/collapse.svg';
+  static const String report = 'assets/icons/report.png';
+  static const String annotation = 'assets/icons/annotation.png';
 
   // Radios
 
