@@ -7,6 +7,7 @@ import {
   useGetInterestArea,
   useGetPostsOfInterestArea,
   useGetSubInterestAreasOfInterestArea,
+  useUnfollowInterestArea,
 } from "../../hooks/useInterestArea";
 import { AccessLevel, accessLevelMapping } from "../InterestAreaUpdatePage";
 import { useReportAnIssue } from "../../hooks/useModeration";
@@ -70,10 +71,32 @@ const ViewInterestArea = () => {
   const { mutate: followInterestArea } = useFollowInterestArea({
     axiosInstance,
     interestAreaId: parseInt(iaId as string),
+    config: {
+      onSuccess: () => {
+        refetch();
+      },
+    },
+  });
+
+  const { mutate: unfollowInterestArea } = useUnfollowInterestArea({
+    axiosInstance,
+    interestAreaId: parseInt(iaId as string),
+    config: {
+      onSuccess: () => {
+        refetch();
+      },
+    },
   });
 
   const followBunch = () => {
     followInterestArea({
+      axiosInstance,
+      interestAreaId: parseInt(iaId as string),
+    });
+  };
+
+  const unFollowBunch = () => {
+    unfollowInterestArea({
       axiosInstance,
       interestAreaId: parseInt(iaId as string),
     });
@@ -98,11 +121,9 @@ const ViewInterestArea = () => {
     },
   });
 
-  useGetWaitingBunchFollowRequests({
+  const { refetch } = useGetWaitingBunchFollowRequests({
     axiosInstance,
     config: {
-      retry: !isFollowingRequestWaiting,
-      enabled: !isFollowingRequestWaiting,
       onSuccess: (data: any) => {
         setIsFollowingRequestWaiting(
           data.some((request: any) => request.id === parseInt(iaId as string))
@@ -116,8 +137,7 @@ const ViewInterestArea = () => {
       axiosInstance,
       interestAreaId: parseInt(iaId as string),
       config: {
-        retry: !isFollowingRequestWaiting,
-        enabled: !isFollowingRequestWaiting,
+        enabled: isSuccess,
         onSuccess: (data: any) => {
           const newDetails = data.map((result: any) => ({
             title: result.title,
@@ -148,7 +168,6 @@ const ViewInterestArea = () => {
     axiosInstance,
     interestAreaId: parseInt(iaId as string),
     config: {
-      retry: isSuccess,
       enabled: isSuccess,
       onSuccess: (data: Post[]) => {
         const newDetails = data.map((result: Post) => ({
@@ -417,28 +436,39 @@ const ViewInterestArea = () => {
         </div>
       ) : (
         showContent && (
-          <div className="m-3 p-3" style={{ backgroundColor: "#fffaf6" }}>
-            <h2>Private Bunch</h2>
-            <p>
-              This section contains private and confidential information. Access
-              is restricted to authorized individuals only. You can send a
-              request to join this bunch.
-            </p>
-            <div className="m-3 d-flex justify-content-center align-items-center rounded-5">
-              {isFollowingRequestWaiting ? (
-                <button className="btn mx-2 WA-theme-bg-positive WA-theme-light">
-                  Waiting for approval
-                </button>
-              ) : (
-                <button
-                  onClick={() => followBunch()}
-                  className="btn mx-2 WA-theme-bg-dark WA-theme-light"
-                >
-                  Join
-                </button>
-              )}
+          <>
+            <div className="card WA-theme-bg-dark m-3">
+              <h1 className="m-3">{interestAreaData?.title}</h1>
+              <h5 className="m-3">{interestAreaData?.description}</h5>
             </div>
-          </div>
+            <div>
+              <div className="m-3 p-3 WA-theme-bg-regular">
+                <h2>You&apos;re not allowed to see this bunch</h2>
+                <p>
+                  This section contains private and confidential information.
+                  Access is restricted to authorized individuals only.
+                </p>
+                <p>You can send a request to join this bunch.</p>
+                <div className="m-3 d-flex justify-content-center align-items-center rounded-5">
+                  {isFollowingRequestWaiting ? (
+                    <button
+                      onClick={() => unFollowBunch()}
+                      className="btn mx-2 WA-theme-bg-dark WA-theme-light"
+                    >
+                      Unfollow
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => followBunch()}
+                      className="btn mx-2 WA-theme-bg-dark WA-theme-light"
+                    >
+                      Follow
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </>
         )
       )}
     </>
