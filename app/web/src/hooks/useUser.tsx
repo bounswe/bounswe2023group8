@@ -69,3 +69,40 @@ export const useGetWaitingBunchFollowRequests = (
     config
   );
 };
+
+//
+//  GET FOLLOWING INTEREST AREAS OF USER
+//
+
+export type GetUserFollowingInterestAreasProps = {
+  axiosInstance: AxiosInstance;
+  id: number;
+};
+
+const getUserFollowingInterestAreas = async (
+  props: GetUserFollowingInterestAreasProps
+) => {
+  const { axiosInstance, id } = props;
+  const response = await axiosInstance.get(
+    `${process.env.REACT_APP_BACKEND_API_URL}/v1/user/${id}/interest-areas`
+  );
+  if (response.status >= 200 && response.status < 300) {
+    return response.data;
+  }
+};
+
+type useGetUserFollowingInterestAreasProps =
+  GetUserFollowingInterestAreasProps & {
+    config?: any;
+  };
+
+export const useGetUserFollowingInterestAreas = (
+  props: useGetUserFollowingInterestAreasProps
+) => {
+  const { id, config } = props;
+  return useQuery(
+    ["getUserFollowingInterestAreas", id],
+    () => getUserFollowingInterestAreas(props),
+    config
+  );
+};
