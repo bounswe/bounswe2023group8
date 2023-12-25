@@ -5,6 +5,7 @@ import com.wia.enigma.core.data.model.GeoLocation;
 import com.wia.enigma.core.service.ModerationService;
 import com.wia.enigma.core.service.WikiService.WikiService;
 import com.wia.enigma.dal.entity.*;
+import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.enums.PostLabel;
 import com.wia.enigma.dal.repository.*;
@@ -26,12 +27,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostServiceImpl implements PostService {
+    private final EntityTagsRepository entityTagsRepository;
 
     final PostCommentRepository postCommentRepository;
     final PostVoteRepository postVoteRepository;
     final InterestAreaRepository interestAreaRepository;
     final WikiTagRepository wikiTagRepository;
     final EnigmaUserRepository enigmaUserRepository;
+    final InterestAreaPostRepository interestAreaPostRepository;
 
     final PostRepository postRepository;
     final PostServiceHelper postServiceHelper;
@@ -294,12 +297,19 @@ public class PostServiceImpl implements PostService {
     public void deleteAllForUser(Long enigmaUserId) {
 
         try {
-            postRepository.deleteAllByEnigmaUserId(enigmaUserId);
+            postRepository.findByEnigmaUserId(enigmaUserId).forEach(post -> {
+                postCommentRepository.deleteByPostId(post.getId());
+                postVoteRepository.deleteByPostId(post.getId());
+                interestAreaPostRepository.deleteByPostId(post.getId());
+                entityTagsRepository.deleteAll(entityTagsRepository.findByEntityIdInAndEntityType(List.of(post.getId()), EntityType.POST));
+                postRepository.deleteById(post.getId());
+            });
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
                     "Could not delete posts.");
         }
+
     }
 
 
