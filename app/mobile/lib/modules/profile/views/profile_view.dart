@@ -16,9 +16,8 @@ class ProfileView extends GetView<ProfileController> {
     return Obx(
       () {
         if (controller.routeLoading.value) {
-          return SizedBox(
-            height: Get.height - 200,
-            child: const Center(
+          return const Scaffold(
+            body: Center(
               child: CircularProgressIndicator(),
             ),
           );
@@ -155,14 +154,10 @@ class ProfileView extends GetView<ProfileController> {
                         itemCount: controller.posts.length,
                         itemBuilder: (context, index) {
                           final spot = controller.posts[index];
-                          final isVoted =
-                              controller.isVotes[spot.id] ?? [false, false];
                           return PostTileWidget(
                             onTap: () => controller.navigateToPostDetails(spot),
                             post: spot,
                             hideTags: false,
-                            isUpvoted: isVoted[0],
-                            isDownvoted: isVoted[1],
                             onDownvote: () => controller.downvotePost(spot.id),
                             onUpvote: () => controller.upvotePost(spot.id),
                             showVoters: () => controller.showVotes(spot.id),
@@ -192,12 +187,12 @@ class ProfileView extends GetView<ProfileController> {
         children: [
           Column(
             children: [
-              controller.userProfile.profilePictureUrl != null &&
-                      controller.userProfile.profilePictureUrl!.isNotEmpty
+              controller.userProfile.value.profilePictureUrl != null &&
+                      controller.userProfile.value.profilePictureUrl!.isNotEmpty
                   ? CircleAvatar(
                       radius: 40,
                       backgroundImage: NetworkImage(
-                          controller.userProfile.profilePictureUrl!),
+                          controller.userProfile.value.profilePictureUrl!),
                     )
                   : Image.asset(
                       Assets.profilePlaceholder,
@@ -217,9 +212,10 @@ class ProfileView extends GetView<ProfileController> {
                         height: 20,
                       ),
                     ),
-                    if (controller.userProfile.profilePictureUrl != null &&
-                        controller
-                            .userProfile.profilePictureUrl!.isNotEmpty) ...[
+                    if (controller.userProfile.value.profilePictureUrl !=
+                            null &&
+                        controller.userProfile.value.profilePictureUrl!
+                            .isNotEmpty) ...[
                       const SizedBox(width: 8),
                       InkWell(
                         onTap: controller.deletePicture,
@@ -242,7 +238,7 @@ class ProfileView extends GetView<ProfileController> {
               children: [
                 const SizedBox(height: 8),
                 Text(
-                  controller.userProfile.name,
+                  controller.userProfile.value.name,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: ThemePalette.dark,
@@ -252,7 +248,7 @@ class ProfileView extends GetView<ProfileController> {
                   ),
                 ),
                 Text(
-                  '@${controller.userProfile.username}',
+                  '@${controller.userProfile.value.username}',
                   style: TextStyle(
                     color: ThemePalette.dark,
                     fontSize: 14,
@@ -353,7 +349,7 @@ class ProfileView extends GetView<ProfileController> {
                             ),
                             const SizedBox(width: 6),
                             Text(
-                              controller.userProfile.upvotes.toString(),
+                              controller.userProfile.value.upvotes.toString(),
                               style: TextStyle(
                                 color: ThemePalette.positive,
                                 fontSize: 14,
@@ -373,7 +369,7 @@ class ProfileView extends GetView<ProfileController> {
                             ),
                             const SizedBox(width: 6),
                             Text(
-                              controller.userProfile.downvotes.toString(),
+                              controller.userProfile.value.downvotes.toString(),
                               style: TextStyle(
                                 color: ThemePalette.negative,
                                 fontSize: 14,

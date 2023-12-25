@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/assets.dart';
@@ -6,8 +7,9 @@ import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
+import 'package:mobile/data/widgets/custom_button.dart';
 import 'package:mobile/data/widgets/post_widget.dart';
-import 'package:mobile/data/widgets/visitor_bottom_bar.dart';
+import 'package:mobile/modules/visitor_explore/views/visitor_settings_view.dart';
 import '../controllers/visitor_explore_controller.dart';
 
 class VisitorExploreView extends GetView<VisitorExploreController> {
@@ -18,9 +20,38 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
     return Obx(
       () {
         return Scaffold(
-          bottomNavigationBar: VisitorBottomBar(
-            onLoginPressed: () => controller.navigateToLogIn(),
-            onSignUpPressed: () => controller.navigateToSignUp(),
+          bottomNavigationBar: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            color: ThemePalette.light,
+            height: 56,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SvgPicture.asset(Assets.explore),
+                Row(
+                  children: [
+                    CustomButton(
+                      text: 'Login',
+                      textColor: ThemePalette.light,
+                      fontSize: 16,
+                      onPressed: () => controller.navigateToLogIn(),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    CustomButton(
+                      text: 'Sign Up',
+                      secondaryColor: true,
+                      fontSize: 16,
+                      onPressed: () => controller.navigateToSignUp(),
+                    ),
+                  ],
+                ),
+                InkWell(
+                    onTap: () => Get.to(() => const VisitorSettingsView()),
+                    child: SvgPicture.asset(Assets.settings))
+              ],
+            ),
           ),
           appBar: const CustomAppBar(
             leadingAppIcon: true,
@@ -131,8 +162,6 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                               post: controller.spots[index],
                               hideTags: false,
                               hideVoters: true,
-                              isUpvoted: false,
-                              isDownvoted: false,
                               onUpvote: () {},
                               onDownvote: () {},
                               showVoters: () {},
@@ -170,7 +199,7 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                       ),
                       const SizedBox(height: 8),
                       SizedBox(
-                        height: 106,
+                        height: 120,
                         child: ListView.separated(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           scrollDirection: Axis.horizontal,

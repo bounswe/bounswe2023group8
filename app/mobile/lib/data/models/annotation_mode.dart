@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 class AnnotationModel {
   String id;
   int start;
@@ -22,13 +24,22 @@ class AnnotationModel {
 
   factory AnnotationModel.fromJson(Map<String, dynamic> json) {
     String target = json['target'];
+    log(target);
     var uri = Uri.parse(target);
+
+    // sort and make start smaller
+    final first = int.parse(json['body']['value'].split('-').first);
+    final second = int.parse(json['body']['value'].split('-').last);
+
+    final start = first < second ? first : second;
+    final end = first > second ? first : second;
+
 
     return AnnotationModel(
       id: json['id'],
       note: uri.queryParameters['comment'] ?? '',
-      start: int.parse(json['body']['value'].split('-').first),
-      end: int.parse(json['body']['value'].split('-').last),
+      start: start,
+      end: end,
       userId: uri.queryParameters['userId'] != null
           ? int.parse(uri.queryParameters['userId'] ?? '')
           : 0,

@@ -26,8 +26,12 @@ class HomeView extends GetView<HomeController> {
             leadingAppIcon: true,
             search: true,
             onSearchQueryChanged: controller.onSearchQueryChanged,
-            notification: true,
-            actions: const [],
+            notification: false,
+            actions: const [
+              SizedBox(
+                width: 30,
+              )
+            ],
           ),
           body: Container(
             height: Get.height,
@@ -141,15 +145,12 @@ class HomeView extends GetView<HomeController> {
                           itemCount: controller.posts.length,
                           itemBuilder: (context, index) {
                             final spot = controller.posts[index];
-                            final isVoted =
-                                controller.isVotes[spot.id] ?? [false, false];
+                        
                             return PostTileWidget(
                               onTap: () =>
                                   controller.navigateToPostDetails(spot),
                               post: spot,
                               hideTags: false,
-                              isUpvoted: isVoted[0],
-                              isDownvoted: isVoted[1],
                               onUpvote: () => controller.upvotePost(spot.id),
                               onDownvote: () =>
                                   controller.downvotePost(spot.id),
@@ -237,7 +238,7 @@ class HomeView extends GetView<HomeController> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: SizedBox(
-                height: 106,
+                height: 120,
                 child: ListView.separated(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   scrollDirection: Axis.horizontal,
@@ -283,13 +284,10 @@ class HomeView extends GetView<HomeController> {
                 itemCount: controller.searchPosts.length,
                 itemBuilder: (context, index) {
                   final spot = controller.searchPosts[index];
-                  final isVoted = controller.isVotes[spot.id] ?? [false, false];
                   return PostTileWidget(
                     onTap: () => controller.navigateToPostDetails(spot),
                     post: spot,
                     hideTags: false,
-                    isUpvoted: isVoted[0],
-                    isDownvoted: isVoted[1],
                     onDownvote: () => controller.downvotePost(spot.id),
                     onUpvote: () => controller.upvotePost(spot.id),
                     showVoters: () => controller.showVotes(spot.id),

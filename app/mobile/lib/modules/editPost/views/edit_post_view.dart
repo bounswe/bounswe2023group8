@@ -20,26 +20,26 @@ class EditPostView extends GetView<EditPostController> {
           search: false,
           notification: false,
           actions: [
-            InkWell(
-              onTap: () {
-                Dialogs.showCustomDialog(
-                    onAction: () {
-                      controller.onDeletePost();
-                      Get.back();
-                    },
-                    title: 'Delete Spot',
-                    content: Text(
-                        'Are you sure you want to delete the ${controller.spot.title} spot?'),
-                    cancelText: 'No',
-                    actionText: 'Yes');
-              },
-              child: Image.asset(
-                Assets.delete,
-                width: 20,
-                height: 20,
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: InkWell(
+                onTap: () {
+                  Dialogs.showCustomDialog(
+                      onAction: () {
+                        controller.onDeletePost();
+                        Get.back();
+                      },
+                      title: 'Delete Spot',
+                      content: Text(
+                          'Are you sure you want to delete the ${controller.spot.title} spot?'),
+                      cancelText: 'No',
+                      actionText: 'Yes');
+                },
+                child: Image.asset(
+                  Assets.delete,
+                ),
               ),
             ),
-            const SizedBox(width: 16),
           ],
         ),
         body: Obx(() {
@@ -89,16 +89,20 @@ class EditPostView extends GetView<EditPostController> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: InkWell(
-                            onTap: () => controller.showIaSelectionModal(context),
+                            onTap: () =>
+                                controller.showIaSelectionModal(context),
                             child: Container(
-                                width: MediaQuery.of(context).size.width, // Set the width to screen width
+                                width: MediaQuery.of(context)
+                                    .size
+                                    .width, // Set the width to screen width
                                 height: 36,
                                 decoration: BoxDecoration(
                                   color: const Color(0xFF7EA4B9),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 8, top: 4),
+                                  padding:
+                                      const EdgeInsets.only(left: 8, top: 4),
                                   child: Text(
                                     controller.selectedIa.value?.name ?? '',
                                     style: const TextStyle(
@@ -171,7 +175,8 @@ class EditPostView extends GetView<EditPostController> {
                       ),
                       Expanded(
                         child: InkWell(
-                          onTap: () => controller.showLabelSelectionModal(context),
+                          onTap: () =>
+                              controller.showLabelSelectionModal(context),
                           child: Container(
                             height: 36,
                             decoration: BoxDecoration(
@@ -179,20 +184,24 @@ class EditPostView extends GetView<EditPostController> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 16, top: 4, right: 16), // Added right padding
+                              padding: const EdgeInsets.only(
+                                  left: 16,
+                                  top: 4,
+                                  right: 16), // Added right padding
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     controller.label.value == 0
                                         ? "Documentation"
                                         : controller.label.value == 1
-                                        ? "Learning"
-                                        : controller.label.value == 2
-                                        ? "News"
-                                        : controller.label.value == 3
-                                        ? "Research"
-                                        : "Discussion",
+                                            ? "Learning"
+                                            : controller.label.value == 2
+                                                ? "News"
+                                                : controller.label.value == 3
+                                                    ? "Research"
+                                                    : "Discussion",
                                     style: const TextStyle(
                                       color: Color(0xFFFFFAF6),
                                       fontWeight: FontWeight.w400,
@@ -276,7 +285,8 @@ class EditPostView extends GetView<EditPostController> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: Center(
@@ -413,12 +423,12 @@ class EditPostView extends GetView<EditPostController> {
                         ),
                         Text(
                             "${controller.publicationDate.value == '' ? 'Pick a Date' : controller.publicationDate}"
-                          // enabled: false,
-                          // decoration: const InputDecoration(labelText: 'Publication Date'),
-                          // onChanged: (value) => controller.publicationDate(value),
-                          // maxLines: null,
-                          // keyboardType: TextInputType.multiline,
-                        ),
+                            // enabled: false,
+                            // decoration: const InputDecoration(labelText: 'Publication Date'),
+                            // onChanged: (value) => controller.publicationDate(value),
+                            // maxLines: null,
+                            // keyboardType: TextInputType.multiline,
+                            ),
                       ],
                     )),
                 const SizedBox(
@@ -504,7 +514,7 @@ class EditPostView extends GetView<EditPostController> {
                 child: Container(
                   margin: const EdgeInsets.only(right: 8, bottom: 4),
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: SeparatorPalette.light,
                     borderRadius: BorderRadius.circular(10),

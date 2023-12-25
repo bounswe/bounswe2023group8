@@ -98,9 +98,6 @@ class PostDetailsController extends GetxController {
   }
 
   void showLocation() {
-    // TO AVOID MAP API PRICING, IT IS DISABLED FOR NOW
-
-    return;
     Get.to(() => LocationView(
           currentLatLng: LatLng(post.value.geolocation.latitude,
               post.value.geolocation.longitude),
@@ -392,6 +389,7 @@ class PostDetailsController extends GetxController {
 
           if (res) {
             annotationController.clear();
+            fetchAnnotations();
             Get.snackbar(
               'Success',
               'Annotation added successfully',
@@ -445,6 +443,12 @@ class PostDetailsController extends GetxController {
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
+  }
+
+  void fetchPost() async {
+    post.value = await postDetailsProvider.getPostById(
+            id: post.value.id, token: bottomNavigationController.token) ??
+        post.value;
   }
 
   void rejectTagSuggestion(int tagSuggestionId) async {

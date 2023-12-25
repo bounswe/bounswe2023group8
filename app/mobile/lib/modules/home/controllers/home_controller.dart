@@ -84,7 +84,7 @@ class HomeController extends GetxController {
       posts.value = await homeProvider.getHomePage(
               token: bottomNavigationController.token) ??
           [];
-      await getVotedInfo();
+      // await getVotedInfo();
       routeLoading.value = false;
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);

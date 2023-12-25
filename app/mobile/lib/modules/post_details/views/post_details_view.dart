@@ -10,8 +10,6 @@ import 'package:mobile/modules/post_details/views/post_detail_widget.dart';
 import 'package:mobile/routes/app_pages.dart';
 
 import '../../../data/constants/assets.dart';
-import '../../../data/widgets/visitor_bottom_bar.dart';
-import '../../opening/controllers/opening_controller.dart';
 import '../controllers/post_details_controller.dart';
 
 class PostDetailsView extends GetView<PostDetailsController> {
@@ -81,13 +79,6 @@ class PostDetailsView extends GetView<PostDetailsController> {
             ],
           ],
         ),
-        bottomNavigationBar: controller.visitor
-            ? VisitorBottomBar(
-                onLoginPressed: () =>
-                    Get.find<OpeningController>().backToAuth(true),
-                onSignUpPressed: () =>
-                    Get.find<OpeningController>().backToAuth(false))
-            : null,
         body: controller.tagSuggestionView.value
             ? tagSuggestionView()
             : SizedBox(

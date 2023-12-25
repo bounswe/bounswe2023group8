@@ -9,6 +9,7 @@ import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/models/wiki_tag.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
 import 'package:mobile/modules/newPost/providers/new_post_provider.dart';
+import 'package:mobile/modules/newPost/views/select_location_view.dart';
 
 class NewPostController extends GetxController {
   var routeLoading = false.obs;
@@ -234,14 +235,8 @@ class NewPostController extends GetxController {
   }
 
   void navigateToSelectAddress() {
-    //TO AVOID GOOGLE MAP API BILLING, DONT NAVIGATE TO SELECT LOCATION VIEW AND SET DEFAULT LOCATION
-    //EXEPT FOR PRESENTATION
-
-    address.value =
-        'Bebek, Güney Kampüs, Boğaziçi Universites, 34342 Beşiktaş/İstanbul, Türkiye';
-    latitude.value = 41.0834112;
-    longitude.value = 29.0501748;
-    //Get.to(SelectLocationView());
+    
+    Get.to(SelectLocationView());
   }
 
   void onSelectAddress(GeocodingResult? result) {
