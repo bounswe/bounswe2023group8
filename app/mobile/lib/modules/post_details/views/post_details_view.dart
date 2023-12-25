@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/palette.dart';
@@ -16,206 +16,193 @@ class PostDetailsView extends GetView<PostDetailsController> {
   const PostDetailsView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Obx(() {
+      if (controller.routeLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      return Scaffold(
         appBar: CustomAppBar(
           leadingAppIcon: true,
           leadingBackIcon: true,
           search: false,
           notification: false,
           actions: [
-            Padding(
-                padding: const EdgeInsets.only(
-                  top: 14,
-                  bottom: 14,
-                ),
-                //annotation view
-                child: InkWell(
-                  onTap: controller.showAnnotation,
-                  child: Icon(
-                    Icons.comment,
-                    color: ThemePalette.main,
-                  ),
-                )),
+            InkWell(
+              onTap: controller.showAnnotation,
+              child: Image.asset(
+                Assets.annotation,
+                width: 24,
+                height: 24,
+              ),
+            ),
+            const SizedBox(width: 16),
             if (!controller.visitor &&
                 controller.post.value.enigmaUser.id ==
                     controller.bottomNavigationController.userId) ...[
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 14,
-                  bottom: 14,
-                ),
-                child: CircleAvatar(
-                  backgroundColor: ThemePalette.main,
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: InkWell(
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      onTap: controller.toggleTagSuggestionView,
-                      child: SvgPicture.asset(
-                        Assets.notification,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+              InkWell(
+                onTap: controller.navigateToEditPost,
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                child: Image.asset(
+                  Assets.edit,
+                  width: 24,
+                  height: 24,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(14),
-                child: InkWell(
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  onTap: controller.navigateToEditPost,
-                  child: Image.asset(
-                    Assets.edit,
-                  ),
+              const SizedBox(width: 16),
+              InkWell(
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                onTap: controller.toggleTagSuggestionView,
+                child: SvgPicture.asset(
+                  Assets.notification,
+                  width: 22,
+                  height: 24,
                 ),
               ),
+              const SizedBox(width: 16),
             ],
             if (!controller.visitor &&
                 controller.post.value.enigmaUser.id !=
-                    controller.bottomNavigationController.userId)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: InkWell(
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  onTap: () => controller.showReportSpot(),
-                  child: Icon(
-                    Icons.report_gmailerrorred,
-                    size: 30,
-                  ),
+                    controller.bottomNavigationController.userId) ...[
+              InkWell(
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                onTap: () => controller.showReportSpot(),
+                child: Image.asset(
+                  Assets.report,
+                  width: 24,
+                  height: 24,
                 ),
               ),
+              const SizedBox(width: 16),
+            ],
           ],
         ),
-       
-        body: Obx(() {
-          if (controller.routeLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (controller.tagSuggestionView.value) {
-            return tagSuggestionView();
-          }
-
-          return SizedBox(
-            height: Get.height,
-            child: Stack(
-              children: [
-                SingleChildScrollView(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                  child: Column(
-                    children: [
-                      const PostDetailWidget(),
-                      const SizedBox(height: 20),
-                      (controller.showAnnotations.value)
-                          ? _annotationsView()
-                          : ListView.separated(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: controller.comments.length,
-                              separatorBuilder:
-                                  (BuildContext context, int index) {
-                                return const SizedBox(height: 4);
-                              },
-                              itemBuilder: (BuildContext context, int index) {
-                                return commentRow(controller.comments[index]);
-                              },
-                            ),
-                      const SizedBox(height: 60),
-                    ],
-                  ),
-                ),
-                if ((controller.annotationSelection.value.extentOffset -
-                        controller.annotationSelection.value.baseOffset) >
-                    0)
-                  Positioned(
-                    bottom: 10,
-                    left: 20,
-                    child: Column(
-                      children: [
-                        //write comment
-                        Container(
-                          width: Get.width - 40,
-                          decoration: BoxDecoration(
-                            color: BackgroundPalette.soft,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: TextFormField(
-                            controller: controller.annotationController,
-                            decoration: const InputDecoration(
-                              hintText: 'Annotate...',
-                              hintStyle: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: -0.2,
-                              ),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-
-                        CustomButton(
-                            text: 'Annotate', onPressed: controller.onAnnotate),
-                      ],
-                    ),
-                  ),
-                if ((controller.annotationSelection.value.extentOffset -
-                            controller.annotationSelection.value.baseOffset) ==
-                        0 &&
-                    !controller.showAnnotations.value)
-                  Positioned(
-                    bottom: 0,
-                    child: Container(
-                      width: Get.width,
+        body: controller.tagSuggestionView.value
+            ? tagSuggestionView()
+            : SizedBox(
+                height: Get.height,
+                child: Stack(
+                  children: [
+                    SingleChildScrollView(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: BackgroundPalette.soft,
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20)),
-                      ),
-                      child: Row(
+                          horizontal: 8, vertical: 16),
+                      child: Column(
                         children: [
-                          Expanded(
-                            child: TextFormField(
-                              controller: controller.commentController,
-                              decoration: const InputDecoration(
-                                hintText: 'Make comment...',
-                                hintStyle: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: -0.2,
+                          const PostDetailWidget(),
+                          const SizedBox(height: 20),
+                          (controller.showAnnotations.value)
+                              ? _annotationsView()
+                              : ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: controller.comments.length,
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return const SizedBox(height: 4);
+                                  },
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return commentRow(
+                                        controller.comments[index]);
+                                  },
                                 ),
-                                border: InputBorder.none,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          InkWell(
-                            onTap: controller.makeComment,
-                            child: Icon(
-                              Icons.send,
-                              color: ThemePalette.main,
-                            ),
-                          ),
+                          const SizedBox(height: 60),
                         ],
                       ),
                     ),
-                  )
-              ],
-            ),
-          );
-        }));
+                    if ((controller.annotationSelection.value.extentOffset -
+                            controller.annotationSelection.value.baseOffset) >
+                        0)
+                      Positioned(
+                        bottom: 10,
+                        left: 20,
+                        child: Column(
+                          children: [
+                            //write comment
+                            Container(
+                              width: Get.width - 40,
+                              decoration: BoxDecoration(
+                                color: BackgroundPalette.soft,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(10)),
+                              ),
+                              child: TextFormField(
+                                controller: controller.annotationController,
+                                decoration: const InputDecoration(
+                                  hintText: 'Annotate...',
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: -0.2,
+                                  ),
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+
+                            CustomButton(
+                                text: 'Annotate',
+                                onPressed: controller.onAnnotate),
+                          ],
+                        ),
+                      ),
+                    if ((controller.annotationSelection.value.extentOffset -
+                                controller
+                                    .annotationSelection.value.baseOffset) ==
+                            0 &&
+                        !controller.showAnnotations.value)
+                      Positioned(
+                        bottom: 0,
+                        child: Container(
+                          width: Get.width,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: BackgroundPalette.soft,
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20)),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  controller: controller.commentController,
+                                  decoration: const InputDecoration(
+                                    hintText: 'Write comment...',
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: -0.2,
+                                    ),
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              InkWell(
+                                onTap: controller.makeComment,
+                                child: Icon(
+                                  Icons.send,
+                                  color: ThemePalette.main,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                  ],
+                ),
+              ),
+      );
+    });
   }
 
   Padding commentRow(CommentModel comment) {

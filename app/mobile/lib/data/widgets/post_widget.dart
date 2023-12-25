@@ -55,6 +55,7 @@ class PostTileWidget extends StatelessWidget {
             const SizedBox(height: 1),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -91,7 +92,7 @@ class PostTileWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      post.createTime,
+                      post.createTime.split(' ').first,
                       style: TextStyle(
                         color: ThemePalette.dark,
                         fontSize: 13,
@@ -157,7 +158,7 @@ class PostTileWidget extends StatelessWidget {
           children: [
             Container(
               width: Get.width,
-              margin: const EdgeInsets.only(left: 12, top: 9),
+              margin: const EdgeInsets.only(left: 12, top: 5),
               padding:
                   const EdgeInsets.only(left: 27, right: 12, top: 4, bottom: 4),
               decoration: BoxDecoration(
@@ -227,6 +228,7 @@ class PostTileWidget extends StatelessWidget {
                           Expanded(
                             flex: 5,
                             child: SingleChildScrollView(
+                              physics: const ClampingScrollPhysics(),
                               child: Text(
                                 post.content,
                                 textAlign: TextAlign.start,
@@ -244,6 +246,7 @@ class PostTileWidget extends StatelessWidget {
                             flex: 4,
                             child: SingleChildScrollView(
                               padding: const EdgeInsets.symmetric(vertical: 2),
+                              physics: const ClampingScrollPhysics(),
                               child: Wrap(
                                 spacing: 4,
                                 runSpacing: 4,

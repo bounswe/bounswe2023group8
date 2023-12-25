@@ -94,7 +94,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                   ...mainBody()
                                 else if (controller.viewState.value ==
                                     BunchViewState.about)
-                                  ...aboutBody()
+                                  ...aboutBody(context)
                                 else if (controller.viewState.value ==
                                     BunchViewState.requests)
                                   ...requestBody()
@@ -543,7 +543,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
     ];
   }
 
-  List<Widget> aboutBody() {
+  List<Widget> aboutBody(BuildContext context) {
     return [
       Container(
         width: Get.width,
@@ -578,19 +578,17 @@ class InterestAreaView extends GetView<InterestAreaController> {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const SizedBox(width: 8),
-                      Text(
-                        controller.interestArea.description,
-                        style: TextStyle(
-                          color: ThemePalette.dark,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: -0.2,
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Text(
+                      controller.interestArea.description,
+                      style: TextStyle(
+                        color: ThemePalette.dark,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: -0.2,
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),
@@ -600,74 +598,63 @@ class InterestAreaView extends GetView<InterestAreaController> {
               width: Get.width,
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: BackgroundPalette.dark,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: SizedBox(
-                height: 21,
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: controller.interestArea.wikiTags.length + 1,
-                  itemBuilder: (BuildContext context, int index) {
-                    if (index == controller.interestArea.wikiTags.length) {
-                      if (!controller.hasAccess.value || controller.isOwner) {
-                        return SizedBox.shrink();
-                      }
-                      return InkWell(
-                        onTap: () => controller.showTagSuggestionModal(context),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: BackgroundPalette.solid,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(
-                                Assets.add,
-                                width: 12,
-                                height: 12,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                "Suggest",
-                                style: TextStyle(
-                                  color: ThemePalette.light,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
+                  color: BackgroundPalette.dark,
+                  borderRadius: BorderRadius.circular(10)),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final tag in controller.interestArea.wikiTags) ...[
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: SeparatorPalette.light,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        "#${tag.label}",
+                        style: TextStyle(
+                          color: SeparatorPalette.dark,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: -0.2,
                         ),
-                      );
-                    } else {
-                      final wikitag = controller.interestArea.wikiTags[index];
-                      return Container(
+                      ),
+                    ),
+                  ],
+                  if (!controller.isOwner)
+                    InkWell(
+                      onTap: () => controller.showTagSuggestionModal(context),
+                      child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 3),
+                            horizontal: 6, vertical: 3),
                         decoration: BoxDecoration(
-                          color: SeparatorPalette.light,
+                          color: BackgroundPalette.solid,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Text(
-                          "#${wikitag.label}",
-                          style: TextStyle(
-                            color: SeparatorPalette.dark,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: -0.2,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SvgPicture.asset(
+                              Assets.add,
+                              width: 12,
+                              height: 12,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              "Suggest",
+                              style: TextStyle(
+                                color: ThemePalette.light,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                    }
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const SizedBox(width: 8);
-                  },
-                ),
+                      ),
+                    ),
+                ],
               ),
             ),
             if (controller.interestArea.nestedInterestAreas.isNotEmpty) ...[

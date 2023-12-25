@@ -72,16 +72,20 @@ class NewPostView extends GetView<NewPostController> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: InkWell(
-                            onTap: () => controller.showIaSelectionModal(context),
+                            onTap: () =>
+                                controller.showIaSelectionModal(context),
                             child: Container(
-                                width: MediaQuery.of(context).size.width, // Set the width to screen width
+                                width: MediaQuery.of(context)
+                                    .size
+                                    .width, // Set the width to screen width
                                 height: 36,
                                 decoration: BoxDecoration(
                                   color: const Color(0xFF7EA4B9),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 8, top: 4),
+                                  padding:
+                                      const EdgeInsets.only(left: 8, top: 4),
                                   child: Text(
                                     controller.selectedIa.value?.name ?? '',
                                     style: const TextStyle(
@@ -138,11 +142,11 @@ class NewPostView extends GetView<NewPostController> {
                 ),
                 const SizedBox(height: 8),
                 Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: BackgroundPalette.regular,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: BackgroundPalette.regular,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: Row(
                     children: [
                       const Text(
@@ -153,7 +157,8 @@ class NewPostView extends GetView<NewPostController> {
                         ),
                       ),
                       InkWell(
-                        onTap: () => controller.showLabelSelectionModal(context),
+                        onTap: () =>
+                            controller.showLabelSelectionModal(context),
                         child: Container(
                           height: 36,
                           decoration: BoxDecoration(
@@ -161,7 +166,10 @@ class NewPostView extends GetView<NewPostController> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 16, top: 4, right: 16), // Added right padding
+                            padding: const EdgeInsets.only(
+                                left: 16,
+                                top: 4,
+                                right: 16), // Added right padding
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -169,12 +177,12 @@ class NewPostView extends GetView<NewPostController> {
                                   controller.label.value == 0
                                       ? "Documentation"
                                       : controller.label.value == 1
-                                      ? "Learning"
-                                      : controller.label.value == 2
-                                      ? "News"
-                                      : controller.label.value == 3
-                                      ? "Research"
-                                      : "Discussion",
+                                          ? "Learning"
+                                          : controller.label.value == 2
+                                              ? "News"
+                                              : controller.label.value == 3
+                                                  ? "Research"
+                                                  : "Discussion",
                                   style: const TextStyle(
                                     color: Color(0xFFFFFAF6),
                                     fontWeight: FontWeight.w400,
@@ -253,29 +261,30 @@ class NewPostView extends GetView<NewPostController> {
                         children: [
                           Expanded(
                             child: Container(
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFFFFAF6),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Center(
-                                      child: Text(
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16,
-                                        ),
-                                        controller.address.value == ''
-                                            ? 'Select Location'
-                                            : controller.address.value,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFFAF6),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Center(
+                                    child: Text(
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16,
                                       ),
+                                      controller.address.value == ''
+                                          ? 'Select Location'
+                                          : controller.address.value,
                                     ),
                                   ),
                                 ),
+                              ),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -283,6 +292,8 @@ class NewPostView extends GetView<NewPostController> {
                             onTap: controller.navigateToSelectAddress,
                             child: Image.asset(
                               Assets.geolocation,
+                              width: 36,
+                              height: 36,
                             ),
                           ),
                         ],
@@ -387,23 +398,23 @@ class NewPostView extends GetView<NewPostController> {
                 ),
                 const SizedBox(height: 8),
                 InkWell(
-                  onTap: () => controller.pickDate(),
-                      child: Row(
+                    onTap: () => controller.pickDate(),
+                    child: Row(
                       children: [
-                          const Text("Publication Date: "),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                          "${controller.publicationDate.value == '' ? 'Pick a Date' : controller.publicationDate}"
+                        const Text("Publication Date: "),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                            "${controller.publicationDate.value == '' ? 'Pick a Date' : controller.publicationDate}"
                             // enabled: false,
                             // decoration: const InputDecoration(labelText: 'Publication Date'),
                             // onChanged: (value) => controller.publicationDate(value),
                             // maxLines: null,
                             // keyboardType: TextInputType.multiline,
-                          ),
-                        ],
-                      )),
+                            ),
+                      ],
+                    )),
                 const SizedBox(
                   height: 16,
                 ),
@@ -489,7 +500,7 @@ class NewPostView extends GetView<NewPostController> {
                 child: Container(
                   margin: const EdgeInsets.only(right: 8, bottom: 4),
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: SeparatorPalette.light,
                     borderRadius: BorderRadius.circular(10),
