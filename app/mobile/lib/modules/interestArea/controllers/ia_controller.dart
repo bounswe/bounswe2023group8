@@ -30,6 +30,7 @@ class InterestAreaController extends GetxController {
 
   RxList<Spot> posts = <Spot>[].obs;
   RxList<InterestArea> nestedIas = <InterestArea>[].obs;
+  RxMap<int, List<bool>> isVotes = <int, List<bool>>{}.obs;
 
   RxList<IaRequest> followRequests = <IaRequest>[].obs;
   RxList<TagSuggestion> tagSuggestions = <TagSuggestion>[].obs;
@@ -107,7 +108,6 @@ class InterestAreaController extends GetxController {
         arguments: {'post': post, 'visitor': false});
   }
 
-
   void fetchData() async {
     final res = await iaProvider.getIa(
         id: interestArea.id, token: bottomNavigationController.token);
@@ -136,13 +136,14 @@ class InterestAreaController extends GetxController {
                 entityType: 'INTEREST_AREA',
                 token: bottomNavigationController.token) ??
             tagSuggestions;
-      } 
+      }
       posts.value = await iaProvider.getPosts(
               id: interestArea.id, token: bottomNavigationController.token) ??
           [];
       nestedIas.value = await iaProvider.getNestedIas(
               id: interestArea.id, token: bottomNavigationController.token) ??
           [];
+      await getVotedInfo();
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
@@ -312,6 +313,25 @@ class InterestAreaController extends GetxController {
     }
   }
 
+  Future getVotedInfo() async {
+    try {
+      for (var post in posts) {
+        final hasUpvoted = await iaProvider.hasUpVoted(
+            token: bottomNavigationController.token,
+            postId: post.id,
+            userId: bottomNavigationController.userId);
+        final hasDownvoted = await iaProvider.hasDownVoted(
+            token: bottomNavigationController.token,
+            postId: post.id,
+            userId: bottomNavigationController.userId);
+        isVotes[post.id] = [hasUpvoted, hasDownvoted];
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+      rethrow;
+    }
+  }
+
   void showVotes(int postId) async {
     try {
       final upvotedUsers = await iaProvider.getUpvotedUsers(
@@ -331,21 +351,6 @@ class InterestAreaController extends GetxController {
       ErrorHandlingUtils.handleApiError(e);
     }
   }
-
-  /*void showDownVotes(int postId) async {
-    try {
-      final users = await iaProvider.getDownvotedUsers(
-          token: bottomNavigationController.token, postId: postId);
-      if (users.isNotEmpty) {
-        Get.dialog(UserListDialog(
-          title: 'Downvoters',
-          users: users,
-        ));
-      }
-    } catch (e) {
-      ErrorHandlingUtils.handleApiError(e);
-    }
-  }*/
 
   void followIa() async {
     if (requestSent.value) {
