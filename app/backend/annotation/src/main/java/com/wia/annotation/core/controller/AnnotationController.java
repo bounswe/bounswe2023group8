@@ -15,10 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(
-        path = "/wia",
-        produces = "application/ld+json",
-        consumes = "application/ld+json")
+@RequestMapping(path = "/wia")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AnnotationController {
 
@@ -31,7 +28,7 @@ public class AnnotationController {
      * @param request       CreateAnnotationRequest
      * @return              HTTP 201
      */
-    @PostMapping(path = "/{containerName}")
+    @PostMapping(path = "/{containerName}", produces = "application/ld+json", consumes = "application/ld+json")
     public ResponseEntity<?> createAnnotation(@PathVariable String containerName,
                                               @RequestBody CreateAnnotationRequest request) {
 
@@ -63,7 +60,7 @@ public class AnnotationController {
      * @param annotationNameId  name and id of the annotation
      * @return                  AnnotationResponse
      */
-    @GetMapping(path = "/{containerName}/{annotationNameId}")
+    @GetMapping(path = "/{containerName}/{annotationNameId}", produces = "application/ld+json")
     public ResponseEntity<?> getAnnotation(@PathVariable String containerName,
                                            @PathVariable String annotationNameId) {
 
@@ -86,7 +83,7 @@ public class AnnotationController {
      * @param annotationNameId  name and id of the annotation
      * @return                  HTTP 204
      */
-    @PutMapping(path = "/{containerName}/{annotationNameId}")
+    @PutMapping(path = "/{containerName}/{annotationNameId}", produces = "application/ld+json", consumes = "application/ld+json")
     public ResponseEntity<?> updateAnnotation(@PathVariable String containerName,
                                               @PathVariable String annotationNameId,
                                               @RequestBody CreateAnnotationRequest request) {
@@ -112,7 +109,7 @@ public class AnnotationController {
      * @param annotationNameId  name and id of the annotation
      * @return                  HTTP 204
      */
-    @DeleteMapping(path = "/{containerName}/{annotationNameId}")
+    @DeleteMapping(path = "/{containerName}/{annotationNameId}", produces = "application/ld+json")
     public ResponseEntity<?> deleteAnnotation(@PathVariable String containerName,
                                               @PathVariable String annotationNameId) {
 
