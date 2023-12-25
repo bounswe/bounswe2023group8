@@ -98,9 +98,6 @@ class PostDetailsController extends GetxController {
   }
 
   void showLocation() {
-    // TO AVOID MAP API PRICING, IT IS DISABLED FOR NOW
-
-    return;
     Get.to(() => LocationView(
           currentLatLng: LatLng(post.value.geolocation.latitude,
               post.value.geolocation.longitude),

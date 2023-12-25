@@ -21,7 +21,7 @@ class ProfileController extends GetxController {
   int userId = Get.arguments['userId'];
 
   var routeLoading = true.obs;
-  late UserProfile userProfile;
+  late Rx<UserProfile> userProfile;
 
   var followers = <EnigmaUser>[].obs;
   var followings = <EnigmaUser>[].obs;
@@ -40,7 +40,7 @@ class ProfileController extends GetxController {
       final profile = await profileProvider.getProfilePage(
           id: userId, token: bottomNavigationController.token);
       if (profile != null) {
-        userProfile = profile;
+        userProfile = profile.obs;
         posts.value = await profileProvider.getPosts(
                 id: userId, token: bottomNavigationController.token) ??
             [];
@@ -62,7 +62,7 @@ class ProfileController extends GetxController {
       final res = await profileProvider.getProfilePage(
           id: userId, token: bottomNavigationController.token);
       if (res != null) {
-        userProfile = res;
+        userProfile.value = res;
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
@@ -173,11 +173,11 @@ class ProfileController extends GetxController {
   void showFollowPopUp(int section) {
     Get.dialog(
       UserListDialog(
-        title: '@${userProfile.username}',
+        title: '@${userProfile.value.username}',
         sections: const ['Followers', 'Following'],
         defaultSection: section,
         users: [followers, followings],
-        isRemovable: bottomNavigationController.userId == userProfile.id
+        isRemovable: bottomNavigationController.userId == userProfile.value.id
             ? [false, true]
             : [false, false],
         removeTexts: const ['Remove', 'Unfollow'],
@@ -208,6 +208,7 @@ class ProfileController extends GetxController {
         posts.value = await profileProvider.getPosts(
                 id: userId, token: bottomNavigationController.token) ??
             posts;
+        fetchProfile();
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
@@ -235,6 +236,7 @@ class ProfileController extends GetxController {
         posts.value = await profileProvider.getPosts(
                 id: userId, token: bottomNavigationController.token) ??
             posts;
+        fetchProfile();
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
