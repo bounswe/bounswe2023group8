@@ -46,6 +46,7 @@ class Assets {
   static const String newPicture = 'assets/icons/new_pic.png';
   static const String expand = 'assets/icons/expand.svg';
   static const String collapse = 'assets/icons/collapse.svg';
+  static const String report = 'assets/icons/report.png';
 
   // Radios
 

@@ -76,8 +76,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               [
                 SvgPicture.asset(
                   Assets.notification,
-                  width: 18,
-                  height: 20,
+                  width: 22,
+                  height: 24,
                 ),
                 const SizedBox(width: 16),
               ]

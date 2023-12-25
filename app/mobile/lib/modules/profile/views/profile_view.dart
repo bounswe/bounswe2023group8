@@ -35,18 +35,17 @@ class ProfileView extends GetView<ProfileController> {
             actions: [
               if (controller.userId !=
                   controller.bottomNavigationController.userId)
-                Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: InkWell(
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    onTap: () => controller.showReportUser(),
-                    child: Icon(
-                      Icons.report_gmailerrorred,
-                      size: 30,
-                    ),
+                InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: () => controller.showReportUser(),
+                  child: Image.asset(
+                    Assets.report,
+                    width: 24,
+                    height: 24,
                   ),
                 ),
+              const SizedBox(width: 16),
             ],
           ),
           body: SingleChildScrollView(
@@ -264,6 +263,7 @@ class ProfileView extends GetView<ProfileController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
