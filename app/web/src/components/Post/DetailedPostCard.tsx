@@ -757,9 +757,12 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                                             <i className="bi bi-chat-left-text-fill WA-theme-main fs-4 ms-5"></i>
                                         </span>
                                     </span>
-                                        <button className="btn btn-sm WA-theme-bg-main WA-theme-light" onClick={handleSuggestTagModalShow}>
-                                            Suggest Tags
-                                        </button>
+                                        {userData.id != enigmaUser.id
+                                        ? <button className="btn btn-sm WA-theme-bg-main WA-theme-light" onClick={handleSuggestTagModalShow}>
+                                                Suggest Tags
+                                            </button>
+                                        : <></>}
+
                                 </span>
                                 </div>
                             </div>
