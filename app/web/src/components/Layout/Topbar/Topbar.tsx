@@ -8,18 +8,9 @@ import { Button } from "react-bootstrap";
 import RegisterModal from "../../Register/RegisterModal";
 import LoginModal from "../../Login/LoginModal";
 import ForgotPasswordModal from "../../ForgotPassword/ForgotPasswordModal";
-import SpanWithOnClick from "../../shared/SpanWithOnClick/SpanWithOnClick";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useSearchGlobally } from "../../../hooks/useSearch";
-
-const mockNotifications = [
-  {
-    href: "notification1",
-    title: 'Your Interest Area "All About Rice" is trending!',
-  },
-  { href: "notification2", title: "You gained a badge: Food Enthusiast!" },
-];
+import SpanWithOnClick from "../../shared/SpanWithOnClick/SpanWithOnClick";
 
 const Topbar = () => {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
@@ -97,20 +88,6 @@ const Topbar = () => {
             {isAuthenticated ? (
               <Nav className="container justify-content-end m-3 ">
                 <NavDropdown
-                  title={<span className="fs-5 bi bi-bell"></span>}
-                  id="collapsible-nav-dropdown"
-                  drop="start"
-                >
-                  {mockNotifications.map((notification) => (
-                    <NavDropdown.Item
-                      key={notification.title}
-                      href={notification.href}
-                    >
-                      {notification.title}
-                    </NavDropdown.Item>
-                  ))}
-                </NavDropdown>
-                {/* <NavDropdown
                   title={
                     <span>
                       <span className="fs-5 bi bi-person"></span>
@@ -120,11 +97,6 @@ const Topbar = () => {
                   id="collapsible-nav-dropdown"
                   drop="start"
                 >
-                  <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.2">
-                    Another action
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
                   <NavDropdown.Item onClick={handleLogOut}>
                     <SpanWithOnClick
                       className="text-primary fw-bolder"
@@ -132,7 +104,7 @@ const Topbar = () => {
                       text={"Log Out"}
                     />
                   </NavDropdown.Item>
-                </NavDropdown> */}
+                </NavDropdown>
               </Nav>
             ) : (
               <Nav className="container justify-content-end m-3 ">

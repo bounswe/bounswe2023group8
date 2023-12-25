@@ -122,7 +122,8 @@ const ProfileHeader = ({
                         setShow={handleFollowingModal}
                     />
                 </div>
-                <div className="card-text rounded-5 col-2" style={{
+                {reputation
+                ? <div className="card-text rounded-5 col-2" style={{
                     padding: "15px",
                     fontSize: "1.1rem",
                     background: "rgb(136, 154, 186)",
@@ -134,6 +135,8 @@ const ProfileHeader = ({
                     <p>Reputation:</p>
                     <p style={{fontSize: "1.5rem", margin: "0px"}}>{reputation}</p>
                 </div>
+                : <></>
+                }
             </div>
             {userData.id != id
                 ? <Col className="d-flex col-5">

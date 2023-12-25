@@ -3,15 +3,25 @@ import PostPreviewCard from "../../components/Post/PostSmallPreview/PostPreviewC
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import {
+  useAcceptFollowRequest,
   useFollowInterestArea,
+  useGetFollowRequestsOfInterestArea,
   useGetInterestArea,
   useGetPostsOfInterestArea,
   useGetSubInterestAreasOfInterestArea,
+  useRejectFollowRequest,
   useUnfollowInterestArea,
 } from "../../hooks/useInterestArea";
 import { AccessLevel, accessLevelMapping } from "../InterestAreaUpdatePage";
 import { useReportAnIssue } from "../../hooks/useModeration";
-import { useGetWaitingBunchFollowRequests } from "../../hooks/useUser";
+import {
+  useGetUserFollowingInterestAreas,
+  useGetWaitingBunchFollowRequests,
+} from "../../hooks/useUser";
+import SuggestTagModal from "../../components/SuggestTags/SuggestTagModal";
+import { useToastContext } from "../../contexts/ToastContext";
+import ViewSuggestionsModal from "../../components/SuggestTags/ViewSuggestionsModal";
+import { Modal } from "react-bootstrap";
 
 export interface EnigmaUser {
   id: number;
@@ -60,14 +70,27 @@ export interface Post {
 }
 
 const ViewInterestArea = () => {
-  const { axiosInstance } = useAuth();
+  const { axiosInstance, userData } = useAuth();
   const { iaId } = useParams();
   const [interestAreaData, setInterestAreaData] = useState<any>(null);
   const [subInterestAreasData, setSubInterestAreasData] = useState<any>(null);
   const [postsData, setPostsData] = useState<Post[] | null>(null);
-  const [filteredAndSortedPosts, setFilteredAndSortedPostsData] = useState<Post[] | null>(null);
+  const [filteredAndSortedPosts, setFilteredAndSortedPostsData] = useState<
+    Post[] | null
+  >(null);
   const [isFollowingRequestWaiting, setIsFollowingRequestWaiting] =
     useState(false);
+  const [isUserFollowing, setIsUserFollowing] = useState(false);
+
+  const [suggestTagModalShow, setSuggestTagModalShow] = useState(false);
+  const handleSuggestTagModalShow = () => {
+    setSuggestTagModalShow(!suggestTagModalShow);
+  };
+
+  const [viewSuggestionsModalShow, setViewSuggestionsModalShow] = useState(false);
+  const handleViewSuggestionsModalShow = () => {
+    setViewSuggestionsModalShow(!viewSuggestionsModalShow);
+  }
 
   const { mutate: followInterestArea } = useFollowInterestArea({
     axiosInstance,
@@ -75,16 +98,118 @@ const ViewInterestArea = () => {
     config: {
       onSuccess: () => {
         refetch();
+        refetchInterestArea();
+        refetchUserFollowingBunches();
+        const tempState = toastState.filter((toast) => {
+          return toast.message != "Followed the Bunch successfully!";
+        });
+        setToastState([
+          ...tempState,
+          {
+            message: "Followed the Bunch successfully!",
+            display: true,
+            isError: false,
+          },
+        ]);
+        setTimeout(
+          () =>
+            setToastState(
+              toastState.filter((toast) => {
+                return toast.message != "Followed the Bunch successfully!";
+              })
+            ),
+          6000
+        );
+      },
+      onError: () => {
+        const tempState = toastState.filter((toast) => {
+          return toast.message != "You are already following!";
+        });
+        setToastState([
+          ...tempState,
+          {
+            message: "You are already following!",
+            display: true,
+            isError: true,
+          },
+        ]);
+        setTimeout(
+          () =>
+            setToastState(
+              toastState.filter((toast) => {
+                return toast.message != "You are already following!";
+              })
+            ),
+          6000
+        );
       },
     },
   });
 
+  const { refetch: refetchUserFollowingBunches } =
+    useGetUserFollowingInterestAreas({
+      axiosInstance,
+      id: userData.id,
+      config: {
+        onSuccess: (data: any) => {
+          setIsUserFollowing(
+            data.some((ia: any) => ia.id === parseInt(iaId as string))
+          );
+        },
+      },
+    });
+
+  const { toastState, setToastState } = useToastContext();
   const { mutate: unfollowInterestArea } = useUnfollowInterestArea({
     axiosInstance,
     interestAreaId: parseInt(iaId as string),
     config: {
       onSuccess: () => {
         refetch();
+        refetchInterestArea();
+        refetchUserFollowingBunches();
+        const tempState = toastState.filter((toast) => {
+          return toast.message != "Unfollowed the Bunch successfully!";
+        });
+        setToastState([
+          ...tempState,
+          {
+            message: "Unfollowed the Bunch successfully!",
+            display: true,
+            isError: false,
+          },
+        ]);
+        setTimeout(
+          () =>
+            setToastState(
+              toastState.filter((toast) => {
+                return toast.message != "Unfollowed the Bunch successfully!";
+              })
+            ),
+          6000
+        );
+      },
+      onError: () => {
+        const tempState = toastState.filter((toast) => {
+          return toast.message != "You are not following already!";
+        });
+        setToastState([
+          ...tempState,
+          {
+            message: "You are not following already!",
+            display: true,
+            isError: true,
+          },
+        ]);
+        setTimeout(
+          () =>
+            setToastState(
+              toastState.filter((toast) => {
+                return toast.message != "You are not following already!";
+              })
+            ),
+          6000
+        );
       },
     },
   });
@@ -103,12 +228,13 @@ const ViewInterestArea = () => {
     });
   };
 
-  const { isSuccess } = useGetInterestArea({
+  const { isSuccess, refetch: refetchInterestArea } = useGetInterestArea({
     axiosInstance,
     interestAreaId: parseInt(iaId as string),
     config: {
       onSuccess: (data: any) => {
         const newDetails = {
+          creatorId: data.creatorId,
           title: data.title,
           wikiTags: data.wikiTags.map((tag: any) => ({
             id: tag.id,
@@ -152,6 +278,7 @@ const ViewInterestArea = () => {
     });
   const [showContent, setShowContent] = useState(false);
   const [showPosts, setShowPosts] = useState(true);
+  const [showFollowRequests, setShowFollowRequests] = useState(false);
   const [reportReason, setReportReason] = useState("");
   const [showReport, setShowReport] = useState(false);
   const [sortType, setSortType] = useState("new");
@@ -166,6 +293,52 @@ const ViewInterestArea = () => {
     // Clean up the timeout to avoid memory leaks
     return () => clearTimeout(timeoutId);
   }, []); // Empty dependency array ensures the effect runs only once on component mount
+
+  const {
+    data: followRequestsData,
+    refetch: refetchGetFollowRequests,
+    isSuccess: isGetFollowRequestSuccess,
+  } = useGetFollowRequestsOfInterestArea({
+    axiosInstance,
+    interestAreaId: parseInt(iaId as string),
+    config: {
+      enabled: isSuccess,
+    },
+  });
+
+  const { mutate: acceptFollowRequest } = useAcceptFollowRequest({
+    axiosInstance,
+    requestId: -1,
+    config: {
+      onSuccess: () => {
+        refetchGetFollowRequests();
+      },
+    },
+  });
+
+  const acceptRequest = (requestId: number) => {
+    acceptFollowRequest({
+      axiosInstance,
+      requestId: requestId,
+    });
+  };
+
+  const { mutate: rejectFollowRequest } = useRejectFollowRequest({
+    axiosInstance,
+    requestId: -1,
+    config: {
+      onSuccess: () => {
+        refetchGetFollowRequests();
+      },
+    },
+  });
+
+  const rejectRequest = (requestId: number) => {
+    rejectFollowRequest({
+      axiosInstance,
+      requestId: requestId,
+    });
+  };
 
   const { isSuccess: isPostsSuccess } = useGetPostsOfInterestArea({
     axiosInstance,
@@ -187,11 +360,12 @@ const ViewInterestArea = () => {
           upvoteCount: result.upvoteCount,
           downvoteCount: result.downvoteCount,
         }));
-        const sortedByCreateTime = newDetails?.slice().sort((a, b) =>
-          Number(new Date(b.createTime)) - Number(new Date(a.createTime))
-        );
-        console.log(newDetails)
-        newDetails[0].upvoteCount = 10;
+        const sortedByCreateTime = newDetails
+          ?.slice()
+          .sort(
+            (a, b) =>
+              Number(new Date(b.createTime)) - Number(new Date(a.createTime))
+          );
         setPostsData(sortedByCreateTime || null);
         setFilteredAndSortedPostsData(sortedByCreateTime || null);
       },
@@ -199,31 +373,51 @@ const ViewInterestArea = () => {
   });
 
   useEffect(() => {
-    console.log(sortType)
-    if(sortType === 'new'){
-      const sortedByCreateTime = filteredAndSortedPosts?.slice().sort((a, b) =>
-        Number(new Date(b.createTime)) - Number(new Date(a.createTime))
-      );
+    if (sortType === "new") {
+      const sortedByCreateTime = filteredAndSortedPosts
+        ?.slice()
+        .sort(
+          (a, b) =>
+            Number(new Date(b.createTime)) - Number(new Date(a.createTime))
+        );
       setFilteredAndSortedPostsData(sortedByCreateTime || null);
-    }else if(sortType === 'top'){
-      const sortedByUpvoteCount = filteredAndSortedPosts?.slice().sort((a, b) => (Number(b.upvoteCount) - Number(b.downvoteCount)) - (Number(a.upvoteCount) - Number(a.downvoteCount)));
+    } else if (sortType === "top") {
+      const sortedByUpvoteCount = filteredAndSortedPosts
+        ?.slice()
+        .sort(
+          (a, b) =>
+            Number(b.upvoteCount) -
+            Number(b.downvoteCount) -
+            (Number(a.upvoteCount) - Number(a.downvoteCount))
+        );
       setFilteredAndSortedPostsData(sortedByUpvoteCount || null);
     }
-  }, [sortType])
+  }, [sortType]);
 
   useEffect(() => {
-    let sortedData = postsData?.slice()
-    console.log(postsData, sortedData)
-    if(sortType === 'new'){
-      sortedData = postsData?.slice().sort((a, b) =>
-        Number(new Date(b.createTime)) - Number(new Date(a.createTime))
-      );
-    }else if(sortType === 'top'){
-      sortedData = postsData?.slice().sort((a, b) => (Number(b.upvoteCount) - Number(b.downvoteCount)) - (Number(a.upvoteCount) - Number(a.downvoteCount)));
+    let sortedData = postsData?.slice();
+    if (sortType === "new") {
+      sortedData = postsData
+        ?.slice()
+        .sort(
+          (a, b) =>
+            Number(new Date(b.createTime)) - Number(new Date(a.createTime))
+        );
+    } else if (sortType === "top") {
+      sortedData = postsData
+        ?.slice()
+        .sort(
+          (a, b) =>
+            Number(b.upvoteCount) -
+            Number(b.downvoteCount) -
+            (Number(a.upvoteCount) - Number(a.downvoteCount))
+        );
     }
-    const filteredPosts = sortedData?.filter(post => post.label === filterType || filterType === 'ALL');
+    const filteredPosts = sortedData?.filter(
+      (post) => post.label === filterType || filterType === "ALL"
+    );
     setFilteredAndSortedPostsData(filteredPosts || null);
-  }, [filterType])
+  }, [filterType]);
 
   const { mutate: reportAnIssue } = useReportAnIssue({
     axiosInstance,
@@ -262,11 +456,27 @@ const ViewInterestArea = () => {
                 <div className="m-3 WA-theme-light">
                   <h1>{interestAreaData?.title}</h1>
                 </div>
-                <div className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
-                  <span onClick={() => followBunch()} className="mx-2">
-                    Join
-                  </span>
-                </div>
+                {isUserFollowing ? (
+                  <>
+                    <div
+                      onClick={() => unFollowBunch()}
+                      style={{ cursor: "pointer" }}
+                      className="mx-2 my-3 px-2 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5"
+                    >
+                      Unfollow
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div
+                      onClick={() => followBunch()}
+                      style={{ cursor: "pointer" }}
+                      className="mx-2 my-3 px-2 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5"
+                    >
+                      Follow
+                    </div>
+                  </>
+                )}
                 <div className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
                   <img
                     className="mx-2"
@@ -323,19 +533,29 @@ const ViewInterestArea = () => {
               >
                 <span className="m-3 text-dark">About</span>
               </button>
+              {isGetFollowRequestSuccess && followRequestsData?.length > 0 && (
+                <button
+                  className="btn mx-3 WA-theme-bg-solid rounded-3"
+                  onClick={() => setShowFollowRequests(true)}
+                >
+                  <span className="m-3 text-dark">Follow Requests</span>
+                </button>
+              )}
             </div>
             <div
-              className="WA-theme-bg-regular pt-3 position-relative rounded-4 "
+              className="WA-theme-bg-regular pt-3 position-relative rounded-4 pb-2 ps-5 "
               style={{
                 marginTop: "-42px",
                 marginLeft: "-21px",
-                padding: "52px",
                 zIndex: 1,
               }}
             >
-              <div className="d-flex mt-5">
+              <div className="d-flex flex-row ">
+                <div>
+                  <div className="d-flex mt-5">
                 <div className="">Sort By:</div>
-                <div className="ms-3 WA-theme-bg-soft rounded-4 d-flex" onClick={() => setSortType("new")}>
+                <div className="ms-3 WA-theme-bg-soft rounded-4 d-flex" onClick={() => setSortType("new")}
+                     style={{cursor: 'pointer'}}>
                   <div>
                     <img
                       src="/assets/theme/icons/NewFilter.png"
@@ -346,7 +566,8 @@ const ViewInterestArea = () => {
                     <span>New</span>
                   </div>
                 </div>
-                <div className="ms-3 WA-theme-bg-soft rounded-4 d-flex" onClick={() => setSortType("top")}>
+                <div className="ms-3 WA-theme-bg-soft rounded-4 d-flex" onClick={() => setSortType("top")}
+                     style={{cursor: 'pointer'}}>
                   <div>
                     <img
                       src="/assets/theme/icons/TopIcon.png"
@@ -358,9 +579,13 @@ const ViewInterestArea = () => {
                   </div>
                 </div>
               </div>
-              <div className="d-flex mt-5">
+                </div>
+                <div className="d-flex mt-5 mx-5">
                 <div className="">Filter By:</div>
-                <div className="ms-3 WA-theme-bg-soft rounded-4 d-flex" onClick={() => setSortType("new")}>
+                <div
+                  className="ms-3 WA-theme-bg-soft rounded-4 d-flex"
+                  onClick={() => setSortType("new")}
+                >
                   <div className="mx-2 d-flex justify-content-center align-items-center">
                     <div className="mb-3">
                       <label htmlFor="label" className="form-label ">
@@ -375,15 +600,24 @@ const ViewInterestArea = () => {
                         }}
                       >
                         <option value={"All".toUpperCase()}>All</option>
-                        <option value={"Discussion".toUpperCase()}>Discussion</option>
-                        <option value={"Documentation".toUpperCase()}>Documentation</option>
-                        <option value={"Learning".toUpperCase()}>Learning</option>
+                        <option value={"Discussion".toUpperCase()}>
+                          Discussion
+                        </option>
+                        <option value={"Documentation".toUpperCase()}>
+                          Documentation
+                        </option>
+                        <option value={"Learning".toUpperCase()}>
+                          Learning
+                        </option>
                         <option value={"News".toUpperCase()}>News</option>
-                        <option value={"Research".toUpperCase()}>Research</option>
+                        <option value={"Research".toUpperCase()}>
+                          Research
+                        </option>
                       </select>
                     </div>
                   </div>
                 </div>
+              </div>
               </div>
             </div>
             {!showPosts && (
@@ -424,23 +658,24 @@ const ViewInterestArea = () => {
                   />
                 </div>
               </Link>
-              <a
-                style={{ textDecoration: "none", color: "black" }}
-                href={`/update_interest_area/${iaId}`}
-              >
-                <div className="m-2 py-3 px-1 WA-theme-bg-soft rounded-4 d-flex w-50">
-                  <div className="mx-2 d-flex justify-content-center align-items-center">
-                    <span style={{ whiteSpace: "nowrap" }} className="me-3">
-                      Edit Bunch
-                    </span>
-                  </div>
-                  <img
-                    className="ms-2"
-                    src="/assets/theme/icons/EditIcon.png"
-                    style={{ width: "20px", height: "20px" }}
-                  />
-                </div>
-              </a>
+              {userData.id == interestAreaData?.creatorId
+                  ? <a style={{ textDecoration: "none", color: "black" }}
+                      href={`/update_interest_area/${iaId}`}>
+                      <div className="m-2 py-3 px-1 WA-theme-bg-soft rounded-4 d-flex w-50">
+                        <div className="mx-2 d-flex justify-content-center align-items-center">
+                          <span style={{ whiteSpace: "nowrap" }} className="me-3">
+                            Edit Bunch
+                          </span>
+                        </div>
+                        <img
+                          className="ms-2"
+                          src="/assets/theme/icons/EditIcon.png"
+                          style={{ width: "20px", height: "20px" }}
+                        />
+                      </div>
+                    </a>
+                  : <></>
+              }
             </div>
             <div className="mb-3">
               <h2 style={{ marginLeft: "20px" }}>Tags</h2>
@@ -460,10 +695,21 @@ const ViewInterestArea = () => {
                     #{tag.name}
                   </div>
                 ))}
-                <div
+                {userData.id == interestAreaData?.creatorId
+                    ? <div onClick={handleViewSuggestionsModalShow}
+                           className="m-2 h-2 WA-theme-light WA-theme-separator-light WA-theme-bg-solid d-flex align-items-center justify-content-center rounded-5"
+                           style={{
+                             height: "45px",
+                             cursor: 'pointer',
+                           }}
+                    >
+                      View Suggested Tags
+                    </div>
+                    : <div onClick={handleSuggestTagModalShow}
                   className="m-2 h-2 WA-theme-light WA-theme-separator-light WA-theme-bg-solid d-flex align-items-center justify-content-center rounded-5"
                   style={{
                     height: "45px",
+                    cursor: 'pointer',
                   }}
                 >
                   <img
@@ -471,8 +717,9 @@ const ViewInterestArea = () => {
                     src="/assets/theme/icons/Type=Add.png"
                     style={{ width: "20px" }}
                   />
-                  Suggest
+                  Suggest Tags
                 </div>
+                }
               </div>
             </div>
             <div>
@@ -534,6 +781,52 @@ const ViewInterestArea = () => {
           </>
         )
       )}
+      <SuggestTagModal handleSuggestTagModalShow={handleSuggestTagModalShow} suggestTagModalShow={suggestTagModalShow}
+                       entityId={parseInt(iaId || "-1")} entityType={0}/>
+      {userData.id == interestAreaData?.creatorId
+          ? <ViewSuggestionsModal viewSuggestionsModalShow={viewSuggestionsModalShow} handleViewSuggestionsModalShow={handleViewSuggestionsModalShow}
+                            entityType={"INTEREST_AREA"} entityId={parseInt(iaId || "-1")} />
+          : <></>
+      }
+      <Modal
+        show={showFollowRequests}
+        onHide={() => setShowFollowRequests(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Follow Requests</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          {followRequestsData &&
+            followRequestsData.map((request: any) => (
+              <>
+                <div
+                  key={request.requestId}
+                  className="d-flex flex-column justify-content-center align-items-center"
+                >
+                  <div>
+                    @{request.follower.username} - {request.follower.name}
+                  </div>
+                  <div>
+                    <button
+                      onClick={() => acceptRequest(request.requestId)}
+                      className="btn btn-success m-2"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => rejectRequest(request.requestId)}
+                      className="btn btn-danger m-2"
+                    >
+                      Reject
+                    </button>
+                  </div>
+                </div>
+                <hr></hr>
+              </>
+            ))}
+        </Modal.Body>
+      </Modal>
     </>
   );
 };

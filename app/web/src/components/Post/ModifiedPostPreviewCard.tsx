@@ -23,7 +23,7 @@ const ModifiedPostPreviewCard: React.FC<ModifiedPostPreviewCardProps> = (props) 
                             <div className="text-center mb-3">
                                 <img
                                     src={props.post.image_link}
-                                    alt={`Post Image`}
+                                    alt={`Spot Image`}
                                     className="img-fluid"
                                     style={{ maxWidth: '200px' }}
                                 />

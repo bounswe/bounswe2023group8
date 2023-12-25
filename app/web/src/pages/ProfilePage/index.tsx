@@ -45,7 +45,6 @@ const ProfilePage = () => {
       axiosInstance: axiosInstance,
       userId: userId || "-1",
     });
-    console.log(profileData);
     getUserFollowingInterestAreas({
       axiosInstance: axiosInstance,
       userId: userId || "-1",
@@ -60,7 +59,7 @@ const ProfilePage = () => {
     <>
       {isSuccessProfile && (
         <ProfileHeader
-          reputation={reputationData.reputation}
+          reputation={reputationData?.reputation}
           style={{ background: "#EEF0EB", marginLeft: "60px" }}
           user={profileData}
           className="col-5 border-0"
@@ -69,7 +68,7 @@ const ProfilePage = () => {
       <hr className="mx-3" />
       <Row>
         <Col className="col-4">
-          <h5 className="mt-2 mx-3">Interest Areas</h5>
+          <h5 className="mt-2 mx-3">Bunches</h5>
           <div className="card border-0" style={{ maxHeight: "70vh" }}>
             <hr className="m-0 mx-2" />
             {isSuccessInterestAreas && (
@@ -86,7 +85,7 @@ const ProfilePage = () => {
         </Col>
 
         <Col className="col-8">
-          <h5 className="mt-2 mx-3">Posts</h5>
+          <h5 className="mt-2 mx-3">Spots</h5>
           <div className="card border-0" style={{ maxHeight: "70vh" }}>
             <hr className="m-0 mx-2" />
             {isSuccessPosts && (
