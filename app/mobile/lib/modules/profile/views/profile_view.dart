@@ -45,67 +45,7 @@ class ProfileView extends GetView<ProfileController> {
                     height: 24,
                   ),
                 ),
-                subtitle: const Divider(
-                  thickness: 1,
-                  color: Color(0xFF203376),
-                ),
-                initiallyExpanded: true,
-                onExpansionChanged: (value) {
-                  isExpanded = !isExpanded;
-                },
-                trailing: Icon(
-                  isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                  size: 40,
-                  color: Color(0xFF203376), // Set the color as needed
-                ),
-                children: [
-                  ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: controller.ias.length,
-                      itemBuilder: (context, index) {
-                        return BunchWidget(
-                            ia: controller.ias[index],
-                            onTap: () =>
-                                controller.navigateToIa(controller.ias[index]));
-                      },
-                      separatorBuilder: (context, index) => const SizedBox(
-                            height: 10,
-                          )),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                'Spots',
-                style: TextStyle(color: ThemePalette.dark, fontSize: 16),
-              ),
-              const Divider(
-                thickness: 1,
-                color: Colors.grey,
-              ),
-              ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: controller.posts.length,
-                  itemBuilder: (context, index) {
-                    final spot = controller.posts[index];
-                    final isVoted =
-                        controller.isVotes[spot.id] ?? [false, false];
-                    return PostTileWidget(
-                      onTap: () => controller.navigateToPostDetails(spot),
-                      post: spot,
-                      hideTags: false,
-                      isUpvoted: isVoted[0],
-                      isDownvoted: isVoted[1],
-                      onDownvote: () => controller.downvotePost(spot.id),
-                      onUpvote: () => controller.upvotePost(spot.id),
-                      showVoters: () => controller.showVotes(spot.id),
-                    );
-                  },
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 8))
+              const SizedBox(width: 16),
             ],
           ),
           body: SingleChildScrollView(
@@ -212,17 +152,18 @@ class ProfileView extends GetView<ProfileController> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: controller.posts.length,
                         itemBuilder: (context, index) {
+                          final spot = controller.posts[index];
+                          final isVoted =
+                              controller.isVotes[spot.id] ?? [false, false];
                           return PostTileWidget(
-                            onTap: () => controller
-                                .navigateToPostDetails(controller.posts[index]),
-                            post: controller.posts[index],
+                            onTap: () => controller.navigateToPostDetails(spot),
+                            post: spot,
                             hideTags: false,
-                            onDownvote: () => controller
-                                .downvotePost(controller.posts[index].id),
-                            onUpvote: () => controller
-                                .upvotePost(controller.posts[index].id),
-                            showVoters: () => controller
-                                .showVotes(controller.posts[index].id),
+                            isUpvoted: isVoted[0],
+                            isDownvoted: isVoted[1],
+                            onDownvote: () => controller.downvotePost(spot.id),
+                            onUpvote: () => controller.upvotePost(spot.id),
+                            showVoters: () => controller.showVotes(spot.id),
                           );
                         },
                         separatorBuilder: (context, index) {

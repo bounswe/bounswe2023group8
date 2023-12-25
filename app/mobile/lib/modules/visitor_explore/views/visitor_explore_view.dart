@@ -129,6 +129,8 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                               onTap: () => controller.navigateToSignUp(),
                               post: controller.spots[index],
                               hideTags: false,
+                              isUpvoted: false,
+                              isDownvoted: false,
                               onUpvote: () {},
                               onDownvote: () {},
                               showVoters: () {},
