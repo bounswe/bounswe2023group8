@@ -117,8 +117,9 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                       ),
                       const SizedBox(height: 8),
                       SizedBox(
-                        height: 402,
+                        height: 400,
                         child: ListView.separated(
+                          padding: const EdgeInsets.only(bottom: 8),
                           physics: const ClampingScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: controller.spots.length,
@@ -129,6 +130,7 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                               onTap: () => controller.navigateToSignUp(),
                               post: controller.spots[index],
                               hideTags: false,
+                              hideVoters: true,
                               isUpvoted: false,
                               isDownvoted: false,
                               onUpvote: () {},

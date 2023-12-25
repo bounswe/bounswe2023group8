@@ -93,68 +93,69 @@ class PostTileWidgetState extends State<PostTileWidget> {
                     ),
                   ],
                 ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    isDownvoted
-                        ? const SizedBox(width: 15)
-                        : InkWell(
-                            onTap: () {
-                              setState(() {
-                                isUpvoted = !isUpvoted;
-                                widget.onUpvote();
-                              });
-                            },
-                            child: Image.asset(
-                              isUpvoted ? Assets.upvote : Assets.upvoteEmpty,
-                              width: 15,
-                              height: 15,
+                if (!widget.hideVoters)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      isDownvoted
+                          ? const SizedBox(width: 15)
+                          : InkWell(
+                              onTap: () {
+                                setState(() {
+                                  widget.onUpvote();
+                                  isUpvoted = !isUpvoted;
+                                });
+                              },
+                              child: Image.asset(
+                                isUpvoted ? Assets.upvote : Assets.upvoteEmpty,
+                                width: 15,
+                                height: 15,
+                              ),
                             ),
+                      const SizedBox(width: 2),
+                      InkWell(
+                        onTap: widget.showVoters,
+                        child: SizedBox(
+                          width: 18,
+                          child: Text(
+                            totalVote >= 0
+                                ? (totalVote).toString()
+                                : (-totalVote).toString(),
+                            style: TextStyle(
+                              color: totalVote >= 0
+                                  ? totalVote == 0
+                                      ? ThemePalette.dark
+                                      : ThemePalette.positive
+                                  : ThemePalette.negative,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: -0.2,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                    const SizedBox(width: 2),
-                    InkWell(
-                      onTap: widget.showVoters,
-                      child: SizedBox(
-                        width: 18,
-                        child: Text(
-                          totalVote >= 0
-                              ? (totalVote).toString()
-                              : (-totalVote).toString(),
-                          style: TextStyle(
-                            color: totalVote >= 0
-                                ? totalVote == 0
-                                    ? ThemePalette.dark
-                                    : ThemePalette.positive
-                                : ThemePalette.negative,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: -0.2,
-                          ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 2),
-                    isUpvoted
-                        ? const SizedBox(width: 15)
-                        : InkWell(
-                            onTap: () {
-                              setState(() {
-                                isDownvoted = !isDownvoted;
-                                widget.onDownvote();
-                              });
-                            },
-                            child: Image.asset(
-                              isDownvoted
-                                  ? Assets.downvote
-                                  : Assets.downvoteEmpty,
-                              width: 15,
-                              height: 15,
+                      const SizedBox(width: 2),
+                      isUpvoted
+                          ? const SizedBox(width: 15)
+                          : InkWell(
+                              onTap: () {
+                                setState(() {
+                                  widget.onDownvote();
+                                  isDownvoted = !isDownvoted;
+                                });
+                              },
+                              child: Image.asset(
+                                isDownvoted
+                                    ? Assets.downvote
+                                    : Assets.downvoteEmpty,
+                                width: 15,
+                                height: 15,
+                              ),
                             ),
-                          ),
-                    const SizedBox(width: 4),
-                  ],
-                ),
+                      const SizedBox(width: 4),
+                    ],
+                  ),
               ],
             ),
           ],
@@ -307,6 +308,7 @@ class PostTileWidget extends StatefulWidget {
   final Spot post;
   final void Function()? onTap;
   final bool hideTags;
+  final bool hideVoters;
   final bool isUpvoted;
   final bool isDownvoted;
   final void Function() onUpvote;
@@ -317,6 +319,7 @@ class PostTileWidget extends StatefulWidget {
     required this.post,
     this.onTap,
     required this.hideTags,
+    this.hideVoters = false,
     required this.isUpvoted,
     required this.isDownvoted,
     required this.onUpvote,
