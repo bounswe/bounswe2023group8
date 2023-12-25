@@ -217,7 +217,7 @@ const followInterestArea = async ({
   axiosInstance,
   interestAreaId,
 }: FollowInterestAreaProps) => {
-  const response = await axiosInstance.post(
+  const response = await axiosInstance.get(
     `${process.env.REACT_APP_BACKEND_API_URL}/v1/interest-area/follow?id=${interestAreaId}`
   );
 
