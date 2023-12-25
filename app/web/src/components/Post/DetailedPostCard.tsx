@@ -170,6 +170,7 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
 
     const [annotations, setAnnotations] = useState<Annotation[]>([]);
     const [displayAnnotations, setDisplayAnnotations] = useState<Annotation[]>([]);
+    const [highlightAnnotations, setHighlightAnnotations] = useState<Annotation[]>([]);
     const [mergedRanges, setMergedRanges] = useState<{start: number, end: number}[]>([]);
 
     const [selectedText, setSelectedText] = useState('');
@@ -269,6 +270,7 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
     //   }
       setAnnotations([ann1, ann2, ann4]);
       setDisplayAnnotations([ann1, ann2, ann4]);
+      setHighlightAnnotations([ann1, ann2, ann4]);
       
     //   setAnnotations([ann1, ann2, ann4, ann5, ann6, ann7, ann8, ann9, ann10]);
     //   setDisplayAnnotations([ann1, ann2, ann4, ann5, ann6, ann7, ann8, ann9, ann10]);
@@ -281,8 +283,9 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
     const handleDropdownChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
             
         const filterAnnotationsBySource = (sourceToFilter: string) => {
-            const filteredAnnotations = annotations.filter(annotation => annotation.source === sourceToFilter);
+            const filteredAnnotations = annotations.filter(annotation => (annotation.source === sourceToFilter || sourceToFilter === 'All'));
             setDisplayAnnotations(filteredAnnotations);
+            setHighlightAnnotations(filteredAnnotations);
         };
 
         filterAnnotationsBySource(event.target.value);
@@ -291,11 +294,13 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
   
   
     useEffect(() => {
-        const uniqueSources = Array.from(new Set(annotations.map(annotation => annotation.source)));
-        setUniqueSources(uniqueSources)
+        if (highlightAnnotations.length == 0) return;
+        setMergedRanges(mergeOverlappingRanges(highlightAnnotations))
+    }, [highlightAnnotations])
 
-        if (annotations.length == 0) return;
-        setMergedRanges(mergeOverlappingRanges(annotations))
+    useEffect(() => {
+        const uniqueSources = Array.from(new Set(highlightAnnotations.map(annotation => annotation.source)));
+        setUniqueSources(['All', ...uniqueSources])
     }, [annotations])
 
     useEffect(() => {
@@ -409,8 +414,29 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
             content: selectedTextAnnotation,
             source: "Furkan"
         }])
+        setHighlightAnnotations([...annotations, {
+            startIndex: selectedTextRanges.start,
+            endIndex: selectedTextRanges.end,
+            content: selectedTextAnnotation,
+            source: "Furkan"
+        }])
         // connect api here
     }
+
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue: string = event.target.value;
+        console.log(inputValue)
+        setSearchTerm(inputValue);
+        const filterAnnotationsBySource = (sourceToFilter: string) => {
+            const filteredAnnotations = annotations.filter(annotation => (annotation.content.toLowerCase().includes(sourceToFilter.toLowerCase()) || content.slice(annotation.startIndex, annotation.endIndex).toLowerCase().includes(sourceToFilter.toLowerCase())));
+            setDisplayAnnotations(filteredAnnotations);
+            setHighlightAnnotations(filteredAnnotations);
+        };
+
+        filterAnnotationsBySource(inputValue);
+    };
 
     const { post } = props;
     return (
@@ -446,6 +472,10 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                                         {/*</div>*/}
                                     </div>
                                 </div>
+                                <button className="btn btn-primary" style={{marginLeft: "200px"}} onClick={() => setAnnotationsVisible(!annotationsVisible)}>
+                                    <h6>{annotationsVisible ? "Hide" : "Show"}</h6>
+                                    <h6>Highlightings</h6>
+                                </button>
                             </div>
                         </span>
                     </span>
@@ -539,7 +569,18 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                         ))}
                     </select>
                 </div>
-                <div className="d-flex flex-column" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                <div className="mb-3">
+                <label htmlFor="search" className="form-label">Search for an option:</label>
+                    <input
+                        type="text"
+                        id="search"
+                        className="form-control"
+                        placeholder="Type to search..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                    />
+                </div>
+                <div className="d-flex flex-column" style={{ height: '250px', maxHeight: '250px', minHeight: '250px', overflowY: 'auto' }}>
                     <table className="table">
                         <thead>
                             <tr>
@@ -563,7 +604,7 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                     <h4>Add Your Annotation</h4>
                     {
                         annotationsVisible
-                            ? <h5>To add an annotation please select No-Annotation View!</h5>
+                            ? <h5>To add an annotation please "Hide Highlightings" first!</h5>
                             :
                             <>
                                 <div className="mb-3">
