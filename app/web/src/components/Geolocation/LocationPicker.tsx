@@ -125,10 +125,8 @@ const LocationPicker = ({
                             className="card-title text-center my-3 fw-bolder"
                             style={{color: "#324ca8"}}
                         >
-                            Pick the location
+                            Pick the location - You can use the dropdown menu
                         </h2>
-
-
                         <div className="mb-2">
                             <FormSelect>
                                 {possibleLocations.map((possibleLocation, index) => {

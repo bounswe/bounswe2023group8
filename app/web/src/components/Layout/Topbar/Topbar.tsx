@@ -8,10 +8,9 @@ import { Button } from "react-bootstrap";
 import RegisterModal from "../../Register/RegisterModal";
 import LoginModal from "../../Login/LoginModal";
 import ForgotPasswordModal from "../../ForgotPassword/ForgotPasswordModal";
-import SpanWithOnClick from "../../shared/SpanWithOnClick/SpanWithOnClick";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useSearchGlobally } from "../../../hooks/useSearch";
+import SpanWithOnClick from "../../shared/SpanWithOnClick/SpanWithOnClick";
 
 const mockNotifications = [
   {
@@ -110,7 +109,7 @@ const Topbar = () => {
                     </NavDropdown.Item>
                   ))}
                 </NavDropdown>
-                {/* <NavDropdown
+                <NavDropdown
                   title={
                     <span>
                       <span className="fs-5 bi bi-person"></span>
@@ -120,11 +119,6 @@ const Topbar = () => {
                   id="collapsible-nav-dropdown"
                   drop="start"
                 >
-                  <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.2">
-                    Another action
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
                   <NavDropdown.Item onClick={handleLogOut}>
                     <SpanWithOnClick
                       className="text-primary fw-bolder"
@@ -132,7 +126,7 @@ const Topbar = () => {
                       text={"Log Out"}
                     />
                   </NavDropdown.Item>
-                </NavDropdown> */}
+                </NavDropdown>
               </Nav>
             ) : (
               <Nav className="container justify-content-end m-3 ">

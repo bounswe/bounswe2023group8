@@ -55,7 +55,7 @@ const DetailedPostCardPreview = ({
                             </Link>
                         </div>
                         <div className="d-inline-flex">
-                            {userData.pictureUrl
+                            {userData.pictureUrl && userData.pictureUrl != "null"
                                 ? <img alt="profile picture" src={userData.pictureUrl} width="64" height="64"
                                        className="rounded-circle img-fluid object-fit-cover m-2"
                                 />

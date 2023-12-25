@@ -140,7 +140,7 @@ const PostCreateCard = ({
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="interestArea" className="form-label">
-              Interest Area:
+              Bunch:
             </label>
             <select
               id="interestArea"
@@ -165,6 +165,7 @@ const PostCreateCard = ({
               name="title"
               value={postDetails.title}
               onChange={handleInputChange}
+              required
             />
           </div>
           <div className="mb-3">
