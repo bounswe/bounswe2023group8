@@ -149,7 +149,8 @@ class InterestAreaView extends GetView<InterestAreaController> {
                               top: Get.height * 0.17,
                               child: Container(
                                 width: Get.width * 0.8,
-                                padding: const EdgeInsets.only(top: 8),
+                                padding:
+                                    const EdgeInsets.only(top: 8, right: 16),
                                 decoration: BoxDecoration(
                                   color: BackgroundPalette.dark,
                                   borderRadius: BorderRadius.circular(20),
@@ -168,14 +169,19 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                     Row(
                                       children: [
                                         const SizedBox(width: 16),
-                                        Text(
-                                          controller.interestArea.name,
-                                          style: TextStyle(
-                                            color: ThemePalette.light,
-                                            fontSize: 14,
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: -0.25,
+                                        ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            maxWidth: Get.width * 0.8 - 112,
+                                          ),
+                                          child: Text(
+                                            controller.interestArea.name,
+                                            style: TextStyle(
+                                              color: ThemePalette.light,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: -0.25,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
                                         const SizedBox(width: 16),
@@ -198,10 +204,9 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                                     child: Text(
                                                       "Leave",
                                                       style: TextStyle(
-                                                        color:
-                                                            ThemePalette.main,
+                                                        color: ThemePalette
+                                                            .negative,
                                                         fontSize: 10,
-                                                        fontFamily: 'Inter',
                                                         fontWeight:
                                                             FontWeight.w500,
                                                         letterSpacing: -0.15,
