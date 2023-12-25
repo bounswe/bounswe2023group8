@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
@@ -107,7 +105,7 @@ class NewIaController extends GetxController {
         searchTagResults.value = tags;
       }
     } catch (e) {
-      log('');
+      ErrorHandlingUtils.handleApiError(e);
     }
   }
 
@@ -118,7 +116,7 @@ class NewIaController extends GetxController {
       final success = await newIaProvider.createNewIa(
           token: bottomNavController.token,
           name: title.value,
-          nestedIas: selectedSubIas.map((e) => e.id).toList(),
+          nestedIas: [],
           wikiTags: selectedTags.map((e) => e.id).toList(),
           accessLevel: accesLevel.value,
           description: description.value);

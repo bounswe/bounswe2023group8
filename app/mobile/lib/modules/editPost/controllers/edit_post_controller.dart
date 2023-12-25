@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:map_location_picker/map_location_picker.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/models/spot.dart';
@@ -11,9 +8,7 @@ import 'package:mobile/data/models/wiki_tag.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
 import 'package:mobile/modules/editPost/providers/edit_post_provider.dart';
 import 'package:mobile/modules/home/controllers/home_controller.dart';
-import 'package:mobile/modules/newPost/views/select_location_view.dart';
-import 'package:mobile/modules/post_details/controllers/post_details_controller.dart';
-import 'package:mobile/modules/profile/controllers/profile_controller.dart';
+import 'package:mobile/modules/newPost/providers/new_post_provider.dart';
 import 'package:mobile/routes/app_pages.dart';
 
 class EditPostController extends GetxController {
@@ -26,17 +21,11 @@ class EditPostController extends GetxController {
   var tagQuery = ''.obs;
   var sourceLink = ''.obs;
 
-  var isAgeRestricted = false.obs;
-
   final titleController = TextEditingController();
   final contentController = TextEditingController();
   final sourceLinkController = TextEditingController();
 
   var createInProgress = false.obs;
-
-  var address = ''.obs;
-  var latitude = 0.0.obs;
-  var longitude = 0.0.obs;
 
   Rx<InterestArea?> selectedIa = Rx<InterestArea?>(null);
 
@@ -50,9 +39,6 @@ class EditPostController extends GetxController {
   final bottomNavController = Get.find<BottomNavigationController>();
   final editPostProvider = Get.find<EditPostProvider>();
   HomeController? homeController;
-  ProfileController? profileController;
-  PostDetailsController postDetailsController =
-      Get.find<PostDetailsController>();
 
   @override
   void onInit() {
@@ -63,11 +49,6 @@ class EditPostController extends GetxController {
       homeController = Get.find<HomeController>();
     } catch (e) {
       homeController = null;
-    }
-    try {
-      profileController = Get.find<ProfileController>();
-    } catch (e) {
-      profileController = null;
     }
   }
 
@@ -86,10 +67,6 @@ class EditPostController extends GetxController {
 
   void onChangeTitle(String value) {
     title.value = value;
-  }
-
-  void onChangeIsAgeRestricted() {
-    isAgeRestricted.value = !isAgeRestricted.value;
   }
 
   void onChangeContent(String value) {
@@ -142,7 +119,7 @@ class EditPostController extends GetxController {
         searchTagResults.value = tags;
       }
     } catch (e) {
-      log('');
+      ErrorHandlingUtils.handleApiError(e);
     }
   }
 
@@ -260,49 +237,32 @@ class EditPostController extends GetxController {
       final res = await editPostProvider.deletePost(
           id: spot.id, token: bottomNavController.token);
       if (res) {
-        homeController?.fetchData();
-        profileController?.fetchUserProfile();
         Get.until((route) => Get.currentRoute == Routes.bottomNavigation);
+        homeController?.fetchData();
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
   }
 
-  void navigateToSelectAddress() {
-    Get.to(SelectLocationView());
-  }
-
-  void onSelectAddress(GeocodingResult? result) {
-    if (result != null) {
-      address.value = result.formattedAddress ?? '';
-      latitude.value = result.geometry.location.lat;
-      longitude.value = result.geometry.location.lng;
-    }
-
-    Get.back();
-  }
-
   void onUpdatePost() async {
     try {
       final res = await editPostProvider.updatePost(
-          title: title.value,
-          postId: spot.id,
-          address: address.value,
-          latitude: latitude.value,
-          longitude: longitude.value,
-          content: content.value,
-          tags: selectedTags.map((e) => e.id).toList(),
-          token: bottomNavController.token,
-          sourceLink: sourceLink.value,
-          interestAreaId: selectedIa.value!.id,
-          label: label.value,
-          isAgeRestricted: isAgeRestricted.value);
+        title: title.value,
+        postId: spot.id,
+        latitude: 1.2421,
+        longitude: 3.4523,
+        address: 'Atlanta',
+        content: content.value,
+        tags: selectedTags.map((e) => e.id).toList(),
+        token: bottomNavController.token,
+        sourceLink: sourceLink.value,
+        interestAreaId: selectedIa.value!.id,
+        label: label.value,
+      );
       if (res) {
-        homeController?.fetchData();
-        profileController?.fetchUserProfile();
-        postDetailsController.fetchPost();
         Get.back();
+        homeController?.fetchData();
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
@@ -318,10 +278,6 @@ class EditPostController extends GetxController {
     selectedTags.value = spot.wikiTags;
     sourceLink.value = spot.sourceLink;
     sourceLinkController.text = spot.sourceLink;
-    isAgeRestricted.value = spot.isAgeRestricted;
-    address.value = spot.geolocation.address;
-    latitude.value = spot.geolocation.latitude;
-    longitude.value = spot.geolocation.longitude;
     label.value = spot.label == "Documentation"
         ? 0
         : spot.label == "Learning"
