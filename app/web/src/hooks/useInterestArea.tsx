@@ -226,6 +226,48 @@ const followInterestArea = async ({
   }
 };
 
-export const useFollowInterestArea = (props: {}) => {
-  return useMutation(followInterestArea, props);
+type useFollowInterestAreaProps = {
+  axiosInstance: AxiosInstance;
+  interestAreaId: number;
+  config?: any;
+};
+
+export const useFollowInterestArea = (props: useFollowInterestAreaProps) => {
+  const { config } = props;
+  return useMutation(followInterestArea, config);
+};
+
+//
+//  UNFOLLOW INTEREST AREA
+//
+
+export type UnfollowInterestAreaProps = {
+  axiosInstance: AxiosInstance;
+  interestAreaId: number;
+};
+
+const unfollowInterestArea = async ({
+  axiosInstance,
+  interestAreaId,
+}: UnfollowInterestAreaProps) => {
+  const response = await axiosInstance.get(
+    `${process.env.REACT_APP_BACKEND_API_URL}/v1/interest-area/unfollow?id=${interestAreaId}`
+  );
+
+  if (response.status >= 200 && response.status < 300) {
+    return response.data;
+  }
+};
+
+type useUnfollowInterestAreaProps = {
+  axiosInstance: AxiosInstance;
+  interestAreaId: number;
+  config?: any;
+};
+
+export const useUnfollowInterestArea = (
+  props: useUnfollowInterestAreaProps
+) => {
+  const { config } = props;
+  return useMutation(unfollowInterestArea, config);
 };
