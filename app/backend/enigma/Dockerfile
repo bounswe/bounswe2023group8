@@ -3,11 +3,17 @@ FROM maven:3.8.5-openjdk-17 as server-build
 # Set the working directory inside the container
 WORKDIR /app
 
+# Copy the pom.xml file first to leverage Docker cache
+COPY ./pom.xml ./pom.xml
+
+# Download dependencies - they will be cached unless pom.xml changes
+RUN mvn dependency:go-offline -B
+
 # Copy the server files into the container
 COPY . ./
 
 # Build the server application (assuming Maven)
-RUN mvn clean install -DskipTests -X
+RUN mvn clean package
 
 # Stage 3: Create the final image
 FROM openjdk:17-slim

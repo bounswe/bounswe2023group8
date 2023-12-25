@@ -50,10 +50,13 @@ public class Post {
     @Embedded
     GeoLocation geolocation;
 
+    @Column(name = "is_age_restricted")
+    Boolean isAgeRestricted;
+
     @Column(name = "create_time")
     Timestamp createTime;
-
-    public PostDto mapToPostDto( List<WikiTag> wikiTags, EnigmaUserDto enigmaUserDto, InterestAreaModel interestAreaModel) {
+    public PostDto mapToPostDto( List<WikiTag> wikiTags, EnigmaUserDto enigmaUserDto, InterestAreaModel interestAreaModel,
+                                 Long upvoteCount, Long downvoteCount, Long commentCount) {
         return PostDto.builder()
                 .id(this.getId())
                 .enigmaUser(enigmaUserDto)
@@ -63,7 +66,11 @@ public class Post {
                 .wikiTags(wikiTags)
                 .label(this.getLabel())
                 .content(this.getContent())
+                .upvoteCount(upvoteCount)
+                .downvoteCount(downvoteCount)
+                .commentCount(commentCount)
                 .geolocation(this.getGeolocation())
+                .isAgeRestricted(this.getIsAgeRestricted())
                 .createTime(this.getCreateTime())
                 .build();
     }
@@ -79,6 +86,7 @@ public class Post {
                 .label(this.getLabel())
                 .content(this.getContent())
                 .geolocation(this.getGeolocation())
+                .isAgeRestricted(this.getIsAgeRestricted())
                 .createTime(this.getCreateTime())
                 .build();
     }

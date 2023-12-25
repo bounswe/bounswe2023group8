@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/modules/post_details/controllers/post_details_controller.dart';
@@ -217,7 +218,7 @@ class PostDetailWidget extends GetView<PostDetailsController> {
                         top: -8,
                         child: Image.asset(
                           Assets.spot,
-                          height: 58,
+                          height: 44,
                         ))
                   ],
                 ),
@@ -249,8 +250,46 @@ class PostDetailWidget extends GetView<PostDetailsController> {
                                       fontWeight: FontWeight.w500),
                                 ),
                               ),
-                            ))
-                        .toList(),
+                                )) 
+                            .toList() +
+                        [
+                          if (controller.post.value.enigmaUser.id !=
+                              controller.bottomNavigationController.userId)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 0),
+                              child: InkWell(
+                                onTap: () =>
+                                    controller.showTagSuggestionModal(context),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: BackgroundPalette.solid,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SvgPicture.asset(
+                                        Assets.add,
+                                        width: 12,
+                                        height: 12,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        "Suggest",
+                                        style: TextStyle(
+                                          color: ThemePalette.light,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                        ],
                   ),
                 ),
                 const SizedBox(

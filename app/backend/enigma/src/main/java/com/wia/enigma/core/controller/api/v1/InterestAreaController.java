@@ -14,10 +14,10 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -158,6 +158,59 @@ public class InterestAreaController {
         return ResponseEntity.ok(search);
     }
 
+    /*
+        WA-38: Get follow requests
+     */
+    @GetMapping("/{id}/follow-requests")
+    public ResponseEntity<?> getFollowRequests(@Valid @NotNull @PathVariable(value = "id") Long id, EnigmaAuthenticationToken token) {
 
+        return ResponseEntity.ok(interestAreaService.getFollowRequests(token.getEnigmaUserId(), id));
+    }
 
+    /*
+        WA-39: Accept follow request
+     */
+    @GetMapping("/accept-follow-request")
+    public ResponseEntity<?> acceptFollowRequest(@Valid @NotNull @RequestParam(name = "requestId") Long id, EnigmaAuthenticationToken token) {
+
+        interestAreaService.acceptFollowRequest(id, token.getEnigmaUserId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+        WA-40: Reject follow request
+     */
+    @GetMapping("/reject-follow-request")
+    public ResponseEntity<?> rejectFollowRequest(@Valid @NotNull @RequestParam(name = "requestId") Long id, EnigmaAuthenticationToken token) {
+
+        interestAreaService.rejectFollowRequest(id, token.getEnigmaUserId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+        WA-55: Upload interest area picture
+     */
+    @PostMapping("/{id}/upload-picture")
+    public ResponseEntity<?> uploadInterestAreaPicture(@Valid @NotNull @PathVariable(name = "id") Long id,
+                                                       @RequestParam("image") MultipartFile image,
+                                                       EnigmaAuthenticationToken token) {
+
+        interestAreaService.uploadInterestAreaPicture(image, id, token.getEnigmaUserId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+        WA-56: Delete interest area picture
+     */
+    @DeleteMapping("/{id}/delete-picture")
+    public ResponseEntity<?> deleteInterestAreaPicture(@Valid @NotNull @PathVariable(name = "id") Long id,
+                                                       EnigmaAuthenticationToken token) {
+
+        interestAreaService.deleteInterestAreaPicture(id, token.getEnigmaUserId());
+
+        return ResponseEntity.ok().build();
+    }
 }

@@ -26,5 +26,7 @@ public class EnigmaUserDto {
 
     Date birthday;
 
+    String pictureUrl;
+
     Timestamp createTime;
 }

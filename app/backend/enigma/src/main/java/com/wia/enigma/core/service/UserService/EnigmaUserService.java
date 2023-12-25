@@ -2,11 +2,12 @@ package com.wia.enigma.core.service.UserService;
 
 import com.wia.enigma.core.data.dto.EnigmaUserDto;
 import com.wia.enigma.core.data.dto.InterestAreaDto;
-import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;
 import com.wia.enigma.core.data.dto.PostDto;
 import com.wia.enigma.core.data.response.LoginResponse;
 import com.wia.enigma.core.data.response.RegisterResponse;
 import com.wia.enigma.core.data.response.VerificationResponse;
+import org.springframework.data.util.Pair;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,15 +32,31 @@ public interface EnigmaUserService {
     void unfollowUser(Long userId, Long followId);
 
     List<EnigmaUserDto> getFollowers(Long userId, Long followedId);
+
     Long getFollowerCount(Long userId);
+
     List<EnigmaUserDto>  getFollowings(Long userId, Long followerId);
+
     Long getFollowingCount(Long userId);
 
     List<PostDto> getPosts(Long requesterId, Long userId);
 
     List<InterestAreaDto> getFollowingInterestAreas(Long userId, Long followerId);
 
+    List<InterestAreaDto> getInterestAreaFollowRequests(Long userId);
+
     EnigmaUserDto getVerifiedUser(Long id);
 
     List<EnigmaUserDto> search(Long userId, String searchKey);
+
+    void deleteUser(Long userId);
+
+    void validateExistence(Long userId);
+
+    void changePassword(Long enigmaUserId, String oldPassword, String newPassword1, String newPassword2);
+    void uploadProfilePicture(Long userId, MultipartFile file);
+
+    void deleteProfilePicture(Long userId);
+
+    Pair<Integer, Integer> getVotes(Long profileId);
 }

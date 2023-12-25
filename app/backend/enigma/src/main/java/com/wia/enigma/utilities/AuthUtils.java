@@ -1,5 +1,7 @@
 package com.wia.enigma.utilities;
 
+import com.wia.enigma.configuration.security.EnigmaAuthenticationToken;
+import com.wia.enigma.core.data.dto.EnigmaAuthorities;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -49,5 +51,13 @@ public class AuthUtils {
         return authorities.stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
+    }
+
+    public EnigmaAuthorities buildEnigmaAuthorities(EnigmaAuthenticationToken token) {
+
+        return EnigmaAuthorities.builder()
+                .enigmaUserId(token.getEnigmaUserId())
+                .audienceType(token.getAudienceType())
+                .build();
     }
 }
