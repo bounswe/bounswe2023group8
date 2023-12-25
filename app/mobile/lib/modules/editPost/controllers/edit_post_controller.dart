@@ -12,6 +12,8 @@ import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_c
 import 'package:mobile/modules/editPost/providers/edit_post_provider.dart';
 import 'package:mobile/modules/home/controllers/home_controller.dart';
 import 'package:mobile/modules/newPost/views/select_location_view.dart';
+import 'package:mobile/modules/post_details/controllers/post_details_controller.dart';
+import 'package:mobile/modules/profile/controllers/profile_controller.dart';
 import 'package:mobile/routes/app_pages.dart';
 
 class EditPostController extends GetxController {
@@ -48,6 +50,9 @@ class EditPostController extends GetxController {
   final bottomNavController = Get.find<BottomNavigationController>();
   final editPostProvider = Get.find<EditPostProvider>();
   HomeController? homeController;
+  ProfileController? profileController;
+  PostDetailsController postDetailsController =
+      Get.find<PostDetailsController>();
 
   @override
   void onInit() {
@@ -58,6 +63,11 @@ class EditPostController extends GetxController {
       homeController = Get.find<HomeController>();
     } catch (e) {
       homeController = null;
+    }
+    try {
+      profileController = Get.find<ProfileController>();
+    } catch (e) {
+      profileController = null;
     }
   }
 
@@ -250,8 +260,9 @@ class EditPostController extends GetxController {
       final res = await editPostProvider.deletePost(
           id: spot.id, token: bottomNavController.token);
       if (res) {
-        Get.until((route) => Get.currentRoute == Routes.bottomNavigation);
         homeController?.fetchData();
+        profileController?.fetchUserProfile();
+        Get.until((route) => Get.currentRoute == Routes.bottomNavigation);
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
@@ -288,8 +299,10 @@ class EditPostController extends GetxController {
           label: label.value,
           isAgeRestricted: isAgeRestricted.value);
       if (res) {
-        Get.back();
         homeController?.fetchData();
+        profileController?.fetchUserProfile();
+        postDetailsController.fetchPost();
+        Get.back();
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);

@@ -131,8 +131,6 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                               post: controller.spots[index],
                               hideTags: false,
                               hideVoters: true,
-                              isUpvoted: false,
-                              isDownvoted: false,
                               onUpvote: () {},
                               onDownvote: () {},
                               showVoters: () {},

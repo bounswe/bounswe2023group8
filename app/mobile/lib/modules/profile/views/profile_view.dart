@@ -154,14 +154,10 @@ class ProfileView extends GetView<ProfileController> {
                         itemCount: controller.posts.length,
                         itemBuilder: (context, index) {
                           final spot = controller.posts[index];
-                          final isVoted =
-                              controller.isVotes[spot.id] ?? [false, false];
                           return PostTileWidget(
                             onTap: () => controller.navigateToPostDetails(spot),
                             post: spot,
                             hideTags: false,
-                            isUpvoted: isVoted[0],
-                            isDownvoted: isVoted[1],
                             onDownvote: () => controller.downvotePost(spot.id),
                             onUpvote: () => controller.upvotePost(spot.id),
                             showVoters: () => controller.showVotes(spot.id),

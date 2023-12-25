@@ -444,6 +444,12 @@ class PostDetailsController extends GetxController {
     }
   }
 
+  void fetchPost() async {
+    post.value = await postDetailsProvider.getPostById(
+            id: post.value.id, token: bottomNavigationController.token) ??
+        post.value;
+  }
+
   void rejectTagSuggestion(int tagSuggestionId) async {
     try {
       final res = await postDetailsProvider.rejectTagSuggestion(

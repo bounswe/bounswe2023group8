@@ -123,6 +123,9 @@ class InterestAreaController extends GetxController {
 
     if (!hasAccess.value) {
       routeLoading.value = false;
+      viewState.value = BunchViewState.about;
+      requestSent.value = await iaProvider.hasRequestSent(
+          token: bottomNavigationController.token, id: interestArea.id);
       return;
     }
 
@@ -143,7 +146,7 @@ class InterestAreaController extends GetxController {
       nestedIas.value = await iaProvider.getNestedIas(
               id: interestArea.id, token: bottomNavigationController.token) ??
           [];
-      await getVotedInfo();
+      //await getVotedInfo();
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
