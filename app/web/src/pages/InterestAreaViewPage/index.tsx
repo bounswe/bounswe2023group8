@@ -162,6 +162,48 @@ const ViewInterestArea = () => {
         refetch();
         refetchInterestArea();
         refetchUserFollowingBunches();
+        const tempState = toastState.filter((toast) => {
+          return toast.message != "Unfollowed the Bunch successfully!";
+        });
+        setToastState([
+          ...tempState,
+          {
+            message: "Unfollowed the Bunch successfully!",
+            display: true,
+            isError: false,
+          },
+        ]);
+        setTimeout(
+          () =>
+            setToastState(
+              toastState.filter((toast) => {
+                return toast.message != "Unfollowed the Bunch successfully!";
+              })
+            ),
+          6000
+        );
+      },
+      onError: () => {
+        const tempState = toastState.filter((toast) => {
+          return toast.message != "You are not following already!";
+        });
+        setToastState([
+          ...tempState,
+          {
+            message: "You are not following already!",
+            display: true,
+            isError: true,
+          },
+        ]);
+        setTimeout(
+          () =>
+            setToastState(
+              toastState.filter((toast) => {
+                return toast.message != "You are not following already!";
+              })
+            ),
+          6000
+        );
       },
     },
   });
