@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ReputationVoteRepository extends JpaRepository<ReputationVote, Long> {
+    List<ReputationVote> findByVoterEnigmaUserIdOrVotedEnigmaUserId(Long voterEnigmaUserId, Long votedEnigmaUserId);
 
     List<ReputationVote> findAllByVoterEnigmaUserId(Long voterEnigmaUserId);
 
