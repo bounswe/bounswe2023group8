@@ -326,7 +326,14 @@ const InterestAreaCreateCard = ({
             {isSubIAInputFocused &&
               searchInterestAreasData &&
               searchInterestAreasData.length > 0 && (
-                <div className="dropdown-menu show">
+                <div
+                  className="dropdown-menu show"
+                  style={{
+                    maxHeight: "300px",
+                    maxWidth: "75vw",
+                    overflowY: "scroll",
+                  }}
+                >
                   {searchInterestAreasData.map((result: any) => (
                     <button
                       key={result.id}

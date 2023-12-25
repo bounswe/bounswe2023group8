@@ -131,7 +131,7 @@ const UpdateInterestArea = () => {
       {isSuccess && isNestedInterestAreasSuccess && (
         <div className="d-flex">
           <div className="container mt-4 col-12">
-            <h2 className="fw-bold">Update the Interest Area!</h2>
+            <h2 className="fw-bold">Update the Bunch!</h2>
             <InterestAreaCreateCard
               setInterestAreaDetails={setInitialInterestAreaDetails}
               interestAreaDetails={initialInterestAreaDetails}
