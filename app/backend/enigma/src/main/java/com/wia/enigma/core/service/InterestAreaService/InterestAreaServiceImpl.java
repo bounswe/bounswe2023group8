@@ -274,12 +274,11 @@ public class InterestAreaServiceImpl implements InterestAreaService {
             throw new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND,
                     "InterestArea list not found for user id: " + enigmaUserId);
 
-        Set<Long> interestAreasToDelete = interestAreas.stream()
-                .filter(interestArea -> interestArea.getAccessLevel() == EnigmaAccessLevel.PERSONAL)
-                .map(InterestArea::getId)
-                .collect(Collectors.toSet());
-
-        deleteInterestAreasByIdIn(interestAreasToDelete);
+        interestAreas.stream().map(interestArea -> {
+                deleteInterestArea(interestArea.getId());
+                return null;
+            }
+        ).collect(Collectors.toList());
     }
 
     /**
