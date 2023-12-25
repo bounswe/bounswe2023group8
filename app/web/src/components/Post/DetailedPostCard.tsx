@@ -215,12 +215,9 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
     const createdAtString = format(new Date(createTime), "PPpp");
 
     const [annotations, setAnnotations] = useState<Annotation[]>([]);
-    const [displayAnnotations, setDisplayAnnotations] = useState<Annotation[]>(
-        []
-    );
-    const [mergedRanges, setMergedRanges] = useState<
-        { start: number; end: number }[]
-    >([]);
+    const [displayAnnotations, setDisplayAnnotations] = useState<Annotation[]>([]);
+    const [highlightAnnotations, setHighlightAnnotations] = useState<Annotation[]>([]);
+    const [mergedRanges, setMergedRanges] = useState<{start: number, end: number}[]>([]);
 
     const [selectedText, setSelectedText] = useState("");
     const [selectedTextAnnotation, setSelectedTextAnnotation] = useState("");
@@ -279,62 +276,62 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
         }
     };
     useEffect(() => {
-        // set annotations by api
-        // mock data for now
-        const ann1: Annotation = {
-            startIndex: 0,
-            endIndex: 10,
-            content: "Ankara",
-            source: "Furkan",
-        };
-        const ann2: Annotation = {
-            startIndex: 15,
-            endIndex: 20,
-            content: "Ankara",
-            source: "Ahmet",
-        };
-        const ann4: Annotation = {
-            startIndex: 15,
-            endIndex: 25,
-            content:
-                "Ankara'nin baskenti olmasi cok guzel bir seydir. Ankara dunyaya hakim olacak, dunya Ankara'ya, Ankara da bana hakim olacak.",
-            source: "Furkan",
-        };
-        //   const ann5 : Annotation = {
-        //     startIndex: 45,
-        //     endIndex: 70,
-        //     content: "Ankara",
-        //   }
-        //   const ann6 : Annotation = {
-        //     startIndex: 5,
-        //     endIndex: 20,
-        //     content: "Istanbul dunyaya hakim olacak, dunya Istanbul'a, Istanbul da bana hakim olacak.",
-        //   }
-        //   const ann7 : Annotation = {
-        //     startIndex: 5,
-        //     endIndex: 20,
-        //     content: "Istanbul dunyaya hakim olacak, dunya Istanbul'a, Istanbul da bana hakim olacak.",
-        //   }
-        //   const ann8 : Annotation = {
-        //     startIndex: 5,
-        //     endIndex: 20,
-        //     content: "Istanbul dunyaya hakim olacak, dunya Istanbul'a, Istanbul da bana hakim olacak.",
-        //   }
-        //   const ann9 : Annotation = {
-        //     startIndex: 5,
-        //     endIndex: 20,
-        //     content: "Istanbul dunyaya hakim olacak, dunya Istanbul'a, Istanbul da bana hakim olacak.",
-        //   }
-        //   const ann10 : Annotation = {
-        //     startIndex: 5,
-        //     endIndex: 20,
-        //     content: "Istanbul dunyaya hakim olacak, dunya Istanbul'a, Istanbul da bana hakim olacak.",
-        //   }
-        setAnnotations([ann1, ann2, ann4]);
-        setDisplayAnnotations([ann1, ann2, ann4]);
-
-        //   setAnnotations([ann1, ann2, ann4, ann5, ann6, ann7, ann8, ann9, ann10]);
-        //   setDisplayAnnotations([ann1, ann2, ann4, ann5, ann6, ann7, ann8, ann9, ann10]);
+      // set annotations by api
+      // mock data for now
+      const ann1 : Annotation = {
+        startIndex: 0,
+        endIndex: 10,
+        content: "Ankara",
+        source: "Furkan",
+      }
+      const ann2 : Annotation = {
+        startIndex: 15,
+        endIndex: 20,
+        content: "Ankara",
+        source: "Ahmet",
+      }
+      const ann4 : Annotation = {
+        startIndex: 15,
+        endIndex: 25,
+        content: "Ankara'nin baskenti olmasi cok guzel bir seydir. Ankara dunyaya hakim olacak, dunya Ankara'ya, Ankara da bana hakim olacak.",
+        source: "Furkan",
+      }
+    //   const ann5 : Annotation = {
+    //     startIndex: 45,
+    //     endIndex: 70,
+    //     content: "Ankara",
+    //   }
+    //   const ann6 : Annotation = {
+    //     startIndex: 5,
+    //     endIndex: 20,
+    //     content: "Istanbul dunyaya hakim olacak, dunya Istanbul'a, Istanbul da bana hakim olacak.",
+    //   }
+    //   const ann7 : Annotation = {
+    //     startIndex: 5,
+    //     endIndex: 20,
+    //     content: "Istanbul dunyaya hakim olacak, dunya Istanbul'a, Istanbul da bana hakim olacak.",
+    //   }
+    //   const ann8 : Annotation = {
+    //     startIndex: 5,
+    //     endIndex: 20,
+    //     content: "Istanbul dunyaya hakim olacak, dunya Istanbul'a, Istanbul da bana hakim olacak.",
+    //   }
+    //   const ann9 : Annotation = {
+    //     startIndex: 5,
+    //     endIndex: 20,
+    //     content: "Istanbul dunyaya hakim olacak, dunya Istanbul'a, Istanbul da bana hakim olacak.",
+    //   }
+    //   const ann10 : Annotation = {
+    //     startIndex: 5,
+    //     endIndex: 20,
+    //     content: "Istanbul dunyaya hakim olacak, dunya Istanbul'a, Istanbul da bana hakim olacak.",
+    //   }
+      setAnnotations([ann1, ann2, ann4]);
+      setDisplayAnnotations([ann1, ann2, ann4]);
+      setHighlightAnnotations([ann1, ann2, ann4]);
+      
+    //   setAnnotations([ann1, ann2, ann4, ann5, ann6, ann7, ann8, ann9, ann10]);
+    //   setDisplayAnnotations([ann1, ann2, ann4, ann5, ann6, ann7, ann8, ann9, ann10]);
     }, []);
 
     const [selectedOption, setSelectedOption] = useState<string>("");
@@ -347,10 +344,9 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
         event: React.ChangeEvent<HTMLSelectElement>
     ) => {
         const filterAnnotationsBySource = (sourceToFilter: string) => {
-            const filteredAnnotations = annotations.filter(
-                (annotation) => annotation.source === sourceToFilter
-            );
+            const filteredAnnotations = annotations.filter(annotation => (annotation.source === sourceToFilter || sourceToFilter === 'All'));
             setDisplayAnnotations(filteredAnnotations);
+            setHighlightAnnotations(filteredAnnotations);
         };
 
         filterAnnotationsBySource(event.target.value);
@@ -358,14 +354,14 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
     };
 
     useEffect(() => {
-        const uniqueSources = Array.from(
-            new Set(annotations.map((annotation) => annotation.source))
-        );
-        setUniqueSources(uniqueSources);
+        if (highlightAnnotations.length == 0) return;
+        setMergedRanges(mergeOverlappingRanges(highlightAnnotations))
+    }, [highlightAnnotations])
 
-        if (annotations.length == 0) return;
-        setMergedRanges(mergeOverlappingRanges(annotations));
-    }, [annotations]);
+    useEffect(() => {
+        const uniqueSources = Array.from(new Set(highlightAnnotations.map(annotation => annotation.source)));
+        setUniqueSources(['All', ...uniqueSources])
+    }, [annotations])
 
     useEffect(() => {
         document.addEventListener("mouseup", handleSelection);
@@ -490,26 +486,41 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
             selectedTextRanges.start = selectedTextRanges.end;
             selectedTextRanges.end = x;
         }
-        console.log(annotations);
-        setAnnotations([
-            ...annotations,
-            {
-                startIndex: selectedTextRanges.start,
-                endIndex: selectedTextRanges.end,
-                content: selectedTextAnnotation,
-                source: "Furkan",
-            },
-        ]);
-        setDisplayAnnotations([
-            ...annotations,
-            {
-                startIndex: selectedTextRanges.start,
-                endIndex: selectedTextRanges.end,
-                content: selectedTextAnnotation,
-                source: "Furkan",
-            },
-        ]);
+        console.log(annotations)
+        setAnnotations([...annotations, {
+            startIndex: selectedTextRanges.start,
+            endIndex: selectedTextRanges.end,
+            content: selectedTextAnnotation,
+            source: "Furkan"
+        }])
+        setDisplayAnnotations([...annotations, {
+            startIndex: selectedTextRanges.start,
+            endIndex: selectedTextRanges.end,
+            content: selectedTextAnnotation,
+            source: "Furkan"
+        }])
+        setHighlightAnnotations([...annotations, {
+            startIndex: selectedTextRanges.start,
+            endIndex: selectedTextRanges.end,
+            content: selectedTextAnnotation,
+            source: "Furkan"
+        }])
         // connect api here
+    }
+
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue: string = event.target.value;
+        console.log(inputValue)
+        setSearchTerm(inputValue);
+        const filterAnnotationsBySource = (sourceToFilter: string) => {
+            const filteredAnnotations = annotations.filter(annotation => (annotation.content.toLowerCase().includes(sourceToFilter.toLowerCase()) || content.slice(annotation.startIndex, annotation.endIndex).toLowerCase().includes(sourceToFilter.toLowerCase())));
+            setDisplayAnnotations(filteredAnnotations);
+            setHighlightAnnotations(filteredAnnotations);
+        };
+
+        filterAnnotationsBySource(inputValue);
     };
 
     const {post} = props;
@@ -617,6 +628,10 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                                                             setIsDeleting(!isDeleting)
                                                         }}>
                                                     Delete Spot
+                                                </button>
+                                                <button className="btn btn-primary mx-1" onClick={() => setAnnotationsVisible(!annotationsVisible)}>
+                                                    {annotationsVisible ? "Hide" : "Show"} Highlightings
+                                                    {/* <h6></h6> */}
                                                 </button>
                                             </div>
                                             :
@@ -798,10 +813,18 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                         ))}
                     </select>
                 </div>
-                <div
-                    className="d-flex flex-column"
-                    style={{maxHeight: "300px", overflowY: "auto"}}
-                >
+                <div className="mb-3">
+                <label htmlFor="search" className="form-label">Search for an option:</label>
+                    <input
+                        type="text"
+                        id="search"
+                        className="form-control"
+                        placeholder="Type to search..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                    />
+                </div>
+                <div className="d-flex flex-column" style={{ height: '250px', maxHeight: '250px', minHeight: '250px', overflowY: 'auto' }}>
                     <table className="table">
                         <thead>
                         <tr>
@@ -832,35 +855,18 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                     style={{backgroundColor: "whitesmoke"}}
                 >
                     <h4>Add Your Annotation</h4>
-                    {annotationsVisible ? (
-                        <h5>To add an annotation please select No-Annotation View!</h5>
-                    ) : (
-                        <>
-                            <div className="mb-3">
-                                <label htmlFor="annotationInput" className="form-label">
-                                    Annotate:{" "}
-                                    {selectedText == ""
-                                        ? "Please make a selection for annotation"
-                                        : selectedText}
-                                </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="annotationInput"
-                                    placeholder="Type your annotation here"
-                                    onChange={handleInputChange}
-                                />
-                            </div>
-                            <button
-                                onClick={() => createAnnotation()}
-                                className={`btn btn-primary ${
-                                    selectedText == "" && "disabled"
-                                }`}
-                            >
-                                Add Annotation
-                            </button>
-                        </>
-                    )}
+                    {
+                        annotationsVisible
+                            ? <h5>To add an annotation please "Hide Highlightings" first!</h5>
+                            :
+                            <>
+                                <div className="mb-3">
+                                    <label htmlFor="annotationInput" className="form-label">Annotate: {selectedText == "" ? "Please make a selection for annotation" : selectedText}</label>
+                                    <input type="text" className="form-control" id="annotationInput" placeholder="Type your annotation here" onChange={handleInputChange} />
+                                </div>
+                                <button onClick={() => createAnnotation()} className={`btn btn-primary ${selectedText == "" && "disabled"}`}>Add Annotation</button>
+                            </>
+                    }
                 </div>
             </div>
             <LocationViewer
