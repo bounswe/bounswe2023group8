@@ -47,6 +47,7 @@ class PostTileWidgetState extends State<PostTileWidget> {
             const SizedBox(height: 1),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -83,7 +84,7 @@ class PostTileWidgetState extends State<PostTileWidget> {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      widget.post.createTime,
+                      widget.post.createTime.split(' ').first,
                       style: TextStyle(
                         color: ThemePalette.dark,
                         fontSize: 12,
@@ -98,7 +99,7 @@ class PostTileWidgetState extends State<PostTileWidget> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       isDownvoted
-                          ? const SizedBox(width: 15)
+                          ? const SizedBox(width: 20)
                           : InkWell(
                               onTap: () {
                                 setState(() {
@@ -108,8 +109,8 @@ class PostTileWidgetState extends State<PostTileWidget> {
                               },
                               child: Image.asset(
                                 isUpvoted ? Assets.upvote : Assets.upvoteEmpty,
-                                width: 15,
-                                height: 15,
+                                width: 20,
+                                height: 20,
                               ),
                             ),
                       const SizedBox(width: 2),
@@ -137,7 +138,7 @@ class PostTileWidgetState extends State<PostTileWidget> {
                       ),
                       const SizedBox(width: 2),
                       isUpvoted
-                          ? const SizedBox(width: 15)
+                          ? const SizedBox(width: 20)
                           : InkWell(
                               onTap: () {
                                 setState(() {
@@ -149,8 +150,8 @@ class PostTileWidgetState extends State<PostTileWidget> {
                                 isDownvoted
                                     ? Assets.downvote
                                     : Assets.downvoteEmpty,
-                                width: 15,
-                                height: 15,
+                                width: 20,
+                                height: 20,
                               ),
                             ),
                       const SizedBox(width: 4),
@@ -165,7 +166,7 @@ class PostTileWidgetState extends State<PostTileWidget> {
           children: [
             Container(
               width: Get.width,
-              margin: const EdgeInsets.only(left: 12, top: 9),
+              margin: const EdgeInsets.only(left: 12, top: 5),
               padding:
                   const EdgeInsets.only(left: 27, right: 12, top: 4, bottom: 4),
               decoration: BoxDecoration(
@@ -235,6 +236,7 @@ class PostTileWidgetState extends State<PostTileWidget> {
                           Expanded(
                             flex: 5,
                             child: SingleChildScrollView(
+                              physics: const ClampingScrollPhysics(),
                               child: Text(
                                 widget.post.content,
                                 textAlign: TextAlign.start,
@@ -252,6 +254,7 @@ class PostTileWidgetState extends State<PostTileWidget> {
                             flex: 4,
                             child: SingleChildScrollView(
                               padding: const EdgeInsets.symmetric(vertical: 2),
+                              physics: const ClampingScrollPhysics(),
                               child: Wrap(
                                 spacing: 4,
                                 runSpacing: 4,
