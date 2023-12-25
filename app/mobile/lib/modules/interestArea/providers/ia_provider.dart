@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/models/spot.dart';
+import 'package:mobile/data/models/tag_suggestion.dart';
+import 'package:mobile/data/models/wiki_tag.dart';
 import 'package:mobile/modules/interestArea/models/ia_request.dart';
 
 import '../../../data/constants/config.dart';
@@ -42,6 +44,30 @@ class IaProvider extends GetConnect {
     return null;
   }
 
+  Future<List<WikiTag>?> searchTags(
+      {required String key, required String token}) async {
+    final response = await get('v1/wiki/search', headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    }, query: {
+      'searchKey': key,
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!) as List;
+        return body.map((e) => WikiTag.fromWikiResponse(e)).toList();
+      }
+    } else {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return null;
+  }
 
 
   Future<List<EnigmaUser>?> getFollowers(
@@ -411,6 +437,80 @@ class IaProvider extends GetConnect {
     return null;
   }
 
+  Future<List<TagSuggestion>?> getTagSuggestions(
+      {required int entityId,
+      required String entityType,
+      required String token}) async {
+    final response = await get('v1/tag-suggestion', headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    }, query: {
+      'entityId': entityId.toString(),
+      'entityType': entityType,
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!) as List;
+        return body.map((e) => TagSuggestion.fromJson(e)).toList();
+      }
+    } else {
+      if (response.bodyString != null && response.bodyString!.isNotEmpty) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return null;
+  }
+
+  Future<bool> acceptTagSuggestion(
+      {required int tagSuggestionId, required String token}) async {
+    final response = await get('v1/tag-suggestion/accept', headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    }, query: {
+      'tagSuggestionId': tagSuggestionId.toString(),
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    }
+    if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      return true;
+    } else {
+      if (response.bodyString != null && response.bodyString!.isNotEmpty) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
+  Future<bool> rejectTagSuggestion(
+      {required int tagSuggestionId, required String token}) async {
+    final response = await get('v1/tag-suggestion/reject', headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    }, query: {
+      'tagSuggestionId': tagSuggestionId.toString(),
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    }
+    if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      return true;
+    } else {
+      if (response.bodyString != null && response.bodyString!.isNotEmpty) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
   Future<bool> acceptIaRequest(
       {required int requestId, required String token}) async {
     final response =
@@ -505,4 +605,32 @@ class IaProvider extends GetConnect {
     }
     return false;
   }
+
+  Future<bool> suggestTag(
+      {required String token,
+      required List<String> tags,
+      required int entityId,
+      required String entityType}) async {
+    final response = await post('v1/tag-suggestion', {
+      'tags': tags,
+      'entityId': entityId,
+      'entityType': entityType,
+    }, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      return true;
+    } else {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
 }

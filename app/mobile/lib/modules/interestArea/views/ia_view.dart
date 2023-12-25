@@ -68,6 +68,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
                           clipBehavior: Clip.none,
                           children: [
                             Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Stack(
                                   children: [
@@ -250,10 +251,7 @@ class InterestAreaView extends GetView<InterestAreaController> {
                                                   ),
                                                 ),
                                         const SizedBox(width: 8),
-                                        if (controller.isOwner &&
-                                            controller
-                                                    .interestArea.accessLevel ==
-                                                'PRIVATE')
+                                        if (controller.isOwner)
                                           InkWell(
                                             onTap: () =>
                                                 controller.onChangeState(
@@ -620,31 +618,36 @@ class InterestAreaView extends GetView<InterestAreaController> {
                   itemCount: controller.interestArea.wikiTags.length + 1,
                   itemBuilder: (BuildContext context, int index) {
                     if (index == controller.interestArea.wikiTags.length) {
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: BackgroundPalette.solid,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              Assets.add,
-                              width: 12,
-                              height: 12,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              "Suggest",
-                              style: TextStyle(
-                                color: ThemePalette.light,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: -0.2,
+                      if (!controller.hasAccess.value || controller.isOwner) {
+                        return SizedBox.shrink();
+                      }
+                      return InkWell(
+                        onTap: () => controller.showTagSuggestionModal(context),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: BackgroundPalette.solid,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            children: [
+                              SvgPicture.asset(
+                                Assets.add,
+                                width: 12,
+                                height: 12,
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 4),
+                              Text(
+                                "Suggest",
+                                style: TextStyle(
+                                  color: ThemePalette.light,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     } else {
@@ -759,83 +762,84 @@ class InterestAreaView extends GetView<InterestAreaController> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: BackgroundPalette.light,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "201k",
-                              style: TextStyle(
-                                color: ThemePalette.dark,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: -0.25,
-                              ),
-                            ),
-                            Text(
-                              "Members",
-                              style: TextStyle(
-                                color: ThemePalette.dark,
-                                fontSize: 6,
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: -0.1,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          width: 1,
-                          height: 24,
-                          color: SeparatorPalette.dark,
-                        ),
-                        const SizedBox(width: 8),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  "•",
-                                  style: TextStyle(
-                                    color: ThemePalette.positive,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    letterSpacing: -0.25,
-                                  ),
-                                ),
-                                Text(
-                                  "308",
-                                  style: TextStyle(
-                                    color: ThemePalette.dark,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    letterSpacing: -0.25,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              "Online",
-                              style: TextStyle(
-                                color: ThemePalette.dark,
-                                fontSize: 6,
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: -0.1,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Container(
+                  //   padding: const EdgeInsets.all(8),
+                  //   decoration: BoxDecoration(
+                  //     color: BackgroundPalette.light,
+                  //     borderRadius: BorderRadius.circular(10),
+                  //   ),
+                  //   child: Row(
+                  //     children: [
+                  //       Column(
+                  //         crossAxisAlignment: CrossAxisAlignment.start,
+                  //         children: [
+                  //           Text(
+                  //             "201k",
+
+                  //             style: TextStyle(
+                  //               color: ThemePalette.dark,
+                  //               fontSize: 14,
+                  //               fontWeight: FontWeight.w500,
+                  //               letterSpacing: -0.25,
+                  //             ),
+                  //           ),
+                  //           Text(
+                  //             "Members",
+                  //             style: TextStyle(
+                  //               color: ThemePalette.dark,
+                  //               fontSize: 6,
+                  //               fontWeight: FontWeight.w500,
+                  //               letterSpacing: -0.1,
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //       const SizedBox(width: 8),
+                  //       Container(
+                  //         width: 1,
+                  //         height: 24,
+                  //         color: SeparatorPalette.dark,
+                  //       ),
+                  //       const SizedBox(width: 8),
+                  //       Column(
+                  //         crossAxisAlignment: CrossAxisAlignment.start,
+                  //         children: [
+                  //           Row(
+                  //             children: [
+                  //               Text(
+                  //                 "•",
+                  //                 style: TextStyle(
+                  //                   color: ThemePalette.positive,
+                  //                   fontSize: 14,
+                  //                   fontWeight: FontWeight.w500,
+                  //                   letterSpacing: -0.25,
+                  //                 ),
+                  //               ),
+                  //               Text(
+                  //                 "308",
+                  //                 style: TextStyle(
+                  //                   color: ThemePalette.dark,
+                  //                   fontSize: 14,
+                  //                   fontWeight: FontWeight.w500,
+                  //                   letterSpacing: -0.25,
+                  //                 ),
+                  //               ),
+                  //             ],
+                  //           ),
+                  //           Text(
+                  //             "Online",
+                  //             style: TextStyle(
+                  //               color: ThemePalette.dark,
+                  //               fontSize: 6,
+                  //               fontWeight: FontWeight.w500,
+                  //               letterSpacing: -0.1,
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -847,7 +851,12 @@ class InterestAreaView extends GetView<InterestAreaController> {
 
   List<Widget> requestBody() {
     return [
-      Text('Follow Requests', style: TextStyle(fontSize: 18)),
+      const SizedBox(
+        height: 40,
+      ),
+      if (controller.followRequests.isNotEmpty) ...[
+        Text('Follow Requests:',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
       const SizedBox(
         height: 10,
       ),
@@ -896,20 +905,97 @@ class InterestAreaView extends GetView<InterestAreaController> {
                   IconButton(
                       onPressed: () => controller.acceptIaRequest(
                           controller.followRequests[index].requestId),
-                      icon: const Icon(Icons.check)),
+                        icon: const Icon(Icons.check, color: Colors.green)),
                   IconButton(
                       onPressed: () => controller.rejectIaRequest(
                           controller.followRequests[index].requestId),
-                      icon: const Icon(Icons.close)),
-                ],
-              ),
-            );
-          },
-          separatorBuilder: (context, index) {
-            return const SizedBox(
-              height: 10,
-            );
-          }),
+                        icon: const Icon(Icons.close, color: Colors.red)),
+                  ],
+                ),
+              );
+            },
+            separatorBuilder: (context, index) {
+              return const SizedBox(
+                height: 10,
+              );
+            }),
+      ],
+      if (controller.tagSuggestions.isNotEmpty) ...[
+        const SizedBox(
+          height: 20,
+        ),
+        Text('Tag Suggestions:',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+        const SizedBox(
+          height: 10,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: controller.tagSuggestions.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        offset: const Offset(0, 0),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.only(left: 10),
+                    minVerticalPadding: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    title: Text(controller.tagSuggestions[index].label,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14)),
+                    subtitle: Text(controller.tagSuggestions[index].description,
+                        style: TextStyle(fontSize: 12)),
+                    leading: Column(
+                      children: [
+                        Text(
+                            controller.tagSuggestions[index].requesterCount
+                                .toString(),
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold)),
+                        Text(
+                            controller.tagSuggestions[index].requesterCount > 1
+                                ? 'Requests'
+                                : 'Request',
+                            style: TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                            onPressed: () => controller.acceptTagSuggestion(
+                                controller.tagSuggestions[index].id),
+                            icon: const Icon(Icons.check, color: Colors.green)),
+                        IconButton(
+                            onPressed: () => controller.rejectTagSuggestion(
+                                controller.tagSuggestions[index].id),
+                            icon: const Icon(Icons.close, color: Colors.red)),
+                      ],
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(
+                  height: 10,
+                );
+              }),
+        ),
+      ]
     ];
   }
 }

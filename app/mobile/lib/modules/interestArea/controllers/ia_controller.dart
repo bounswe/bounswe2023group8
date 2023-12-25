@@ -5,6 +5,8 @@ import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
 import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/models/spot.dart';
+import 'package:mobile/data/models/tag_suggestion.dart';
+import 'package:mobile/data/models/wiki_tag.dart';
 import 'package:mobile/data/widgets/report_dialog.dart';
 import 'package:mobile/data/widgets/user_list_dialog.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
@@ -28,6 +30,12 @@ class InterestAreaController extends GetxController {
   RxList<InterestArea> nestedIas = <InterestArea>[].obs;
 
   RxList<IaRequest> followRequests = <IaRequest>[].obs;
+  RxList<TagSuggestion> tagSuggestions = <TagSuggestion>[].obs;
+
+  RxList<WikiTag> searchTagResults = <WikiTag>[].obs;
+  RxList<WikiTag> selectedTags = <WikiTag>[].obs;
+
+  var tagQuery = ''.obs;
 
   final ImagePicker _picker = ImagePicker();
 
@@ -58,13 +66,14 @@ class InterestAreaController extends GetxController {
     });
     posts.refresh();
   }
-  
+
   void onChangeState(BunchViewState state) {
     viewState.value = state;
   }
 
   bool get isOwner =>
-      interestArea.enigmaUserId == bottomNavigationController.userId;
+      interestArea.creatorId != null &&
+      interestArea.creatorId == bottomNavigationController.userId;
 
   void onSearchQueryChanged(String value) {
     searchQuery.value = value;
@@ -96,7 +105,13 @@ class InterestAreaController extends GetxController {
         arguments: {'post': post, 'visitor': false});
   }
 
+
   void fetchData() async {
+    final res = await iaProvider.getIa(
+        id: interestArea.id, token: bottomNavigationController.token);
+    if (res != null) {
+      interestArea = res;
+    }
     if (interestArea.accessLevel == 'PUBLIC') {
       hasAccess.value = true;
     } else {
@@ -111,24 +126,25 @@ class InterestAreaController extends GetxController {
 
     try {
       if (isOwner) {
-        hasAccess.value = true;
         followRequests.value = await iaProvider.getIaRequests(
                 id: interestArea.id, token: bottomNavigationController.token) ??
             followRequests;
-      } else {
-        hasAccess.value =
-            bottomNavigationController.isIaFollowing(interestArea.id);
-      }
+        tagSuggestions.value = await iaProvider.getTagSuggestions(
+                entityId: interestArea.id,
+                entityType: 'INTEREST_AREA',
+                token: bottomNavigationController.token) ??
+            tagSuggestions;
+      } 
       posts.value = await iaProvider.getPosts(
               id: interestArea.id, token: bottomNavigationController.token) ??
           [];
       nestedIas.value = await iaProvider.getNestedIas(
               id: interestArea.id, token: bottomNavigationController.token) ??
           [];
-      fetchIa();
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
+    routeLoading.value = false;
   }
 
   void uploadImage() async {
@@ -145,6 +161,34 @@ class InterestAreaController extends GetxController {
           }
         }
       });
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void acceptTagSuggestion(int tagSuggestionId) async {
+    try {
+      final res = await iaProvider.acceptTagSuggestion(
+          tagSuggestionId: tagSuggestionId,
+          token: bottomNavigationController.token);
+      if (res) {
+        tagSuggestions.removeWhere((element) => element.id == tagSuggestionId);
+        routeLoading.value = true;
+        fetchIa();
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void rejectTagSuggestion(int tagSuggestionId) async {
+    try {
+      final res = await iaProvider.rejectTagSuggestion(
+          tagSuggestionId: tagSuggestionId,
+          token: bottomNavigationController.token);
+      if (res) {
+        tagSuggestions.removeWhere((element) => element.id == tagSuggestionId);
+      }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
@@ -367,6 +411,146 @@ class InterestAreaController extends GetxController {
           colorText: Colors.white,
           margin: EdgeInsets.zero,
         );
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void showTagSuggestionModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Obx(() {
+          return Padding(
+            padding: const EdgeInsets.only(
+                right: 8.0, left: 8.0, top: 12.0, bottom: 8.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        onChanged: onChangeTagQuery,
+                        decoration: InputDecoration(
+                          hintText: 'Search tags',
+                          contentPadding: const EdgeInsets.only(left: 10),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: ThemePalette.dark,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: ThemePalette.dark,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        searchController.clear();
+                        searchTagResults.clear();
+                        Get.back();
+                      },
+                      icon: const Icon(Icons.clear),
+                    ),
+                  ],
+                ),
+                Expanded(
+                    child: ListView.separated(
+                  itemBuilder: (context, index) {
+                    bool selected = selectedTags.any(
+                        (element) => element.id == searchTagResults[index].id);
+                    return ListTile(
+                      title: Text(searchTagResults[index].label),
+                      trailing: selected
+                          ? const Icon(Icons.check, color: Colors.green)
+                          : const SizedBox.shrink(),
+                      onTap: () {
+                        if (selected) {
+                          selectedTags.removeWhere((element) =>
+                              element.id == searchTagResults[index].id);
+                        } else {
+                          selectedTags.add(searchTagResults[index]);
+                        }
+                        searchTagResults.refresh();
+                      },
+                    );
+                  },
+                  separatorBuilder: (context, ind) {
+                    return const Divider();
+                  },
+                  itemCount: searchTagResults.length,
+                )),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ThemePalette.main,
+                    primary: ThemePalette.main,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () {
+                    Get.back();
+                    if (selectedTags.isNotEmpty) {
+                      suggestTag();
+                    }
+                  },
+                  child: const Text(
+                    'Suggest',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ),
+          );
+        });
+      },
+    );
+  }
+
+  void suggestTag() async {
+    try {
+      final res = await iaProvider.suggestTag(
+          token: bottomNavigationController.token,
+          tags: selectedTags.map((e) => e.id).toList(),
+          entityType: 'INTEREST_AREA',
+          entityId: interestArea.id);
+      if (res) {
+        Get.snackbar(
+          'Success',
+          'Tag suggested successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.brown,
+          borderRadius: 0,
+          colorText: Colors.white,
+          margin: EdgeInsets.zero,
+        );
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
+
+  void onChangeTagQuery(String value) {
+    searchTagResults.clear();
+    tagQuery.value = value;
+    if (value == '') {
+      return;
+    }
+    searchTags();
+  }
+
+  void searchTags() async {
+    try {
+      final tags = await iaProvider.searchTags(
+          key: tagQuery.value, token: bottomNavigationController.token);
+      if (tags != null) {
+        searchTagResults.value = tags;
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);

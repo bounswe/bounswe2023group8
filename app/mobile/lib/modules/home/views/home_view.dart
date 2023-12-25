@@ -234,7 +234,7 @@ class HomeView extends GetView<HomeController> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: SizedBox(
-                height: 106,
+                height: 114,
                 child: ListView.separated(
                   padding: EdgeInsets.zero,
                   scrollDirection: Axis.horizontal,
