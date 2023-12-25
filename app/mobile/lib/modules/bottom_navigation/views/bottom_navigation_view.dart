@@ -94,7 +94,7 @@ class BottomNavbar extends StatelessWidget {
             ],
           ),
         ),
-        if (selected != 2)
+  
           Positioned(
             top: -12,
             child: InkWell(

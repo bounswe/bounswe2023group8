@@ -1,6 +1,7 @@
 package com.wia.enigma.core.controller.api.v1;
 
 import com.wia.enigma.configuration.security.EnigmaAuthenticationToken;
+import com.wia.enigma.core.data.dto.ExplorePageDto;
 import com.wia.enigma.core.data.dto.HomePageDto;
 import com.wia.enigma.core.data.dto.ProfilePageDto;
 import com.wia.enigma.core.service.PageService.PageService;
@@ -45,5 +46,16 @@ public class PageController {
         HomePageDto homePageDto = pageService.getHomePage(token.getEnigmaUserId());
 
         return ResponseEntity.ok(homePageDto);
+    }
+
+    /*
+        WA-65: Gets explore page for visitor.
+     */
+    @GetMapping("/explore")
+    public ResponseEntity<?> getExplore() {
+
+        ExplorePageDto explorePageDto = pageService.getExplorePage();
+
+        return ResponseEntity.ok(explorePageDto);
     }
 }

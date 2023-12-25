@@ -2,7 +2,7 @@ import 'package:mobile/data/models/wiki_tag.dart';
 
 class InterestArea {
   final int id;
-  final int enigmaUserId;
+  final int? creatorId;
   final String accessLevel;
   final String name;
   final List<String> nestedInterestAreas;
@@ -13,7 +13,7 @@ class InterestArea {
 
   InterestArea({
     required this.id,
-    required this.enigmaUserId,
+    required this.creatorId,
     required this.accessLevel,
     required this.name,
     required this.nestedInterestAreas,
@@ -31,7 +31,7 @@ class InterestArea {
     return InterestArea(
       id: json['id'] ?? 0,
       pictureUrl: json['pictureUrl'],
-      enigmaUserId: json['enigmaUserId'] ?? 0,
+      creatorId: json['creatorId'],
       accessLevel: json['accessLevel'] ?? '',
       name: json['title'] ?? '',
       nestedInterestAreas: List<String>.from(json['nestedInterestAreas'] ?? []),

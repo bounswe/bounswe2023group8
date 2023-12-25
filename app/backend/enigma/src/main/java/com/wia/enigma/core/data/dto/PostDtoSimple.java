@@ -26,5 +26,6 @@ public class PostDtoSimple {
     PostLabel label;
     String content;
     GeoLocation geolocation;
+    Boolean isAgeRestricted;
     Timestamp createTime;
 }

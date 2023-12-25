@@ -148,12 +148,13 @@ class ProfileView extends GetView<ProfileController> {
         children: [
           Column(
             children: [
-              controller.user.value?.pictureUrl != null &&
-                      controller.user.value!.pictureUrl!.isNotEmpty
+              controller.userProfile.profilePictureUrl != null &&
+                      controller.userProfile.profilePictureUrl!.isNotEmpty
                   ? CircleAvatar(
                       radius: 40,
                       backgroundImage:
-                          NetworkImage(controller.user.value!.pictureUrl!))
+                          NetworkImage(
+                          controller.userProfile.profilePictureUrl!))
                   : const CircleAvatar(
                       radius: 40,
                       backgroundImage: AssetImage(Assets.profilePlaceholder)),
@@ -177,8 +178,8 @@ class ProfileView extends GetView<ProfileController> {
                               color: Colors.white,
                             )),
                       ),
-                      if (controller.user.value?.pictureUrl != null &&
-                          controller.user.value!.pictureUrl!.isNotEmpty)
+                      if (controller.userProfile.profilePictureUrl != null &&
+                          controller.userProfile.profilePictureUrl!.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0),
                           child: InkWell(
@@ -275,14 +276,14 @@ class ProfileView extends GetView<ProfileController> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
-                0.toString(),
+                controller.userProfile.upvotes.toString(),
                 style: const TextStyle(
                   fontSize: 15,
                 ),
               ),
               const SizedBox(height: 5),
               Text(
-                0.toString(),
+                controller.userProfile.downvotes.toString(),
                 style: const TextStyle(
                   fontSize: 15,
                 ),

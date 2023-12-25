@@ -3,7 +3,6 @@ package com.wia.enigma.dal.entity;
 
 import com.wia.enigma.core.data.dto.InterestAreaDto;
 import com.wia.enigma.core.data.dto.InterestAreaSimpleDto;
-import com.wia.enigma.core.data.dto.WikiTagDto;
 import com.wia.enigma.core.data.model.InterestAreaModel;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import jakarta.persistence.*;
@@ -42,6 +41,9 @@ public class InterestArea {
     @Column(name = "create_time")
     Timestamp createTime;
 
+    @Column(name = "picture_url")
+    String pictureUrl;
+
     public InterestAreaSimpleDto mapToInterestAreaSimpleDto( List<Long> nestedInterestAreas, List<String> wikiTags) {
         return InterestAreaSimpleDto.builder()
                 .id(this.getId())
@@ -58,10 +60,12 @@ public class InterestArea {
     public InterestAreaDto mapToInterestAreaDto(List<WikiTag> wikiTags) {
         return InterestAreaDto.builder()
                 .id(this.getId())
+                .creatorId(this.getEnigmaUserId())
                 .title(this.getTitle())
                 .description(this.getDescription())
                 .accessLevel(this.getAccessLevel())
                 .wikiTags(wikiTags)
+                .pictureUrl(this.getPictureUrl())
                 .createTime(this.getCreateTime())
                 .build();
     }

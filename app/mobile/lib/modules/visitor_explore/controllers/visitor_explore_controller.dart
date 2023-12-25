@@ -93,7 +93,7 @@ class VisitorExploreController extends GetxController {
       ),
       interestArea: InterestArea(
         id: 30001,
-        enigmaUserId: 70001,
+        creatorId: 70001,
         accessLevel: "public",
         name: "Sample Bunch",
         nestedInterestAreas: [],
@@ -152,7 +152,7 @@ class VisitorExploreController extends GetxController {
       ),
       interestArea: InterestArea(
         id: 30001,
-        enigmaUserId: 70001,
+        creatorId: 70001,
         accessLevel: "public",
         name: "Sample Bunch",
         nestedInterestAreas: [],
@@ -211,7 +211,7 @@ class VisitorExploreController extends GetxController {
       ),
       interestArea: InterestArea(
         id: 30001,
-        enigmaUserId: 70001,
+        creatorId: 70001,
         accessLevel: "public",
         name: "Sample Bunch",
         nestedInterestAreas: [],
@@ -270,7 +270,7 @@ class VisitorExploreController extends GetxController {
       ),
       interestArea: InterestArea(
         id: 30001,
-        enigmaUserId: 70001,
+        creatorId: 70001,
         accessLevel: "public",
         name: "Sample Bunch",
         nestedInterestAreas: [],
@@ -329,7 +329,7 @@ class VisitorExploreController extends GetxController {
       ),
       interestArea: InterestArea(
         id: 30001,
-        enigmaUserId: 70001,
+        creatorId: 70001,
         accessLevel: "public",
         name: "Sample Bunch",
         nestedInterestAreas: [],
@@ -388,7 +388,7 @@ class VisitorExploreController extends GetxController {
       ),
       interestArea: InterestArea(
         id: 30001,
-        enigmaUserId: 70001,
+        creatorId: 70001,
         accessLevel: "public",
         name: "Sample Bunch",
         nestedInterestAreas: [],

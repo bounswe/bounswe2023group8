@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/palette.dart';
@@ -25,27 +26,53 @@ class PostDetailsView extends GetView<PostDetailsController> {
           actions: [
             if (!controller.visitor &&
                 controller.post.value.enigmaUser.id ==
-                    controller.bottomNavigationController.userId)
-              InkWell(
-                highlightColor: Colors.transparent,
-                splashColor: Colors.transparent,
-                onTap: controller.navigateToEditPost,
-                child: Image.asset(
-                  Assets.edit,
-                  width: 20,
-                  height: 20,
+                    controller.bottomNavigationController.userId) ...[
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 14,
+                  bottom: 14,
+                ),
+                child: CircleAvatar(
+                  backgroundColor: ThemePalette.main,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: InkWell(
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      onTap: controller.toggleTagSuggestionView,
+                      child: SvgPicture.asset(
+                        Assets.notification,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(14),
+                child: InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: controller.navigateToEditPost,
+                  child: Image.asset(
+                    Assets.edit,
+                  ),
+                ),
+              ),
+            ],
             if (!controller.visitor &&
                 controller.post.value.enigmaUser.id !=
                     controller.bottomNavigationController.userId)
-              InkWell(
-                highlightColor: Colors.transparent,
-                splashColor: Colors.transparent,
-                onTap: () => controller.showReportSpot(),
-                child: Icon(
-                  Icons.report_gmailerrorred,
-                  size: 30,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: InkWell(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: () => controller.showReportSpot(),
+                  child: Icon(
+                    Icons.report_gmailerrorred,
+                    size: 30,
+                  ),
                 ),
               ),
           ],
@@ -61,6 +88,10 @@ class PostDetailsView extends GetView<PostDetailsController> {
           if (controller.routeLoading.value) {
             return const Center(child: CircularProgressIndicator());
           }
+          if (controller.tagSuggestionView.value) {
+            return tagSuggestionView();
+          }
+          
           return SizedBox(
             height: Get.height,
             child: Stack(
@@ -83,6 +114,7 @@ class PostDetailsView extends GetView<PostDetailsController> {
                           return commentRow(controller.comments[index]);
                         },
                       ),
+                      const SizedBox(height: 60),
                     ],
                   ),
                 ),
@@ -149,14 +181,15 @@ class PostDetailsView extends GetView<PostDetailsController> {
             onTap: () => Get.toNamed(Routes.profile,
                 arguments: {'userId': comment.enigmaUser.id}),
             child: comment.enigmaUser.pictureUrl != null &&
-                comment.enigmaUser.pictureUrl!.isNotEmpty
-            ? CircleAvatar(
-                radius: 20,
-                backgroundImage: NetworkImage(comment.enigmaUser.pictureUrl!),
-              )
-            : const CircleAvatar(
-          radius: 20,
-          backgroundImage: AssetImage(Assets.profilePlaceholder),
+                    comment.enigmaUser.pictureUrl!.isNotEmpty
+                ? CircleAvatar(
+                    radius: 20,
+                    backgroundImage:
+                        NetworkImage(comment.enigmaUser.pictureUrl!),
+                  )
+                : const CircleAvatar(
+                    radius: 20,
+                    backgroundImage: AssetImage(Assets.profilePlaceholder),
                   )),
         title: InkWell(
           onTap: () => Get.toNamed(Routes.profile,
@@ -214,6 +247,88 @@ class PostDetailsView extends GetView<PostDetailsController> {
               )
             : null,
       ),
+    );
+  }
+
+  Widget tagSuggestionView() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(
+          height: 20,
+        ),
+        Text('Tag Suggestions:',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+        const SizedBox(
+          height: 10,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: controller.tagSuggestions.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        offset: const Offset(0, 0),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.only(left: 10),
+                    minVerticalPadding: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    title: Text(controller.tagSuggestions[index].label,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14)),
+                    subtitle: Text(controller.tagSuggestions[index].description,
+                        style: TextStyle(fontSize: 12)),
+                    leading: Column(
+                      children: [
+                        Text(
+                            controller.tagSuggestions[index].requesterCount
+                                .toString(),
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold)),
+                        Text(
+                            controller.tagSuggestions[index].requesterCount > 1
+                                ? 'Requests'
+                                : 'Request',
+                            style: TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                            onPressed: () => controller.acceptTagSuggestion(
+                                controller.tagSuggestions[index].id),
+                            icon: const Icon(Icons.check, color: Colors.green)),
+                        IconButton(
+                            onPressed: () => controller.rejectTagSuggestion(
+                                controller.tagSuggestions[index].id),
+                            icon: const Icon(Icons.close, color: Colors.red)),
+                      ],
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(
+                  height: 10,
+                );
+              }),
+        ),
+      ],
     );
   }
 
