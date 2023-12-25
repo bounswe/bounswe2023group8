@@ -32,6 +32,8 @@ class ProfileController extends GetxController {
 
   var isFollowing = false.obs;
 
+  var isBunchExpanded = true.obs;
+
   void fetchUserProfile() async {
     try {
       final profile = await profileProvider.getProfilePage(
@@ -170,7 +172,7 @@ class ProfileController extends GetxController {
     Get.dialog(
       UserListDialog(
         title: '@${userProfile.username}',
-        sections: const ['Followers', 'Followings'],
+        sections: const ['Followers', 'Following'],
         defaultSection: section,
         users: [followers, followings],
         isRemovable: bottomNavigationController.userId == userProfile.id

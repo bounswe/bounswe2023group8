@@ -43,6 +43,10 @@ class Assets {
   static const String back = 'assets/icons/back.png';
   static const String delete = 'assets/icons/delete.png';
   static const String createSpot = 'assets/icons/create_spot.png';
+  static const String newPicture = 'assets/icons/new_pic.png';
+  static const String expand = 'assets/icons/expand.svg';
+  static const String collapse = 'assets/icons/collapse.svg';
+  static const String report = 'assets/icons/report.png';
 
   // Radios
 
