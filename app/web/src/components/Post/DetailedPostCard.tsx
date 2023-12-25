@@ -13,6 +13,7 @@ import CommentCreateCard from "../Comment/CommentCreateCard";
 import CommentCard, {Comment} from "../Comment/CommentCard";
 import {DeleteCommentProps} from "../../hooks/useComment";
 import {UseMutateFunction} from "react-query";
+import SuggestTagModal from "../SuggestTags/SuggestTagModal";
 
 export type DetailedPostCardProps = {
     post: Post;
@@ -40,6 +41,12 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
     const handleLocationModalShow = () => {
         setLocationModalShow(!locationModalShow);
     }
+
+    const [suggestTagModalShow, setSuggestTagModalShow] = useState(false);
+    const handleSuggestTagModalShow = () => {
+        setSuggestTagModalShow(!suggestTagModalShow)
+    }
+
     const {
         post: {
             content,
@@ -735,6 +742,9 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                                             <i className="bi bi-chat-left-text-fill WA-theme-main fs-4 ms-5"></i>
                                         </span>
                                     </span>
+                                        <button className="btn btn-sm WA-theme-bg-main WA-theme-light" onClick={handleSuggestTagModalShow}>
+                                            Suggest Tags
+                                        </button>
                                 </span>
                                 </div>
                             </div>
@@ -858,6 +868,8 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                 setShowLocationViewerModal={handleLocationModalShow}
                 locationData={geolocation}
             ></LocationViewer>
+            <SuggestTagModal handleSuggestTagModalShow={handleSuggestTagModalShow} suggestTagModalShow={suggestTagModalShow}
+            entityId={id} entityType={1}/>
         </div>
     );
 };

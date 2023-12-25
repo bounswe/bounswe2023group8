@@ -60,7 +60,7 @@ const ProfilePage = () => {
     <>
       {isSuccessProfile && (
         <ProfileHeader
-          reputation={reputationData.reputation}
+          reputation={reputationData?.reputation}
           style={{ background: "#EEF0EB", marginLeft: "60px" }}
           user={profileData}
           className="col-5 border-0"

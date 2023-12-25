@@ -12,6 +12,8 @@ import {
 import { AccessLevel, accessLevelMapping } from "../InterestAreaUpdatePage";
 import { useReportAnIssue } from "../../hooks/useModeration";
 import { useGetWaitingBunchFollowRequests } from "../../hooks/useUser";
+import SuggestTagModal from "../../components/SuggestTags/SuggestTagModal";
+import {useToastContext} from "../../contexts/ToastContext";
 
 export interface EnigmaUser {
   id: number;
@@ -60,7 +62,7 @@ export interface Post {
 }
 
 const ViewInterestArea = () => {
-  const { axiosInstance } = useAuth();
+  const { axiosInstance, userData } = useAuth();
   const { iaId } = useParams();
   const [interestAreaData, setInterestAreaData] = useState<any>(null);
   const [subInterestAreasData, setSubInterestAreasData] = useState<any>(null);
@@ -68,16 +70,44 @@ const ViewInterestArea = () => {
   const [isFollowingRequestWaiting, setIsFollowingRequestWaiting] =
     useState(false);
 
+  const [suggestTagModalShow, setSuggestTagModalShow] = useState(false);
+  const handleSuggestTagModalShow = () => {
+    setSuggestTagModalShow(!suggestTagModalShow)
+  }
+
   const { mutate: followInterestArea } = useFollowInterestArea({
     axiosInstance,
     interestAreaId: parseInt(iaId as string),
     config: {
       onSuccess: () => {
         refetch();
+        const tempState = toastState.filter((toast) => {
+          return toast.message != "Followed the Bunch successfully!"
+        });
+        setToastState([
+          ...tempState,
+          {message: "Followed the Bunch successfully!", display: true, isError: false}
+        ]);
+        setTimeout(() => setToastState(toastState.filter((toast) => {
+          return toast.message != "Followed the Bunch successfully!"
+        })), 6000);
       },
+      onError: () => {
+        const tempState = toastState.filter((toast) => {
+          return toast.message != "You are already following!"
+        });
+        setToastState([
+          ...tempState,
+          {message: "You are already following!", display: true, isError: true}
+        ]);
+        setTimeout(() => setToastState(toastState.filter((toast) => {
+          return toast.message != "You are already following!"
+        })), 6000);
+      }
     },
   });
 
+  const { toastState, setToastState } = useToastContext();
   const { mutate: unfollowInterestArea } = useUnfollowInterestArea({
     axiosInstance,
     interestAreaId: parseInt(iaId as string),
@@ -108,6 +138,7 @@ const ViewInterestArea = () => {
     config: {
       onSuccess: (data: any) => {
         const newDetails = {
+          creatorId: data.creatorId,
           title: data.title,
           wikiTags: data.wikiTags.map((tag: any) => ({
             id: tag.id,
@@ -226,10 +257,10 @@ const ViewInterestArea = () => {
                 <div className="m-3 WA-theme-light">
                   <h1>{interestAreaData?.title}</h1>
                 </div>
-                <div className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
-                  <span onClick={() => followBunch()} className="mx-2">
-                    Join
-                  </span>
+                <div onClick={() => followBunch()}
+                     style={{cursor: 'pointer'}}
+                      className="mx-2 my-3 px-2 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
+                    Follow
                 </div>
                 <div className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
                   <img
@@ -361,23 +392,28 @@ const ViewInterestArea = () => {
                   />
                 </div>
               </Link>
-              <a
-                style={{ textDecoration: "none", color: "black" }}
-                href={`/update_interest_area/${iaId}`}
-              >
-                <div className="m-2 py-3 px-1 WA-theme-bg-soft rounded-4 d-flex w-50">
-                  <div className="mx-2 d-flex justify-content-center align-items-center">
-                    <span style={{ whiteSpace: "nowrap" }} className="me-3">
-                      Edit Bunch
-                    </span>
+              {userData.id == interestAreaData?.creatorId
+                  ? <a style={{ textDecoration: "none", color: "black" }}
+                      href={`/update_interest_area/${iaId}`}>
+                      <div className="m-2 py-3 px-1 WA-theme-bg-soft rounded-4 d-flex w-50">
+                        <div className="mx-2 d-flex justify-content-center align-items-center">
+                          <span style={{ whiteSpace: "nowrap" }} className="me-3">
+                            Edit Bunch
+                          </span>
+                        </div>
+                        <img
+                          className="ms-2"
+                          src="/assets/theme/icons/EditIcon.png"
+                          style={{ width: "20px", height: "20px" }}
+                        />
+                      </div>
+                    </a>
+                  : <div className="w-50 m-2 py-3 px-1 WA-theme-bg-soft rounded-4 d-flex justify-content-center"
+                         style={{cursor: 'pointer'}}
+                         onClick={handleSuggestTagModalShow}>
+                      Suggest Tags
                   </div>
-                  <img
-                    className="ms-2"
-                    src="/assets/theme/icons/EditIcon.png"
-                    style={{ width: "20px", height: "20px" }}
-                  />
-                </div>
-              </a>
+              }
             </div>
             <div className="mb-3">
               <h2 style={{ marginLeft: "20px" }}>Tags</h2>
@@ -471,6 +507,8 @@ const ViewInterestArea = () => {
           </>
         )
       )}
+      <SuggestTagModal handleSuggestTagModalShow={handleSuggestTagModalShow} suggestTagModalShow={suggestTagModalShow}
+                       entityId={parseInt(iaId || "-1")} entityType={1}/>
     </>
   );
 };
