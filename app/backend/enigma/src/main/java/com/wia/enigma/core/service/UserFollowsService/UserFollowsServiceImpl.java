@@ -81,6 +81,11 @@ public class UserFollowsServiceImpl implements UserFollowsService {
         return userFollowsRepository.countByFollowedEntityIdAndFollowedEntityTypeAndIsAccepted(followedId, entityType, true);
     }
 
+    public Long countAcceptedFollowings(Long followerId, EntityType entityType){
+
+        return userFollowsRepository.countByFollowerEnigmaUserIdAndFollowedEntityTypeAndIsAccepted(followerId, entityType, true);
+    }
+
     public Boolean isUserFollowsEntity(Long userId, Long followId, EntityType entityType) {
 
         return userFollowsRepository.existsByFollowerEnigmaUserIdAndFollowedEntityIdAndFollowedEntityTypeAndIsAccepted(userId, followId, entityType, true);

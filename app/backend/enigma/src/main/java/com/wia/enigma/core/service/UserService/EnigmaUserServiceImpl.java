@@ -461,7 +461,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
     @Override
     public Long getFollowingCount(Long userId) {
-        return userFollowsService.countAcceptedFollowers(userId, EntityType.USER);
+        return userFollowsService.countAcceptedFollowings(userId, EntityType.USER);
     }
 
     @Override
