@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 public interface PostVoteRepository extends JpaRepository<PostVote, Long> {
+    long deleteByPostId(Long postId);
+    List<PostVote> findByEnigmaUserId(Long enigmaUserId);
 
     long countByPostIdAndVote(Long postId, Boolean vote);
 
