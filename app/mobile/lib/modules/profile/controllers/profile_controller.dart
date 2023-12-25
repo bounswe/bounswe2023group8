@@ -175,7 +175,7 @@ class ProfileController extends GetxController {
     Get.dialog(
       UserListDialog(
         title: '@${userProfile.username}',
-        sections: const ['Followers', 'Followings'],
+        sections: const ['Followers', 'Following'],
         defaultSection: section,
         users: [followers, followings],
         isRemovable: bottomNavigationController.userId == userProfile.id

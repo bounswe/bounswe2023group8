@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
@@ -92,13 +93,12 @@ class ProfileView extends GetView<ProfileController> {
                                   controller.isBunchExpanded.value =
                                       !controller.isBunchExpanded.value;
                                 },
-                                child: Image.asset(
+                                child: SvgPicture.asset(
                                   controller.isBunchExpanded.value
-                                      ? Assets.collapse
-                                      : Assets.expand,
+                                      ? Assets.expand
+                                      : Assets.collapse,
                                   width: 14,
                                   height: 12,
-                                  color: SeparatorPalette.dark,
                                 ),
                               ),
                             ],
@@ -112,22 +112,23 @@ class ProfileView extends GetView<ProfileController> {
                         thickness: 1,
                       ),
                       const SizedBox(height: 8),
-                      ListView.separated(
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: controller.ias.length,
-                        itemBuilder: (context, index) {
-                          final ia = controller.ias[index];
-                          return BunchWidget(
-                            ia: ia,
-                            onTap: () => controller.navigateToIa(ia),
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(height: 8);
-                        },
-                      ),
+                      if (controller.isBunchExpanded.value)
+                        ListView.separated(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: controller.ias.length,
+                          itemBuilder: (context, index) {
+                            final ia = controller.ias[index];
+                            return BunchWidget(
+                              ia: ia,
+                              onTap: () => controller.navigateToIa(ia),
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(height: 8);
+                          },
+                        ),
                       const SizedBox(height: 16),
                       Text(
                         "Spots",
@@ -268,7 +269,7 @@ class ProfileView extends GetView<ProfileController> {
                             InkWell(
                               onTap: () => controller.showFollowPopUp(0),
                               child: Text(
-                                '${controller.followers.length} Followers',
+                                '${controller.followers.length} followers',
                                 style: TextStyle(
                                   color: ThemePalette.main,
                                   fontSize: 14,
@@ -281,7 +282,7 @@ class ProfileView extends GetView<ProfileController> {
                             InkWell(
                               onTap: () => controller.showFollowPopUp(1),
                               child: Text(
-                                '${controller.followings.length} Following',
+                                '${controller.followings.length} following',
                                 style: TextStyle(
                                   color: ThemePalette.main,
                                   fontSize: 14,
