@@ -350,21 +350,6 @@ class InterestAreaController extends GetxController {
     }
   }
 
-  /*void showDownVotes(int postId) async {
-    try {
-      final users = await iaProvider.getDownvotedUsers(
-          token: bottomNavigationController.token, postId: postId);
-      if (users.isNotEmpty) {
-        Get.dialog(UserListDialog(
-          title: 'Downvoters',
-          users: users,
-        ));
-      }
-    } catch (e) {
-      ErrorHandlingUtils.handleApiError(e);
-    }
-  }*/
-
   void followIa() async {
     if (requestSent.value) {
       return;

@@ -64,8 +64,7 @@ class HomeView extends GetView<HomeController> {
                               const SizedBox(width: 12),
                               InkWell(
                                 onTap: () {
-                                  controller
-                                      .sortByDate(); //Call sorting fnc here
+                                  controller.sortByDate();
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
@@ -99,8 +98,7 @@ class HomeView extends GetView<HomeController> {
                               const SizedBox(width: 12),
                               InkWell(
                                 onTap: () {
-                                  controller
-                                      .sortByTop(); //Call sorting fnc here
+                                  controller.sortByTop();
                                 },
                                 child: Container(
                                   height: 28,
@@ -184,7 +182,7 @@ class HomeView extends GetView<HomeController> {
                 color: ThemePalette.dark,
                 fontSize: 16,
                 fontFamily: 'Work Sans',
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
                 letterSpacing: -0.25,
               ),
             ),
@@ -220,7 +218,7 @@ class HomeView extends GetView<HomeController> {
                 color: ThemePalette.dark,
                 fontSize: 16,
                 fontFamily: 'Work Sans',
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
                 letterSpacing: -0.25,
               ),
             ),
@@ -273,7 +271,7 @@ class HomeView extends GetView<HomeController> {
                 color: ThemePalette.dark,
                 fontSize: 16,
                 fontFamily: 'Work Sans',
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
                 letterSpacing: -0.25,
               ),
             ),
