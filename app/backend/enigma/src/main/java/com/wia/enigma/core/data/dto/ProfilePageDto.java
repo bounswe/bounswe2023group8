@@ -27,4 +27,10 @@ public class ProfilePageDto {
         Long followers;
 
         Long following;
+
+        String pictureUrl;
+        
+        Integer upvotes;
+
+        Integer downvotes;
 }
