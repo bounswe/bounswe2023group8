@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:map_location_picker/map_location_picker.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
+import 'package:mobile/data/models/annotation_mode.dart';
 import 'package:mobile/data/models/spot.dart';
 import 'package:mobile/data/models/tag_suggestion.dart';
 import 'package:mobile/data/models/wiki_tag.dart';
@@ -18,16 +21,22 @@ class PostDetailsController extends GetxController {
   Spot postArg = Get.arguments['post'];
 
   final bool visitor = false; //Get.arguments['visitor'];
-  
 
   var tagSuggestionView = false.obs;
 
   var isFollowing = false.obs;
 
+  Rx<TextSelection> annotationSelection =
+      TextSelection(baseOffset: 0, extentOffset: 0).obs;
+
+  final annotationController = TextEditingController();
+
   RxList<TagSuggestion> tagSuggestions = <TagSuggestion>[].obs;
 
   RxList<CommentModel> comments = <CommentModel>[].obs;
-  
+
+  RxList<AnnotationModel> annotations = <AnnotationModel>[].obs;
+
   RxList<WikiTag> searchTagResults = <WikiTag>[].obs;
   RxList<WikiTag> selectedTags = <WikiTag>[].obs;
   RxString tagQuery = ''.obs;
@@ -39,6 +48,8 @@ class PostDetailsController extends GetxController {
 
   final postDetailsProvider = Get.find<PostDetailsProvider>();
   var routeLoading = true.obs;
+
+  var showAnnotations = false.obs;
 
   final commentController = TextEditingController();
 
@@ -80,6 +91,10 @@ class PostDetailsController extends GetxController {
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
+  }
+
+  void showAnnotation() {
+    showAnnotations.value = !showAnnotations.value;
   }
 
   void showLocation() {
@@ -352,6 +367,66 @@ class PostDetailsController extends GetxController {
         searchTagResults.value = tags;
       }
     } catch (e) {
+      log('');
+    }
+  }
+
+  void onAnnotationSelectionChange(
+      TextSelection selection, SelectionChangedCause? cause) {
+    annotationSelection.value = selection;
+  }
+
+  void onAnnotate() async {
+    try {
+      try {
+        final res = await postDetailsProvider.createAnnotationContainer(
+            token: bottomNavigationController.token, postId: post.value.id);
+        if (res) {
+          final res = await postDetailsProvider.createAnnotation(
+              token: bottomNavigationController.token,
+              user: bottomNavigationController.signedInUser!,
+              text:
+                  '${annotationSelection.value.baseOffset}-${annotationSelection.value.extentOffset}',
+              comment: annotationController.text,
+              postId: post.value.id);
+
+          if (res) {
+            annotationController.clear();
+            Get.snackbar(
+              'Success',
+              'Annotation added successfully',
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.brown,
+              borderRadius: 0,
+              colorText: Colors.white,
+              margin: EdgeInsets.zero,
+            );
+          }
+        }
+      } catch (e) {
+        final res = await postDetailsProvider.createAnnotation(
+            token: bottomNavigationController.token,
+            user: bottomNavigationController.signedInUser!,
+            text:
+                '${annotationSelection.value.baseOffset}-${annotationSelection.value.extentOffset}',
+            comment: annotationController.text,
+            postId: post.value.id);
+
+        if (res) {
+          annotationController.clear();
+          fetchAnnotations();
+          Get.snackbar(
+            'Success',
+            'Annotation added successfully',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.brown,
+            borderRadius: 0,
+            colorText: Colors.white,
+            margin: EdgeInsets.zero,
+          );
+        }
+      }
+    } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
     }
   }
@@ -424,8 +499,27 @@ class PostDetailsController extends GetxController {
     tagSuggestionView.value = !tagSuggestionView.value;
   }
 
-  
+  void fetchAnnotations() async {
+    try {
+      annotations.value = await postDetailsProvider.getAnnotations(
+              token: bottomNavigationController.token, postId: post.value.id) ??
+          annotations;
+    } catch (e) {}
+  }
 
+  void deleteAnnotation(AnnotationModel annotation) async {
+    try {
+      final res = await postDetailsProvider.deleteAnnotation(
+          postId: post.value.id,
+          token: bottomNavigationController.token,
+          annotationId: annotation.id);
+      if (res) {
+        annotations.removeWhere((element) => element.id == annotation.id);
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
+  }
 
   @override
   void onInit() {
@@ -437,5 +531,6 @@ class PostDetailsController extends GetxController {
     if (post.value.enigmaUser.id == bottomNavigationController.userId) {
       fetchTagSuggestions();
     }
+    fetchAnnotations();
   }
 }

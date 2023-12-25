@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -129,7 +131,7 @@ class EditPostController extends GetxController {
         searchTagResults.value = tags;
       }
     } catch (e) {
-      ErrorHandlingUtils.handleApiError(e);
+      log('');
     }
   }
 
@@ -279,19 +281,18 @@ class EditPostController extends GetxController {
   void onUpdatePost() async {
     try {
       final res = await editPostProvider.updatePost(
-        title: title.value,
-        postId: spot.id,
+          title: title.value,
+          postId: spot.id,
           address: address.value,
           latitude: latitude.value,
           longitude: longitude.value,
-        content: content.value,
-        tags: selectedTags.map((e) => e.id).toList(),
-        token: bottomNavController.token,
-        sourceLink: sourceLink.value,
-        interestAreaId: selectedIa.value!.id,
-        label: label.value,
-          isAgeRestricted: isAgeRestricted.value
-      );
+          content: content.value,
+          tags: selectedTags.map((e) => e.id).toList(),
+          token: bottomNavController.token,
+          sourceLink: sourceLink.value,
+          interestAreaId: selectedIa.value!.id,
+          label: label.value,
+          isAgeRestricted: isAgeRestricted.value);
       if (res) {
         Get.back();
         homeController?.fetchData();

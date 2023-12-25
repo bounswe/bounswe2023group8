@@ -225,7 +225,7 @@ class NewPostView extends GetView<NewPostController> {
                               keyboardType: TextInputType.multiline,
                               maxLines: null,
                               controller: controller.sourceLinkController,
-                              onChanged: controller.onChangeContent,
+                              onChanged: controller.onChangeSourceLink,
                             ),
                           )),
                     ],

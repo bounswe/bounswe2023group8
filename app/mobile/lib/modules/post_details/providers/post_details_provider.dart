@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:mobile/data/models/annotation_mode.dart';
 import 'package:mobile/data/models/enigma_user.dart';
 import 'package:mobile/data/models/spot.dart';
 import 'package:mobile/data/models/tag_suggestion.dart';
@@ -59,7 +60,6 @@ class PostDetailsProvider extends GetConnect {
     }
     return false;
   }
-
 
   Future<bool> downvotePost(
       {required String token, required int postId}) async {
@@ -265,7 +265,6 @@ class PostDetailsProvider extends GetConnect {
     return null;
   }
 
-
   Future<bool> report(
       {required int entityId,
       required String entityType,
@@ -292,7 +291,6 @@ class PostDetailsProvider extends GetConnect {
     }
     return false;
   }
-
 
   Future<List<CommentModel>?> getPostComments(
       {required int postId, required String token}) async {
@@ -476,6 +474,125 @@ class PostDetailsProvider extends GetConnect {
     }, query: {
       'tagSuggestionId': tagSuggestionId.toString(),
     });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    }
+    if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      return true;
+    } else {
+      if (response.bodyString != null && response.bodyString!.isNotEmpty) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
+  Future<bool> createAnnotationContainer(
+      {required String token, required int postId}) async {
+    httpClient.baseUrl = 'http://18.192.100.93:80/wia';
+    final response = await post('', {
+      'name': 'post-$postId',
+      'label': 'post-$postId',
+      "type": ["BasicContainer", "AnnotationCollection"],
+    }, headers: {
+      'Accept': 'application/ld+json',
+      'Content-Type': 'application/ld+json'
+    });
+    httpClient.baseUrl = Config.baseUrl;
+
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    }
+    if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      return true;
+    } else {
+      if (response.bodyString != null && response.bodyString!.isNotEmpty) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
+  Future<bool> createAnnotation(
+      {required String token,
+      required int postId,
+      required String comment,
+      required String text,
+      required EnigmaUser user}) async {
+    httpClient.baseUrl = 'http://18.192.100.93:80/wia';
+    final response = await post('/post-$postId', {
+      "type": "Annotation",
+      "body": {"type": "TextualBody", "value": text, "name": 'annotation'},
+      "target":
+          "http://bunchup.com.tr/post/$postId?userId=${user.id}&name=${user.name}&profilePhoto=${user.pictureUrl ?? ''}&username=${user.username}&comment=$comment",
+    }, headers: {
+      'Accept': 'application/ld+json',
+      'Content-Type': 'application/ld+json'
+    });
+    httpClient.baseUrl = Config.baseUrl;
+
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    }
+    if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      return true;
+    } else {
+      if (response.bodyString != null && response.bodyString!.isNotEmpty) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
+  Future<List<AnnotationModel>?> getAnnotations(
+      {required String token, required int postId}) async {
+    httpClient.baseUrl = 'http://18.192.100.93:80/wia';
+    final response = await get('/post-$postId', headers: {
+      'Accept': 'application/ld+json',
+      'Content-Type': 'application/ld+json'
+    });
+    httpClient.baseUrl = Config.baseUrl;
+
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    }
+    if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      if (response.bodyString != null && response.bodyString!.isNotEmpty) {
+        final body = json.decode(response.bodyString!);
+        final items = (body['first']['items'] as List)
+            .map((e) => AnnotationModel.fromJson(e))
+            .toList();
+
+        return items;
+      }
+    } else {
+      if (response.bodyString != null && response.bodyString!.isNotEmpty) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return null;
+  }
+
+  Future<bool> deleteAnnotation(
+      {required String token,
+      required int postId,
+      required String annotationId}) async {
+    httpClient.baseUrl = 'http://18.192.100.93:80/wia';
+    final id = annotationId.split('/').last;
+    final response = await delete('/post-$postId/$id', headers: {
+      'Accept': 'application/ld+json',
+      'Content-Type': 'application/ld+json'
+    });
+    httpClient.baseUrl = Config.baseUrl;
+
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
