@@ -14,6 +14,7 @@ import CommentCard, {Comment} from "../Comment/CommentCard";
 import {DeleteCommentProps} from "../../hooks/useComment";
 import {UseMutateFunction} from "react-query";
 import SuggestTagModal from "../SuggestTags/SuggestTagModal";
+import ViewSuggestionsModal from "../SuggestTags/ViewSuggestionsModal";
 
 export type DetailedPostCardProps = {
     post: Post;
@@ -44,7 +45,12 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
 
     const [suggestTagModalShow, setSuggestTagModalShow] = useState(false);
     const handleSuggestTagModalShow = () => {
-        setSuggestTagModalShow(!suggestTagModalShow)
+        setSuggestTagModalShow(!suggestTagModalShow);
+    }
+
+    const [viewSuggestionsModalShow, setViewSuggestionsModalShow] = useState(false);
+    const handleViewSuggestionsModalShow = () =>{
+        setViewSuggestionsModalShow(!viewSuggestionsModalShow);
     }
 
     const {
@@ -123,11 +129,9 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                 })[0];
 
                 if (vote && vote.isUpvote) {
-                    console.log("upvoted before. Can downvote");
                     setUpvotes(upvotes - 1);
                     setDownvotes(downvotes + 1);
                 } else {
-                    console.log("not voted before. Can downvote");
                     setDownvotes(downvotes + 1);
                 }
 
@@ -146,10 +150,8 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                 })[0];
 
                 if (vote.isUpvote) {
-                    console.log("upvoted before. Can downvote");
                     setUpvotes(upvotes - 1);
                 } else {
-                    console.log("not voted before. Can downvote");
                     setDownvotes(downvotes - 1);
                 }
 
@@ -436,7 +438,7 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                     }}
                     key={`highlighted-${index}`}
                     className="highlighted-text"
-                    style={{backgroundColor: "red"}}
+                    style={{backgroundColor: 'greenyellow'}}
                 >
           {highlightedText}
         </span>
@@ -629,9 +631,8 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                                                         }}>
                                                     Delete Spot
                                                 </button>
-                                                <button className="btn btn-primary mx-1" onClick={() => setAnnotationsVisible(!annotationsVisible)}>
+                                                <button className="btn btn-primary WA-theme-bg-main mx-1" onClick={() => setAnnotationsVisible(!annotationsVisible)}>
                                                     {annotationsVisible ? "Hide" : "Show"} Highlightings
-                                                    {/* <h6></h6> */}
                                                 </button>
                                             </div>
                                             :
@@ -647,21 +648,23 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                                                         }}>
                                                     Cancel
                                                 </button>
+                                                <button className="btn btn-primary WA-theme-bg-main mx-1" onClick={() => setAnnotationsVisible(!annotationsVisible)}>
+                                                    {annotationsVisible ? "Hide" : "Show"} Highlightings
+                                                </button>
                                             </div>
                                         }
                                     </span>
-                                    : <span className="d-flex">
-                                        <div
-                                            className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
+                                    : <span className="d-flex align-items-center">
                                             {showReport ? (
-                                                <>
+                                                <div
+                                                    className="mx-1 my-3 py-1 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
                                                     <input
                                                         type="text"
-                                                        className="form-control mx-4"
+                                                        className="form-control ms-4"
                                                         placeholder="Please write a reason"
                                                         onChange={(e) => setReportReason(e.target.value)}
                                                     ></input>
-                                                    <div className="d-flex mx-3">
+                                                    <div className="d-flex mx-1">
                                                         <button onClick={() => reportSpot()} className="btn">
                                                             Submit
                                                         </button>
@@ -672,18 +675,21 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                                                             Close
                                                         </button>
                                                     </div>
-                                                </>
+                                                </div>
                                             ) : (
-                                                <>
+                                                <div
+                                                    className="mx-2 my-3 WA-theme-bg-light d-flex justify-content-center align-items-center rounded-5">
                                                     <button
                                                         onClick={() => setShowReport(!showReport)}
                                                         className="btn mx-3 rounded-5"
                                                     >
                                                         Report Post
                                                     </button>
-                                                </>
+                                                </div>
                                             )}
-                                        </div>
+                                        <button className="btn btn-primary WA-theme-bg-main" onClick={() => setAnnotationsVisible(!annotationsVisible)}>
+                                                        {annotationsVisible ? "Hide" : "Show"} Highlights
+                                        </button>
                                     </span>}
                                 </span>
                     </div>
@@ -761,7 +767,10 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                                         ? <button className="btn btn-sm WA-theme-bg-main WA-theme-light" onClick={handleSuggestTagModalShow}>
                                                 Suggest Tags
                                             </button>
-                                        : <></>}
+                                        : <button className="btn btn-sm WA-theme-bg-main WA-theme-light" onClick={handleViewSuggestionsModalShow}>
+                                                View Suggested Tags
+                                        </button>
+                                        }
 
                                 </span>
                                 </div>
@@ -879,6 +888,12 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
             ></LocationViewer>
             <SuggestTagModal handleSuggestTagModalShow={handleSuggestTagModalShow} suggestTagModalShow={suggestTagModalShow}
             entityId={id} entityType={1}/>
+            {userData.id == enigmaUser.id
+                ? <ViewSuggestionsModal viewSuggestionsModalShow={viewSuggestionsModalShow}
+                                  handleViewSuggestionsModalShow={handleViewSuggestionsModalShow}
+                                  entityType={"POST"}   entityId={id}/>
+                : <></>
+            }
         </div>
     );
 };

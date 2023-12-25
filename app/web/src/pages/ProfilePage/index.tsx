@@ -45,7 +45,6 @@ const ProfilePage = () => {
       axiosInstance: axiosInstance,
       userId: userId || "-1",
     });
-    console.log(profileData);
     getUserFollowingInterestAreas({
       axiosInstance: axiosInstance,
       userId: userId || "-1",

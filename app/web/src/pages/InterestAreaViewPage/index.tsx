@@ -20,6 +20,7 @@ import {
 } from "../../hooks/useUser";
 import SuggestTagModal from "../../components/SuggestTags/SuggestTagModal";
 import { useToastContext } from "../../contexts/ToastContext";
+import ViewSuggestionsModal from "../../components/SuggestTags/ViewSuggestionsModal";
 import { Modal } from "react-bootstrap";
 
 export interface EnigmaUser {
@@ -85,6 +86,11 @@ const ViewInterestArea = () => {
   const handleSuggestTagModalShow = () => {
     setSuggestTagModalShow(!suggestTagModalShow);
   };
+
+  const [viewSuggestionsModalShow, setViewSuggestionsModalShow] = useState(false);
+  const handleViewSuggestionsModalShow = () => {
+    setViewSuggestionsModalShow(!viewSuggestionsModalShow);
+  }
 
   const { mutate: followInterestArea } = useFollowInterestArea({
     axiosInstance,
@@ -537,20 +543,19 @@ const ViewInterestArea = () => {
               )}
             </div>
             <div
-              className="WA-theme-bg-regular pt-3 position-relative rounded-4 "
+              className="WA-theme-bg-regular pt-3 position-relative rounded-4 pb-2 ps-5 "
               style={{
                 marginTop: "-42px",
                 marginLeft: "-21px",
-                padding: "52px",
                 zIndex: 1,
               }}
             >
-              <div className="d-flex mt-5">
+              <div className="d-flex flex-row ">
+                <div>
+                  <div className="d-flex mt-5">
                 <div className="">Sort By:</div>
-                <div
-                  className="ms-3 WA-theme-bg-soft rounded-4 d-flex"
-                  onClick={() => setSortType("new")}
-                >
+                <div className="ms-3 WA-theme-bg-soft rounded-4 d-flex" onClick={() => setSortType("new")}
+                     style={{cursor: 'pointer'}}>
                   <div>
                     <img
                       src="/assets/theme/icons/NewFilter.png"
@@ -561,10 +566,8 @@ const ViewInterestArea = () => {
                     <span>New</span>
                   </div>
                 </div>
-                <div
-                  className="ms-3 WA-theme-bg-soft rounded-4 d-flex"
-                  onClick={() => setSortType("top")}
-                >
+                <div className="ms-3 WA-theme-bg-soft rounded-4 d-flex" onClick={() => setSortType("top")}
+                     style={{cursor: 'pointer'}}>
                   <div>
                     <img
                       src="/assets/theme/icons/TopIcon.png"
@@ -576,7 +579,8 @@ const ViewInterestArea = () => {
                   </div>
                 </div>
               </div>
-              <div className="d-flex mt-5">
+                </div>
+                <div className="d-flex mt-5 mx-5">
                 <div className="">Filter By:</div>
                 <div
                   className="ms-3 WA-theme-bg-soft rounded-4 d-flex"
@@ -613,6 +617,7 @@ const ViewInterestArea = () => {
                     </div>
                   </div>
                 </div>
+              </div>
               </div>
             </div>
             {!showPosts && (
@@ -653,33 +658,24 @@ const ViewInterestArea = () => {
                   />
                 </div>
               </Link>
-              {userData.id == interestAreaData?.creatorId ? (
-                <a
-                  style={{ textDecoration: "none", color: "black" }}
-                  href={`/update_interest_area/${iaId}`}
-                >
-                  <div className="m-2 py-3 px-1 WA-theme-bg-soft rounded-4 d-flex w-50">
-                    <div className="mx-2 d-flex justify-content-center align-items-center">
-                      <span style={{ whiteSpace: "nowrap" }} className="me-3">
-                        Edit Bunch
-                      </span>
-                    </div>
-                    <img
-                      className="ms-2"
-                      src="/assets/theme/icons/EditIcon.png"
-                      style={{ width: "20px", height: "20px" }}
-                    />
-                  </div>
-                </a>
-              ) : (
-                <div
-                  className="w-50 m-2 py-3 px-1 WA-theme-bg-soft rounded-4 d-flex justify-content-center"
-                  style={{ cursor: "pointer" }}
-                  onClick={handleSuggestTagModalShow}
-                >
-                  Suggest Tags
-                </div>
-              )}
+              {userData.id == interestAreaData?.creatorId
+                  ? <a style={{ textDecoration: "none", color: "black" }}
+                      href={`/update_interest_area/${iaId}`}>
+                      <div className="m-2 py-3 px-1 WA-theme-bg-soft rounded-4 d-flex w-50">
+                        <div className="mx-2 d-flex justify-content-center align-items-center">
+                          <span style={{ whiteSpace: "nowrap" }} className="me-3">
+                            Edit Bunch
+                          </span>
+                        </div>
+                        <img
+                          className="ms-2"
+                          src="/assets/theme/icons/EditIcon.png"
+                          style={{ width: "20px", height: "20px" }}
+                        />
+                      </div>
+                    </a>
+                  : <></>
+              }
             </div>
             <div className="mb-3">
               <h2 style={{ marginLeft: "20px" }}>Tags</h2>
@@ -699,10 +695,21 @@ const ViewInterestArea = () => {
                     #{tag.name}
                   </div>
                 ))}
-                <div
+                {userData.id == interestAreaData?.creatorId
+                    ? <div onClick={handleViewSuggestionsModalShow}
+                           className="m-2 h-2 WA-theme-light WA-theme-separator-light WA-theme-bg-solid d-flex align-items-center justify-content-center rounded-5"
+                           style={{
+                             height: "45px",
+                             cursor: 'pointer',
+                           }}
+                    >
+                      View Suggested Tags
+                    </div>
+                    : <div onClick={handleSuggestTagModalShow}
                   className="m-2 h-2 WA-theme-light WA-theme-separator-light WA-theme-bg-solid d-flex align-items-center justify-content-center rounded-5"
                   style={{
                     height: "45px",
+                    cursor: 'pointer',
                   }}
                 >
                   <img
@@ -710,8 +717,9 @@ const ViewInterestArea = () => {
                     src="/assets/theme/icons/Type=Add.png"
                     style={{ width: "20px" }}
                   />
-                  Suggest
+                  Suggest Tags
                 </div>
+                }
               </div>
             </div>
             <div>
@@ -773,12 +781,13 @@ const ViewInterestArea = () => {
           </>
         )
       )}
-      <SuggestTagModal
-        handleSuggestTagModalShow={handleSuggestTagModalShow}
-        suggestTagModalShow={suggestTagModalShow}
-        entityId={parseInt(iaId || "-1")}
-        entityType={1}
-      />
+      <SuggestTagModal handleSuggestTagModalShow={handleSuggestTagModalShow} suggestTagModalShow={suggestTagModalShow}
+                       entityId={parseInt(iaId || "-1")} entityType={0}/>
+      {userData.id == interestAreaData?.creatorId
+          ? <ViewSuggestionsModal viewSuggestionsModalShow={viewSuggestionsModalShow} handleViewSuggestionsModalShow={handleViewSuggestionsModalShow}
+                            entityType={"INTEREST_AREA"} entityId={parseInt(iaId || "-1")} />
+          : <></>
+      }
       <Modal
         show={showFollowRequests}
         onHide={() => setShowFollowRequests(false)}
