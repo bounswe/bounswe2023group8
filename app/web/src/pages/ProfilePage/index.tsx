@@ -69,7 +69,7 @@ const ProfilePage = () => {
       <hr className="mx-3" />
       <Row>
         <Col className="col-4">
-          <h5 className="mt-2 mx-3">Interest Areas</h5>
+          <h5 className="mt-2 mx-3">Bunches</h5>
           <div className="card border-0" style={{ maxHeight: "70vh" }}>
             <hr className="m-0 mx-2" />
             {isSuccessInterestAreas && (
@@ -86,7 +86,7 @@ const ProfilePage = () => {
         </Col>
 
         <Col className="col-8">
-          <h5 className="mt-2 mx-3">Posts</h5>
+          <h5 className="mt-2 mx-3">Spots</h5>
           <div className="card border-0" style={{ maxHeight: "70vh" }}>
             <hr className="m-0 mx-2" />
             {isSuccessPosts && (

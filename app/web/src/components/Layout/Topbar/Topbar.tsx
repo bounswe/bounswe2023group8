@@ -15,7 +15,7 @@ import SpanWithOnClick from "../../shared/SpanWithOnClick/SpanWithOnClick";
 const mockNotifications = [
   {
     href: "notification1",
-    title: 'Your Interest Area "All About Rice" is trending!',
+    title: 'Your Bunch "All About Rice" is trending!',
   },
   { href: "notification2", title: "You gained a badge: Food Enthusiast!" },
 ];
