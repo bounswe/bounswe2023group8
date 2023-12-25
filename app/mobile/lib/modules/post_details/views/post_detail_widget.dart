@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -192,20 +193,22 @@ class PostDetailWidget extends GetView<PostDetailsController> {
                                         fontWeight: FontWeight.w400),
                                   ),
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: 4),
                                 Text(controller.post.value.sourceLink,
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
                                       color: ThemePalette.main,
                                     )),
-                                const SizedBox(height: 8),
-                                Text(
+                                const SizedBox(height: 4),
+                                SelectableText(
                                   controller.post.value.content,
                                   style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 12,
                                       fontWeight: FontWeight.normal),
+                                  onSelectionChanged:
+                                      controller.onAnnotationSelectionChange,
                                 ),
                               ],
                             ),

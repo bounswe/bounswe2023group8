@@ -242,7 +242,7 @@ class EditPostView extends GetView<EditPostController> {
                               keyboardType: TextInputType.multiline,
                               maxLines: null,
                               controller: controller.sourceLinkController,
-                              onChanged: controller.onChangeContent,
+                              onChanged: controller.onChangeSourceLink,
                             ),
                           )),
                     ],

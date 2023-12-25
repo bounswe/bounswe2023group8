@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
@@ -105,7 +107,7 @@ class NewIaController extends GetxController {
         searchTagResults.value = tags;
       }
     } catch (e) {
-      ErrorHandlingUtils.handleApiError(e);
+      log('');
     }
   }
 

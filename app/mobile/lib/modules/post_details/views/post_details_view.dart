@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
+import 'package:mobile/data/widgets/custom_button.dart';
 import 'package:mobile/modules/post_details/models/comment.dart';
 import 'package:mobile/modules/post_details/views/post_detail_widget.dart';
 import 'package:mobile/routes/app_pages.dart';
@@ -24,6 +25,19 @@ class PostDetailsView extends GetView<PostDetailsController> {
           search: false,
           notification: false,
           actions: [
+            Padding(
+                padding: const EdgeInsets.only(
+                  top: 14,
+                  bottom: 14,
+                ),
+                //annotation view
+                child: InkWell(
+                  onTap: controller.showAnnotation,
+                  child: Icon(
+                    Icons.comment,
+                    color: ThemePalette.main,
+                  ),
+                )),
             if (!controller.visitor &&
                 controller.post.value.enigmaUser.id ==
                     controller.bottomNavigationController.userId) ...[
@@ -91,7 +105,7 @@ class PostDetailsView extends GetView<PostDetailsController> {
           if (controller.tagSuggestionView.value) {
             return tagSuggestionView();
           }
-          
+
           return SizedBox(
             height: Get.height,
             child: Stack(
@@ -103,40 +117,44 @@ class PostDetailsView extends GetView<PostDetailsController> {
                     children: [
                       const PostDetailWidget(),
                       const SizedBox(height: 20),
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: controller.comments.length,
-                        separatorBuilder: (BuildContext context, int index) {
-                          return const SizedBox(height: 4);
-                        },
-                        itemBuilder: (BuildContext context, int index) {
-                          return commentRow(controller.comments[index]);
-                        },
-                      ),
+                      (controller.showAnnotations.value)
+                          ? _annotationsView()
+                          : ListView.separated(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: controller.comments.length,
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return const SizedBox(height: 4);
+                              },
+                              itemBuilder: (BuildContext context, int index) {
+                                return commentRow(controller.comments[index]);
+                              },
+                            ),
                       const SizedBox(height: 60),
                     ],
                   ),
                 ),
-                Positioned(
-                  bottom: 0,
-                  child: Container(
-                    width: Get.width,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: BackgroundPalette.soft,
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20)),
-                    ),
-                    child: Row(
+                if ((controller.annotationSelection.value.extentOffset -
+                        controller.annotationSelection.value.baseOffset) >
+                    0)
+                  Positioned(
+                    bottom: 10,
+                    left: 20,
+                    child: Column(
                       children: [
-                        Expanded(
+                        //write comment
+                        Container(
+                          width: Get.width - 40,
+                          decoration: BoxDecoration(
+                            color: BackgroundPalette.soft,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                          ),
                           child: TextFormField(
-                            controller: controller.commentController,
+                            controller: controller.annotationController,
                             decoration: const InputDecoration(
-                              hintText: 'Make comment...',
+                              hintText: 'Annotate...',
                               hintStyle: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 12,
@@ -148,20 +166,60 @@ class PostDetailsView extends GetView<PostDetailsController> {
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        InkWell(
-                          onTap: controller.makeComment,
-                          child: Icon(
-                            Icons.send,
-                            color: ThemePalette.main,
-                          ),
-                        ),
+
+                        CustomButton(
+                            text: 'Annotate', onPressed: controller.onAnnotate),
                       ],
                     ),
                   ),
-                )
+                if ((controller.annotationSelection.value.extentOffset -
+                            controller.annotationSelection.value.baseOffset) ==
+                        0 &&
+                    !controller.showAnnotations.value)
+                  Positioned(
+                    bottom: 0,
+                    child: Container(
+                      width: Get.width,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: BackgroundPalette.soft,
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20)),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: controller.commentController,
+                              decoration: const InputDecoration(
+                                hintText: 'Make comment...',
+                                hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: -0.2,
+                                ),
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          InkWell(
+                            onTap: controller.makeComment,
+                            child: Icon(
+                              Icons.send,
+                              color: ThemePalette.main,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
               ],
             ),
           );
@@ -329,6 +387,100 @@ class PostDetailsView extends GetView<PostDetailsController> {
               }),
         ),
       ],
+    );
+  }
+
+  Widget _annotationsView() {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: controller.annotations.length,
+      separatorBuilder: (BuildContext context, int index) {
+        return const SizedBox(height: 4);
+      },
+      itemBuilder: (BuildContext context, int index) {
+        final annotation = controller.annotations[index];
+        return Padding(
+          padding: const EdgeInsets.only(left: 40),
+          child: ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+            tileColor: BackgroundPalette.regular,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            leading: InkWell(
+                onTap: () => Get.toNamed(Routes.profile,
+                    arguments: {'userId': annotation.userId}),
+                child: annotation.profilePhoto != null &&
+                        annotation.profilePhoto!.isNotEmpty
+                    ? CircleAvatar(
+                        radius: 20,
+                        backgroundImage: NetworkImage(annotation.profilePhoto!),
+                      )
+                    : const CircleAvatar(
+                        radius: 20,
+                        backgroundImage: AssetImage(Assets.profilePlaceholder),
+                      )),
+            title: InkWell(
+              onTap: () => Get.toNamed(Routes.profile,
+                  arguments: {'userId': annotation.userId}),
+              child: Text(
+                '@${annotation.username}',
+                style: TextStyle(
+                  color: ThemePalette.main,
+                  fontSize: 12,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -0.2,
+                ),
+              ),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  controller.post.value.content
+                      .substring(annotation.start, annotation.end),
+                  style: TextStyle(
+                    color: ThemePalette.negative,
+                    fontSize: 12,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: -0.2,
+                  ),
+                ),
+                Text(
+                  annotation.note,
+                  style: TextStyle(
+                    color: ThemePalette.dark,
+                    fontSize: 12,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: -0.2,
+                  ),
+                ),
+              ],
+            ),
+            trailing: (annotation.userId ==
+                    controller.bottomNavigationController.userId)
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 2),
+                      InkWell(
+                          onTap: () => controller.deleteAnnotation(annotation),
+                          child: Icon(
+                            Icons.delete,
+                            color: ThemePalette.main,
+                            size: 20,
+                          )),
+                    ],
+                  )
+                : null,
+          ),
+        );
+      },
     );
   }
 
