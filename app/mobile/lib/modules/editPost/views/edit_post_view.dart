@@ -310,6 +310,8 @@ class EditPostView extends GetView<EditPostController> {
                             onTap: controller.navigateToSelectAddress,
                             child: Image.asset(
                               Assets.geolocation,
+                              width: 36,
+                              height: 36,
                             ),
                           ),
                         ],
