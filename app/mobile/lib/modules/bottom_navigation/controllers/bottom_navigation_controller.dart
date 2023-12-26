@@ -106,7 +106,7 @@ class BottomNavigationController extends GetxController {
     if (settings.name == Routes.newPost) {
       return GetPageRoute(
         settings: settings,
-        page: () => NewPostView(),
+        page: () => const NewPostView(),
         binding: NewPostBinding(),
         transition: Transition.noTransition,
       );

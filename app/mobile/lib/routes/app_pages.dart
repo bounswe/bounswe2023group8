@@ -67,11 +67,11 @@ class AppPages {
         binding: ProfileBinding()),
     GetPage(
         name: _Paths.newPost,
-        page: () => NewPostView(),
+        page: () => const NewPostView(),
         binding: NewPostBinding()),
     GetPage(
         name: _Paths.editPost,
-        page: () => EditPostView(),
+        page: () => const EditPostView(),
         binding: EditPostBinding()),
     GetPage(
         name: _Paths.newIa,
