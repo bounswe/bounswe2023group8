@@ -2,15 +2,16 @@ import React from 'react';
 import { Modal, Button, Col, Row } from 'react-bootstrap';
 import FollowerCard from './FollowerCard';
 import mockUsers from '../../../mockData/milestone1/451_users.json';
+import {EnigmaUser} from "../../../pages/InterestAreaViewPage";
 
 type FollowerModalProps = {
     show: boolean;
     setShow: () => void;
+    followerData: any;
+    handleFollow: (targetId: number) => void;
 };
 
-const FollowerModal: React.FC<FollowerModalProps> = ({ show, setShow }) => {
-    const shuffledUsers = mockUsers.sort(() => 0.5 - Math.random());
-    const followersData = shuffledUsers.slice(0, 7);
+const FollowerModal: React.FC<FollowerModalProps> = ({ show, setShow, followerData, handleFollow}) => {
 
     return (
         <Modal show={show} centered className="follower-modal" onHide={setShow}>
@@ -19,9 +20,9 @@ const FollowerModal: React.FC<FollowerModalProps> = ({ show, setShow }) => {
             </Modal.Header>
             <Modal.Body style={{ maxHeight: '400px', overflowY: 'auto' }}>
                 <Row className="follower-list">
-                    {followersData.map((follower) => (
+                    {followerData?.map((follower: any) => (
                         <Col key={follower.id} md={12} className="mb-3">
-                            <FollowerCard user={follower} />
+                            <FollowerCard user={follower} follow={handleFollow} />
                         </Col>
                     ))}
                 </Row>
