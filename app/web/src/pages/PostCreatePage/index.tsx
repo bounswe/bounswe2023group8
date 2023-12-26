@@ -5,7 +5,8 @@ import PostCreateCard, {
 } from "../../components/Post/Create/PostCreateCard";
 import { SelectedLocationFormData } from "../../components/Geolocation/LocationPicker";
 import { useCreatePost } from "../../hooks/usePost";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation} from "react-router-dom";
+import DetailedPostCardPreview from "../../components/Post/DetailedPostCardPreview";
 
 const CreatePost = () => {
   const { axiosInstance } = useAuth();
@@ -15,7 +16,8 @@ const CreatePost = () => {
     content: "",
     wikiTags: [],
     label: 1,
-    sourceLink: ""
+    sourceLink: "",
+    isAgeRestricted: false,
   };
 
   const defaultLocationDetails: SelectedLocationFormData = {
@@ -43,11 +45,11 @@ const CreatePost = () => {
       value: string;
       name: string;
     };
-    if (name === "publicationDate") {
-      // setPostDetails({
-      //   ...postDetails,
-      //   [name]: new Date(value),
-      // });
+    if (name === "label") {
+      setPostDetails({
+        ...postDetails,
+        [name]: parseInt(value),
+      });
     } else {
       setPostDetails({
         ...postDetails,
@@ -58,7 +60,6 @@ const CreatePost = () => {
   };
 
   const { mutate } = useCreatePost({});
-  const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent) => {
     const wikiTagIds = postDetails.wikiTags.map((tag) => tag.id);
@@ -91,7 +92,12 @@ const CreatePost = () => {
           cardType={"create"}
         />
       </div>
-      <div className="col-6 mt-5"></div>
+      <div className="col-6 mt-5 ms-1">
+        <h3>Preview</h3>
+        <DetailedPostCardPreview  content={postDetails.content}
+                                  interestAreaId={interestAreaId.toString()} interestAreaTitle={interestAreaTitle}
+                                  label={postDetails.label} sourceLink={postDetails.sourceLink} title={postDetails.title}/>
+      </div>
     </div>
   );
 };

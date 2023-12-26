@@ -1,40 +1,38 @@
-//
-//GET USER INFO
-//
-
-import {AxiosInstance} from "axios";
-import {useMutation} from "react-query";
+import { AxiosInstance } from "axios";
+import { useMutation, useQuery } from "react-query";
 
 export type GetUserProfileProps = {
-    axiosInstance: AxiosInstance;
-    userId: string;
-}
+  axiosInstance: AxiosInstance;
+  userId: string;
+};
 
-const getUserProfile = async ({axiosInstance, userId}: GetUserProfileProps) => {
-    const params = new URLSearchParams({
-        id: userId,
-    }).toString();
+const getUserProfile = async ({
+  axiosInstance,
+  userId,
+}: GetUserProfileProps) => {
+  const params = new URLSearchParams({
+    id: userId,
+  }).toString();
 
-    const response = await axiosInstance.get(
-        `${process.env.REACT_APP_BACKEND_API_URL}/v1/profile?${params}`,
-    )
-    if (response.status >= 200 && response.status < 300) {
-        return response.data;
-    }
-}
+  const response = await axiosInstance.get(
+    `${process.env.REACT_APP_BACKEND_API_URL}/v1/profile?${params}`
+  );
+  if (response.status >= 200 && response.status < 300) {
+    return response.data;
+  }
+};
 
 export const useGetUserProfile = (props: {}) => {
-    return useMutation(getUserProfile, props);
-}
+  return useMutation(getUserProfile, props);
+};
 
 export type GetUserFollowingInterestAreasProps = {
-    axiosInstance: AxiosInstance;
-    userId: string;
-}
+  axiosInstance: AxiosInstance;
+  userId: string;
+};
 
 const getUserFollowingInterestAreas = async(props: GetUserFollowingInterestAreasProps) => {
     const {axiosInstance, userId} = props;
-    ///v1/user/2/interest-areas
     const response = await axiosInstance.get(
         `${process.env.REACT_APP_BACKEND_API_URL}/v1/user/${userId}/interest-areas`,
     )
@@ -44,17 +42,16 @@ const getUserFollowingInterestAreas = async(props: GetUserFollowingInterestAreas
 }
 
 export const useGetUserFollowingInterestAreas = (props: {}) => {
-    return useMutation(getUserFollowingInterestAreas, props);
-}
+  return useMutation(getUserFollowingInterestAreas, props);
+};
 
 export type GetUserPostsProps = {
-    axiosInstance: AxiosInstance;
-    userId: string;
-}
+  axiosInstance: AxiosInstance;
+  userId: string;
+};
 
 const getUserPosts = async(props: GetUserFollowingInterestAreasProps) => {
     const {axiosInstance, userId} = props;
-    ///v1/user/2/interest-areas
     const response = await axiosInstance.get(
         `${process.env.REACT_APP_BACKEND_API_URL}/v1/user/${userId}/posts`,
     )
@@ -64,5 +61,28 @@ const getUserPosts = async(props: GetUserFollowingInterestAreasProps) => {
 }
 
 export const useGetUserPosts = (props: {}) => {
-    return useMutation(getUserPosts, props);
-}
+  return useMutation(getUserPosts, props);
+};
+
+export type GetUserReputationProps = {
+  axiosInstance: AxiosInstance;
+  userId: string;
+};
+
+const getUserReputation = async ({
+  axiosInstance,
+  userId,
+}: GetUserReputationProps) => {
+  const response = await axiosInstance.get(
+    `${process.env.REACT_APP_BACKEND_API_URL}/v1/reputation/badges?enigmaUserId=${userId}`
+  );
+  if (response.status >= 200 && response.status < 300) {
+    return response.data;
+  }
+};
+
+export const useGetUserReputation = (props: GetUserReputationProps) => {
+  return useQuery(["userReputation", props.userId], () =>
+    getUserReputation(props)
+  );
+};

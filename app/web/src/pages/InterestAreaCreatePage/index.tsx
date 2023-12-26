@@ -62,18 +62,14 @@ const CreateInterestArea = () => {
   };
 
   return (
-    <div className="d-flex">
-      <div className="container mt-4 col-12">
-        <h2 className="fw-bold">Create a New Interest Area!</h2>
-        <InterestAreaCreateCard
-          setInterestAreaDetails={setInterestAreaDetails}
-          interestAreaDetails={interestAreaDetails}
-          handleInputChange={handleInputChange}
-          handleSubmit={handleSubmit}
-          cardType={"create"}
-        />
-      </div>
-      <div className="col-6 mt-5"></div>
+    <div className="container">
+      <InterestAreaCreateCard
+        setInterestAreaDetails={setInterestAreaDetails}
+        interestAreaDetails={interestAreaDetails}
+        handleInputChange={handleInputChange}
+        handleSubmit={handleSubmit}
+        cardType={"create"}
+      />
     </div>
   );
 };

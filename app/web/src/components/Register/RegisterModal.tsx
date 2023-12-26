@@ -7,6 +7,7 @@ import { useAuth } from "../../contexts/AuthContext";
 export type FormData = {
   email: string;
   username: string;
+  name: string;
   birthday: Date;
   password: string;
   confirmPassword: string;
@@ -50,7 +51,7 @@ const RegisterModal = (props: RegisterModalProps) => {
         className="bg-body-secondary border-0"
         closeButton
       ></Modal.Header>
-      <Modal.Body className="bg-body-secondary ">
+      <Modal.Body className="bg-body-secondary">
         <div className="card-body align-items-center d-flex flex-column bg-body-secondary">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="m-3">
@@ -68,6 +69,7 @@ const RegisterModal = (props: RegisterModalProps) => {
               >
                 Sign up
               </h2>
+
               <div className="mt-3">
                 <input
                   className="form-control shadow rounded-5"
@@ -89,6 +91,18 @@ const RegisterModal = (props: RegisterModalProps) => {
                 />
                 {errors.username && (
                   <span className="text-danger">{errors.username.message}</span>
+                )}
+              </div>
+              <div className="mt-2">
+                <input
+                  className="form-control shadow rounded-5"
+                  {...register("name", {
+                    required: "This field is required",
+                  })}
+                  placeholder="Name"
+                />
+                {errors.name && (
+                  <span className="text-danger">{errors.name.message}</span>
                 )}
               </div>
 
@@ -137,6 +151,7 @@ const RegisterModal = (props: RegisterModalProps) => {
                   </span>
                 )}
               </div>
+
               <div className="mt-2 form-check">
                 <input
                   type="checkbox"
@@ -182,5 +197,4 @@ const RegisterModal = (props: RegisterModalProps) => {
     </Modal>
   );
 };
-
 export default RegisterModal;

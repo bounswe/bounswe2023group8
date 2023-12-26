@@ -178,15 +178,39 @@ const InterestAreaCreateCard = ({
   };
 
   return (
-    <Card className="">
-      <CardBody className="">
-        <div className="mb-3">
-          <label htmlFor="accessLevel" className="form-label">
+    <>
+      <div
+        className="WA-theme-bg-dark"
+        style={{
+          borderBottomLeftRadius: "20px",
+          borderBottomRightRadius: "20px",
+        }}
+      >
+        <h2 className="fw-bold mx-3 mb-3 p-3 text-white text-center">
+          {cardType === "create" ? "Create a new Bunch" : "Update Bunch"}
+        </h2>
+      </div>
+      <div className="d-flex justify-content-between">
+        <div className="WA-theme-bg-regular p-3 w-100 rounded-3">
+          <label htmlFor="title" className="form-label h4">
+            Bunch Name:
+          </label>
+          <input
+            id="title"
+            type="text"
+            className="form-control WA-theme-bg-soft"
+            name="title"
+            value={interestAreaDetails.title}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="WA-theme-bg-regular p-3 ms-3 w-100 rounded-3">
+          <label htmlFor="accessLevel" className="form-label h4">
             Access Level:
           </label>
           <select
             id="accessLevel"
-            className="form-select"
+            className="form-select WA-theme-bg-soft"
             value={interestAreaDetails.accessLevel}
             onChange={handleAccessLevelChange}
           >
@@ -195,37 +219,26 @@ const InterestAreaCreateCard = ({
             <option value={2}>Personal</option>
           </select>
         </div>
-        <div className="mb-3">
-          <label htmlFor="title" className="form-label">
-            Title:
-          </label>
-          <input
-            id="title"
-            type="text"
-            className="form-control"
-            name="title"
-            value={interestAreaDetails.title}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="description" className="form-label">
-            Description:
-          </label>
-          <textarea
-            id="description"
-            className="form-control"
-            name="description"
-            value={interestAreaDetails.description}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="wikiTags" className="form-label">
-            Tags:
-          </label>
-          <div className="d-flex flex-wrap">
-            {interestAreaDetails.wikiTags && interestAreaDetails.wikiTags.map((tag, index) => (
+      </div>
+      <div className="my-3 WA-theme-bg-regular p-3 w-100 rounded-3">
+        <label htmlFor="description" className="form-label h4">
+          Description:
+        </label>
+        <textarea
+          id="description"
+          className="form-control WA-theme-bg-soft"
+          name="description"
+          value={interestAreaDetails.description}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div className="WA-theme-bg-regular p-3 w-100 rounded-3">
+        <label htmlFor="wikiTags" className="form-label h4">
+          Tags:
+        </label>
+        <div className="d-flex flex-wrap">
+          {interestAreaDetails.wikiTags &&
+            interestAreaDetails.wikiTags.map((tag, index) => (
               <div
                 key={tag.id}
                 className="m-2"
@@ -235,43 +248,49 @@ const InterestAreaCreateCard = ({
                 <Tag className={""} label={tag.name} />
               </div>
             ))}
-            <div className="w-100 text-center">
-              <input
-                type="text"
-                className="form-control"
-                value={newTag}
-                onChange={handleTagInputChange}
-                onFocus={() => setIsTagInputFocused(true)}
-                onBlur={handleTagInputBlur}
-              />
-              {isTagInputFocused &&
-                searchWikiTagsData &&
-                searchWikiTagsData.length > 0 && (
-                  <div className="dropdown-menu show">
-                    {searchWikiTagsData.map((result: any) => (
-                      <button
-                        key={result.id}
-                        className="dropdown-item"
-                        type="button"
-                        onClick={() =>
-                          onTagSelect(result.id, result.display.label.value)
-                        }
-                      >
-                        {result.display.label.value} - {result.description}
-                      </button>
-                    ))}
-                  </div>
-                )}
-            </div>
+          <div className="w-100 text-center d-flex justify-content-center align-items-center">
+            <img
+              className="mx-2"
+              src="/assets/theme/icons/SearchState=Active.png"
+              style={{ width: "20px", height: "20px" }}
+            />
+            <input
+              type="text"
+              className="form-control WA-theme-bg-soft"
+              value={newTag}
+              onChange={handleTagInputChange}
+              onFocus={() => setIsTagInputFocused(true)}
+              onBlur={handleTagInputBlur}
+            />
+            {isTagInputFocused &&
+              searchWikiTagsData &&
+              searchWikiTagsData.length > 0 && (
+                <div className="dropdown-menu show">
+                  {searchWikiTagsData.map((result: any) => (
+                    <button
+                      key={result.id}
+                      className="dropdown-item"
+                      type="button"
+                      onClick={() =>
+                        onTagSelect(result.id, result.display.label.value)
+                      }
+                    >
+                      {result.display.label.value} - {result.description}
+                    </button>
+                  ))}
+                </div>
+              )}
           </div>
         </div>
+      </div>
 
-        <div className="mb-3">
-          <label htmlFor="nestedInterestAreas" className="form-label">
-            Sub-IAs:
-          </label>
-          <div className="d-flex flex-wrap">
-            {interestAreaDetails.nestedInterestAreas && interestAreaDetails.nestedInterestAreas.map((subIA, index) => (
+      <div className="WA-theme-bg-regular p-3 w-100 mt-3 rounded-3">
+        <label htmlFor="nestedInterestAreas" className="form-label h4">
+          Sub-Bunches:
+        </label>
+        <div className="d-flex flex-wrap">
+          {interestAreaDetails.nestedInterestAreas &&
+            interestAreaDetails.nestedInterestAreas.map((subIA, index) => (
               <div
                 key={subIA.id}
                 className="d-flex justify-content-between align-items-center bg-light px-2 py-1 m-2 rounded shadow-sm"
@@ -290,48 +309,57 @@ const InterestAreaCreateCard = ({
               </div>
             ))}
 
-            <div className="w-100 text-center mt-2">
-              <input
-                type="text"
-                className="form-control"
-                value={newSubIA}
-                onChange={handleSubIAInputChange}
-                onFocus={() => setIsSubIAInputFocused(true)}
-                onBlur={handleSubIAInputBlur}
-              />
-              {isSubIAInputFocused &&
-                searchInterestAreasData &&
-                searchInterestAreasData.length > 0 && (
-                  <div className="dropdown-menu show">
-                    {searchInterestAreasData.map((result: any) => (
-                      <button
-                        key={result.id}
-                        className="dropdown-item"
-                        type="button"
-                        onClick={() => onSubIASelect(result.id, result.title)}
-                      >
-                        {result.title} - {result.description}
-                      </button>
-                    ))}
-                  </div>
-                )}
-            </div>
+          <div className="w-100 text-center d-flex justify-content-center align-items-center">
+            <img
+              className="mx-2"
+              src="/assets/theme/icons/SearchState=Active.png"
+              style={{ width: "20px", height: "20px" }}
+            />
+            <input
+              type="text"
+              className="form-control WA-theme-bg-soft"
+              value={newSubIA}
+              onChange={handleSubIAInputChange}
+              onFocus={() => setIsSubIAInputFocused(true)}
+              onBlur={handleSubIAInputBlur}
+            />
+            {isSubIAInputFocused &&
+              searchInterestAreasData &&
+              searchInterestAreasData.length > 0 && (
+                <div
+                  className="dropdown-menu show"
+                  style={{
+                    maxHeight: "300px",
+                    maxWidth: "75vw",
+                    overflowY: "scroll",
+                  }}
+                >
+                  {searchInterestAreasData.map((result: any) => (
+                    <button
+                      key={result.id}
+                      className="dropdown-item"
+                      type="button"
+                      onClick={() => onSubIASelect(result.id, result.title)}
+                    >
+                      {result.title} - {result.description}
+                    </button>
+                  ))}
+                </div>
+              )}
           </div>
         </div>
+      </div>
 
-        <div className="d-flex justify-content-center mt-4">
-          <button
-            type="submit"
-            className="btn btn-primary"
-            onClick={handleSubmit}
-          >
-            {cardType === "create"
-              ? "Create Interest Area"
-              : "Update Interest Area"}
-          </button>
-        </div>
-      </CardBody>
-    </Card>
+      <div className="d-flex justify-content-center mt-4">
+        <button
+          type="submit"
+          className="btn btn-primary rounded-4"
+          onClick={handleSubmit}
+        >
+          {cardType === "create" ? "Create Bunch" : "Update Bunch"}
+        </button>
+      </div>
+    </>
   );
 };
 

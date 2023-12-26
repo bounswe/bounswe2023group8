@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {ChangeEvent, useEffect, useState} from "react";
 import Tag from "../../Tag/Tag";
 import LocationPicker, {
   SelectedLocationFormData,
@@ -14,6 +14,7 @@ export type CreatePostFormData = {
   wikiTags: { id: string; name: string }[];
   label: number;
   sourceLink: string;
+  isAgeRestricted: boolean;
 };
 
 export type CreatePostRequestData = {
@@ -23,6 +24,7 @@ export type CreatePostRequestData = {
   wikiTags: string[];
   label: number;
   sourceLink: string;
+  isAgeRestricted: boolean;
 };
 
 export type PostCreateCardProps = {
@@ -65,6 +67,15 @@ const PostCreateCard = ({
   const [tagSearchTerm, setTagSearchTerm] = useState("");
   const [debouncedTagSearchTerm, setDebouncedTagSearchTerm] = useState("");
   const [isTagInputFocused, setIsTagInputFocused] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("false");
+
+  const handleOptionChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSelectedOption(event.target.value)
+    setPostDetails({
+      ...postDetails,
+      isAgeRestricted: event.target.value == "true"
+    })
+  };
 
   const onTagSelect = (id: string, name: string) => {
     addTag(id, name);
@@ -129,7 +140,7 @@ const PostCreateCard = ({
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="interestArea" className="form-label">
-              Interest Area:
+              Bunch:
             </label>
             <select
               id="interestArea"
@@ -154,6 +165,7 @@ const PostCreateCard = ({
               name="title"
               value={postDetails.title}
               onChange={handleInputChange}
+              required
             />
           </div>
           <div className="mb-3">
@@ -167,6 +179,7 @@ const PostCreateCard = ({
                 name="sourceLink"
                 value={postDetails.sourceLink}
                 onChange={handleInputChange}
+                required
             />
           </div>
           <div className="mb-3">
@@ -236,22 +249,40 @@ const PostCreateCard = ({
               value={postDetails.label}
               onChange={handleInputChange}
             >
-              <option value="News">News</option>
+              <option value={4}>Discussion</option>
+              <option value={0}>Documentation</option>
+              <option value={1}>Learning</option>
+              <option value={2}>News</option>
+              <option value={3}>Research</option>
             </select>
           </div>
-          {/*<div className="mb-3">*/}
-          {/*  <label htmlFor="publicationDate" className="form-label ">*/}
-          {/*    Publication Date:*/}
-          {/*  </label>*/}
-          {/*  <input*/}
-          {/*    id="publicationDate"*/}
-          {/*    type="date"*/}
-          {/*    className="form-control"*/}
-          {/*    name="publicationDate"*/}
-          {/*    value={postDetails.publicationDate.toISOString().substring(0, 10)}*/}
-          {/*    onChange={handleInputChange}*/}
-          {/*  />*/}
-          {/*</div>*/}
+          <div className="mb-3">
+            <label className="mx-2">
+              Restrict for ages below 18:
+            </label>
+            <label className="mx-2">
+              <input
+                  className="mx-1"
+                  type="radio"
+                  name="options"
+                  value="false"
+                  checked={selectedOption === 'false'}
+                  onChange={handleOptionChange}
+              />
+              Do not restrict
+            </label>
+            <label className="mx-2">
+              <input
+                  className="mx-1"
+                  type="radio"
+                  name="options"
+                  value="true"
+                  checked={selectedOption === 'true'}
+                  onChange={handleOptionChange}
+              />
+              Restrict
+            </label>
+          </div>
           <div className="mb-3 d-flex">
             <button
               className="btn btn-secondary"
@@ -277,9 +308,8 @@ const PostCreateCard = ({
               </button>
             )}
           </div>
-
           <div className="d-flex justify-content-center">
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary WA-theme-bg-main WA-theme-light">
               {cardType == "create" && "Create Spot"}
               {cardType == "update" && "Update Spot"}
             </button>

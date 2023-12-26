@@ -1,31 +1,13 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {useAuth} from "../../contexts/AuthContext";
-import PostCreateCard, {
-    CreatePostFormData,
-} from "../../components/Post/Create/PostCreateCard";
-import {SelectedLocationFormData} from "../../components/Geolocation/LocationPicker";
-import {useLocation, useNavigate, useParams} from "react-router-dom";
-import {useGetPost, useUpdatePost} from "../../hooks/usePost";
+import PostCreateCard from "../../components/Post/Create/PostCreateCard";
+import {useLocation} from "react-router-dom";
+import {useUpdatePost} from "../../hooks/usePost";
 import {WikiTag} from "../InterestAreaViewPage";
+import DetailedPostCardPreview from "../../components/Post/DetailedPostCardPreview";
 
 const PostUpdatePage = () => {
     const {axiosInstance} = useAuth();
-    const params = useParams();
-    const defaultPostDetails: CreatePostFormData = {
-        interestAreaId: -1,
-        title: "",
-        content: "",
-        wikiTags: [],
-        label: 1,
-        sourceLink: "",
-    };
-
-    const defaultLocationDetails: SelectedLocationFormData = {
-        latitude: 41,
-        longitude: 29,
-        address: "",
-        locationSelected: false,
-    };
     const propsFromParent = useLocation();
     const {post} = propsFromParent.state;
     const {
@@ -37,6 +19,7 @@ const PostUpdatePage = () => {
         label,
         content,
         geolocation,
+        isAgeRestricted
     }
         = post;
 
@@ -49,6 +32,7 @@ const PostUpdatePage = () => {
         }),
         label: label,
         sourceLink: sourceLink,
+        isAgeRestricted: isAgeRestricted,
     });
     const [locationDetails, setLocationDetails] = useState(
         { locationSelected: true, ...geolocation}
@@ -112,7 +96,12 @@ const PostUpdatePage = () => {
                     cardType={"update"}
                 />
             </div>
-            <div className="col-6 mt-5"></div>
+            <div className="col-6 mt-5 ms-1">
+                <h3>Preview</h3>
+                <DetailedPostCardPreview  content={postDetails.content}
+                                          interestAreaId={interestArea.id} interestAreaTitle={interestArea.title}
+                                          label={postDetails.label.toString()} sourceLink={postDetails.sourceLink} title={postDetails.title}/>
+            </div>
         </div>
     );
 };

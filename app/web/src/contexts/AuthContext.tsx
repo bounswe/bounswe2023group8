@@ -30,6 +30,7 @@ type userData = {
   email: string;
   birthday: string;
   createTime: string;
+  pictureUrl: string;
 };
 interface AuthContextType extends AuthState {
   login: (data: LoginFormData) => Promise<void>;
@@ -55,11 +56,12 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
   });
   const [userData, setUserData] = useState<userData>({
     id: parseInt(sessionStorage.getItem('id') || "-1"),
-    username: "",
+    username: sessionStorage.getItem("username") || "",
     name: sessionStorage.getItem("name") || "",
     email: "",
     birthday: "",
     createTime: "",
+    pictureUrl: sessionStorage.getItem("pictureUrl") || "",
   });
 
   const axiosInstance = axios.create({
@@ -122,6 +124,8 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
             setUserData(data);
             sessionStorage.setItem('id', data.id.toString());
             sessionStorage.setItem('name', data.name);
+            sessionStorage.setItem('username', data.username);
+            sessionStorage.setItem('pictureUrl', data.pictureUrl);
           },
         }
       );
@@ -156,6 +160,7 @@ export const AuthProvider = ({ children }: AuthProviderProps): ReactElement => {
           email: "",
           birthday: "",
           createTime: "",
+          pictureUrl: "",
       })
       sessionStorage.clear();
     } catch (error) {

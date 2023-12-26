@@ -31,7 +31,9 @@ const TimelineHomePage: React.FC = () => {
                                             label={post.label}
                                             content={post.content}
                                             geolocation={post.geolocation}
-                                            createTime={post.createTime} />
+                                            createTime={post.createTime}
+                                            upvoteCount={post.upvoteCount}
+                                            downvoteCount={post.downvoteCount}/>
                 })
                     }
                 </div>
