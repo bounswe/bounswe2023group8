@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/data/constants/palette.dart';
+import 'package:mobile/data/widgets/custom_app_bar.dart';
 
 class SentEmailView extends StatelessWidget {
   final bool verify;
-  const SentEmailView({super.key, required this.verify});
+  const SentEmailView({
+    super.key,
+    required this.verify,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          verify ? 'Verify Your Email' : 'Reset Password',
-        ),
-        backgroundColor: Colors.blue, // Change the app bar color
+      backgroundColor: ThemePalette.white,
+      appBar: CustomAppBar(
+        search: false,
+        notification: false,
+        actions: [],
+        leadingBackIcon: true,
+        elevation: 0,
       ),
       body: Center(
         child: Padding(

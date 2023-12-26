@@ -5,6 +5,9 @@ class UserProfile {
   final String birthday;
   final int followers;
   final int following;
+  final int upvotes;
+  final int downvotes;
+  final String? profilePictureUrl;
 
   UserProfile({
     required this.id,
@@ -13,6 +16,10 @@ class UserProfile {
     required this.birthday,
     required this.followers,
     required this.following,
+    required this.upvotes,
+    required this.downvotes,
+    this.profilePictureUrl,
+
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
@@ -23,6 +30,9 @@ class UserProfile {
       birthday: json['birthday'],
       followers: json['followers'],
       following: json['following'],
+      upvotes: json['upvotes'],
+      downvotes: json['downvotes'],
+      profilePictureUrl: json['pictureUrl'],
     );
   }
 }

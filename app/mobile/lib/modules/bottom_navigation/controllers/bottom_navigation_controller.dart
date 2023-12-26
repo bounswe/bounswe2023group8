@@ -23,6 +23,8 @@ class BottomNavigationController extends GetxController {
   final String token = Get.arguments['token'];
   final int userId = Get.arguments['userId'];
 
+  EnigmaUser? signedInUser;
+
   List<EnigmaUser> followingUsers = <EnigmaUser>[];
   List<InterestArea> followingIas = <InterestArea>[];
 
@@ -46,6 +48,17 @@ class BottomNavigationController extends GetxController {
 
   void followUser() async {
     fetchData();
+  }
+
+  void getUser() async {
+    try {
+      final res = await bottomNavProvider.getUser(token: token, userId: userId);
+      if (res != null) {
+        signedInUser = res;
+      }
+    } catch (e) {
+      ErrorHandlingUtils.handleApiError(e);
+    }
   }
 
   void unfollowUser(int id) async {
@@ -93,7 +106,7 @@ class BottomNavigationController extends GetxController {
     if (settings.name == Routes.newPost) {
       return GetPageRoute(
         settings: settings,
-        page: () => NewPostView(),
+        page: () => const NewPostView(),
         binding: NewPostBinding(),
         transition: Transition.noTransition,
       );
@@ -133,6 +146,7 @@ class BottomNavigationController extends GetxController {
   @override
   void onInit() async {
     fetchData();
+    getUser();
     super.onInit();
   }
 }

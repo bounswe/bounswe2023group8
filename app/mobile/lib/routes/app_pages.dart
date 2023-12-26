@@ -17,8 +17,7 @@ import '../modules/newIa/views/new_ia_view.dart';
 import '../modules/newPost/bindings/new_post_binding.dart';
 import '../modules/newPost/views/new_post_view.dart';
 import '../modules/interestArea/bindings/ia_binding.dart';
-import '../modules/interestArea/views/member_ia.dart';
-import '../modules/visitor_ia/views/visitor_ia.dart';
+import '../modules/interestArea/views/ia_view.dart';
 import '../modules/opening/bindings/opening_binding.dart';
 import '../modules/opening/views/opening_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
@@ -68,11 +67,11 @@ class AppPages {
         binding: ProfileBinding()),
     GetPage(
         name: _Paths.newPost,
-        page: () => NewPostView(),
+        page: () => const NewPostView(),
         binding: NewPostBinding()),
     GetPage(
         name: _Paths.editPost,
-        page: () => EditPostView(),
+        page: () => const EditPostView(),
         binding: EditPostBinding()),
     GetPage(
         name: _Paths.newIa,

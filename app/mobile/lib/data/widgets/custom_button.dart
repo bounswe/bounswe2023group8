@@ -78,13 +78,17 @@ class CustomButton extends StatelessWidget {
                 width: 20,
                 child: CircularProgressIndicator(),
               )
-            : Text(text,
+            : Text(
+                text,
                 style: TextStyle(
-                    color: secondaryColor
-                        ? ThemePalette.main
-                        : textColor ?? ThemePalette.light,
-                    fontWeight: fontWeight ?? FontWeight.w600,
-                    fontSize: fontSize ?? 20)),
+                  color: secondaryColor
+                      ? ThemePalette.main
+                      : textColor ?? ThemePalette.light,
+                  fontWeight: fontWeight ?? FontWeight.w600,
+                  fontSize: fontSize ?? 20,
+                  letterSpacing: -0.25,
+                ),
+              ),
       ),
     );
   }

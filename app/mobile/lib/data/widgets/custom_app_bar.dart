@@ -1,56 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mobile/data/constants/palette.dart';
+import 'package:mobile/data/widgets/custom_search_bar.dart';
 
 import '../constants/assets.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool leadingAppIcon;
   final bool leadingBackIcon;
-  final List<Widget>? actions;
-  final String? title;
-  final Widget? titleWidget;
+  final List<Widget> actions;
+  final bool search;
+  final Function(String)? onSearchQueryChanged;
+  final bool notification;
+  final Color? backgroundColor;
+  final double? elevation;
   const CustomAppBar({
     super.key,
     this.leadingAppIcon = false,
     this.leadingBackIcon = false,
-    this.title,
-    this.titleWidget,
-    this.actions,
+    required this.search,
+    this.onSearchQueryChanged,
+    required this.notification,
+    required this.actions,
+    this.backgroundColor,
+    this.elevation,
   });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      elevation: 0.3,
+      backgroundColor: backgroundColor ?? ThemePalette.white,
+      leadingWidth: leadingAppIcon
+          ? leadingBackIcon
+              ? 83
+              : 51
+          : leadingBackIcon
+              ? 48
+              : 16,
+      titleSpacing: 32,
+      elevation: elevation ?? 0.5,
+      shadowColor: SeparatorPalette.dark,
       leading: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: leadingAppIcon
-            ? Image.asset(
+        padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
+        child: Row(
+          children: [
+            if (leadingBackIcon) ...[
+              InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                child: Image.asset(
+                  Assets.back,
+                  width: 24,
+                  height: 24,
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
+            if (leadingAppIcon) ...[
+              Image.asset(
                 Assets.logo,
-                height: 30,
+                width: 35,
+                height: 40,
                 fit: BoxFit.contain,
               )
-            : leadingBackIcon
-                ? IconButton(
-                    icon: const Icon(Icons.arrow_back_ios),
-                    onPressed: () => Navigator.of(context).pop(),
-                  )
-                : null,
+            ],
+          ],
+        ),
       ),
-      title: titleWidget ??
-          Text(
-            title ?? '',
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-      backgroundColor: Colors.white,
-      actions: (actions ?? []).isEmpty
-          ? [
-              SizedBox(
-                width: 30,
-              )
-            ]
+      title: search
+          ? CustomSearchBar(
+              onChanged: onSearchQueryChanged,
+            )
+          : null,
+      actions: notification
+          ? actions +
+              [
+                SvgPicture.asset(
+                  Assets.notification,
+                  width: 22,
+                  height: 24,
+                ),
+                const SizedBox(width: 16),
+              ]
           : actions,
     );
   }

@@ -24,7 +24,7 @@ class HomeProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!);
         final posts = body['posts'] as List;
@@ -51,7 +51,7 @@ class HomeProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!);
         final posts = (body['posts'] ?? []) as List;
@@ -71,5 +71,185 @@ class HomeProvider extends GetConnect {
     }
 
     return null;
+  }
+
+  Future<bool> downvotePost(
+      {required String token, required int postId}) async {
+    final response = await get('v1/post/downvote', query: {
+      'id': postId.toString(),
+    }, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      return true;
+    } else {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
+  Future<bool> upvotePost({required String token, required int postId}) async {
+    final response = await get('v1/post/upvote', query: {
+      'id': postId.toString(),
+    }, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      return true;
+    } else {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
+  Future<bool> unvotePost({required String token, required int postId}) async {
+    final response = await get('v1/post/unvote', query: {
+      'id': postId.toString(),
+    }, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      return true;
+    } else {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
+  Future<bool> hasUpVoted(
+      {required String token, required int postId, required int userId}) async {
+    final response = await get('v1/post/$postId/votes', query: {
+      'id': postId.toString(),
+    }, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      final body = json.decode(response.bodyString!) as List;
+      for (final vote in body) {
+        if (vote['enigmaUser']['id'] == userId) {
+          return vote['isUpvote'];
+        }
+      }
+      return false;
+    } else {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
+  Future<bool> hasDownVoted(
+      {required String token, required int postId, required int userId}) async {
+    final response = await get('v1/post/$postId/votes', query: {
+      'id': postId.toString(),
+    }, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode == null) {
+      throw CustomException(
+          'Error', response.statusText ?? 'The connection has timed out.');
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      final body = json.decode(response.bodyString!) as List;
+      for (final vote in body) {
+        if (vote['enigmaUser']['id'] == userId) {
+          return !vote['isUpvote'];
+        }
+      }
+      return false;
+    } else {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      }
+    }
+    return false;
+  }
+
+  Future<List<EnigmaUser>> getDownvotedUsers(
+      {required String token, required int postId}) async {
+    final response = await get('v1/post/$postId/votes', query: {
+      'id': postId.toString(),
+    }, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!) as List;
+        final downvotedUsers = <EnigmaUser>[];
+        for (final vote in body) {
+          if (!vote['isUpvote']) {
+            downvotedUsers.add(EnigmaUser.fromJson(vote['enigmaUser']));
+          }
+        }
+        return downvotedUsers;
+      }
+    } else {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      } else {
+        throw CustomException('Error', 'Something went wrong');
+      }
+    }
+    return [];
+  }
+
+  Future<List<EnigmaUser>> getUpvotedUsers(
+      {required String token, required int postId}) async {
+    final response = await get('v1/post/$postId/votes', query: {
+      'id': postId.toString(),
+    }, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+    if (response.statusCode! >= 200 && response.statusCode! < 300) {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!) as List;
+        final upvotedUsers = <EnigmaUser>[];
+        for (final vote in body) {
+          if (vote['isUpvote']) {
+            upvotedUsers.add(EnigmaUser.fromJson(vote['enigmaUser']));
+          }
+        }
+        return upvotedUsers;
+      }
+    } else {
+      if (response.bodyString != null) {
+        final body = json.decode(response.bodyString!);
+        throw CustomException.fromJson(body);
+      } else {
+        throw CustomException('Error', 'Something went wrong');
+      }
+    }
+    return [];
   }
 }

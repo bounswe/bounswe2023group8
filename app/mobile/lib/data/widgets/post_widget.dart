@@ -1,152 +1,297 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/models/spot.dart';
+import 'package:mobile/routes/app_pages.dart';
 
 class PostTileWidget extends StatelessWidget {
   final Spot post;
   final void Function()? onTap;
   final bool hideTags;
-  const PostTileWidget(
-      {super.key, required this.post, this.onTap, required this.hideTags});
+  final bool hideVoters;
+  final void Function() onUpvote;
+  final void Function() onDownvote;
+  final void Function() showVoters;
+  const PostTileWidget({
+    super.key,
+    required this.post,
+    this.onTap,
+    required this.hideTags,
+    this.hideVoters = false,
+    required this.onUpvote,
+    required this.onDownvote,
+    required this.showVoters,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: BackgroundPalette.regular,
+    var totalVote = post.upvoteCount - post.downvoteCount;
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: BackgroundPalette.regular,
+      ),
       child: ListTile(
         onTap: onTap,
+        contentPadding: const EdgeInsets.only(left: 8, right: 4),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              post.interestArea.name,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                  color: ThemePalette.dark),
+            InkWell(
+              onTap: () => Get.toNamed(Routes.interestArea,
+                  arguments: {'interestArea': post.interestArea}),
+              child: Text(
+                post.interestArea.name,
+                style: TextStyle(
+                  color: ThemePalette.dark,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -0.3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ),
+            const SizedBox(height: 1),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Spotted by',
-                  style: TextStyle(
-                    color: ThemePalette.dark,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 10,
+                Row(
+                  children: [
+                    Text(
+                      'Spotted by',
+                      style: TextStyle(
+                          color: ThemePalette.dark,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: -0.2),
+                    ),
+                    const SizedBox(width: 4),
+                    InkWell(
+                      onTap: () => Get.toNamed(Routes.profile,
+                          arguments: {'userId': post.enigmaUser.id}),
+                      child: Text(
+                        '@${post.enigmaUser.username}',
+                        style: TextStyle(
+                          color: ThemePalette.main,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: -0.2,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '•',
+                      style: TextStyle(
+                        color: ThemePalette.dark,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      post.createTime.split(' ').first,
+                      style: TextStyle(
+                        color: ThemePalette.dark,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+                  ],
+                ),
+                if (!hideVoters)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InkWell(
+                        onTap: onUpvote,
+                        child: Image.asset(
+                          Assets.upvote,
+                          width: 18,
+                          height: 18,
+                        ),
+                      ),
+                      const SizedBox(width: 2),
+                      InkWell(
+                        onTap: showVoters,
+                        child: SizedBox(
+                          width: 18,
+                          child: Text(
+                            totalVote >= 0
+                                ? (totalVote).toString()
+                                : (-totalVote).toString(),
+                            style: TextStyle(
+                              color: totalVote >= 0
+                                  ? totalVote == 0
+                                      ? ThemePalette.dark
+                                      : ThemePalette.positive
+                                  : ThemePalette.negative,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: -0.2,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 2),
+                      InkWell(
+                        onTap: onDownvote,
+                        child: Image.asset(
+                          Assets.downvote,
+                          width: 18,
+                          height: 18,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                    ],
                   ),
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  '@${post.enigmaUser.username}',
-                  style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 10,
-                      color: ThemePalette.main),
-                ),
-                const SizedBox(width: 4),
-                Text('•',
-                    style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 10,
-                        color: ThemePalette.dark)),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  post.createTime,
-                  style: TextStyle(
-                    color: ThemePalette.dark,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 10,
-                  ),
-                ),
               ],
             ),
-            const SizedBox(height: 8),
           ],
         ),
-        contentPadding: const EdgeInsets.all(8),
         subtitle: Stack(
           clipBehavior: Clip.none,
           children: [
             Container(
-              padding: EdgeInsets.only(left: 27, bottom: 10),
+              width: Get.width,
+              margin: const EdgeInsets.only(left: 12, top: 5),
+              padding:
+                  const EdgeInsets.only(left: 27, right: 12, top: 4, bottom: 4),
               decoration: BoxDecoration(
                   color: BackgroundPalette.light,
                   borderRadius: BorderRadius.circular(10)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 4),
                   Text(
                     post.title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 12,
+                    style: TextStyle(
+                      color: ThemePalette.dark,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: -0.24,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 1),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                    decoration: BoxDecoration(
+                      color: BackgroundPalette.solid,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      post.label,
+                      style: TextStyle(
+                        color: BackgroundPalette.light,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: -0.17,
+                      ),
                     ),
                   ),
-                  Text(post.sourceLink,
-                      style: TextStyle(
-                          fontSize: 10,
-                          color: ThemePalette.main,
-                          decoration: TextDecoration.underline)),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 2),
                   Text(
-                    post.content,
+                    post.sourceLink,
                     style: TextStyle(
+                        color: ThemePalette.main,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.2,
+                        decoration: TextDecoration.underline,
+                        overflow: TextOverflow.ellipsis),
+                  ),
+                  const SizedBox(height: 8),
+                  if (hideTags)
+                    Text(
+                      post.content,
+                      style: TextStyle(
                         color: ThemePalette.dark,
                         fontSize: 12,
-                        fontWeight: FontWeight.normal),
-                  ),
-                  const SizedBox(height: 4),
-                  hideTags == true
-                      ? const SizedBox()
-                      : SizedBox(
-                          height: 30,
-                          child: ListView.separated(
-                            itemCount: post.wikiTags.length,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return const SizedBox(width: 4);
-                            },
-                            itemBuilder: (BuildContext context, int index) {
-                              final wikitag = post.wikiTags[index];
-                              return ClipRRect(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                  child: Container(
-                                    color: SeparatorPalette
-                                        .light, // Set the grey background color
-                                    margin: const EdgeInsets.all(
-                                        1.0), // Add margin between rows
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(
-                                          4.0), // Adjust padding as needed
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: -0.2,
+                      ),
+                    )
+                  else
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxHeight: 100,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: SingleChildScrollView(
+                              physics: const ClampingScrollPhysics(),
+                              child: Text(
+                                post.content,
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: ThemePalette.dark,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: -0.2,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            flex: 4,
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              physics: const ClampingScrollPhysics(),
+                              child: Wrap(
+                                spacing: 4,
+                                runSpacing: 4,
+                                children: [
+                                  for (final tag in post.wikiTags)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6, vertical: 1),
+                                      decoration: BoxDecoration(
+                                        color: BackgroundPalette.soft,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: SeparatorPalette.dark
+                                              .withOpacity(0.6),
+                                          width: 1,
+                                        ),
+                                      ),
                                       child: Text(
-                                        "#${wikitag.label}",
+                                        "#${tag.label}",
                                         style: TextStyle(
-                                          fontSize: 12,
-                                          color: SeparatorPalette
-                                              .dark, // Text color inside the grey background
+                                          color: SeparatorPalette.dark,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w400,
+                                          letterSpacing: -0.17,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                     ),
-                                  ));
-                            },
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),
             Positioned(
-                left: -5,
-                top: -5,
+                left: 7,
+                top: 4,
                 child: Image.asset(
                   Assets.spot,
                   width: 32,
-                ))
+                )),
           ],
         ),
       ),
