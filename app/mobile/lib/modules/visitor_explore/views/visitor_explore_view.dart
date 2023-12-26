@@ -31,16 +31,18 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                 Row(
                   children: [
                     CustomButton(
-                      text: 'Login',
+                      text: 'Log in',
+                      width: 100,
                       textColor: ThemePalette.light,
                       fontSize: 16,
                       onPressed: () => controller.navigateToLogIn(),
                     ),
                     const SizedBox(
-                      width: 10,
+                      width: 16,
                     ),
                     CustomButton(
-                      text: 'Sign Up',
+                      text: 'Sign up',
+                      width: 100,
                       secondaryColor: true,
                       fontSize: 16,
                       onPressed: () => controller.navigateToSignUp(),
