@@ -10,9 +10,12 @@ public interface AnnotationContainerService {
                                                           List<String> type,
                                                           String label);
 
-    AnnotationContainerResponse getAnnotationContainer(String containerName);
+    AnnotationContainerResponse getAnnotationContainer(String containerName,
+                                                       Integer page);
 
     void deleteAnnotationContainer(String containerName);
 
     Boolean annotationContainerExists(String containerName);
+
+    void updateAnnotationContainerModified(String containerName);
 }

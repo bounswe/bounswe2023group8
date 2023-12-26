@@ -2,23 +2,19 @@ import 'package:mobile/data/models/wiki_tag.dart';
 
 class InterestArea {
   final int id;
-  final int? creatorId;
+  final int enigmaUserId;
   final String accessLevel;
   final String name;
   final List<WikiTag> wikiTags;
   final DateTime createTime;
-  final String description;
-  final String? pictureUrl;
 
   InterestArea({
     required this.id,
-    required this.creatorId,
+    required this.enigmaUserId,
     required this.accessLevel,
     required this.name,
     required this.wikiTags,
     required this.createTime,
-    required this.description,
-    this.pictureUrl,
   });
 
   factory InterestArea.fromJson(Map<String, dynamic> json) {
@@ -28,13 +24,11 @@ class InterestArea {
 
     return InterestArea(
       id: json['id'] ?? 0,
-      pictureUrl: json['pictureUrl'],
-      creatorId: json['creatorId'],
+      enigmaUserId: json['enigmaUserId'] ?? 0,
       accessLevel: json['accessLevel'] ?? '',
       name: json['title'] ?? '',
       wikiTags: parsedWikiTags,
       createTime: DateTime.parse(json['createTime'] ?? ''),
-      description: json['description'] ?? '',
     );
   }
 

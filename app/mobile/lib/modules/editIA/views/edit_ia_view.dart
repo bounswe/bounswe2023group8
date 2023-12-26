@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/data/widgets/custom_button.dart';
@@ -18,14 +17,9 @@ class EditIaView extends GetView<EditIaController> {
     return Scaffold(
         appBar: CustomAppBar(
           leadingAppIcon: true,
-          leadingBackIcon: true,
-          search: false,
-          notification: false,
           actions: [
-            Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: InkWell(
-                onTap: () {
+            IconButton(
+                onPressed: () {
                   Dialogs.showCustomDialog(
                       onAction: () {
                         controller.onDeleteIa();
@@ -37,12 +31,7 @@ class EditIaView extends GetView<EditIaController> {
                       cancelText: 'No',
                       actionText: 'Yes');
                 },
-                child: Image.asset(
-                  Assets.delete,
-                 
-                ),
-              ),
-            ),
+                icon: Icon(Icons.delete))
           ],
         ),
         body: Obx(() {
@@ -153,7 +142,6 @@ class EditIaView extends GetView<EditIaController> {
                 const SizedBox(height: 10),
                 TextField(
                   maxLines: 5,
-                  controller: controller.descriptionController,
                   decoration: InputDecoration(
                     hintText: "Enter description here...",
                     contentPadding:

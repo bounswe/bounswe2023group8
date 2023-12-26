@@ -15,10 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(
-        path = "/wia",
-        produces = "application/ld+json",
-        consumes = "application/ld+json")
+@RequestMapping(path = "/wia")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AnnotationContainerController {
 
@@ -30,7 +27,7 @@ public class AnnotationContainerController {
      * @param request       CreateAnnotationContainerRequest
      * @return              HTTP 201
      */
-    @PostMapping
+    @PostMapping(produces = "application/ld+json", consumes = "application/ld+json")
     public ResponseEntity<?> createAnnotationContainer(@RequestBody CreateAnnotationContainerRequest request) {
 
         AnnotationContainerResponse response =
@@ -57,11 +54,12 @@ public class AnnotationContainerController {
      * @param containerName name of the annotation container
      * @return              HTTP 200
      */
-    @GetMapping(path = "/{containerName}")
-    public ResponseEntity<?> getAnnotationContainer(@PathVariable String containerName) {
+    @GetMapping(path = "/{containerName}", produces = "application/ld+json")
+    public ResponseEntity<?> getAnnotationContainer(@PathVariable String containerName,
+                                                    @RequestParam(defaultValue = "0") Integer page) {
 
         AnnotationContainerResponse response =
-                annotationContainerService.getAnnotationContainer(containerName);
+                annotationContainerService.getAnnotationContainer(containerName, page);
 
         return ResponseEntity
                 .ok()
@@ -74,7 +72,7 @@ public class AnnotationContainerController {
      * @param containerName name of the annotation container
      * @return              HTTP 204
      */
-    @DeleteMapping(path = "/{containerName}")
+    @DeleteMapping(path = "/{containerName}", produces = "application/ld+json")
     public ResponseEntity<?> deleteAnnotationContainer(@PathVariable String containerName) {
 
         annotationContainerService.deleteAnnotationContainer(containerName);

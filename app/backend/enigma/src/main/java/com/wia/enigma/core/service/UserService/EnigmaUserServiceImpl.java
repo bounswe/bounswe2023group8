@@ -461,7 +461,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
     @Override
     public Long getFollowingCount(Long userId) {
-        return userFollowsService.countAcceptedFollowers(userId, EntityType.USER);
+        return userFollowsService.countAcceptedFollowings(userId, EntityType.USER);
     }
 
     @Override
@@ -725,24 +725,33 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
     @Override
     public Pair<Integer, Integer> getVotes(Long userId) {
 
-            List<PostVote> postVotes;
-            try {
-                postVotes = postVoteRepository.findByEnigmaUserId(userId);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
-                        "Cannot fetch PostVotes by enigma user id.");
-            }
+        Set<Long> postIds;
+        try {
+            postIds = postRepository.findAllIdsByEnigmaUserId(userId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot fetch Posts by enigma user id.");
+        }
 
-            int upvotes = 0;
-            int downvotes = 0;
-            for (PostVote postVote : postVotes) {
-                if (postVote.getVote())
-                    upvotes++;
-                else
-                    downvotes++;
-            }
+        List<PostVote> postVotes;
+        try {
+            postVotes = postVoteRepository.findAllByPostIdIn(postIds);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot fetch PostVotes by enigma user id.");
+        }
 
-            return Pair.of(upvotes, downvotes);
+        int upvotes = 0;
+        int downvotes = 0;
+        for (PostVote postVote : postVotes) {
+            if (postVote.getVote())
+                upvotes++;
+            else
+                downvotes++;
+        }
+
+        return Pair.of(upvotes, downvotes);
     }
 }

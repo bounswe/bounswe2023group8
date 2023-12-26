@@ -5,7 +5,7 @@ import com.wia.enigma.dal.entity.UserFollows;
 import com.wia.enigma.dal.enums.EnigmaAccessLevel;
 import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
-import com.wia.enigma.dal.repository.UserFollowsRepository;
+import com.wia.enigma.dal.repository.*;
 import com.wia.enigma.exceptions.custom.EnigmaException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +23,9 @@ import java.util.List;
 public class UserFollowsServiceImpl implements UserFollowsService {
 
     final UserFollowsRepository userFollowsRepository;
+    final PostVoteRepository postVoteRepository;
+    final PostCommentRepository postCommentRepository;
+    final ReputationVoteRepository reputationVoteRepository;
 
     @Override
     public void follow(Long userId, Long followId, EntityType entityType, Boolean isAccepted) {
@@ -81,6 +84,11 @@ public class UserFollowsServiceImpl implements UserFollowsService {
         return userFollowsRepository.countByFollowedEntityIdAndFollowedEntityTypeAndIsAccepted(followedId, entityType, true);
     }
 
+    public Long countAcceptedFollowings(Long followerId, EntityType entityType){
+
+        return userFollowsRepository.countByFollowerEnigmaUserIdAndFollowedEntityTypeAndIsAccepted(followerId, entityType, true);
+    }
+
     public Boolean isUserFollowsEntity(Long userId, Long followId, EntityType entityType) {
 
         return userFollowsRepository.existsByFollowerEnigmaUserIdAndFollowedEntityIdAndFollowedEntityTypeAndIsAccepted(userId, followId, entityType, true);
@@ -137,6 +145,38 @@ public class UserFollowsServiceImpl implements UserFollowsService {
             log.error(e.getMessage(), e);
             throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
                     "Could not delete UserFollows data for user id: " + enigmaUserId);
+        }
+
+        try {
+            postVoteRepository.deleteAll(
+                    postVoteRepository.findByEnigmaUserId(enigmaUserId)
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
+                    "Could not delete PostVote data for user id: " + enigmaUserId);
+        }
+
+        try {
+            postCommentRepository.deleteAll(
+                    postCommentRepository.findByEnigmaUserId(enigmaUserId)
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
+                    "Could not delete PostComment data for user id: " + enigmaUserId);
+
+        }
+
+        try {
+            reputationVoteRepository.deleteAll(
+                    reputationVoteRepository.findByVoterEnigmaUserIdOrVotedEnigmaUserId(enigmaUserId, enigmaUserId)
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
+                    "Could not delete ReputationVote data for user id: " + enigmaUserId);
+
         }
     }
 }

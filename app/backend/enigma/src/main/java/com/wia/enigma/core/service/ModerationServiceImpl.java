@@ -17,6 +17,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ModerationServiceImpl implements ModerationService {
 
@@ -35,6 +35,15 @@ public class ModerationServiceImpl implements ModerationService {
 
     final InterestAreaService interestAreaService;
     final PostService postService;
+
+    public ModerationServiceImpl(ModerationRepository moderationRepository,
+                                 @Lazy InterestAreaService interestAreaService,
+                                 @Lazy PostService postService) {
+
+        this.moderationRepository = moderationRepository;
+        this.interestAreaService = interestAreaService;
+        this.postService = postService;
+    }
 
     /**
      * Remove a post using the moderation service
@@ -111,7 +120,6 @@ public class ModerationServiceImpl implements ModerationService {
             throw new EnigmaException(ExceptionCodes.DB_SAVE_ERROR,
                     "Could not save moderation.");
         }
-
     }
 
     /**
@@ -390,4 +398,53 @@ public class ModerationServiceImpl implements ModerationService {
         return interestAreaId;
     }
 
+    /**
+     * Check if the user is banned from the interest area
+     *
+     * @param userId            id of the user
+     * @param interestAreaId    id of the interest area
+     */
+    @Override
+    public void assertNotBanned(Long userId, Long interestAreaId) {
+
+        List<ModerationDto> moderations = getModeration(
+                EnigmaAuthorities.builder()
+                        .enigmaUserId(userId)
+                        .audienceType(AudienceType.USER)
+                        .build(),
+                ModerationType.BAN,
+                interestAreaId,
+                null,
+                userId,
+                null
+        );
+
+        if (moderations != null && !moderations.isEmpty())
+            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "You are banned from this interest area");
+    }
+
+    /**
+     *
+     * @param userId            id of the user
+     * @param postId            id of the post
+     * @param interestAreaId    id of the interest area
+     */
+    @Override
+    public void assertNotBanned(Long userId, Long postId, Long interestAreaId) {
+
+        List<ModerationDto> moderations = getModeration(
+                EnigmaAuthorities.builder()
+                        .enigmaUserId(userId)
+                        .audienceType(AudienceType.USER)
+                        .build(),
+                ModerationType.BAN,
+                null,
+                postId,
+                userId,
+                null
+        );
+
+        if (moderations != null && !moderations.isEmpty())
+            throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, "You are banned from this interest area");
+    }
 }

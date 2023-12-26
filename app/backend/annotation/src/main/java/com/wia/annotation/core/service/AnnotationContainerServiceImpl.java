@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -110,7 +109,8 @@ public class AnnotationContainerServiceImpl implements AnnotationContainerServic
         return AnnotationContainerResponse.builder()
                 .id(annotationContainerId)
                 .label(annotationContainer.getLabel())
-                .first(AnnotationContainerResponse.First.builder()
+                .type(List.of("BasicContainer", "AnnotationCollection"))
+                .first(AnnotationContainerResponse.Page.builder()
                         .id(annotationContainerId + "?page=0")
                         .next((lastPage > 0 ? annotationContainerId + "?page=1" : null))
                         .type("AnnotationPage")
@@ -142,10 +142,11 @@ public class AnnotationContainerServiceImpl implements AnnotationContainerServic
      * Fetches an annotation container.
      *
      * @param containerName name of the annotation container
+     * @param page          page number
      * @return              AnnotationContainerResponse
      */
     @Override
-    public AnnotationContainerResponse getAnnotationContainer(String containerName) {
+    public AnnotationContainerResponse getAnnotationContainer(String containerName, Integer page) {
 
         boolean exists = false;
         try {
@@ -169,7 +170,52 @@ public class AnnotationContainerServiceImpl implements AnnotationContainerServic
                     "Could not fetch annotation container.");
         }
 
-        return getAnnotationContainerResponse(containerName, annotationContainer);
+        if (page < 0)
+            throw new AnnotationServerBadRequestException(Exceptions.BAD_REQUEST,
+                    "Page number cannot be negative.");
+
+        if (page > 0) {
+
+            final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+
+            List<Annotation> annotations = annotationService.getAnnotations(containerName);
+            List<Annotation> annotationPage = annotations.subList(page * pageSize, Math.min((page + 1) * pageSize, annotations.size()));
+            int lastPage = annotations.size() / pageSize;
+
+            String annotationContainerId = baseUrl + "/wia/" + containerName + "/";
+            return AnnotationContainerResponse.builder()
+                    .id(annotationContainerId)
+                    .label(annotationContainer.getLabel())
+                    .type(List.of("BasicContainer", "AnnotationCollection"))
+                    .first(AnnotationContainerResponse.Page.builder()
+                            .id(annotationContainerId + "?page=0")
+                            .next((lastPage > page + 1 ? annotationContainerId + "?page=" + (page + 1) : null))
+                            .type("AnnotationPage")
+                            .items(annotationPage
+                                    .stream()
+                                    .map(annotation ->
+                                            AnnotationDto.builder()
+                                                    .id(baseUrl + "/wia/" + containerName + "/" + annotation.getAnnotationName() + annotation.getId())
+                                                    .type(annotation.getType())
+                                                    .body(AnnotationDto.Body.builder()
+                                                            .value(annotation.getValue())
+                                                            .type(annotation.getValueType())
+                                                            .build())
+                                                    .target(annotation.getTarget())
+                                                    .build())
+                                    .collect(Collectors.toList())
+                            )
+                            .partOf(annotationContainerId)
+                            .startIndex(page * pageSize)
+                            .build())
+                    .last(annotationContainerId + "?page=" + lastPage)
+                    .total(annotations.size())
+                    .modified(annotationContainer.getModified())
+                    .created(annotationContainer.getCreated())
+                    .build();
+
+        } else
+            return getAnnotationContainerResponse(containerName, annotationContainer);
     }
 
     /**
@@ -216,5 +262,46 @@ public class AnnotationContainerServiceImpl implements AnnotationContainerServic
     @Override
     public Boolean annotationContainerExists(String containerName) {
         return annotationContainerRepository.existsByContainerName(containerName);
+    }
+
+    /**
+     * Updates the modified timestamp of an annotation container.
+     *
+     * @param containerName name of the annotation container
+     */
+    @Override
+    public void updateAnnotationContainerModified(String containerName) {
+
+        boolean exists = false;
+        try {
+            exists = annotationContainerRepository.existsByContainerName(containerName);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new AnnotationServerDatabaseException(Exceptions.DB_FETCH_ERROR,
+                    "Could not fetch annotation container existence.");
+        }
+
+        if (!exists)
+            throw new AnnotationServerDatabaseException(Exceptions.NOT_FOUND,
+                    "Annotation container with name " + containerName + " does not exist.");
+
+        AnnotationContainer annotationContainer;
+        try {
+            annotationContainer = annotationContainerRepository.findByContainerName(containerName);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new AnnotationServerDatabaseException(Exceptions.DB_FETCH_ERROR,
+                    "Could not fetch annotation container.");
+        }
+
+        annotationContainer.setModified(new Timestamp(System.currentTimeMillis()));
+
+        try {
+            annotationContainerRepository.save(annotationContainer);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new AnnotationServerDatabaseException(Exceptions.DB_SAVE_ERROR,
+                    "Could not save annotation container.");
+        }
     }
 }

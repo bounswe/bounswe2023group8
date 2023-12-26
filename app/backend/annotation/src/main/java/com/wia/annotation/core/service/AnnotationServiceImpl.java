@@ -30,6 +30,7 @@ public class AnnotationServiceImpl implements AnnotationService {
 
     public AnnotationServiceImpl(AnnotationRepository annotationRepository,
                                  @Lazy AnnotationContainerService annotationContainerService) {
+
         this.annotationRepository = annotationRepository;
         this.annotationContainerService = annotationContainerService;
     }
@@ -131,6 +132,8 @@ public class AnnotationServiceImpl implements AnnotationService {
                 .target(target)
                 .build();
 
+        annotationContainerService.updateAnnotationContainerModified(annotation.getContainerName());
+
         try {
             annotationRepository.save(annotation);
         } catch (Exception e) {
@@ -174,6 +177,8 @@ public class AnnotationServiceImpl implements AnnotationService {
         if (annotation == null)
             throw new AnnotationServerNotFoundException(Exceptions.NOT_FOUND,
                     "Annotation with name = " + name + " and id = " + id + " does not exist in container " + containerName + ".");
+
+        annotationContainerService.updateAnnotationContainerModified(annotation.getContainerName());
 
         try {
             annotationRepository.delete(annotation);
@@ -304,6 +309,9 @@ public class AnnotationServiceImpl implements AnnotationService {
         }
 
         if (updated) {
+
+            annotation.setModified(new java.sql.Timestamp(System.currentTimeMillis()));
+            annotationContainerService.updateAnnotationContainerModified(annotation.getContainerName());
             try {
                 annotationRepository.save(annotation);
             } catch (Exception e) {

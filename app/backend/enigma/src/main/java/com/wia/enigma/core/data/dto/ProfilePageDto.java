@@ -28,7 +28,7 @@ public class ProfilePageDto {
 
         Long following;
 
-        String profilePictureUrl;
+        String pictureUrl;
         
         Integer upvotes;
 

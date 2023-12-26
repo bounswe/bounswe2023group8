@@ -2,8 +2,10 @@ package com.wia.enigma.core.service.PostService;
 
 import com.wia.enigma.core.data.dto.*;
 import com.wia.enigma.core.data.model.GeoLocation;
+import com.wia.enigma.core.service.ModerationService;
 import com.wia.enigma.core.service.WikiService.WikiService;
 import com.wia.enigma.dal.entity.*;
+import com.wia.enigma.dal.enums.EntityType;
 import com.wia.enigma.dal.enums.ExceptionCodes;
 import com.wia.enigma.dal.enums.PostLabel;
 import com.wia.enigma.dal.repository.*;
@@ -25,22 +27,26 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostServiceImpl implements PostService {
+    private final EntityTagsRepository entityTagsRepository;
 
     final PostCommentRepository postCommentRepository;
     final PostVoteRepository postVoteRepository;
     final InterestAreaRepository interestAreaRepository;
     final WikiTagRepository wikiTagRepository;
     final EnigmaUserRepository enigmaUserRepository;
+    final InterestAreaPostRepository interestAreaPostRepository;
 
     final PostRepository postRepository;
     final PostServiceHelper postServiceHelper;
     final WikiService wikiTagService;
+    final ModerationService moderationService;
 
     @Override
     public PostDto getPost(Long postId, Long userId) {
 
         EnigmaUser enigmaUser = enigmaUserRepository.findEnigmaUserById(userId);
         Post post = postServiceHelper.fetchPost(postId);
+        moderationService.assertNotBanned(enigmaUser.getId(), postId, post.getInterestAreaId());
 
         postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
         postServiceHelper.checkAgeRestriction(post, enigmaUser);
@@ -93,6 +99,7 @@ public class PostServiceImpl implements PostService {
 
         Post post = postServiceHelper.fetchPost(postId);
         postServiceHelper.validatePostOwnership(userId, post);
+        moderationService.assertNotBanned(userId, postId, post.getInterestAreaId());
 
         postServiceHelper.updatePostDetails(post, sourceLink, title, label, content, geolocation);
 
@@ -110,6 +117,8 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EnigmaException(ExceptionCodes.ENTITY_NOT_FOUND, String.format("Post %d not found", postId)));
 
+        moderationService.assertNotBanned(userId, postId, post.getInterestAreaId());
+
         if(!Objects.equals(post.getEnigmaUserId(), userId)){
             throw new EnigmaException(ExceptionCodes.NON_AUTHORIZED_ACTION, String.format("User %d is not the owner of post %d", userId, post.getId()));
         }
@@ -124,6 +133,7 @@ public class PostServiceImpl implements PostService {
         Post post = postServiceHelper.fetchPost(postId);
 
         postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
+        moderationService.assertNotBanned(userId, postId, post.getInterestAreaId());
 
         checkAgeRestriction(post, enigmaUserRepository.findEnigmaUserById(userId));
 
@@ -157,6 +167,7 @@ public class PostServiceImpl implements PostService {
         Post post = postServiceHelper.fetchPost(postId);
 
         postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
+        moderationService.assertNotBanned(userId, postId, post.getInterestAreaId());
 
         checkAgeRestriction(post, enigmaUserRepository.findEnigmaUserById(userId));
 
@@ -178,7 +189,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostDto> getInterestAreaPosts(Long interestAreaId, Long userId) {
 
-       return postServiceHelper.getInterestAreaPosts(interestAreaId, userId );
+        moderationService.assertNotBanned(userId, interestAreaId);
+
+        return postServiceHelper.getInterestAreaPosts(interestAreaId, userId );
     }
 
     @Override
@@ -188,8 +201,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void commentOnPost(Long postId, Long userId, String content) {
+
         Post post = postServiceHelper.fetchPost(postId);
         postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
+
+        moderationService.assertNotBanned(userId, postId, post.getInterestAreaId());
         checkAgeRestriction(post, enigmaUserRepository.findEnigmaUserById(userId));
 
         PostComment postComment = PostComment.builder()
@@ -204,9 +220,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void updatePostComment(Long postId, Long userId, Long commentId, String content) {
+
         Post post = postServiceHelper.fetchPost(postId);
         postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
 
+        moderationService.assertNotBanned(userId, postId, post.getInterestAreaId());
         checkAgeRestriction(post, enigmaUserRepository.findEnigmaUserById(userId));
 
         PostComment postComment = postCommentRepository.findById(commentId)
@@ -222,8 +240,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePostComment(Long postId, Long userId, Long commentId) {
+
         Post post = postServiceHelper.fetchPost(postId);
         postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
+
+        moderationService.assertNotBanned(userId, postId, post.getInterestAreaId());
         checkAgeRestriction(post, enigmaUserRepository.findEnigmaUserById(userId));
 
         PostComment postComment = postCommentRepository.findById(commentId)
@@ -242,6 +263,7 @@ public class PostServiceImpl implements PostService {
         Post post = postServiceHelper.fetchPost(postId);
         postServiceHelper.checkInterestAreaAccess(post.getInterestAreaId(), userId);
 
+        moderationService.assertNotBanned(userId, postId, post.getInterestAreaId());
         checkAgeRestriction(post, enigmaUserRepository.findEnigmaUserById(userId));
 
         List<PostComment> postComments = postCommentRepository.findByPostId(postId);
@@ -275,12 +297,19 @@ public class PostServiceImpl implements PostService {
     public void deleteAllForUser(Long enigmaUserId) {
 
         try {
-            postRepository.deleteAllByEnigmaUserId(enigmaUserId);
+            postRepository.findByEnigmaUserId(enigmaUserId).forEach(post -> {
+                postCommentRepository.deleteByPostId(post.getId());
+                postVoteRepository.deleteByPostId(post.getId());
+                interestAreaPostRepository.deleteByPostId(post.getId());
+                entityTagsRepository.deleteAll(entityTagsRepository.findByEntityIdInAndEntityType(List.of(post.getId()), EntityType.POST));
+                postRepository.deleteById(post.getId());
+            });
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
                     "Could not delete posts.");
         }
+
     }
 
 

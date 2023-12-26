@@ -200,6 +200,9 @@ public class InterestAreaServiceHelper {
     void deleteRelatedEntities(Long id) {
         nestedInterestAreaRepository.deleteAllByParentInterestAreaId(id);
         entityTagsRepository.deleteAllByEntityIdAndEntityType(id, EntityType.INTEREST_AREA);
+        interestAreaPostService.getPostsByInterestAreaId(id).forEach(post -> {
+            postRepository.deleteById(post.getId());
+        });
         interestAreaPostService.deleteAllByInterestAreaId(id);
         userFollowsService.unfollowAll(id, EntityType.INTEREST_AREA);
     }

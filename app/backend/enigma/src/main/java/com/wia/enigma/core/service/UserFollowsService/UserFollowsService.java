@@ -24,6 +24,8 @@ public interface UserFollowsService {
 
     Long countAcceptedFollowers(Long followedId, EntityType entityType);
 
+    Long countAcceptedFollowings(Long followerId, EntityType entityType);
+
     List<UserFollows> findFollowings(Long followerId, EntityType entityType, Boolean isAccepted);
 
     Boolean isUserFollowsEntity(Long userId, Long followId, EntityType entityType);
