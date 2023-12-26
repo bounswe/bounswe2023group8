@@ -31,6 +31,7 @@ export type DetailedPostCardProps = {
     comments: any;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 interface AnnotationModel {
   id: string;
   start: number;
@@ -42,6 +43,7 @@ interface AnnotationModel {
   username: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 class AnnotationModel {
   constructor({
     id,
@@ -183,7 +185,7 @@ async function getAnnotations({ token, postId }: { token: string; postId: number
       if (response.status >= 200 && response.status < 300) {
         if (response.data && response.data.first && response.data.first.items && response.data.first.items.length > 0) {
           return response.data.first.items.map((e: any) => {
-            let x = AnnotationModel.fromJson(e)
+            const x = AnnotationModel.fromJson(e)
             if (x.start > x.end) {
                 const temp = x.start;
                 x.start = x.end;
