@@ -1,11 +1,9 @@
-
 import React, { useEffect, useState } from "react";
 import { Col, Row, Button } from "react-bootstrap";
 import { useAuth } from "../../contexts/AuthContext";
 import { useGetUser } from "../../hooks/useUser";
 
 const SettingsPage: React.FC = () => {
-
   /* eslint-disable no-irregular-whitespace */
   const privacyPolicyText = `PRIVACY POLICY
 
@@ -73,7 +71,6 @@ const SettingsPage: React.FC = () => {
   6. HOW DO WE KEEP YOUR INFORMATION SAFE?
   7. WHAT ARE YOUR PRIVACY RIGHTS?
   8. CONTROLS FOR DO-NOT-TRACK FEATURES
-  
   9. DO WE MAKE UPDATES TO THIS NOTICE?
   10. HOW CAN YOU CONTACT US ABOUT THIS NOTICE?
   11. HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?
@@ -221,53 +218,40 @@ const SettingsPage: React.FC = () => {
   
   
   Based on the applicable laws of your country, you may have the right to request access to the personal information we collect from you, change that information, or delete it. To request to review, update, or delete your personal information, please fill out and submit a data subject access request.
-        ul {
-          list-style-type: square;
-        }
-        ul > li > ul {
-          list-style-type: circle;
-        }
-        ul > li > ul > li > ul {
-          list-style-type: square;
-        }
-        ol li {
-          font-family: Arial ;
-        }
-      
-        
-        
-        This privacy policy was created using Termly's Privacy Policy Generator.
-        `;
-        /* eslint-disable no-irregular-whitespace */
 
-        const [userData1, setUserData] = useState<any>(null); // State to store user data
-        const { axiosInstance, userData } = useAuth();
-      
-        useEffect(() => {
-          const fetchData = async () => {
-            try {
-              const response = await axiosInstance.get(
-                `${process.env.REACT_APP_BACKEND_API_URL}/v1/user?id=${encodeURIComponent(
-                  userData.id
-                )}`
-              );
-      
-              if (response.status >= 200 && response.status < 300) {
-                setUserData(response.data);
-              }
-            } catch (error) {
-              console.error("API Error:", error);
-            }
-          };
-      
-          fetchData(); // Call the fetchData function when the component mounts
-        }, []); 
-        console.log(userData1)
+        `;
+  /* eslint-disable no-irregular-whitespace */
+
+  const [userData1, setUserData] = useState<any>(null); // State to store user data
+  const { axiosInstance, userData } = useAuth();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `${
+            process.env.REACT_APP_BACKEND_API_URL
+          }/v1/user?id=${encodeURIComponent(userData.id)}`
+        );
+
+        if (response.status >= 200 && response.status < 300) {
+          setUserData(response.data);
+        }
+      } catch (error) {
+        console.error("API Error:", error);
+      }
+    };
+
+    fetchData(); // Call the fetchData function when the component mounts
+  }, []);
+  console.log(userData1);
   return (
     <div className="mt-4">
       <h1 className="text-center">Settings</h1>
       <Row className="mt-4">
-        <Col md={12}> {/* Use a single Col component for both sections */}
+        <Col md={12}>
+          {" "}
+          {/* Use a single Col component for both sections */}
           <div className="card">
             <div className="card-header">
               <h5>Account Settings</h5>
@@ -282,7 +266,7 @@ const SettingsPage: React.FC = () => {
                     type="text"
                     className="form-control"
                     id="username"
-                    placeholder={userData1?.username || ''}
+                    placeholder={userData1?.username || ""}
                     readOnly
                   />
                 </div>
@@ -294,7 +278,7 @@ const SettingsPage: React.FC = () => {
                     type="email"
                     className="form-control"
                     id="email"
-                    placeholder={userData1?.email || ''}
+                    placeholder={userData1?.email || ""}
                     readOnly
                   />
                 </div>
@@ -302,36 +286,38 @@ const SettingsPage: React.FC = () => {
                   <label htmlFor="password" className="form-label">
                     Password
                   </label>
-                  <div className="mb-3" style={{display: "flex"}}>
-
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="password"
-                    placeholder="***"
-                  />                
-                  <Button type="submit" className="btn btn-primary">
-                  Change Password
-                </Button>
-                </div>
-
+                  <div className="mb-3" style={{ display: "flex" }}>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="password"
+                      placeholder="***"
+                    />
+                    <Button type="submit" className="btn btn-primary">
+                      Change Password
+                    </Button>
+                  </div>
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="birthday" className="form-label">Birthday</label>
+                  <label htmlFor="birthday" className="form-label">
+                    Birthday
+                  </label>
                   <input
                     type="text"
                     className="form-control"
                     id="birthday"
-                    placeholder={userData1?.birthday || ''}
+                    placeholder={userData1?.birthday || ""}
                     readOnly
                   />
-                  
+
                   <div></div>
                 </div>
-                </form>
-                </div>
+              </form>
+            </div>
           </div>
-          <div className="card mt-4"> {/* Add some margin-top for separation */}
+          <div className="card mt-4">
+            {" "}
+            {/* Add some margin-top for separation */}
             <div className="card-header">
               <h5>Privacy Policy</h5>
             </div>
@@ -354,4 +340,4 @@ const SettingsPage: React.FC = () => {
 };
 
 export default SettingsPage;
-722
+722;
