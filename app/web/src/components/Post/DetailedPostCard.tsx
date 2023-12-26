@@ -974,11 +974,11 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                                         {sourceLink}
                                     </Link>
                                     {annotationsVisible ? (
-                                        <div className="card-title truncate-text-4 WA-theme-dark">
+                                        <div className="card-title WA-theme-dark">
                                             {renderHighlightedText()}
                                         </div>
                                     ) : (
-                                        <p className="card-text">{content}</p>
+                                        <p className="card-text WA-theme-dark">{content}</p>
                                     )}
 
                                     {/* <p className="card-text">{renderHighlightedText()}</p> */}
