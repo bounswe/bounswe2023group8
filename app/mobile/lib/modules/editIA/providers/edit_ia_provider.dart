@@ -17,19 +17,18 @@ class EditIaProvider extends GetConnect {
 
   Future<bool> updateIa(
       {required String name,
-      required List<String> nestedIas,
+      required List<int> nestedIas,
       required List<String> wikiTags,
       required int accessLevel,
       required String description,
       required int id,
       required String token}) async {
     final response = await put('v1/interest-area', {
-      'name': name,
+      'title': name,
       'nestedInterestAreas': nestedIas,
       'wikiTags': wikiTags,
       'accessLevel': accessLevel,
-      // TODO: Add description to the request
-      //'description': description
+      'description': description
     }, headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token',
@@ -39,7 +38,7 @@ class EditIaProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       return true;
     } else {
       if (response.bodyString != null) {
@@ -61,7 +60,7 @@ class EditIaProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       return true;
     } else {
       if (response.bodyString != null) {
@@ -84,7 +83,7 @@ class EditIaProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!) as List;
         return body.map((e) => WikiTag.fromWikiResponse(e)).toList();
@@ -109,7 +108,7 @@ class EditIaProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!) as List;
         return body.map((e) => InterestArea.fromJson(e)).toList();

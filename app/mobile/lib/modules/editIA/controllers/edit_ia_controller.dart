@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/data/helpers/error_handling_utils.dart';
@@ -5,6 +7,10 @@ import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/models/wiki_tag.dart';
 import 'package:mobile/modules/bottom_navigation/controllers/bottom_navigation_controller.dart';
 import 'package:mobile/modules/editIA/providers/edit_ia_provider.dart';
+import 'package:mobile/modules/home/controllers/home_controller.dart';
+import 'package:mobile/modules/interestArea/controllers/ia_controller.dart';
+import 'package:mobile/modules/profile/controllers/profile_controller.dart';
+import 'package:mobile/routes/app_pages.dart';
 
 class EditIaController extends GetxController {
   InterestArea interestArea = Get.arguments['interestArea'];
@@ -27,11 +33,14 @@ class EditIaController extends GetxController {
   RxList<InterestArea> searchSubIaResults = <InterestArea>[].obs;
   RxList<InterestArea> selectedSubIas = <InterestArea>[].obs;
 
-
   final bottomNavController = Get.find<BottomNavigationController>();
   final newIaProvider = Get.find<EditIaProvider>();
 
+  final iaController = Get.find<InterestAreaController>();
+  ProfileController? profileController;
+
   final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   get isFormValid => title.value.isNotEmpty && description.value.isNotEmpty;
 
@@ -55,8 +64,6 @@ class EditIaController extends GetxController {
     }
     searchSubIa();
   }
-
-
 
   void onChangeTagQuery(String value) {
     searchTagResults.clear();
@@ -113,7 +120,7 @@ class EditIaController extends GetxController {
         searchTagResults.value = tags;
       }
     } catch (e) {
-      ErrorHandlingUtils.handleApiError(e);
+      log('');
     }
   }
 
@@ -124,7 +131,9 @@ class EditIaController extends GetxController {
       final res = await newIaProvider.deleteIa(
           id: interestArea.id, token: bottomNavController.token);
       if (res) {
-        Get.back();
+        profileController?.fetchUserProfile();
+        Get.until((route) => Get.currentRoute == Routes.bottomNavigation);
+
       }
     } catch (e) {
       ErrorHandlingUtils.handleApiError(e);
@@ -139,11 +148,13 @@ class EditIaController extends GetxController {
           id: interestArea.id,
           token: bottomNavController.token,
           name: title.value,
-          nestedIas: [],
+          nestedIas: selectedSubIas.map((e) => e.id).toList(),
           wikiTags: selectedTags.map((e) => e.id).toList(),
           accessLevel: accesLevel.value,
           description: description.value);
       if (success) {
+        profileController?.fetchUserProfile();
+        iaController.fetchIa();
         Get.back();
       }
     } catch (e) {
@@ -155,7 +166,8 @@ class EditIaController extends GetxController {
   initFields() {
     title.value = interestArea.name;
     titleController.text = title.value;
-    description.value = '';
+    description.value = interestArea.description;
+    descriptionController.text = description.value;
     accesLevel.value = interestArea.accessInt;
     selectedTags.value = interestArea.wikiTags;
     selectedSubIas.value = nestedIas;
@@ -164,6 +176,12 @@ class EditIaController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    
+    try {
+      profileController = Get.find<ProfileController>();
+    } catch (e) {
+      profileController = null;
+    }
     initFields();
   }
 

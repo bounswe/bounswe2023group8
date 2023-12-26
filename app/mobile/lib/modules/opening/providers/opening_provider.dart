@@ -23,7 +23,7 @@ class OpeningProvider extends GetConnect {
     if (response.statusCode == null) {
       throw CustomException(
           'Error', response.statusText ?? 'The connection has timed out.');
-    } else if (response.statusCode == 200 || response.statusCode == 201) {
+    } else if (response.statusCode! >= 200 && response.statusCode! < 300) {
       if (response.bodyString != null) {
         final body = json.decode(response.bodyString!);
         return {

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:mobile/data/constants/assets.dart';
-import 'package:mobile/data/models/post_model.dart';
+import 'package:mobile/data/constants/palette.dart';
+import 'package:mobile/data/models/enigma_user.dart';
+import 'package:mobile/data/models/interest_area.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
-import 'package:mobile/data/widgets/visitor_bottom_bar.dart';
-
-import '../../../data/models/user_model.dart';
-import '../../../data/widgets/custom_search_bar.dart';
-import '../../opening/controllers/opening_controller.dart';
+import 'package:mobile/data/widgets/custom_button.dart';
+import 'package:mobile/data/widgets/post_widget.dart';
+import 'package:mobile/modules/visitor_explore/views/visitor_settings_view.dart';
 import '../controllers/visitor_explore_controller.dart';
 
 class VisitorExploreView extends GetView<VisitorExploreController> {
@@ -125,164 +126,164 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                     ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 12),
-
-              // 4 rectangles with tags
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  tagRectangle(tag: '#knitting'),
-                  tagRectangle(tag: '#cats'),
-                  tagRectangle(tag: '#anime'),
-                  tagRectangle(tag: '#sports'),
-                ],
-              ),
-
-              const SizedBox(
-                  height: 24), // Add space between the tags and the new section
-
-              // Trending title without a rectangle
-              const Center(
-                child: Text(
-                  'Trending',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                const SizedBox(height: 8),
+                Container(
+                  width: Get.width,
+                  padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
+                  decoration: BoxDecoration(
+                    color: BackgroundPalette.dark,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Trending Spots",
+                        style: TextStyle(
+                          color: BackgroundPalette.light,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.2,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        height: 400,
+                        child: ListView.separated(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          physics: const ClampingScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: controller.spots.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 8),
+                          itemBuilder: (context, index) {
+                            return PostTileWidget(
+                              onTap: () => controller.navigateToSignUp(),
+                              post: controller.spots[index],
+                              hideTags: false,
+                              hideVoters: true,
+                              onUpvote: () {},
+                              onDownvote: () {},
+                              showVoters: () {},
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-
-              const SizedBox(height: 16),
-              ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  separatorBuilder: (context, index) =>
-                  const SizedBox(height: 8),
-                  itemCount: controller.posts.length,
-                  itemBuilder: (context, index) =>
-                      trendinPost(controller.posts[index])),
-
-
-              const SizedBox(height: 12),
-              // Discover title without a rectangle
-              const Center(
-                child: Text(
-                  'Discover Popular Users',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                const SizedBox(height: 8),
+                Container(
+                  width: Get.width,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    color: BackgroundPalette.dark,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const SizedBox(width: 8),
+                          Text(
+                            "Popular Users",
+                            style: TextStyle(
+                              color: BackgroundPalette.light,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: -0.2,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        height: 120,
+                        child: ListView.separated(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          scrollDirection: Axis.horizontal,
+                          physics: const ClampingScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: controller.users.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(width: 16),
+                          itemBuilder: (context, index) {
+                            return popularUsers(
+                              user: controller.users[index],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
-              // List of popular users
-              SizedBox(
-                height: 120,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 4,
-                  itemBuilder: (context, index) {
-                    return popularUserCard(
-                      user: controller.allUsers[index],
-                    );
-                  },
+  Widget bunchRectangle({required InterestArea bunch}) {
+    return InkWell(
+      onTap: () => controller.navigateToSignUp(),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: BackgroundPalette.solid,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          bunch.name,
+          style: TextStyle(
+            color: BackgroundPalette.soft,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            letterSpacing: -0.2,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget popularUsers({required EnigmaUser user}) {
+    return InkWell(
+      onTap: () => controller.navigateToSignUp(),
+      child: Column(
+        children: [
+          user.pictureUrl != null && user.pictureUrl!.isNotEmpty
+              ? CircleAvatar(
+                  radius: 40,
+                  backgroundImage: NetworkImage(user.pictureUrl!),
+                )
+              : Image.asset(
+                  Assets.profilePlaceholder,
+                  width: 80,
+                  height: 80,
                 ),
-              ),
-
-              const SizedBox(height: 8),
-            ],
+          const SizedBox(height: 4),
+          Text(
+            user.name,
+            style: TextStyle(
+              color: ThemePalette.light,
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.15,
+            ),
           ),
-        ),
+          Text(
+            '@${user.username}',
+            style: TextStyle(
+              color: ThemePalette.light,
+              fontSize: 8,
+              fontWeight: FontWeight.w400,
+              letterSpacing: -0.15,
+            ),
+          ),
+        ],
       ),
     );
   }
-
-  Widget trendinPost(PostModel post) {
-    return InkWell(
-      onTap: () => controller.navigateToPostDetails(post),
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFFE6EFF4),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Pride & Prejudice
-            Text(
-              post.title,
-              style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-
-            const SizedBox(height: 8),
-            Text(
-              'Created by ${controller.getNameById(post.userId)}',
-              style: const TextStyle(
-                color: Color(0xFF7E7E7E),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-
-  Widget tagRectangle({required String tag}) {
-    return InkWell(
-      onTap: () => controller.navigateToVisitorInterestArea(),
-      child: Container(
-        width: 80,
-        height: 40,
-        decoration: BoxDecoration(
-          color: const Color(0xFFE8E8E8),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Text(
-            tag,
-            style: const TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-Widget popularUserCard({required UserModel user}) {
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Column(
-      children: [
-        CircleAvatar(
-          radius: 24,
-          backgroundImage: AssetImage(Assets.profilePlaceholder)),
-        const SizedBox(height: 8),
-        Text(
-          user.name,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
-        ),
-        Text(
-          '@${user.username}',
-          style: const TextStyle(
-            color: Color(0xFF7E7E7E),
-            fontSize: 12,
-          ),
-        ),
-      ],
-    ),
-  );
 }

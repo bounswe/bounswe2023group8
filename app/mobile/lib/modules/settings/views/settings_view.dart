@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-mport 'package:mobile/data/constants/assets.dart';
+import 'package:mobile/data/constants/assets.dart';
 import 'package:mobile/data/constants/palette.dart';
 import 'package:mobile/data/widgets/custom_app_bar.dart';
 import 'package:mobile/modules/settings/views/privacy_view.dart';

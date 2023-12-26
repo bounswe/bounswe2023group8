@@ -30,8 +30,8 @@ class BottomNavigationView extends GetView<BottomNavigationController> {
               ),
             ],
           ),
-        ),
-      ]),
+        );
+      },
     );
   }
 }
