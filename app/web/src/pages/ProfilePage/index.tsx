@@ -53,7 +53,14 @@ const ProfilePage = () => {
       axiosInstance: axiosInstance,
       userId: userId || "-1",
     });
-  }, []);
+  }, [userId]);
+
+  const getProfileData = () => {
+    getUserProfile({
+      axiosInstance: axiosInstance,
+      userId: userId || "-1",
+    });
+  }
 
   return (
     <>
@@ -63,7 +70,7 @@ const ProfilePage = () => {
           style={{ background: "#EEF0EB", marginLeft: "60px" }}
           user={profileData}
           className="col-5 border-0"
-        />
+         getProfileData={getProfileData}/>
       )}
       <hr className="mx-3" />
       <Row>

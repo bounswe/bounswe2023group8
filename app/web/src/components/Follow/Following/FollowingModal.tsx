@@ -6,12 +6,12 @@ import mockUsers from '../../../mockData/milestone1/451_users.json';
 type FollowingModalProps = {
     show: boolean;
     setShow: () => void;
+    followingData: any;
+    handleUnfollow: (targetId: number) => void
+    handleFollow: (targetId: number) => void
 };
 
-const FollowingModal: React.FC<FollowingModalProps> = ({ show, setShow }) => {
-    const shuffledUsers = mockUsers.sort(() => 0.5 - Math.random());
-    const FollowingsData = shuffledUsers.slice(0, 7);
-
+const FollowingModal: React.FC<FollowingModalProps> = ({ show, setShow, followingData, handleUnfollow, handleFollow}) => {
     return (
         <Modal show={show} centered className="Following-modal" onHide={setShow}>
             <Modal.Header closeButton>
@@ -19,9 +19,9 @@ const FollowingModal: React.FC<FollowingModalProps> = ({ show, setShow }) => {
             </Modal.Header>
             <Modal.Body style={{ maxHeight: '400px', overflowY: 'auto' }}>
                 <Row className="Following-list">
-                    {FollowingsData.map((Following) => (
-                        <Col key={Following.id} md={12} className="mb-3">
-                            <FollowingCard user={Following} />
+                    {followingData?.map((following: any) => (
+                        <Col key={following.id} md={12} className="mb-3">
+                            <FollowingCard user={following} unfollow={handleUnfollow} follow={handleFollow}/>
                         </Col>
                     ))}
                 </Row>
