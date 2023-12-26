@@ -32,7 +32,6 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                   children: [
                     CustomButton(
                       text: 'Log in',
-                      width: 100,
                       textColor: ThemePalette.light,
                       fontSize: 16,
                       onPressed: () => controller.navigateToLogIn(),
@@ -42,7 +41,6 @@ class VisitorExploreView extends GetView<VisitorExploreController> {
                     ),
                     CustomButton(
                       text: 'Sign up',
-                      width: 100,
                       secondaryColor: true,
                       fontSize: 16,
                       onPressed: () => controller.navigateToSignUp(),
