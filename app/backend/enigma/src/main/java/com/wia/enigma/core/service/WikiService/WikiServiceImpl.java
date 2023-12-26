@@ -1,6 +1,5 @@
 package com.wia.enigma.core.service.WikiService;
 
-import com.wia.enigma.core.data.dto.WikiTagDto;
 import com.wia.enigma.core.data.response.WikiTagResponse;
 import com.wia.enigma.core.data.response.WikiSearchResponse;
 import com.wia.enigma.dal.entity.WikiTag;
@@ -67,9 +66,6 @@ public class WikiServiceImpl implements WikiService {
             log.error("Wiki API responded non-success.");
             throw new EnigmaException(ExceptionCodes.INVALID_WIKI_TAG_ID, "Invalid wiki tag id.");
         }
-
-
-
     }
 
     private WikiTag createWikiTag(WikiTagResponse response, String id) {

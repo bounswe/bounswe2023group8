@@ -6,7 +6,10 @@ import com.wia.enigma.core.data.response.RegisterResponse;
 import com.wia.enigma.core.data.response.SecurityDetailsResponse;
 import com.wia.enigma.core.data.response.VerificationResponse;
 import com.wia.enigma.core.service.EmailService.EmailService;
+import com.wia.enigma.core.service.InterestAreaService.InterestAreaService;
 import com.wia.enigma.core.service.JwtService.EnigmaJwtService;
+import com.wia.enigma.core.service.PostService.PostService;
+import com.wia.enigma.core.service.StorageService.StorageService;
 import com.wia.enigma.core.service.UserFollowsService.UserFollowsService;
 import com.wia.enigma.core.service.VerificationTokenService.VerificationTokenService;
 import com.wia.enigma.dal.entity.*;
@@ -25,13 +28,11 @@ import org.springframework.data.util.Pair;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,31 +40,29 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EnigmaUserServiceImpl implements EnigmaUserService {
-    private final PostRepository postRepository;
-
-    private final InterestAreaRepository interestAreaRepository;
 
     final PasswordEncoder passwordEncoder;
 
     final EnigmaUserRepository enigmaUserRepository;
-
-    final EnigmaJwtService enigmaJwtService;
-
-    final VerificationTokenService verificationTokenService;
+    final EntityTagsRepository entityTagsRepository;
+    final WikiTagRepository wikiTagRepository;
+    final PostCommentRepository postCommentRepository;
+    final PostVoteRepository postVoteRepository;
+    final PostRepository postRepository;
+    final InterestAreaRepository interestAreaRepository;
 
     final EmailService emailService;
-
+    final EnigmaJwtService enigmaJwtService;
+    final InterestAreaService interestAreaService;
+    final PostService postService;
     final UserFollowsService userFollowsService;
-
-    final WikiTagRepository wikiTagRepository;
-
-
-    final EntityTagsRepository entityTagsRepository;
+    final VerificationTokenService verificationTokenService;
+    final StorageService storageService;
 
     @Override
     public EnigmaUserDto getUser(Long id){
 
-        EnigmaUser enigmaUser = null;
+        EnigmaUser enigmaUser;
         try {
             enigmaUser = enigmaUserRepository.findEnigmaUserById(id);
         } catch (Exception e) {
@@ -76,14 +75,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
                     "EnigmaUser not found for id: " + id);
 
-        return EnigmaUserDto.builder()
-                .id(enigmaUser.getId())
-                .username(enigmaUser.getUsername())
-                .name(enigmaUser.getName())
-                .email(enigmaUser.getEmail())
-                .birthday(enigmaUser.getBirthday())
-                .createTime(enigmaUser.getCreateTime())
-                .build();
+        return enigmaUser.mapToEnigmaUserDto();
     }
 
     /**
@@ -125,7 +117,6 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                 .password(passwordEncoder.encode(password))
                 .birthday(birthdayDate)
                 .audienceType(AudienceType.USER.getName())
-                .isDeleted(false)
                 .isVerified(false)
                 .createTime(new Timestamp(System.currentTimeMillis()))
                 .build();
@@ -435,22 +426,14 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
         EnigmaUserDto followedEnigmaUser = getVerifiedUser(followedId);
 
-        if(followedEnigmaUser == null) {
+        if (followedEnigmaUser == null)
             throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
                     "User does not exist or unverified!");
-        }
 
-        return userFollowsService.findAcceptedFollowers( followedId, EntityType.USER)
+        return userFollowsService.findFollowers( followedId, EntityType.USER, true)
                 .stream()
                 .map(userFollows -> enigmaUserRepository.findEnigmaUserById(userFollows.getFollowerEnigmaUserId()))
-                .map(enigmaUser -> EnigmaUserDto.builder()
-                        .id(enigmaUser.getId())
-                        .username(enigmaUser.getUsername())
-                        .name(enigmaUser.getName())
-                        .email(enigmaUser.getEmail())
-                        .birthday(enigmaUser.getBirthday())
-                        .createTime(enigmaUser.getCreateTime())
-                        .build())
+                .map(EnigmaUser::mapToEnigmaUserDto)
                 .toList();
     }
 
@@ -469,23 +452,16 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                     "User does not exist or unverified!");
         }
 
-        return userFollowsService.findAcceptedFollowings(followerId, EntityType.USER)
+        return userFollowsService.findFollowings(followerId, EntityType.USER, true)
                 .stream()
                 .map(userFollows -> enigmaUserRepository.findEnigmaUserById(userFollows.getFollowedEntityId()))
-                .map(enigmaUser -> EnigmaUserDto.builder()
-                        .id(enigmaUser.getId())
-                        .username(enigmaUser.getUsername())
-                        .name(enigmaUser.getName())
-                        .email(enigmaUser.getEmail())
-                        .birthday(enigmaUser.getBirthday())
-                        .createTime(enigmaUser.getCreateTime())
-                        .build())
+                .map(EnigmaUser::mapToEnigmaUserDto)
                 .toList();
     }
 
     @Override
     public Long getFollowingCount(Long userId) {
-        return userFollowsService.countAcceptedFollowers(userId, EntityType.USER);
+        return userFollowsService.countAcceptedFollowings(userId, EntityType.USER);
     }
 
     @Override
@@ -515,12 +491,20 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
                         return false;
                     }
                 }
-        ).map(post -> post.mapToPostDto(getWikiTags(post.getId()), enigmaUser,  interestAreas.stream().filter(interestArea -> interestArea.getId().equals(post.getInterestAreaId())).toList().get(0).mapToInterestAreaModel())).toList();
+        ).map(post -> post.mapToPostDto(
+                getWikiTags(post.getId(), EntityType.POST),
+                enigmaUser,
+                interestAreas.stream().filter(interestArea -> interestArea.getId().equals(post.getInterestAreaId()))
+                        .toList().get(0).mapToInterestAreaModel(),
+                postVoteRepository.countByPostIdAndVote(post.getId(), true),
+                postVoteRepository.countByPostIdAndVote(post.getId(), false),
+                postCommentRepository.countByPostId(post.getId())
+        )).toList();
     }
 
     @Override
     public List<InterestAreaDto> getFollowingInterestAreas(Long userId, Long followerId ) {
-        List<Long> followedEntityIds = userFollowsService.findAcceptedFollowings(followerId, EntityType.INTEREST_AREA)
+        List<Long> followedEntityIds = userFollowsService.findFollowings(followerId, EntityType.INTEREST_AREA, true)
                 .stream()
                 .map(UserFollows::getFollowedEntityId)
                 .collect(Collectors.toList());
@@ -533,14 +517,24 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
         return interestAreas.stream()
                 .filter(interestArea -> Objects.equals(userId, followerId) || interestArea.getAccessLevel().equals(EnigmaAccessLevel.PUBLIC))
-                .map(interestArea -> InterestAreaDto.builder()
-                        .id(interestArea.getId())
-                        .title(interestArea.getTitle())
-                        .description(interestArea.getDescription())
-                        .accessLevel(interestArea.getAccessLevel())
-                        .createTime(interestArea.getCreateTime())
-                        .wikiTags(getWikiTags(interestArea.getId()))
-                        .build()).toList();
+                .map(interestArea -> interestArea.mapToInterestAreaDto(getWikiTags(interestArea.getId(), EntityType.INTEREST_AREA) )).toList();
+    }
+
+    @Override
+    public List<InterestAreaDto> getInterestAreaFollowRequests(Long userId){
+
+        List<Long> followedEntityIds = userFollowsService.findFollowings(userId, EntityType.INTEREST_AREA, false)
+                .stream()
+                .map(UserFollows::getFollowedEntityId)
+                .toList();
+
+        if (followedEntityIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<InterestArea> interestAreas = interestAreaRepository.findAllById(followedEntityIds);
+
+        return interestAreas.stream().map(interestArea -> interestArea.mapToInterestAreaDto(getWikiTags(interestArea.getId(), EntityType.INTEREST_AREA))).toList();
     }
 
     @Override
@@ -559,13 +553,7 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
             throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
                     "EnigmaUser not found for id: " + userId);
 
-        return EnigmaUserDto.builder()
-                .id(enigmaUser.getId())
-                .username(enigmaUser.getUsername())
-                .name(enigmaUser.getName())
-                .email(enigmaUser.getEmail())
-                .birthday(enigmaUser.getBirthday())
-                .build();
+        return enigmaUser.mapToEnigmaUserDto();
     }
 
     @Override
@@ -573,20 +561,197 @@ public class EnigmaUserServiceImpl implements EnigmaUserService {
 
         return enigmaUserRepository.findByIsVerifiedTrueAndUsernameContainsOrNameContains(searchKey, searchKey)
                 .stream()
-                .map(enigmaUser -> EnigmaUserDto.builder()
-                        .id(enigmaUser.getId())
-                        .username(enigmaUser.getUsername())
-                        .name(enigmaUser.getName())
-                        .email(enigmaUser.getEmail())
-                        .birthday(enigmaUser.getBirthday())
-                        .createTime(enigmaUser.getCreateTime())
-                        .build())
+                .map(EnigmaUser::mapToEnigmaUserDto)
                 .toList();
     }
 
-    private List<WikiTag> getWikiTags(Long id) {
-        return wikiTagRepository.findAllById(entityTagsRepository.findAllByEntityIdAndEntityType(id, EntityType.POST).stream()
+    /**
+     * Deletes the EnigmaUser.
+     *
+     * @param userId  enigma user id
+     */
+    @Override
+    @Transactional
+    public void deleteUser(Long userId) {
+
+        EnigmaUser enigmaUser;
+        try {
+            enigmaUser = enigmaUserRepository.findEnigmaUserById(userId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot get EnigmaUser by id.");
+        }
+
+        if (enigmaUser == null)
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                    "EnigmaUser not found for id: " + userId);
+
+        try {
+            enigmaUserRepository.delete(enigmaUser);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_DELETE_ERROR,
+                    "Cannot delete EnigmaUser.");
+        }
+
+        enigmaJwtService.revokeAllTokens(userId);
+        interestAreaService.deleteInterestAreasForUser(userId);
+        userFollowsService.deleteAllForUser(userId);
+        postService.deleteAllForUser(userId);
+    }
+
+    /**
+     * Validates the existence of the EnigmaUser.
+     *
+     * @param userId   enigma user id
+     */
+    @Override
+    public void validateExistence(Long userId) {
+
+            EnigmaUser enigmaUser;
+            try {
+                enigmaUser = enigmaUserRepository.findEnigmaUserById(userId);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                        "Cannot get EnigmaUser by id.");
+            }
+
+            if (enigmaUser == null)
+                throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                        "EnigmaUser not found for id: " + userId);
+    }
+
+    /**
+     * Change the password of an existing user
+     *
+     * @param enigmaUserId  EnigmaUser.id
+     * @param oldPassword   Old password
+     * @param newPassword1  new password
+     * @param newPassword2  new password
+     */
+    @Override
+    public void changePassword(Long enigmaUserId, String oldPassword, String newPassword1, String newPassword2) {
+
+        EnigmaUser enigmaUser;
+        try {
+            enigmaUser = enigmaUserRepository.findEnigmaUserById(enigmaUserId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot get EnigmaUser by id.");
+        }
+
+        if (enigmaUser == null)
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                    "EnigmaUser not found for id: " + enigmaUserId);
+
+        if (!passwordEncoder.matches(oldPassword, enigmaUser.getPassword()))
+            throw new EnigmaException(ExceptionCodes.INVALID_PASSWORD,
+                    "Current password is not valid.");
+
+        if (!newPassword1.equals(newPassword2))
+            throw new EnigmaException(ExceptionCodes.PASSWORDS_DO_NOT_MATCH,
+                    "Passwords do not match.");
+
+        enigmaUser.setPassword(passwordEncoder.encode(newPassword1));
+        try {
+            enigmaUserRepository.save(enigmaUser);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_SAVE_ERROR,
+                    "Cannot save EnigmaUser.");
+        }
+    }
+
+    private List<WikiTag> getWikiTags(Long id, EntityType entityType) {
+        return wikiTagRepository.findAllById(entityTagsRepository.findAllByEntityIdAndEntityType(id, entityType).stream()
                 .map(EntityTag::getWikiDataTagId)
                 .collect(Collectors.toList()));
+    }
+
+    @Override
+    public void uploadProfilePicture(Long userId, MultipartFile file) {
+
+        EnigmaUser enigmaUser;
+        try {
+            enigmaUser = enigmaUserRepository.findEnigmaUserById(userId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot get EnigmaUser by id.");
+        }
+
+        if (enigmaUser == null)
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                    "EnigmaUser not found for id: " + userId);
+
+
+        String uploadedFileUrl  = storageService.uploadFile(file, "enigma-profile", UUID.randomUUID().toString());
+
+        enigmaUser.setPictureUrl(uploadedFileUrl);
+
+        enigmaUserRepository.save(enigmaUser);
+    }
+
+    @Override
+    public void deleteProfilePicture(Long userId) {
+
+        EnigmaUser enigmaUser;
+        try {
+            enigmaUser = enigmaUserRepository.findEnigmaUserById(userId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot get EnigmaUser by id.");
+        }
+
+        if (enigmaUser == null)
+            throw new EnigmaException(ExceptionCodes.USER_NOT_FOUND,
+                    "EnigmaUser not found for id: " + userId);
+
+        enigmaUser.setPictureUrl(null);
+
+        enigmaUserRepository.save(enigmaUser);
+    }
+
+    /**
+     * Gets the upvotes and downvotes of the EnigmaUser.
+     *
+     * @param userId    enigma user id
+     * @return          Pair of upvotes and downvotes
+     */
+    @Override
+    public Pair<Integer, Integer> getVotes(Long userId) {
+
+        Set<Long> postIds;
+        try {
+            postIds = postRepository.findAllIdsByEnigmaUserId(userId);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot fetch Posts by enigma user id.");
+        }
+
+        List<PostVote> postVotes;
+        try {
+            postVotes = postVoteRepository.findAllByPostIdIn(postIds);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new EnigmaException(ExceptionCodes.DB_GET_ERROR,
+                    "Cannot fetch PostVotes by enigma user id.");
+        }
+
+        int upvotes = 0;
+        int downvotes = 0;
+        for (PostVote postVote : postVotes) {
+            if (postVote.getVote())
+                upvotes++;
+            else
+                downvotes++;
+        }
+
+        return Pair.of(upvotes, downvotes);
     }
 }
