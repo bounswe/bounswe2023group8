@@ -713,6 +713,7 @@ const DetailedPostCard = (props: DetailedPostCardProps) => {
                     key={`highlighted-${index}`}
                     className="highlighted-text"
                     style={{backgroundColor: "powderblue"}}
+
                 >
           {highlightedText}
         </span>
