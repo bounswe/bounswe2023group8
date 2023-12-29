@@ -491,7 +491,7 @@ class PostDetailsProvider extends GetConnect {
 
   Future<bool> createAnnotationContainer(
       {required String token, required int postId}) async {
-    httpClient.baseUrl = 'http://18.192.100.93:80/wia';
+    httpClient.baseUrl = 'http://3.79.231.219:80/wia';
     final response = await post('', {
       'name': 'post-$postId',
       'label': 'post-$postId',
@@ -523,7 +523,7 @@ class PostDetailsProvider extends GetConnect {
       required String comment,
       required String text,
       required EnigmaUser user}) async {
-    httpClient.baseUrl = 'http://18.192.100.93:80/wia';
+    httpClient.baseUrl = 'http://3.79.231.219:80/wia';
     final response = await post('/post-$postId', {
       "type": "Annotation",
       "body": {"type": "TextualBody", "value": text, "name": 'annotation'},
@@ -552,7 +552,7 @@ class PostDetailsProvider extends GetConnect {
 
   Future<List<AnnotationModel>?> getAnnotations(
       {required String token, required int postId}) async {
-    httpClient.baseUrl = 'http://18.192.100.93:80/wia';
+    httpClient.baseUrl = 'http://3.79.231.219:80/wia';
     final response = await get('/post-$postId', headers: {
       'Accept': 'application/ld+json',
       'Content-Type': 'application/ld+json'
@@ -585,7 +585,7 @@ class PostDetailsProvider extends GetConnect {
       {required String token,
       required int postId,
       required String annotationId}) async {
-    httpClient.baseUrl = 'http://18.192.100.93:80/wia';
+    httpClient.baseUrl = 'http://3.79.231.219:80/wia';
     final id = annotationId.split('/').last;
     final response = await delete('/post-$postId/$id', headers: {
       'Accept': 'application/ld+json',
